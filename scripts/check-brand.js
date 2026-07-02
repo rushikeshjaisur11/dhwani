@@ -39,7 +39,7 @@ const ALLOWED_PATTERNS = [
 ];
 
 const out = execSync(
-  'git grep -Iin "openwhispr" -- src/ docs/ *.json *.html ":(exclude)docs/superpowers" ":(exclude)docs/network-allowlist.md" || exit 0',
+  'git grep -Iin "openwhispr" -- src/ docs/ *.json *.html ":(exclude)docs/superpowers" ":(exclude)docs/network-allowlist.md" ":(exclude)docs/REBRANDING.md" || exit 0',
   { encoding: "utf8" }
 );
 
