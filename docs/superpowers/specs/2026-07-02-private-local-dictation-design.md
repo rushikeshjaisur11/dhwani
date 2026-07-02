@@ -43,6 +43,11 @@ model (e.g. `gemma3`) concurrently. Ollama 0.30.11 already installed with models
 **Acceptance:** dictate into Slack/VS Code/browser; cleaned text appears at cursor
 in ~1–2s; works with Wi-Fi disabled.
 
+**Status: ACCEPTED 2026-07-03** — offline dictation verified (turbo model on GPU),
+Ollama cleanup via llama3.2:3b with OLLAMA_KEEP_ALIVE=1h, Ollama-down fallback
+pastes raw transcript. Deep rebrand to Dhwani shipped alongside
+(docs/REBRANDING.md, scripts/check-brand.js guard).
+
 ## Phase 2 — fork delta: app-aware cleanup
 
 **Change:** at dictation-stop in the Electron main process, detect the foreground
