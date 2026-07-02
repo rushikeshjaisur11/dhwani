@@ -1,4 +1,4 @@
-﻿const { execFileSync } = require("child_process");
+const { execFileSync } = require("child_process");
 const debugLogger = require("./debugLogger");
 
 const DBUS_SERVICE_NAME = "com.openwhispr.App";

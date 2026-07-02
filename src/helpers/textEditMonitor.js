@@ -1,4 +1,4 @@
-﻿const { spawn, execFile } = require("child_process");
+const { spawn, execFile } = require("child_process");
 const path = require("path");
 const EventEmitter = require("events");
 const fs = require("fs");

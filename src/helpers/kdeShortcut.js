@@ -1,4 +1,4 @@
-﻿const debugLogger = require("./debugLogger");
+const debugLogger = require("./debugLogger");
 
 let dbus = null;
 

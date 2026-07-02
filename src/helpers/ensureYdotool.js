@@ -1,4 +1,4 @@
-﻿const fs = require("fs");
+const fs = require("fs");
 const os = require("os");
 const { spawnSync } = require("child_process");
 const { dialog } = require("electron");

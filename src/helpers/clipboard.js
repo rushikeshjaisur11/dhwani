@@ -1,4 +1,4 @@
-﻿const { clipboard, systemPreferences } = require("electron");
+const { clipboard, systemPreferences } = require("electron");
 const { spawn, spawnSync } = require("child_process");
 const { killProcess } = require("../utils/process");
 const path = require("path");

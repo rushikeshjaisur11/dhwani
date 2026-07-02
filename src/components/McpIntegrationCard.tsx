@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, Copy, ExternalLink, Plus } from "lucide-react";
 import { Badge } from "./ui/badge";

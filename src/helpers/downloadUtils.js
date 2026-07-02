@@ -1,4 +1,4 @@
-﻿const fs = require("fs");
+const fs = require("fs");
 const { promises: fsPromises } = require("fs");
 const path = require("path");
 const { net } = require("electron");
