@@ -1,7 +1,7 @@
 {
-  "appId": "com.gizmolabs.openwhispr",
+  "appId": "com.rushikesh.dhwani",
   "afterPack": "scripts/afterPack.js",
-  "productName": "OpenWhispr",
+  "productName": "Dhwani",
   "protocols": {
     "name": "OpenWhispr Protocol",
     "schemes": ["openwhispr"]
