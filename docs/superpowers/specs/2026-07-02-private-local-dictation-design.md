@@ -66,6 +66,12 @@ as an `{activeApp}` placeholder usable in Prompt Studio templates.
 **Acceptance:** the same sentence dictated in Slack vs Outlook produces casual vs
 formal output per the prompt rules.
 
+**Status: ACCEPTED 2026-07-03** — implemented as `{{activeApp}}` (double-brace,
+matching the codebase's `{{agentName}}` convention). Foreground app captured at
+recording-stop via PowerShell/user32 one-shot, concurrent with transcription.
+Verified: same dictation produced casual output in chat vs near-verbatim in
+VS Code.
+
 ## Phase 3 — personal data flywheel
 
 Goal: collect supervised pairs (audio, corrected final text) from real usage to
