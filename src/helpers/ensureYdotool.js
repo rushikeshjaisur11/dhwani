@@ -1,4 +1,4 @@
-const fs = require("fs");
+﻿const fs = require("fs");
 const os = require("os");
 const { spawnSync } = require("child_process");
 const { dialog } = require("electron");
@@ -128,7 +128,7 @@ async function ensureYdotool() {
     } catch {}
   }
 
-  // Something is missing — build an informative message
+  // Something is missing â€” build an informative message
   const missing = [];
 
   if (!hasYdotool) {
@@ -168,7 +168,7 @@ async function ensureYdotool() {
       type: "warning",
       title: "Wayland Paste Setup",
       message: "ydotool is not fully configured. Auto-paste on Wayland may not work.",
-      detail: `The following issues were detected:\n\n${detail}\n\nAfter fixing, restart OpenWhispr.`,
+      detail: `The following issues were detected:\n\n${detail}\n\nAfter fixing, restart Dhwani.`,
     });
   }
 }

@@ -84,8 +84,8 @@
     "desktop-app"
   ],
   "author": {
-    "name": "OpenWhispr Team",
-    "email": "support@openwhispr.com"
+    "name": "Rushikesh Jaisur",
+    "email": "rushikeshjaisur11@gmail.com"
   },
   "license": "MIT",
   "devDependencies": {

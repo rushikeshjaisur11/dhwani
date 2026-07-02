@@ -1,4 +1,4 @@
-const { execFileSync } = require("child_process");
+﻿const { execFileSync } = require("child_process");
 const debugLogger = require("./debugLogger");
 
 const DBUS_SERVICE_NAME = "com.openwhispr.App";
@@ -9,19 +9,19 @@ const DBUS_INTERFACE = "com.openwhispr.App";
 const SLOT_CONFIG = {
   dictation: {
     path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr/",
-    name: "OpenWhispr Toggle",
+    name: "Dhwani Toggle",
   },
   agent: {
     path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr-agent/",
-    name: "OpenWhispr Agent",
+    name: "Dhwani Agent",
   },
   meeting: {
     path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr-meeting/",
-    name: "OpenWhispr Meeting",
+    name: "Dhwani Meeting",
   },
   voiceAgent: {
     path: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr-voice-agent/",
-    name: "OpenWhispr Voice Agent",
+    name: "Dhwani Voice Agent",
   },
 };
 
@@ -261,7 +261,7 @@ class GnomeShortcutManager {
       const conflict = this.findConflictingBinding(shortcut, existing, keybindingPath);
       if (conflict) {
         debugLogger.log(
-          `[GnomeShortcut] Shortcut conflict — "${shortcut}" already used by "${conflict}"`,
+          `[GnomeShortcut] Shortcut conflict â€” "${shortcut}" already used by "${conflict}"`,
           {
             slot: slotName,
             conflictPath: conflict,
@@ -334,7 +334,7 @@ class GnomeShortcutManager {
       const conflict = this.findConflictingBinding(shortcut, existing, keybindingPath);
       if (conflict) {
         debugLogger.log(
-          `[GnomeShortcut] Shortcut conflict on update — "${shortcut}" already used by "${conflict}"`
+          `[GnomeShortcut] Shortcut conflict on update â€” "${shortcut}" already used by "${conflict}"`
         );
         return false;
       }

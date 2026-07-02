@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+﻿import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { OPENWHISPR_API_URL } from "../config/constants";
 import { authClient } from "../lib/auth";
@@ -50,7 +50,7 @@ export default function EmailVerificationStep({
           setError(t("auth.sessionExpired"));
         }
       } catch {
-        // Network error — silently retry on next poll
+        // Network error â€” silently retry on next poll
       }
     }, 5000);
 
@@ -83,7 +83,7 @@ export default function EmailVerificationStep({
         <div className="text-center mb-4">
           <img
             src={logoIcon}
-            alt="OpenWhispr"
+            alt="Dhwani"
             className="w-12 h-12 mx-auto mb-2.5 rounded-lg shadow-sm"
           />
           <div className="w-8 h-8 mx-auto bg-success/10 rounded-full flex items-center justify-center mb-2">
@@ -105,7 +105,7 @@ export default function EmailVerificationStep({
       <div className="text-center mb-4">
         <img
           src={logoIcon}
-          alt="OpenWhispr"
+          alt="Dhwani"
           className="w-12 h-12 mx-auto mb-2.5 rounded-lg shadow-sm"
         />
         <div className="w-8 h-8 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">

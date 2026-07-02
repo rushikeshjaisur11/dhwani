@@ -1,4 +1,4 @@
-const fs = require("fs");
+﻿const fs = require("fs");
 const { promises: fsPromises } = require("fs");
 const path = require("path");
 const { net } = require("electron");
@@ -6,7 +6,7 @@ const { execFile } = require("child_process");
 const { pipeline } = require("stream");
 const debugLogger = require("./debugLogger");
 
-const USER_AGENT = "OpenWhispr/1.0";
+const USER_AGENT = "Dhwani/1.0";
 const PROGRESS_THROTTLE_MS = 100;
 const DEFAULT_MAX_RETRIES = 3;
 const MAX_BACKOFF_MS = 30000;
@@ -119,7 +119,7 @@ function downloadAttempt(url, tempPath, options) {
       const statusCode = response.statusCode;
 
       if (statusCode === 200 && startOffset > 0) {
-        // Server doesn't support Range — restart from beginning
+        // Server doesn't support Range â€” restart from beginning
         downloadedSize = 0;
         activeFile = fs.createWriteStream(tempPath, { flags: "w" });
         totalSize = parseInt(headerValue(response.headers, "content-length"), 10) || 0;
@@ -157,7 +157,7 @@ function downloadAttempt(url, tempPath, options) {
         stallTimer = setTimeout(() => {
           cleanup();
           reject(
-            Object.assign(new Error("Download stalled — no data received for 30s"), {
+            Object.assign(new Error("Download stalled â€” no data received for 30s"), {
               code: "ETIMEDOUT",
             })
           );
@@ -407,7 +407,7 @@ async function checkDiskSpace(directory, requiredBytes) {
     const availableBytes = stats.bavail * stats.bsize;
     return { ok: availableBytes >= requiredBytes, availableBytes };
   } catch {
-    // statfs not supported or directory doesn't exist — skip check
+    // statfs not supported or directory doesn't exist â€” skip check
     return { ok: true, availableBytes: Infinity };
   }
 }

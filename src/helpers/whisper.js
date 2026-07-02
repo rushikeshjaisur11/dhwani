@@ -1,4 +1,4 @@
-const fs = require("fs");
+﻿const fs = require("fs");
 const fsPromises = require("fs").promises;
 const path = require("path");
 const debugLogger = require("./debugLogger");
@@ -189,13 +189,13 @@ class WhisperManager {
       }
     }
 
-    debugLogger.info("OpenWhispr dependency check", status);
+    debugLogger.info("Dhwani dependency check", status);
 
     // Log a summary for easy scanning
     const serverStatus = status.whisperServer.available
-      ? `✓ ${status.whisperServer.path}`
-      : "✗ Not found";
-    const ffmpegStatus = status.ffmpeg.available ? `✓ ${status.ffmpeg.path}` : "✗ Not found";
+      ? `âœ“ ${status.whisperServer.path}`
+      : "âœ— Not found";
+    const ffmpegStatus = status.ffmpeg.available ? `âœ“ ${status.ffmpeg.path}` : "âœ— Not found";
     const modelsStatus =
       status.models.length > 0
         ? status.models.map((m) => `${m.name} (${m.size})`).join(", ")

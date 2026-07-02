@@ -1,4 +1,4 @@
-const debugLogger = require("./debugLogger");
+﻿const debugLogger = require("./debugLogger");
 
 let dbus = null;
 
@@ -195,8 +195,8 @@ class KDEShortcutManager {
     // Map friendly names back to slot names
     const friendlyToSlot = {};
     for (const slotName of this.registeredSlots) {
-      friendlyToSlot[`OpenWhispr ${slotName}`] = slotName;
-      friendlyToSlot[`OpenWhispr`] = "dictation"; // legacy compat
+      friendlyToSlot[`Dhwani ${slotName}`] = slotName;
+      friendlyToSlot[`Dhwani`] = "dictation"; // legacy compat
     }
     const slotName = friendlyToSlot[name];
     return slotName ? this.callbacks.get(slotName) : null;
@@ -216,7 +216,7 @@ class KDEShortcutManager {
       return false;
     }
 
-    // Modifier-only shortcuts (e.g. Control+Super) don't work on X11 —
+    // Modifier-only shortcuts (e.g. Control+Super) don't work on X11 â€”
     // XGrabKey requires an actual key code, not just modifiers.
     // On Wayland, KWin handles modifier-only natively, so allow them.
     const QT_MODIFIER_MASK = 0xfe000000;
@@ -230,7 +230,7 @@ class KDEShortcutManager {
     }
 
     // actionId: [componentUnique, actionUnique, componentFriendly, actionFriendly]
-    const actionId = [COMPONENT_NAME, slotName, "OpenWhispr", `OpenWhispr ${slotName}`];
+    const actionId = [COMPONENT_NAME, slotName, "Dhwani", `Dhwani ${slotName}`];
 
     try {
       // Pre-registration conflict check via low-level D-Bus call
@@ -252,7 +252,7 @@ class KDEShortcutManager {
             (aid) => Array.isArray(aid) && aid[0] !== COMPONENT_NAME
           );
           if (otherOwners.length > 0) {
-            debugLogger.log("[KDEShortcut] Shortcut conflict — key owned by another component", {
+            debugLogger.log("[KDEShortcut] Shortcut conflict â€” key owned by another component", {
               slot: slotName,
               hotkey: electronHotkey,
               owners: otherOwners.map((a) => a[0]),
@@ -261,7 +261,7 @@ class KDEShortcutManager {
           }
         }
       } catch (checkErr) {
-        // globalShortcutsByKey may not exist on older KDE — proceed without check
+        // globalShortcutsByKey may not exist on older KDE â€” proceed without check
         debugLogger.log(
           "[KDEShortcut] Could not check for conflicts, proceeding:",
           checkErr.message
@@ -280,7 +280,7 @@ class KDEShortcutManager {
       // another component owns it.
       const assignedKey = Array.isArray(result) && result.length > 0 ? result[0] : null;
       if (assignedKey !== null && assignedKey !== qtKey) {
-        debugLogger.log("[KDEShortcut] Shortcut conflict — setShortcut assigned different key", {
+        debugLogger.log("[KDEShortcut] Shortcut conflict â€” setShortcut assigned different key", {
           slot: slotName,
           requested: `0x${qtKey.toString(16)}`,
           assigned: `0x${assignedKey.toString(16)}`,
@@ -321,7 +321,7 @@ class KDEShortcutManager {
   async unregisterKeybinding(slotName = "dictation") {
     if (!this.kglobalaccel) return;
 
-    const actionId = [COMPONENT_NAME, slotName, "OpenWhispr", `OpenWhispr ${slotName}`];
+    const actionId = [COMPONENT_NAME, slotName, "Dhwani", `Dhwani ${slotName}`];
 
     try {
       await this.kglobalaccel.unRegister(actionId);
@@ -339,7 +339,7 @@ class KDEShortcutManager {
     // clean up stale registrations from dead processes anyway.
     const promises = [];
     for (const slotName of this.registeredSlots) {
-      const actionId = [COMPONENT_NAME, slotName, "OpenWhispr", `OpenWhispr ${slotName}`];
+      const actionId = [COMPONENT_NAME, slotName, "Dhwani", `Dhwani ${slotName}`];
       try {
         promises.push(this.kglobalaccel?.unRegister(actionId));
       } catch {}

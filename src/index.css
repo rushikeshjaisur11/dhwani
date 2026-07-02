@@ -1,9 +1,9 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* OpenWhispr Theme — registers color tokens with Tailwind v4.
+  /* Dhwani Theme â€” registers color tokens with Tailwind v4.
      These are the light-mode defaults; .dark overrides them below. */
   --color-primary: #2563eb;
   --color-primary-foreground: #ffffff;
@@ -32,14 +32,14 @@
   --color-info: #2563eb;
   --color-info-foreground: #ffffff;
 
-  /* Surface hierarchy — light mode equivalents */
+  /* Surface hierarchy â€” light mode equivalents */
   --color-surface-0: #ffffff;
   --color-surface-1: #fafafa;
   --color-surface-2: #ffffff;
   --color-surface-3: #f5f5f5;
   --color-surface-raised: #f0f0f0;
 
-  /* Border states — light mode equivalents */
+  /* Border states â€” light mode equivalents */
   --color-border-subtle: #e5e5e5;
   --color-border-hover: #d4d4d4;
   --color-border-active: #2563eb;
@@ -56,7 +56,7 @@
   --opacity-medium: 0.5;
   --opacity-high: 0.9;
 
-  /* Border Radius — ultra-tight, premium macOS-style rounding */
+  /* Border Radius â€” ultra-tight, premium macOS-style rounding */
   --radius: 0.375rem; /* 6px - default for buttons, inputs */
   --radius-sm: 0.25rem; /* 4px - minimal rounding */
   --radius-md: 0.375rem; /* 6px - standard */
@@ -80,7 +80,7 @@
 }
 
 .dark {
-  /* Dark mode — charcoal surfaces with clear elevation hierarchy
+  /* Dark mode â€” charcoal surfaces with clear elevation hierarchy
      Base L=0.22 (charcoal) with 0.05 steps between layers.
      Hue 260 (neutral blue) with minimal chroma for sophistication. */
   --color-background: oklch(0.22 0.006 260);
@@ -109,7 +109,7 @@
   --color-info: oklch(0.68 0.18 240);
   --color-info-foreground: oklch(0.99 0 0);
 
-  /* Surface hierarchy — charcoal depth system (0.22 → 0.33) */
+  /* Surface hierarchy â€” charcoal depth system (0.22 â†’ 0.33) */
   --color-surface-0: oklch(0.22 0.006 260);
   --color-surface-1: oklch(0.25 0.007 260);
   --color-surface-2: oklch(0.27 0.008 260);
@@ -122,7 +122,7 @@
   --color-border-active: oklch(0.5 0.15 260);
   --color-link: oklch(0.67 0.1 250);
 
-  /* Card depth shadows — softer for charcoal, with top highlight for premium depth */
+  /* Card depth shadows â€” softer for charcoal, with top highlight for premium depth */
   --shadow-card: 0 1px 3px oklch(0 0 0 / 0.2), inset 0 1px 0 oklch(1 0 0 / 0.03);
   --shadow-card-hover: 0 4px 12px oklch(0 0 0 / 0.25), inset 0 1px 0 oklch(1 0 0 / 0.04);
   --shadow-elevated: 0 8px 24px oklch(0 0 0 / 0.3);
@@ -188,7 +188,7 @@
   }
 }
 
-/* OpenWhispr Brand Typography */
+/* Dhwani Brand Typography */
 .brand-heading {
   font-family: var(--font-family-sans);
   font-weight: 600;
@@ -268,7 +268,7 @@ textarea:not(.input-inline) {
   background-color: var(--color-background);
 }
 
-/* Dark mode inputs — flat, no embossed shadow */
+/* Dark mode inputs â€” flat, no embossed shadow */
 .dark input:not(.input-inline),
 .dark textarea:not(.input-inline) {
   background-color: var(--color-input);
@@ -299,7 +299,7 @@ textarea:not(.input-inline) {
   transform: translateY(-1px);
 }
 
-/* Dark mode cards — grounded, no lift, subtle border glow */
+/* Dark mode cards â€” grounded, no lift, subtle border glow */
 .dark .card {
   border-color: var(--color-border-subtle);
   box-shadow: var(--shadow-card);
@@ -349,14 +349,14 @@ a:hover {
 
 /* ---- Premium UI Utilities ---- */
 
-/* Section panel — grouped settings container */
+/* Section panel â€” grouped settings container */
 .section-panel {
   background: var(--color-surface-2);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-xl);
 }
 
-/* Gradient accent bar — top border highlight for panels */
+/* Gradient accent bar â€” top border highlight for panels */
 .accent-bar {
   position: relative;
 }
@@ -388,7 +388,7 @@ a:hover {
   filter: invert(1);
 }
 
-/* Toast — opaque dark HUD surface, same in light & dark mode */
+/* Toast â€” opaque dark HUD surface, same in light & dark mode */
 .toast-surface {
   background: oklch(0.15 0.006 260);
   border: 1px solid oklch(0.25 0.006 260);
@@ -581,7 +581,7 @@ a:hover {
 
 /* ---- Referral Modal v2 ---- */
 
-/* Animated mesh gradient — slow-drifting color blobs */
+/* Animated mesh gradient â€” slow-drifting color blobs */
 .referral-mesh-bg {
   position: absolute;
   inset: 0;
@@ -687,7 +687,7 @@ a:hover {
   opacity: 1;
 }
 
-/* Stat gauge — accent bottom bar */
+/* Stat gauge â€” accent bottom bar */
 .stat-gauge {
   position: relative;
   overflow: hidden;
@@ -710,7 +710,7 @@ a:hover {
   transform: scaleX(1);
 }
 
-/* Spectrogram playback scan line — synced to audio */
+/* Spectrogram playback scan line â€” synced to audio */
 @keyframes spectrogram-play {
   0% {
     left: 0%;
@@ -919,7 +919,7 @@ body:has(.agent-overlay-window) #root {
   background: oklch(0.5 0 0 / 0.3);
 }
 
-/* ── TipTap / ProseMirror Rich Text Editor ── */
+/* â”€â”€ TipTap / ProseMirror Rich Text Editor â”€â”€ */
 
 .rich-text-editor-content {
   outline: none;

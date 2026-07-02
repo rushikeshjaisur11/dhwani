@@ -1,4 +1,4 @@
-const { ipcMain, app, shell, BrowserWindow, systemPreferences, net } = require("electron");
+﻿const { ipcMain, app, shell, BrowserWindow, systemPreferences, net } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -122,7 +122,7 @@ const CLOUD_CHUNK_CONCURRENCY = 5;
 const CLOUD_CHUNK_SEGMENT_SECONDS = 240;
 
 function buildMultipartBody(fileBuffer, fileName, contentType, fields = {}) {
-  const boundary = `----OpenWhispr${Date.now()}`;
+  const boundary = `----Dhwani${Date.now()}`;
   const parts = [];
 
   parts.push(
@@ -1583,7 +1583,7 @@ class IPCHandlers {
 
       // Smart spacing (#856): append a trailing space so the next paste's leading
       // space self-corrects the gap. macOS prepend-mode (getPrecedingChar) is
-      // intentionally skipped here — its Accessibility read costs hundreds of ms,
+      // intentionally skipped here â€” its Accessibility read costs hundreds of ms,
       // too slow for the paste hot path.
       const textToPaste = applySmartSpacing({ text, mode: "append" });
 
@@ -2225,7 +2225,7 @@ class IPCHandlers {
         isRightSideModifier(hotkey);
 
       if (enabled) {
-        // Entering capture mode — unregister ALL slots so none intercept keypresses.
+        // Entering capture mode â€” unregister ALL slots so none intercept keypresses.
         // Dictation is always active; meeting and agent may or may not be set.
         const allSlots = hotkeyManager.slots;
         for (const [slot, info] of allSlots) {
@@ -2275,7 +2275,7 @@ class IPCHandlers {
         }
       } else {
         // Exiting capture mode - re-register globalShortcut if not already registered
-        // Skip for KDE/GNOME/Hyprland — updateHotkey handles re-registration via native path
+        // Skip for KDE/GNOME/Hyprland â€” updateHotkey handles re-registration via native path
         const usesNativePath =
           hotkeyManager.isUsingKDE() ||
           hotkeyManager.isUsingGnome() ||
@@ -2300,7 +2300,7 @@ class IPCHandlers {
         }
 
         // Re-sync native key listeners (Windows/Linux) across all hotkey slots now
-        // that capture is done. Idempotent — reads the current slot hotkeys.
+        // that capture is done. Idempotent â€” reads the current slot hotkeys.
         this.windowManager.reconcileNativeKeyListeners();
 
         // On GNOME, re-register the keybinding with the effective hotkey

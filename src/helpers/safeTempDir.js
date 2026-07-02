@@ -1,4 +1,4 @@
-const os = require("os");
+﻿const os = require("os");
 const fs = require("fs");
 const path = require("path");
 
@@ -21,14 +21,14 @@ function getSafeTempDir() {
   }
 
   const fallbackBase = process.env.ProgramData || "C:\\ProgramData";
-  const fallback = path.join(fallbackBase, "OpenWhispr", "temp");
+  const fallback = path.join(fallbackBase, "Dhwani", "temp");
 
   try {
     fs.mkdirSync(fallback, { recursive: true });
     cachedSafeTempDir = fallback;
     return fallback;
   } catch {
-    const rootFallback = path.join(process.env.SystemDrive || "C:", "OpenWhispr", "temp");
+    const rootFallback = path.join(process.env.SystemDrive || "C:", "Dhwani", "temp");
     try {
       fs.mkdirSync(rootFallback, { recursive: true });
       cachedSafeTempDir = rootFallback;

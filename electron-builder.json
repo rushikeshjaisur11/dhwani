@@ -3,7 +3,7 @@
   "afterPack": "scripts/afterPack.js",
   "productName": "Dhwani",
   "protocols": {
-    "name": "OpenWhispr Protocol",
+    "name": "Dhwani Protocol",
     "schemes": ["openwhispr"]
   },
   "directories": {
@@ -147,9 +147,9 @@
     "extendInfo": {
       "LSUIElement": false,
       "CFBundleIconName": "openwhispr",
-      "NSMicrophoneUsageDescription": "OpenWhispr uses the microphone to capture your voice for transcription.",
-      "NSAudioCaptureUsageDescription": "OpenWhispr uses system audio to capture other participants' audio from calls and meetings.",
-      "NSAccessibilityUsageDescription": "OpenWhispr needs accessibility permissions to paste transcribed text into other applications."
+      "NSMicrophoneUsageDescription": "Dhwani uses the microphone to capture your voice for transcription.",
+      "NSAudioCaptureUsageDescription": "Dhwani uses system audio to capture other participants' audio from calls and meetings.",
+      "NSAccessibilityUsageDescription": "Dhwani needs accessibility permissions to paste transcribed text into other applications."
     }
   },
   "win": {
@@ -242,7 +242,7 @@
     "include": "resources/nsis/cleanup-models.nsh"
   },
   "dmg": {
-    "title": "OpenWhispr",
+    "title": "Dhwani",
     "icon": "src/assets/icon.icns",
     "window": {
       "width": 540,
@@ -251,8 +251,8 @@
   },
   "publish": {
     "provider": "github",
-    "owner": "OpenWhispr",
-    "repo": "openwhispr",
+    "owner": "rushikeshjaisur11",
+    "repo": "dhwani",
     "private": false,
     "releaseType": "draft"
   }

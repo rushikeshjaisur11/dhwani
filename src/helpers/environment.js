@@ -1,4 +1,4 @@
-const path = require("path");
+﻿const path = require("path");
 const fs = require("fs");
 const fsPromises = require("fs/promises");
 const { app } = require("electron");
@@ -61,7 +61,7 @@ const PERSISTED_KEYS = [
   "VERTEX_LOCATION",
 ];
 
-// Module-level so writes are serialized across all instances — hotkeyManager
+// Module-level so writes are serialized across all instances â€” hotkeyManager
 // creates its own EnvironmentManager alongside the main.js singleton.
 let envWriteQueue = Promise.resolve();
 
@@ -141,7 +141,7 @@ class EnvironmentManager {
     } catch (error) {
       if (error.code === "ENOENT") return;
       debugLogger.error(
-        "Failed to decrypt secret — user must re-enter",
+        "Failed to decrypt secret â€” user must re-enter",
         { key: envVarName, code: error.code, error: error.message },
         "environment"
       );
@@ -202,7 +202,7 @@ class EnvironmentManager {
       }
     } catch (error) {
       debugLogger.error(
-        "Secret migration aborted — plaintext .env preserved",
+        "Secret migration aborted â€” plaintext .env preserved",
         { error: error.message, migrated },
         "environment"
       );
@@ -228,11 +228,11 @@ class EnvironmentManager {
   }
 
   async _writeEnvFile(envPath) {
-    // Only strip plaintext secrets once migration has fully completed —
+    // Only strip plaintext secrets once migration has fully completed â€”
     // otherwise a partial-migration recovery can lose unencrypted secrets.
     const stripSecrets =
       this._encryptionAvailable() && fs.existsSync(this._getMigrationSentinelPath());
-    let envContent = "# OpenWhispr Environment Variables\n";
+    let envContent = "# Dhwani Environment Variables\n";
     for (const key of PERSISTED_KEYS) {
       if (stripSecrets && SECRET_KEY_SET.has(key)) continue;
       if (process.env[key]) {
@@ -363,7 +363,7 @@ class EnvironmentManager {
     return this._saveKey("CUSTOM_CLEANUP_API_KEY", key);
   }
 
-  // Enterprise providers — AWS Bedrock
+  // Enterprise providers â€” AWS Bedrock
   getBedrockRegion() {
     return this._getKey("BEDROCK_REGION");
   }
@@ -395,7 +395,7 @@ class EnvironmentManager {
     return this._saveKey("BEDROCK_SESSION_TOKEN", key);
   }
 
-  // Enterprise providers — Azure OpenAI
+  // Enterprise providers â€” Azure OpenAI
   getAzureEndpoint() {
     return this._getKey("AZURE_OPENAI_ENDPOINT");
   }
@@ -421,7 +421,7 @@ class EnvironmentManager {
     return this._saveKey("AZURE_OPENAI_API_VERSION", value);
   }
 
-  // Enterprise providers — GCP Vertex AI
+  // Enterprise providers â€” GCP Vertex AI
   getVertexProject() {
     return this._getKey("VERTEX_PROJECT");
   }

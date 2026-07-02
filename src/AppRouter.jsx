@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+﻿import React, { Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import App from "./App.jsx";
 import AuthenticationStep from "./components/AuthenticationStep.tsx";
@@ -85,7 +85,7 @@ function MainApp() {
     }
 
     if (isDictationPanel && !resolved) {
-      // Keep the dictation overlay hidden during onboarding — OnboardingFlow
+      // Keep the dictation overlay hidden during onboarding â€” OnboardingFlow
       // shows it explicitly when the user reaches the activation step.
       window.electronAPI?.hideWindow?.();
     }
@@ -177,7 +177,7 @@ function LoadingFallback({ message }) {
         <svg
           viewBox="0 0 1024 1024"
           className="w-12 h-12 drop-shadow-[0_2px_8px_rgba(37,99,235,0.18)] dark:drop-shadow-[0_2px_12px_rgba(100,149,237,0.25)]"
-          aria-label="OpenWhispr"
+          aria-label="Dhwani"
         >
           <rect width="1024" height="1024" rx="241" fill="#2056DF" />
           <circle cx="512" cy="512" r="314" fill="#2056DF" stroke="white" strokeWidth="74" />

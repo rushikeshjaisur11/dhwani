@@ -1,10 +1,10 @@
-const crypto = require("crypto");
+﻿const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const { app, safeStorage } = require("electron");
 const debugLogger = require("./debugLogger");
 
-const SERVICE = "OpenWhispr";
+const SERVICE = "Dhwani";
 const ACCOUNT = "secrets-master-key";
 const ALGO = "aes-256-gcm";
 const IV_LEN = 12;
@@ -76,7 +76,7 @@ function _initKeychain() {
     return true;
   } catch (error) {
     debugLogger.warn(
-      "OS keychain unavailable — falling back to safeStorage",
+      "OS keychain unavailable â€” falling back to safeStorage",
       { error: error?.message, platform: process.platform },
       "secretCrypto"
     );
@@ -127,7 +127,7 @@ function decrypt(blob) {
       const value = Buffer.concat([decipher.update(ct), decipher.final()]).toString("utf8");
       return { value, needsReencrypt: false };
     } catch {
-      // Legacy safeStorage blob — handled by the fallback below.
+      // Legacy safeStorage blob â€” handled by the fallback below.
     }
   }
   if (safeStorage.isEncryptionAvailable()) {
