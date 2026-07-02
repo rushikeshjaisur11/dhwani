@@ -1,15 +1,18 @@
-# Private Local Dictation (Wispr Flow replacement) — Design
+# Local Dictation Product with Own STT Model Family — Design
 
 **Date:** 2026-07-02
-**Status:** Approved
+**Status:** Approved (rev 3 — product pivot)
 **Base:** OpenWhispr fork (local clone, branch `private-local`, upstream commit `38f2688`)
 
 ## Goal
 
-A fully private, on-device replacement for Wispr Flow on Windows 11: hold a hotkey,
-speak, release — cleaned-up text appears at the cursor in any app. No audio or text
-leaves the machine. The fork is published on the user's GitHub, and the STT model is
-personally fine-tuned to beat stock accuracy on the user's own voice and vocabulary.
+A commercial-ready, fully on-device dictation product (Wispr Flow competitor): hold a
+hotkey, speak, release — cleaned-up text appears at the cursor in any app. No audio or
+text leaves the machine. The product ships with **its own branded multilingual STT
+model family** (small/medium/large tiers), fine-tuned by the user on
+commercially-licensed public datasets plus personal flywheel data, with full
+documentation of the training and evaluation process so the user understands and owns
+the entire pipeline.
 
 ## Why OpenWhispr as the base
 
@@ -73,31 +76,89 @@ fine-tune on.
   matched full fine-tuning).
 - All data stays on disk under the user's control; nothing uploaded.
 
-## Phase 4 — fine-tune the STT model
+## Phase 4 — the model family (train, evaluate, ship)
 
 Honest scope: training a frontier STT model from scratch is out of reach (Whisper
-trained on ~680k hours). "Wispr Flow level or better" is achieved as: **lower WER on
-the user's own held-out speech than stock large-v3-turbo** — general cloud models
-lose to speaker-adapted local models on the speaker's own voice.
+trained on ~680k hours; millions of GPU-hours). The product's model family is built
+by **fine-tuning strong multilingual open bases** on commercially-licensed data, then
+branding and shipping the results — the same pattern as distil-whisper and most
+commercial "own model" offerings.
 
-- Base model: `openai/whisper-large-v3-turbo` (multilingual, strong accent handling,
-  ~6GB VRAM class). Alternative if English-only speed matters: NVIDIA
-  Parakeet-TDT-0.6B-v3 via NeMo.
-- Method: LoRA via HuggingFace `transformers` + `peft`, following the established
-  fast-whisper-finetuning recipe (int8 base + LoRA + gradient checkpointing fits
-  8GB-class GPUs; published: whisper-large-v2 LoRA on 12h data trained in 6–8h on
-  an 8GB GPU).
-- Compute: try the RTX 3070 (8GB) first; fall back to a GCP spot L4/A100 for a few
-  dollars if it doesn't fit. Training code lives in the fork under `training/`.
-- Data mix: personal dataset from Phase 3 + a slice of Common Voice as regularizer
-  to prevent overfitting to one speaker.
-- Evaluation: WER on a held-out personal test set, fine-tuned vs stock
-  large-v3-turbo. Ship only if WER improves.
-- Deployment: merge LoRA into base weights → convert to whisper.cpp GGML/GGUF
-  (upstream `convert-h5-to-ggml.py`) → drop into OpenWhispr as a custom local model.
+### Model tiers
 
-**Acceptance:** fine-tuned model beats stock large-v3-turbo WER on the personal
-held-out set and runs in the app via whisper.cpp.
+| Tier | Base model | Params | Target use |
+|------|-----------|--------|------------|
+| small | `whisper-small` (or Parakeet-TDT-0.6B-v3, CC-BY-4.0) | 244M–0.6B | low-end laptops, fastest |
+| medium | `whisper-large-v3-turbo` | 809M | default tier, best speed/accuracy balance |
+| large | `whisper-large-v3` | 1.5B | max accuracy, GPU machines |
+
+All Whisper bases are MIT/Apache — commercial use permitted. Each tier gets the same
+fine-tuning treatment and a product-branded name.
+
+### Training data (commercial-safe multilingual stack)
+
+| Dataset | Hours | License |
+|---------|-------|---------|
+| Mozilla Common Voice | ~20.8k validated, 100+ langs | CC0 |
+| Multilingual LibriSpeech | ~50k, 8 langs | public domain / CC-BY-4.0 |
+| VoxPopuli (transcribed) | 1.8k, 15 langs | CC0 (data) |
+| NVIDIA Granary | 166k pseudo-labeled | check per-subset before use |
+| YODAS (CC subsets) | 500k+, 100 langs | CC — filter to commercial-safe subsets |
+| Personal flywheel (Phase 3) | grows over time | owned |
+
+License verification of each subset is a required step before training, recorded in
+the data documentation.
+
+### Method & compute
+
+- LoRA fine-tuning via HuggingFace `transformers` + `peft` (int8 base + gradient
+  checkpointing). Small tier trains on the RTX 3070 (8GB); medium/large tiers on GCP
+  spot GPUs (L4/A100) — hours-to-days per tier at a curated data scale (hundreds to
+  low thousands of hours, sampled across languages), not the full corpus.
+- Training code in the fork under `training/`; configs per tier; runs reproducible
+  from a single command.
+
+### Evaluation (how models are compared)
+
+Follow the Open ASR Leaderboard methodology (arXiv 2510.06961) so numbers are
+comparable to published models:
+
+- **WER** with the standard Whisper text normalizer, per language.
+- **Test sets:** FLEURS (multilingual), MLS test, Common Voice test, LibriSpeech
+  test-clean/other (English), plus the personal held-out set.
+- **RTFx** (speed) measured on the 3070 and on CPU, per tier.
+- Every tier is compared against its stock base and against Whisper large-v3 as the
+  reference ceiling. A tier ships only if it beats its stock base on the target
+  languages without regressing others beyond a stated tolerance.
+
+### Deployment
+
+Merge LoRA into base weights → convert to whisper.cpp GGML/GGUF (upstream
+`convert-h5-to-ggml.py`) → ship as selectable models in the app's model picker.
+
+**Acceptance:** each shipped tier beats its stock base's WER on target languages on
+the public test sets above, runs in the app via whisper.cpp, and has its eval numbers
+published in the docs.
+
+## Phase 5 — training & evaluation documentation
+
+Full educational documentation in the repo under `docs/training/` — written so the
+user (and future contributors) understand the entire pipeline, not just run it:
+
+1. `01-asr-fundamentals.md` — how Whisper-class models work (encoder-decoder,
+   log-mel features, tokenization, why fine-tuning works), with worked examples.
+2. `02-datasets.md` — each dataset above: contents, license verification record,
+   download/preparation steps, sampling strategy across languages.
+3. `03-training-guide.md` — LoRA theory (what the low-rank adapters do, rank/alpha
+   trade-offs), hyperparameters, VRAM math, step-by-step runbook for each tier,
+   troubleshooting (overfitting, catastrophic forgetting, regularization mix).
+4. `04-evaluation-guide.md` — WER/CER definitions with hand-computed examples, text
+   normalization pitfalls, RTFx, how to run the eval harness, how to read results,
+   comparison tables template.
+5. `05-model-family.md` — the product model card: tiers, training data statement,
+   eval results, limitations.
+
+Every doc includes concrete worked examples (numbers, commands, code).
 
 ## Publishing
 
