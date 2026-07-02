@@ -87,6 +87,12 @@ fine-tune on.
   matched full fine-tuning).
 - All data stays on disk under the user's control; nothing uploaded.
 
+**Status: ACCEPTED 2026-07-03** — audio retention + history enabled;
+`npm run export:dataset` produced a valid HF-style manifest (raw_text + cleaned
+text + audio) from a real dictation. First sample already shows the fine-tune
+motivation: Whisper transcribed "Dhwani" as "bunny". Now accumulating toward
+the 5–10h target.
+
 ## Phase 4 — the model family (train, evaluate, ship)
 
 Honest scope: training a frontier STT model from scratch is out of reach (Whisper
