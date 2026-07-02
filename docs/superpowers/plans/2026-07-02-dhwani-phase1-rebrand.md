@@ -83,7 +83,13 @@ Expected: text appears at cursor within ~2s. This exercises: key listener → Me
 Disable Wi-Fi. Repeat Step 2.
 Expected: identical behavior (model + binary are local). Re-enable Wi-Fi.
 
-- [ ] **Step 4: Record result**
+> **Result (2026-07-02):** Onboarding completed with local turbo model,
+> push-to-talk hold mode. Dictation into Notepad worked end-to-end. Note:
+> no local C compiler — app uses upstream prebuilt windows-key-listener.exe
+> (fine until we modify native code). windows-mic-listener.exe missing →
+> meeting detection falls back to polling (unused feature, ignore).
+
+- [x] **Step 4: Record result**
 
 Append a line to `docs/superpowers/plans/2026-07-02-dhwani-phase1-rebrand.md` under this task: observed latency and any issues. Commit:
 
