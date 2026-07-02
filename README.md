@@ -1,28 +1,18 @@
-<p align="center">
-  <img src="src/assets/logo.svg" alt="OpenWhispr" width="120" />
-</p>
-
-<h1 align="center">OpenWhispr</h1>
+<h1 align="center">Dhwani — ध्वनि</h1>
 
 <p align="center">
-  <a href="https://github.com/OpenWhispr/openwhispr/blob/main/LICENSE"><img src="https://img.shields.io/github/license/OpenWhispr/openwhispr?style=flat" alt="License" /></a>
-  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=flat" alt="Platform" />
-  <a href="https://github.com/OpenWhispr/openwhispr/releases/latest"><img src="https://img.shields.io/github/v/release/OpenWhispr/openwhispr?style=flat&sort=semver" alt="GitHub release" /></a>
-  <a href="https://github.com/OpenWhispr/openwhispr/releases"><img src="https://img.shields.io/github/downloads/OpenWhispr/openwhispr/total?style=flat&color=blue" alt="Downloads" /></a>
-  <a href="https://github.com/OpenWhispr/openwhispr/stargazers"><img src="https://img.shields.io/github/stars/OpenWhispr/openwhispr?style=flat" alt="GitHub stars" /></a>
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat" alt="License" />
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat" alt="Platform" />
+  <img src="https://img.shields.io/badge/status-in%20development-orange?style=flat" alt="Status" />
 </p>
 
 <p align="center">
-  The open-source and free alternative to WisprFlow and Granola.<br/>
-  Privacy-first voice-to-text dictation with AI agents, meeting transcription, and notes. Cross-platform for macOS, Windows, and Linux.
+  Fully on-device multilingual voice dictation with its own fine-tuned STT model family.<br/>
+  Hold a hotkey, speak, release — clean text appears at your cursor in any app. Your audio never leaves your machine.
 </p>
 
 <p align="center">
-  <a href="https://openwhispr.com">Website</a> &middot;
-  <a href="https://docs.openwhispr.com">Docs</a> &middot;
-  <a href="https://github.com/OpenWhispr/openwhispr/releases/latest">Download</a> &middot;
-  <a href="https://docs.openwhispr.com/api/overview">API</a> &middot;
-  <a href="https://github.com/OpenWhispr/openwhispr/blob/main/CHANGELOG.md">Changelog</a>
+  Fork of <a href="https://github.com/OpenWhispr/openwhispr">OpenWhispr</a> (MIT). Design spec: <a href="docs/superpowers/specs/2026-07-02-private-local-dictation-design.md">docs/superpowers/specs</a>
 </p>
 
 ---
