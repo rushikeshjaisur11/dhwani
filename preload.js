@@ -124,6 +124,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   updateAction: (id, updates) => ipcRenderer.invoke("db-update-action", id, updates),
   deleteAction: (id) => ipcRenderer.invoke("db-delete-action", id),
 
+  // Foreground app detection (app-aware cleanup)
+  getForegroundApp: () => ipcRenderer.invoke("get-foreground-app"),
+
   // Audio file operations
   selectAudioFile: () => ipcRenderer.invoke("select-audio-file"),
   getFileSize: (filePath) => ipcRenderer.invoke("get-file-size", filePath),

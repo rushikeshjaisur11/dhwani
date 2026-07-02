@@ -1539,6 +1539,11 @@ class IPCHandlers {
       }
     });
 
+    ipcMain.handle("get-foreground-app", async () => {
+      const { getForegroundApp } = require("./foregroundApp");
+      return await getForegroundApp();
+    });
+
     ipcMain.handle("transcribe-audio-file", async (event, filePath, options = {}) => {
       const fs = require("fs");
       try {
