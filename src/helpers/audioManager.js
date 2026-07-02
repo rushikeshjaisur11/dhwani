@@ -46,7 +46,14 @@ function dictationAgentReachable(settings) {
   });
 }
 
-function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested) {
+function formatActiveApp(foregroundApp) {
+  if (!foregroundApp?.app) return undefined;
+  return foregroundApp.title
+    ? `${foregroundApp.app} — ${foregroundApp.title}`
+    : foregroundApp.app;
+}
+
+function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, activeApp) {
   const cleanupReachable =
     !!settings.useCleanupModel && (!!settings.cleanupModel?.trim() || isCloudCleanupMode());
   const agentModel = settings.dictationAgentModel?.trim() || "";
@@ -88,6 +95,7 @@ function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested) {
           language: settings.preferredLanguage,
           customDictionary: getDictionaryHintWords(settings),
           uiLanguage: settings.uiLanguage,
+          activeApp,
         }),
       },
     };
@@ -95,7 +103,18 @@ function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested) {
   if (kind === "cleanup") {
     return {
       kind: "cleanup",
-      config: { disableThinking: settings.cleanupDisableThinking },
+      config: {
+        disableThinking: settings.cleanupDisableThinking,
+        // Resolved here (rather than the provider fallback) so {{activeApp}}
+        // reflects the window the user dictated into.
+        systemPrompt: resolvePrompt("cleanup", {
+          agentName,
+          language: settings.preferredLanguage,
+          customDictionary: getDictionaryHintWords(settings),
+          uiLanguage: settings.uiLanguage,
+          activeApp,
+        }),
+      },
     };
   }
   return { kind: "skip" };
@@ -624,10 +643,19 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
   stopRecording() {
     if (this.mediaRecorder?.state === "recording") {
+      this.captureForegroundApp();
       this.mediaRecorder.stop();
       return true;
     }
     return false;
+  }
+
+  captureForegroundApp() {
+    // Fired at recording-stop so the PowerShell lookup runs concurrently with
+    // transcription; resolves null on any failure (cleanup stays app-agnostic).
+    this.foregroundAppPromise = window.electronAPI.getForegroundApp
+      ? window.electronAPI.getForegroundApp().catch(() => null)
+      : Promise.resolve(null);
   }
 
   cancelRecording() {
@@ -1272,7 +1300,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           normalizedText,
           getSettings(),
           agentName,
-          this.voiceAgentRequested
+          this.voiceAgentRequested,
+          formatActiveApp(await this.foregroundAppPromise)
         );
         if (route.kind === "skip") return normalizedText;
 
@@ -1523,7 +1552,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         processedText,
         settings,
         agentName,
-        this.voiceAgentRequested
+        this.voiceAgentRequested,
+        formatActiveApp(await this.foregroundAppPromise)
       );
       const cleanupCloudMode = settings.cleanupCloudMode || "openwhispr";
 
@@ -2812,6 +2842,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
     if (!this.isStreaming) return false;
 
+    this.captureForegroundApp();
+
     const durationSeconds = this.recordingStartTime
       ? (Date.now() - this.recordingStartTime) / 1000
       : null;
@@ -2932,7 +2964,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         finalText,
         stSettings,
         agentName,
-        this.voiceAgentRequested
+        this.voiceAgentRequested,
+        formatActiveApp(await this.foregroundAppPromise)
       );
       const cleanupCloudMode = stSettings.cleanupCloudMode || "openwhispr";
 
