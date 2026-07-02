@@ -162,9 +162,9 @@ Every doc includes concrete worked examples (numbers, commands, code).
 
 ## Publishing
 
-- Push the fork to the user's GitHub (`rushikesh*/openwhispr`, branch
-  `private-local` or renamed default). MIT license permits this; keep upstream
-  attribution.
+- Product name: **Dhwani** (Sanskrit: sound/resonance). Public repo:
+  `rushikeshjaisur11/dhwani`, default branch `main`, upstream remote kept for future
+  merges. MIT license permits this; upstream attribution kept in README and LICENSE.
 - The published repo contains code only — no personal audio, dataset, or fine-tuned
   weights (gitignored). Weights may be published separately later if desired.
 
