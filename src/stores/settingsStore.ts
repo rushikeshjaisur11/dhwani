@@ -132,6 +132,7 @@ const BOOLEAN_SETTINGS = new Set([
   "saveDiscardedTranscriptions",
   "noteFilesEnabled",
   "showTranscriptionPreview",
+  "liveTypingEnabled",
   "cleanupDisableThinking",
   "dictationAgentDisableThinking",
   "noteFormattingDisableThinking",
@@ -429,6 +430,7 @@ export interface SettingsState
   whisperVadSamplesOverlap: number;
   panelStartPosition: "bottom-right" | "center" | "bottom-left";
   showTranscriptionPreview: boolean;
+  liveTypingEnabled: boolean;
   autoPasteEnabled: boolean;
   keepTranscriptionInClipboard: boolean;
   noteFilesEnabled: boolean;
@@ -647,6 +649,7 @@ export interface SettingsState
   setWhisperVadSamplesOverlap: (value: number) => void;
   setPanelStartPosition: (position: "bottom-right" | "center" | "bottom-left") => void;
   setShowTranscriptionPreview: (value: boolean) => void;
+  setLiveTypingEnabled: (value: boolean) => void;
   setAutoPasteEnabled: (value: boolean) => void;
   setKeepTranscriptionInClipboard: (value: boolean) => void;
   setNoteFilesEnabled: (value: boolean) => void;
@@ -981,6 +984,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     return "bottom-right" as const;
   })(),
   showTranscriptionPreview: readBoolean("showTranscriptionPreview", false),
+  liveTypingEnabled: readBoolean("liveTypingEnabled", false),
   autoPasteEnabled: readBoolean("autoPasteEnabled", true),
   keepTranscriptionInClipboard: readBoolean("keepTranscriptionInClipboard", false),
   noteFilesEnabled: readBoolean("noteFilesEnabled", false),
@@ -1576,6 +1580,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   },
 
   setShowTranscriptionPreview: createBooleanSetter("showTranscriptionPreview"),
+  setLiveTypingEnabled: createBooleanSetter("liveTypingEnabled"),
   setAutoPasteEnabled: createBooleanSetter("autoPasteEnabled"),
   setKeepTranscriptionInClipboard: createBooleanSetter("keepTranscriptionInClipboard"),
   setNoteFilesEnabled: createBooleanSetter("noteFilesEnabled"),

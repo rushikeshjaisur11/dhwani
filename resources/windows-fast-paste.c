@@ -17,7 +17,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <io.h>
 
 static const char* TERMINAL_CLASSES[] = {
     "ConsoleWindowClass",
@@ -159,10 +162,95 @@ static int SendPasteTerminal(void) {
     return (sent == 6) ? 0 : 1;
 }
 
+/* --type mode: read UTF-8 text from stdin and inject it at the cursor as
+   KEYEVENTF_UNICODE keystrokes. Used for live dictation typing. LF maps to
+   VK_RETURN, CR is skipped; surrogate pairs pass through as consecutive
+   unicode events (Windows reassembles them). Held modifiers (e.g. a
+   push-to-talk hotkey) are released first so they don't turn the injected
+   characters into shortcuts, then restored. */
+#define TYPE_BATCH_EVENTS 128
+
+static int TypeUnicodeFromStdin(void) {
+    _setmode(_fileno(stdin), _O_BINARY);
+
+    size_t cap = 4096, len = 0;
+    char* utf8 = (char*)malloc(cap);
+    if (!utf8) return 1;
+    size_t n;
+    while ((n = fread(utf8 + len, 1, cap - len, stdin)) > 0) {
+        len += n;
+        if (len == cap) {
+            cap *= 2;
+            char* grown = (char*)realloc(utf8, cap);
+            if (!grown) { free(utf8); return 1; }
+            utf8 = grown;
+        }
+    }
+    if (len == 0) { free(utf8); return 0; }
+
+    int wlen = MultiByteToWideChar(CP_UTF8, 0, utf8, (int)len, NULL, 0);
+    if (wlen <= 0) { free(utf8); return 1; }
+    WCHAR* wbuf = (WCHAR*)malloc(sizeof(WCHAR) * wlen);
+    if (!wbuf) { free(utf8); return 1; }
+    MultiByteToWideChar(CP_UTF8, 0, utf8, (int)len, wbuf, wlen);
+    free(utf8);
+
+    INPUT releasedInputs[NUM_MODIFIERS];
+    WORD  releasedVKs[NUM_MODIFIERS];
+    ZeroMemory(releasedInputs, sizeof(releasedInputs));
+    int releasedCount = ReleaseModifiers(releasedInputs, releasedVKs);
+
+    INPUT batch[TYPE_BATCH_EVENTS];
+    UINT batchLen = 0;
+    int failed = 0;
+
+    for (int i = 0; i < wlen && !failed; i++) {
+        WCHAR c = wbuf[i];
+        if (c == L'\r') continue;
+
+        if (batchLen + 2 > TYPE_BATCH_EVENTS) {
+            if (SendInput(batchLen, batch, sizeof(INPUT)) != batchLen) failed = 1;
+            batchLen = 0;
+            if (failed) break;
+        }
+
+        ZeroMemory(&batch[batchLen], sizeof(INPUT) * 2);
+        if (c == L'\n') {
+            SetKey(&batch[batchLen], VK_RETURN, 0);
+            SetKey(&batch[batchLen + 1], VK_RETURN, KEYEVENTF_KEYUP);
+        } else {
+            batch[batchLen].type = INPUT_KEYBOARD;
+            batch[batchLen].ki.wScan = c;
+            batch[batchLen].ki.dwFlags = KEYEVENTF_UNICODE;
+            batch[batchLen + 1].type = INPUT_KEYBOARD;
+            batch[batchLen + 1].ki.wScan = c;
+            batch[batchLen + 1].ki.dwFlags = KEYEVENTF_UNICODE | KEYEVENTF_KEYUP;
+        }
+        batchLen += 2;
+    }
+    if (!failed && batchLen > 0) {
+        if (SendInput(batchLen, batch, sizeof(INPUT)) != batchLen) failed = 1;
+    }
+
+    RestoreModifiers(releasedVKs, releasedCount);
+    free(wbuf);
+
+    if (failed) {
+        fprintf(stderr, "ERROR: SendInput failed (error %lu)\n", GetLastError());
+        return 1;
+    }
+    printf("TYPE_OK\n");
+    fflush(stdout);
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     BOOL detectOnly = FALSE;
 
     for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--type") == 0) {
+            return TypeUnicodeFromStdin();
+        }
         if (strcmp(argv[i], "--detect-only") == 0) {
             detectOnly = TRUE;
         }

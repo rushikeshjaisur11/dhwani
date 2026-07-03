@@ -1842,6 +1842,8 @@ declare global {
         provider: string;
         model: string;
         language?: string;
+        liveTyping?: boolean;
+        overlay?: boolean;
       }) => Promise<{ success: boolean }>;
       stopDictationPreview?: (opts?: { showCleanup?: boolean }) => Promise<{ success: boolean }>;
       dismissDictationPreview?: () => Promise<{ success: boolean }>;

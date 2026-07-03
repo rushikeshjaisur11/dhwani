@@ -1870,6 +1870,8 @@
       },
       "transcriptionPreview": "Live Transcription Preview",
       "transcriptionPreviewDescription": "Show transcription in a floating window before cleanup",
+      "liveTyping": "Live Typing",
+      "liveTypingDescription": "Type text at the cursor while you speak, committed at natural pauses (local transcription, Windows only)",
       "vad": {
         "title": "Voice Activity Detection",
         "description": "Configure how Silero VAD detects and segments speech for local Whisper transcription",

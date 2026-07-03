@@ -1697,6 +1697,8 @@
       },
       "transcriptionPreview": "Live-Transkriptionsvorschau",
       "transcriptionPreviewDescription": "Transkription vor der Bereinigung in einem Fenster anzeigen",
+      "liveTyping": "Live-Eingabe",
+      "liveTypingDescription": "Tippt den Text während des Sprechens an der Cursorposition, bestätigt bei natürlichen Pausen (lokale Transkription, nur Windows)",
       "vad": {
         "title": "SprachaktivitÃ¤tserkennung",
         "description": "Konfiguriere, wie Silero VAD Sprache fÃ¼r die lokale Whisper-Transkription erkennt und segmentiert",

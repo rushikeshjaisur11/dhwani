@@ -701,6 +701,44 @@ class ClipboardManager {
     }
   }
 
+  /**
+   * Type text at the cursor as unicode keystrokes (Windows only) — used by
+   * live dictation typing. Serialized on the paste queue so chunks and the
+   * occasional paste never interleave. Returns false off-Windows or if the
+   * helper binary is missing so callers can fall back.
+   */
+  async typeText(text) {
+    if (process.platform !== "win32" || !text) return false;
+    const binaryPath = this.resolveWindowsFastPasteBinary();
+    if (!binaryPath) return false;
+
+    const previous = this.pasteQueue.catch(() => {});
+    const run = previous.then(
+      () =>
+        new Promise((resolve) => {
+          const child = spawn(binaryPath, ["--type"], { windowsHide: true });
+          const timer = setTimeout(() => {
+            try {
+              child.kill();
+            } catch {}
+            resolve(false);
+          }, 10000);
+          child.on("error", () => {
+            clearTimeout(timer);
+            resolve(false);
+          });
+          child.on("close", (code) => {
+            clearTimeout(timer);
+            resolve(code === 0);
+          });
+          child.stdin.on("error", () => {});
+          child.stdin.end(Buffer.from(text, "utf8"));
+        })
+    );
+    this.pasteQueue = run.then(() => {}).catch(() => {});
+    return run;
+  }
+
   async pasteText(text, options = {}) {
     const previousPaste = this.pasteQueue.catch(() => {});
     let markRestoreComplete;

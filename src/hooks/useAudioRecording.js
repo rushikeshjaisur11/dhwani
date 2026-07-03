@@ -143,7 +143,13 @@ export const useAudioRecording = (toast, options = {}) => {
           const isStreaming = result.source?.includes("streaming");
           const { autoPasteEnabled, keepTranscriptionInClipboard } = getSettings();
 
-          if (autoPasteEnabled) {
+          if (result.liveTyped) {
+            // Live typing already put the text at the cursor chunk by chunk —
+            // pasting the full transcript again would duplicate it.
+            if (keepTranscriptionInClipboard) {
+              await navigator.clipboard.writeText(result.text);
+            }
+          } else if (autoPasteEnabled) {
             const pasteStart = performance.now();
             await audioManagerRef.current.safePaste(result.text, {
               ...(isStreaming ? { fromStreaming: true } : {}),

@@ -1692,6 +1692,8 @@
       },
       "transcriptionPreview": "å³æ™‚è½‰éŒ„é è¦½",
       "transcriptionPreviewDescription": "åœ¨æµ®å‹•è¦–çª—ä¸­é¡¯ç¤ºè½‰éŒ„çµæžœï¼Œå†é€²è¡Œæ–‡å­—æ•´ç†",
+      "liveTyping": "即時輸入",
+      "liveTypingDescription": "說話時在游標處即時輸入文字，在自然停頓處確認（本機轉錄，僅限 Windows）",
       "vad": {
         "title": "èªžéŸ³æ´»å‹•åµæ¸¬",
         "description": "è¨­å®š Silero VAD å¦‚ä½•ç‚ºæœ¬æ©Ÿ Whisper è½‰éŒ„åµæ¸¬ä¸¦åˆ‡åˆ†èªžéŸ³",

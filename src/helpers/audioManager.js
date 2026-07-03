@@ -583,8 +583,18 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         localTranscriptionProvider,
         whisperModel,
         parakeetModel,
+        liveTypingEnabled,
       } = getSettings();
-      if (showTranscriptionPreview && useLocalWhisper) {
+      // Live typing: local dictation only (voice-agent output goes to the
+      // agent, not the cursor); injection helper is Windows-only.
+      const liveTyping =
+        liveTypingEnabled &&
+        useLocalWhisper &&
+        this.context === "dictation" &&
+        !this.voiceAgentRequested &&
+        window.electronAPI?.getPlatform?.() === "win32";
+      this._liveTypedSession = false;
+      if ((showTranscriptionPreview || liveTyping) && useLocalWhisper) {
         try {
           this._previewAudioContext = new AudioContext({ sampleRate: 16000 });
           this._previewSource = this._previewAudioContext.createMediaStreamSource(micStream);
@@ -602,7 +612,14 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           const provider = localTranscriptionProvider === "nvidia" ? "nvidia" : "whisper";
           const model = provider === "nvidia" ? parakeetModel : whisperModel;
           const language = getBaseLanguageCode(getSettings().preferredLanguage);
-          window.electronAPI?.startDictationPreview?.({ provider, model, language });
+          window.electronAPI?.startDictationPreview?.({
+            provider,
+            model,
+            language,
+            liveTyping,
+            overlay: showTranscriptionPreview,
+          });
+          this._liveTypedSession = liveTyping;
         } catch (e) {
           logger.warn("Preview worklet setup failed", { error: e.message }, "audio");
         }
@@ -791,11 +808,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         model: activeModel || null,
       };
 
-      this.onTranscriptionComplete?.(result);
-
-      if (result?.source === "openwhispr") {
-        window.dispatchEvent(new Event("usage-changed"));
+      if (result && this._liveTypedSession) {
+        result.liveTyped = true;
       }
+      this.onTranscriptionComplete?.(result);
 
       const roundTripDurationMs = Math.round(performance.now() - pipelineStart);
 

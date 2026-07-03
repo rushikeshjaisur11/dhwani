@@ -1745,6 +1745,8 @@
       },
       "transcriptionPreview": "Vista previa en vivo",
       "transcriptionPreviewDescription": "Mostrar transcripciÃ³n en una ventana flotante antes de la correcciÃ³n",
+      "liveTyping": "Escritura en vivo",
+      "liveTypingDescription": "Escribe el texto en el cursor mientras hablas, confirmado en las pausas naturales (transcripción local, solo Windows)",
       "vad": {
         "title": "DetecciÃ³n de actividad de voz",
         "description": "Configura cÃ³mo Silero VAD detecta y segmenta el habla para la transcripciÃ³n local con Whisper",

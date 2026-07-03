@@ -241,6 +241,8 @@ function TranscriptionSection({
   toast,
 }: TranscriptionSectionProps) {
   const { t } = useTranslation();
+  const liveTypingEnabled = useSettingsStore((s) => s.liveTypingEnabled);
+  const setLiveTypingEnabled = useSettingsStore((s) => s.setLiveTypingEnabled);
 
   const transcriptionModes: InferenceModeOption[] = [
     {
@@ -305,6 +307,16 @@ function TranscriptionSection({
           <Toggle checked={showTranscriptionPreview} onChange={setShowTranscriptionPreview} />
         </SettingsRow>
       </SettingsPanelRow>
+      {getCachedPlatform() === "win32" && (
+        <SettingsPanelRow>
+          <SettingsRow
+            label={t("settingsPage.transcription.liveTyping")}
+            description={t("settingsPage.transcription.liveTypingDescription")}
+          >
+            <Toggle checked={liveTypingEnabled} onChange={setLiveTypingEnabled} />
+          </SettingsRow>
+        </SettingsPanelRow>
+      )}
     </SettingsPanel>
   );
 

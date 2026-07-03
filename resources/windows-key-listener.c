@@ -191,6 +191,12 @@ DWORD ParseKeyCode(const char* keyName) {
 LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode == HC_ACTION) {
         KBDLLHOOKSTRUCT* kbd = (KBDLLHOOKSTRUCT*)lParam;
+        /* Ignore synthetic events: push-to-talk tracks physical keys only.
+           Live typing injects unicode keystrokes (releasing/restoring held
+           modifiers) mid-recording; reacting to those would stop the press. */
+        if (kbd->flags & LLKHF_INJECTED) {
+            return CallNextHookEx(g_hook, nCode, wParam, lParam);
+        }
         BOOL isKeyDown = (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN);
         BOOL isKeyUp = (wParam == WM_KEYUP || wParam == WM_SYSKEYUP);
         BOOL isModifierEvent = IsCtrlVk(kbd->vkCode) || IsAltVk(kbd->vkCode) ||
