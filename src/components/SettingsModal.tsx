@@ -1,16 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Sliders,
-  Mic,
-  Brain,
-  UserCircle,
-  Wrench,
-  Keyboard,
-  CreditCard,
-  Shield,
-  Users,
-} from "lucide-react";
+import { Sliders, Mic, Brain, Wrench, Keyboard, Shield, Users } from "lucide-react";
 import SidebarModal, { type SidebarItem } from "./ui/SidebarModal";
 import SettingsPage, { SettingsSectionType } from "./SettingsPage";
 import { WORKSPACES_ENABLED } from "../lib/features";
@@ -56,20 +46,6 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
   const { t } = useTranslation();
   const sidebarItems: SidebarItem<SettingsSectionType>[] = useMemo(
     () => [
-      {
-        id: "account",
-        label: t("settingsModal.sections.account.label"),
-        icon: UserCircle,
-        description: t("settingsModal.sections.account.description"),
-        group: t("settingsModal.groups.account"),
-      },
-      {
-        id: "plansBilling",
-        label: t("settingsModal.sections.plansBilling.label"),
-        icon: CreditCard,
-        description: t("settingsModal.sections.plansBilling.description"),
-        group: t("settingsModal.groups.account"),
-      },
       ...(WORKSPACES_ENABLED
         ? [
             {
@@ -128,9 +104,9 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
   );
 
   const resolveSection = (section: string | undefined): SettingsSectionType => {
-    if (!section) return "account";
+    if (!section) return "general";
     const resolved = (SECTION_ALIASES[section] ?? section) as SettingsSectionType;
-    if (resolved === "workspace" && !WORKSPACES_ENABLED) return "account";
+    if (resolved === "workspace" && !WORKSPACES_ENABLED) return "general";
     return resolved;
   };
 

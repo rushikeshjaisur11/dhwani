@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { useSettingsStore, selectIsCloudCleanupMode } from "../stores/settingsStore";
-import { useUsage } from "./useUsage";
 
 interface UseNotesOnboardingReturn {
   isComplete: boolean;
@@ -11,9 +10,9 @@ interface UseNotesOnboardingReturn {
 }
 
 export function useNotesOnboarding(): UseNotesOnboardingReturn {
-  const usage = useUsage();
-  const isProUser = !!(usage?.isSubscribed || usage?.isTrial);
-  const isProLoading = usage !== null && !usage.hasLoaded;
+  // Local-only build: no cloud subscription, so Pro is always false.
+  const isProUser = false;
+  const isProLoading = false;
   const useCleanupModel = useSettingsStore((s) => s.useCleanupModel);
   const effectiveModel = useSettingsStore((s) => s.cleanupModel);
   const isCloudCleanup = useSettingsStore(selectIsCloudCleanupMode);

@@ -30,8 +30,7 @@ import { useSystemAudioPermission } from "../hooks/useSystemAudioPermission";
 import { useSettings } from "../hooks/useSettings";
 import { useSettingsStore } from "../stores/settingsStore";
 import LanguageSelector from "./ui/LanguageSelector";
-import AuthenticationStep from "./AuthenticationStep";
-import EmailVerificationStep from "./EmailVerificationStep";
+import logoIcon from "../assets/icon.png";
 import { setAgentName as saveAgentName } from "../utils/agentName";
 import { formatHotkeyLabel, getDefaultHotkey, isGlobeLikeHotkey } from "../utils/hotkeys";
 import { useAuth } from "../hooks/useAuth";
@@ -123,8 +122,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
   const [hotkey, setHotkey] = useState(dictationKey || getDefaultHotkey());
   const [agentName, setAgentName] = useState("Dhwani");
-  const [skipAuth, setSkipAuth] = useState(false);
-  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
+  const skipAuth = true; // local-only build: onboarding always runs the no-account flow
   const [isModelDownloaded, setIsModelDownloaded] = useState(false);
   const { isUsingNativeShortcut, isUsingHyprland, hyprlandConfigStatus, supportsPushToTalk } =
     useHotkeyModeInfo("onboarding");
@@ -497,31 +495,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const renderStep = () => {
     switch (currentStepId) {
       case "welcome":
-        if (pendingVerificationEmail) {
-          return (
-            <EmailVerificationStep
-              email={pendingVerificationEmail}
-              onVerified={() => {
-                setPendingVerificationEmail(null);
-                nextStep();
-              }}
-              onBack={() => setPendingVerificationEmail(null)}
-            />
-          );
-        }
         return (
-          <AuthenticationStep
-            onContinueWithoutAccount={() => {
-              setSkipAuth(true);
-              nextStep();
-            }}
-            onAuthComplete={() => {
-              nextStep();
-            }}
-            onNeedsVerification={(email) => {
-              setPendingVerificationEmail(email);
-            }}
-          />
+          <div className="space-y-6 text-center">
+            <img src={logoIcon} alt="Dhwani" className="w-14 h-14 mx-auto rounded-xl shadow-sm" />
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">
+                {t("auth.welcomeTitle")}
+              </h2>
+              <p className="text-muted-foreground">{t("auth.welcomeSubtitle")}</p>
+            </div>
+            <Button onClick={nextStep} className="w-full max-w-xs mx-auto h-10">
+              {t("common.next")}
+            </Button>
+          </div>
         );
 
       case "usecase":
