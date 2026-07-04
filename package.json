@@ -169,7 +169,7 @@
     "unzipper": "^0.12.3",
     "ws": "8.20.1",
     "zod": "^4.3.6",
-    "zustand": "^5.0.11"
+    "zustand": "^5.0.14"
   },
   "overrides": {
     "@tiptap/extension-blockquote": "3.22.5",
