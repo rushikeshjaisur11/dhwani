@@ -944,6 +944,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             )}
           </div>
         </main>
+        <ContextPanel activeView={activeView} />
       </div>
       <BackgroundActionToastListener />
     </div>
