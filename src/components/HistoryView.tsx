@@ -120,8 +120,8 @@ export default function HistoryView({
   return (
     <div className="px-3 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <div className="text-[clamp(18px,3vw,24px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-hidden">
-          <span>
+        <div className="text-[clamp(18px,3vw,24px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap min-w-0 overflow-hidden">
+          <span className="truncate shrink min-w-0">
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
               name: userName,
