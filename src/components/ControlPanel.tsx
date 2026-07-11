@@ -787,167 +787,166 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
           />
         </div>
 
-        {/* Nested Content Card */}
-        <div className="flex-1 flex overflow-hidden m-3 mt-0 mr-3 mb-3 bg-white dark:bg-[oklch(0.22_0.014_60)] rounded-[24px] border border-border/40 dark:border-white/5 shadow-sm">
-          <main className="flex-1 flex flex-col overflow-hidden">
-            {isSidePanelLayout && (
-              <div
-                className="h-12 flex items-center px-4 border-b border-border/10 shrink-0"
-                style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        {/* Main Content Card (Middle) */}
+        <main className="flex-1 flex flex-col overflow-hidden m-3 mt-0 mr-3 mb-3 bg-white dark:bg-[oklch(0.22_0.014_60)] rounded-[24px] border border-border/40 dark:border-white/5 shadow-sm">
+          {isSidePanelLayout && (
+            <div
+              className="h-12 flex items-center px-4 border-b border-border/10 shrink-0"
+              style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+            >
+              <Button
+                variant="outline-flat"
+                size="sm"
+                onClick={handleExitMeetingMode}
+                className="h-7 px-2.5 pl-1.5 gap-1"
               >
-                <Button
-                  variant="outline-flat"
-                  size="sm"
-                  onClick={handleExitMeetingMode}
-                  className="h-7 px-2.5 pl-1.5 gap-1"
-                >
-                  <ChevronLeft size={14} strokeWidth={1.8} />
-                  {t("controlPanel.backToNotes")}
-                </Button>
-              </div>
-            )}
+                <ChevronLeft size={14} strokeWidth={1.8} />
+                {t("controlPanel.backToNotes")}
+              </Button>
+            </div>
+          )}
 
-            <div className="flex-1 overflow-y-auto">
-              {(gpuAccelAvailable.cuda || gpuAccelAvailable.vulkan) &&
-                activeView === "home" &&
-                !gpuBannerDismissed && (
-                  <div className="max-w-3xl mx-auto w-full p-4 pb-0">
-                    <div className="rounded-lg border border-primary/20 dark:border-primary/15 bg-primary/5 p-3">
-                      <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-8 h-8 rounded-md bg-primary/10 dark:bg-primary/15 flex items-center justify-center">
-                          <Zap size={16} className="text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-foreground mb-0.5">
-                            {t("controlPanel.gpu.bannerTitle")}
-                          </p>
-                          <p className="text-xs text-muted-foreground mb-2">
-                            {t("controlPanel.gpu.bannerDescription")}
-                          </p>
-                          <div className="flex items-center gap-3">
-                            <Button
-                              variant="default"
-                              size="sm"
-                              className="h-7 text-xs"
-                              onClick={() => {
-                                setSettingsSection(
-                                  gpuAccelAvailable.cuda ? "transcription" : "intelligence"
-                                );
-                                setShowSettings(true);
-                              }}
-                            >
-                              {t("controlPanel.gpu.enableButton")}
-                            </Button>
-                            <button
-                              onClick={() => {
-                                setGpuBannerDismissed(true);
-                                localStorage.setItem("gpuBannerDismissedUnified", "true");
-                              }}
-                              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                              {t("controlPanel.gpu.dismissButton")}
-                            </button>
-                          </div>
+          <div className="flex-1 overflow-y-auto">
+            {(gpuAccelAvailable.cuda || gpuAccelAvailable.vulkan) &&
+              activeView === "home" &&
+              !gpuBannerDismissed && (
+                <div className="max-w-3xl mx-auto w-full p-4 pb-0">
+                  <div className="rounded-lg border border-primary/20 dark:border-primary/15 bg-primary/5 p-3">
+                    <div className="flex items-start gap-3">
+                      <div className="shrink-0 w-8 h-8 rounded-md bg-primary/10 dark:bg-primary/15 flex items-center justify-center">
+                        <Zap size={16} className="text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-foreground mb-0.5">
+                          {t("controlPanel.gpu.bannerTitle")}
+                        </p>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {t("controlPanel.gpu.bannerDescription")}
+                        </p>
+                        <div className="flex items-center gap-3">
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="h-7 text-xs"
+                            onClick={() => {
+                              setSettingsSection(
+                                gpuAccelAvailable.cuda ? "transcription" : "intelligence"
+                              );
+                              setShowSettings(true);
+                            }}
+                          >
+                            {t("controlPanel.gpu.enableButton")}
+                          </Button>
+                          <button
+                            onClick={() => {
+                              setGpuBannerDismissed(true);
+                              localStorage.setItem("gpuBannerDismissedUnified", "true");
+                            }}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {t("controlPanel.gpu.dismissButton")}
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
-              {activeView === "home" && (
-                <HistoryView
-                  history={history}
-                  isLoading={isLoading}
-                  hotkey={hotkey}
-                  aiCTADismissed={aiCTADismissed}
-                  setAiCTADismissed={setAiCTADismissed}
-                  useCleanupModel={useCleanupModel}
-                  copyToClipboard={copyToClipboard}
-                  deleteTranscription={deleteTranscription}
-                  clearAllTranscriptions={clearAllTranscriptions}
-                  onShowAudioInFolder={showAudioInFolder}
-                  onRetryTranscription={retryTranscription}
-                  showDiscarded={showDiscarded}
-                  onToggleDiscarded={toggleShowDiscarded}
+            {activeView === "home" && (
+              <HistoryView
+                history={history}
+                isLoading={isLoading}
+                hotkey={hotkey}
+                aiCTADismissed={aiCTADismissed}
+                setAiCTADismissed={setAiCTADismissed}
+                useCleanupModel={useCleanupModel}
+                copyToClipboard={copyToClipboard}
+                deleteTranscription={deleteTranscription}
+                clearAllTranscriptions={clearAllTranscriptions}
+                onShowAudioInFolder={showAudioInFolder}
+                onRetryTranscription={retryTranscription}
+                showDiscarded={showDiscarded}
+                onToggleDiscarded={toggleShowDiscarded}
+                onOpenSettings={(section) => {
+                  setSettingsSection(section);
+                  setShowSettings(true);
+                }}
+              />
+            )}
+            {activeView === "chat" && (
+              <Suspense fallback={null}>
+                <ChatView />
+              </Suspense>
+            )}
+            {activeView === "personal-notes" && (
+              <Suspense fallback={null}>
+                <PersonalNotesView
+                  onOpenSettings={(section) => {
+                    setSettingsSection(section);
+                    setShowSettings(true);
+                  }}
+                  onOpenSearch={() => setShowSearch(true)}
+                  meetingRecordingRequest={meetingRecordingRequest}
+                  onMeetingRecordingRequestHandled={handleMeetingRecordingRequestHandled}
+                />
+              </Suspense>
+            )}
+            {activeView === "dictionary" && (
+              <Suspense fallback={null}>
+                <DictionaryView />
+              </Suspense>
+            )}
+            {activeView === "insights" && (
+              <Suspense fallback={null}>
+                <InsightsView />
+              </Suspense>
+            )}
+            {activeView === "upload" && (
+              <Suspense fallback={null}>
+                <UploadAudioView
+                  onNoteCreated={(noteId, folderId) => {
+                    setActiveNoteId(noteId);
+                    if (folderId) setActiveFolderId(folderId);
+                    setActiveView("personal-notes");
+                  }}
                   onOpenSettings={(section) => {
                     setSettingsSection(section);
                     setShowSettings(true);
                   }}
                 />
-              )}
-              {activeView === "chat" && (
-                <Suspense fallback={null}>
-                  <ChatView />
-                </Suspense>
-              )}
-              {activeView === "personal-notes" && (
-                <Suspense fallback={null}>
-                  <PersonalNotesView
-                    onOpenSettings={(section) => {
-                      setSettingsSection(section);
-                      setShowSettings(true);
-                    }}
-                    onOpenSearch={() => setShowSearch(true)}
-                    meetingRecordingRequest={meetingRecordingRequest}
-                    onMeetingRecordingRequestHandled={handleMeetingRecordingRequestHandled}
-                  />
-                </Suspense>
-              )}
-              {activeView === "dictionary" && (
-                <Suspense fallback={null}>
-                  <DictionaryView />
-                </Suspense>
-              )}
-              {activeView === "insights" && (
-                <Suspense fallback={null}>
-                  <InsightsView />
-                </Suspense>
-              )}
-              {activeView === "upload" && (
-                <Suspense fallback={null}>
-                  <UploadAudioView
-                    onNoteCreated={(noteId, folderId) => {
-                      setActiveNoteId(noteId);
-                      if (folderId) setActiveFolderId(folderId);
-                      setActiveView("personal-notes");
-                    }}
-                    onOpenSettings={(section) => {
-                      setSettingsSection(section);
-                      setShowSettings(true);
-                    }}
-                  />
-                </Suspense>
-              )}
-              {activeView === "integrations" && (
-                <Suspense fallback={null}>
-                  <IntegrationsView />
-                </Suspense>
-              )}
-              {activeView === "snippets" && (
-                <Suspense fallback={null}>
-                  <SnippetsView />
-                </Suspense>
-              )}
-              {activeView === "style" && (
-                <Suspense fallback={null}>
-                  <StyleView />
-                </Suspense>
-              )}
-              {activeView === "transforms" && (
-                <Suspense fallback={null}>
-                  <TransformsView />
-                </Suspense>
-              )}
-              {activeView === "scratchpad" && (
-                <Suspense fallback={null}>
-                  <ScratchpadView />
-                </Suspense>
-              )}
-            </div>
-          </main>
-          {/* Render ContextPanel (stats) inside the white card on the right */}
-          <ContextPanel activeView={activeView} />
-        </div>
+              </Suspense>
+            )}
+            {activeView === "integrations" && (
+              <Suspense fallback={null}>
+                <IntegrationsView />
+              </Suspense>
+            )}
+            {activeView === "snippets" && (
+              <Suspense fallback={null}>
+                <SnippetsView />
+              </Suspense>
+            )}
+            {activeView === "style" && (
+              <Suspense fallback={null}>
+                <StyleView />
+              </Suspense>
+            )}
+            {activeView === "transforms" && (
+              <Suspense fallback={null}>
+                <TransformsView />
+              </Suspense>
+            )}
+            {activeView === "scratchpad" && (
+              <Suspense fallback={null}>
+                <ScratchpadView />
+              </Suspense>
+            )}
+          </div>
+        </main>
+
+        {/* Render ContextPanel (stats) as a separate card on the right side */}
+        <ContextPanel activeView={activeView} />
       </div>
       <BackgroundActionToastListener />
     </div>

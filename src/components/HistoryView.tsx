@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Loader2, Sparkles, X, Mic, Trash2, Archive } from "lucide-react";
@@ -47,6 +47,10 @@ export default function HistoryView({
   const { t } = useTranslation();
   const dataRetentionEnabled = useSettingsStore((s) => s.dataRetentionEnabled);
   const { isConnected } = useUpcomingEvents();
+
+  useEffect(() => {
+    localStorage.removeItem("promoBannerDismissed");
+  }, []);
 
   const groupedHistory = useMemo(() => {
     if (history.length === 0) return [];
