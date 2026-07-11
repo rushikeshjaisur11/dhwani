@@ -274,7 +274,7 @@ export default function TranscriptionItem({
                 <Flag size={14} />
               </button>
               <button
-                onClick={handleDelete}
+                onClick={() => onDelete(item.id)}
                 className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-all cursor-pointer"
                 title={t("common.delete")}
               >

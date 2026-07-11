@@ -167,54 +167,12 @@ export default function ControlPanelSidebar({
 
       <div className="flex-1" />
 
-      {/* Pro Trial ends card */}
-      <div className="p-4 mx-3 mb-4 rounded-xl bg-gradient-to-br from-[#F5F3FF] to-[#FAE8FF] dark:from-[oklch(0.22_0.014_60)] dark:to-[oklch(0.24_0.014_60)] border border-[#E9D5FF]/30 dark:border-white/5 shadow-sm">
-        <p className="text-xs font-semibold text-foreground mb-0.5">Trial ends in 14 days</p>
-        <p className="text-[11px] text-muted-foreground mb-3 leading-normal">
-          Upgrade to Flow Pro to keep unlimited words and Pro features.
-        </p>
-        <button
-          onClick={onOpenSettings}
-          className="w-full h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black text-xs font-semibold hover:bg-black/90 dark:hover:bg-white/90 transition-colors shadow-sm cursor-pointer"
-        >
-          Upgrade to Pro
-        </button>
-      </div>
-
       <div className="px-2.5 pb-4 space-y-0.5">
         {updateAction && (
           <div className="px-1 pb-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
             {updateAction}
           </div>
         )}
-
-        {/* Invite your team */}
-        <button
-          onClick={() => (activeWorkspace ? setInviteOpen(true) : setCreateWorkspaceOpen(true))}
-          className="group flex items-center gap-3 w-full h-9 px-3 rounded-lg text-left outline-none hover:bg-foreground/4 dark:hover:bg-white/4 focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors duration-150"
-        >
-          <UserPlus
-            size={16}
-            className="shrink-0 text-foreground/60 group-hover:text-foreground/75 dark:text-foreground/50 dark:group-hover:text-foreground/65 transition-colors duration-150"
-          />
-          <span className="text-xs text-foreground/80 group-hover:text-foreground dark:text-foreground/70 dark:group-hover:text-foreground/85 transition-colors duration-150">
-            Invite your team
-          </span>
-        </button>
-
-        {/* Get a free month */}
-        <button
-          onClick={onOpenSettings}
-          className="group flex items-center gap-3 w-full h-9 px-3 rounded-lg text-left outline-none hover:bg-foreground/4 dark:hover:bg-white/4 focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors duration-150"
-        >
-          <Gift
-            size={16}
-            className="shrink-0 text-foreground/60 group-hover:text-foreground/75 dark:text-foreground/50 dark:group-hover:text-foreground/65 transition-colors duration-150"
-          />
-          <span className="text-xs text-foreground/80 group-hover:text-foreground dark:text-foreground/70 dark:group-hover:text-foreground/85 transition-colors duration-150">
-            Get a free month
-          </span>
-        </button>
 
         {/* Settings */}
         <button
