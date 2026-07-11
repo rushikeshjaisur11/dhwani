@@ -103,6 +103,8 @@ jobs:
         run: |
           $pfxBytes = [System.Convert]::FromBase64String("${{ secrets.WINDOWS_CERTS_PFX_BASE64 }}")
           [System.IO.File]::WriteAllBytes("local-cert.pfx", $pfxBytes)
+          Write-Host "Decoded pfx size: $($pfxBytes.Length) bytes"
+          Write-Host "Decoded pfx SHA256: $((Get-FileHash local-cert.pfx -Algorithm SHA256).Hash)"
 
       - name: Build and Sign Application
         run: npm run build:win -- --publish never --config electron-builder.unsigned-win.json
