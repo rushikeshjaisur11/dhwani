@@ -23,7 +23,7 @@
     "meeting": {
       "speakerDetection": {
         "title": "Sprecher erkennen und beschriften",
-        "description": "Wenn deaktiviert, zeigen Transkripte â€žDuâ€œ und â€žAndereâ€œ"
+        "description": "Wenn deaktiviert, zeigen Transkripte â€žDu“ und â€žAndere“"
       }
     }
   },
@@ -188,16 +188,16 @@
       "grant": "Erteilen",
       "grantAccess": "Zugriff gewÃ¤hren",
       "accessibilityTitle": "Bedienungshilfen",
-      "accessibilityDescription": "FÃ¼gt den fertigen Text direkt in die App ein, in der du gerade bist â€” Dokumente, E-Mail, Chat.",
+      "accessibilityDescription": "FÃ¼gt den fertigen Text direkt in die App ein, in der du gerade bist — Dokumente, E-Mail, Chat.",
       "testAndGrant": "Testen & erteilen",
       "requiredForApp": "Erforderlich, damit Dhwani funktioniert",
       "microphoneRequired": "Mikrofonzugriff erforderlich",
       "openSystemSettings": "Systemeinstellungen Ã¶ffnen",
       "systemAudioTitle": "Systemaudio",
-      "systemAudioDescription": "LÃ¤sst den Meeting-Rekorder die Gegenseite deiner Anrufe hÃ¶ren â€” Meetings, Vorlesungen, Podcasts. Kann spÃ¤ter in den Einstellungen aktiviert werden.",
+      "systemAudioDescription": "LÃ¤sst den Meeting-Rekorder die Gegenseite deiner Anrufe hÃ¶ren — Meetings, Vorlesungen, Podcasts. Kann spÃ¤ter in den Einstellungen aktiviert werden.",
       "optional": "Optional",
       "recommended": "Empfohlen",
-      "accessibilityTroubleshooting": "Schalte in Systemeinstellungen â†’ Bedienungshilfen den Schalter fÃ¼r Dhwani aus und wieder ein. Wenn das nicht hilft, entferne Dhwani aus der Liste und fÃ¼ge es erneut hinzu. Klappt's immer noch nicht? Schreib an support@Dhwani.com."
+      "accessibilityTroubleshooting": "Schalte in Systemeinstellungen → Bedienungshilfen den Schalter fÃ¼r Dhwani aus und wieder ein. Wenn das nicht hilft, entferne Dhwani aus der Liste und fÃ¼ge es erneut hinzu. Klappt's immer noch nicht? Schreib an support@Dhwani.com."
     },
     "transcription": {
       "title": "Transkriptions-Einrichtung",
@@ -220,17 +220,17 @@
       "title": "Sprachagent-Einrichtung",
       "description": "Sprechen Sie mit Ihrem KI-Agenten per Tastendruck",
       "hotkey": "Hotkey",
-      "howItWorks": "DrÃ¼cken Sie die Taste und sagen Sie, was Sie mÃ¶chten â€” zum Beispiel â€žschreibe eine kurze Dankesnachrichtâ€œ. {{agentName}} schreibt das Ergebnis direkt an Ihren Cursor. Sie mÃ¼ssen nicht zuerst â€žHey {{agentName}}â€œ sagen.",
+      "howItWorks": "DrÃ¼cken Sie die Taste und sagen Sie, was Sie mÃ¶chten — zum Beispiel â€žschreibe eine kurze Dankesnachricht“. {{agentName}} schreibt das Ergebnis direkt an Ihren Cursor. Sie mÃ¼ssen nicht zuerst â€žHey {{agentName}}“ sagen.",
       "test": "Ausprobieren",
       "testInstruction": "Klicke unten, drÃ¼cke {{hotkey}} und sprich einen Befehl",
       "testSetHotkey": "Lege oben einen Hotkey fest, um es auszuprobieren",
       "testPlaceholder": "Klicke hier, drÃ¼cke deinen Hotkey und sprich eines der Beispiele...",
       "examples": [
-        "Ãœbersetze ins Italienische: â€žIch spreche schneller, als ich tippeâ€œ",
+        "Ãœbersetze ins Italienische: â€žIch spreche schneller, als ich tippe“",
         "Schreibe eine kurze E-Mail an meinen Chef, dass ich eine BefÃ¶rderung mÃ¶chte, sein Name ist Mark",
         "Was ist 5 Ã— 5?"
       ],
-      "optionalNote": "Optional â€” Sie kÃ¶nnen ihn jederzeit in den Einstellungen festlegen oder Ã¤ndern."
+      "optionalNote": "Optional — Sie kÃ¶nnen ihn jederzeit in den Einstellungen festlegen oder Ã¤ndern."
     },
     "connectivity": {
       "title": "Dhwani Cloud ist aus diesem Netzwerk nicht erreichbar",
@@ -240,7 +240,7 @@
     },
     "useCase": {
       "title": "Was fÃ¼hrt dich hierher?",
-      "description": "Wir sind ein kleines Team und liefern jede Woche. Deine Auswahl richtet die App fÃ¼r dich ein â€” und sagt uns, was wir als NÃ¤chstes bauen sollen.",
+      "description": "Wir sind ein kleines Team und liefern jede Woche. Deine Auswahl richtet die App fÃ¼r dich ein — und sagt uns, was wir als NÃ¤chstes bauen sollen.",
       "noteLabel": "MÃ¶chtest du uns noch etwas mitteilen?",
       "notePlaceholder": "Optional",
       "options": {
@@ -274,28 +274,28 @@
     "meeting": {
       "title": "Meeting-Notizen",
       "description": "Erfasse und fasse deine Meetings zusammen",
-      "autoDetect": "Dhwani erkennt automatisch, wenn du in einem Meeting bist, und bietet an, Notizen zu starten â€” ohne dich wird nichts aufgenommen.",
+      "autoDetect": "Dhwani erkennt automatisch, wenn du in einem Meeting bist, und bietet an, Notizen zu starten — ohne dich wird nichts aufgenommen.",
       "notification": {
         "title": "Meeting erkannt",
         "body": "Es klingt, als wÃ¤rst du in einem Meeting. Notizen aufnehmen?",
         "cta": "Aufnahme starten"
       },
       "hotkeyLabel": "Meeting-Hotkey",
-      "hotkeyHint": "Optional â€” drÃ¼cke ihn in jedem Meeting, um sofort eine Notiz zu starten."
+      "hotkeyHint": "Optional — drÃ¼cke ihn in jedem Meeting, um sofort eine Notiz zu starten."
     },
     "finish": {
       "title": "Alles bereit",
-      "cloudDescription": "Du nutzt Dhwani Cloud â€” schnell, prÃ¤zise, keine Datenspeicherung und 2.000 WÃ¶rter gratis pro Woche. Lieber alles auf dem GerÃ¤t? Wechsle in den Einstellungen zur lokalen Verarbeitung.",
+      "cloudDescription": "Du nutzt Dhwani Cloud — schnell, prÃ¤zise, keine Datenspeicherung und 2.000 WÃ¶rter gratis pro Woche. Lieber alles auf dem GerÃ¤t? Wechsle in den Einstellungen zur lokalen Verarbeitung.",
       "localDescription": "Du bist mit lokaler Verarbeitung oder deinem eigenen SchlÃ¼ssel eingerichtet. Passe die Audioverarbeitung jederzeit in den Einstellungen an.",
       "cleanupNote": "Die KI-Textbereinigung lÃ¤uft mit sinnvollen Standardwerten. Du kannst sie jederzeit in den Einstellungen anpassen.",
       "openSettings": "Einstellungen Ã¶ffnen",
       "skipForNow": "Vorerst Ã¼berspringen",
       "corti": {
         "title": "Du hast uns gesagt, dass du fÃ¼r klinische Transkription hier bist",
-        "description": "Wir sind eine Partnerschaft mit Corti eingegangen â€” klinische Spracherkennung mit hÃ¶chster Genauigkeit, HIPAA-konform.",
+        "description": "Wir sind eine Partnerschaft mit Corti eingegangen — klinische Spracherkennung mit hÃ¶chster Genauigkeit, HIPAA-konform.",
         "createAccount": "Corti-Konto erstellen",
         "creditBadge": "50 $ Gratis-Guthaben",
-        "regionHint": "WÃ¤hle, wo dein Audio verarbeitet wird â€” USA oder EU.",
+        "regionHint": "WÃ¤hle, wo dein Audio verarbeitet wird — USA oder EU.",
         "useCorti": "Corti verwenden",
         "skip": "Jetzt nicht",
         "step1": "Registriere dich auf corti.ai",
@@ -309,11 +309,11 @@
       "cloudUnreachable": {
         "title": "Dhwani Cloud nicht erreichbar",
         "generic": "Die Netzwerkanfrage ist fehlgeschlagen. PrÃ¼fen Sie Ihre Verbindung.",
-        "dnsBlocked": "DNS lÃ¶st Dhwani.com nicht auf â€” ein Werbeblocker oder Filter blockiert es mÃ¶glicherweise.",
-        "refused": "Verbindung wurde abgelehnt â€” wahrscheinlich eine Firewall oder ein VPN.",
-        "timeout": "Netzwerk-ZeitÃ¼berschreitung â€” VPN, Captive Portal oder instabile Verbindung.",
-        "tls": "TLS-Handshake fehlgeschlagen â€” prÃ¼fen Sie Ihre Systemuhr oder einen Unternehmens-Proxy.",
-        "fallback": "Cloud nicht erreichbar â€” lokale Engine wird fÃ¼r diese Aufnahme verwendet."
+        "dnsBlocked": "DNS lÃ¶st Dhwani.com nicht auf — ein Werbeblocker oder Filter blockiert es mÃ¶glicherweise.",
+        "refused": "Verbindung wurde abgelehnt — wahrscheinlich eine Firewall oder ein VPN.",
+        "timeout": "Netzwerk-ZeitÃ¼berschreitung — VPN, Captive Portal oder instabile Verbindung.",
+        "tls": "TLS-Handshake fehlgeschlagen — prÃ¼fen Sie Ihre Systemuhr oder einen Unternehmens-Proxy.",
+        "fallback": "Cloud nicht erreichbar — lokale Engine wird fÃ¼r diese Aufnahme verwendet."
       }
     }
   },
@@ -512,7 +512,7 @@
     "apiKeyOptional": "API-SchlÃ¼ssel (optional)",
     "getKey": "SchlÃ¼ssel holen ->",
     "endpointUrl": "Endpoint-URL",
-    "azureHint": "Azure AI Foundry: Geben Sie Ihren Ressourcen-Endpunkt ein (z. B. https://your-resource.cognitiveservices.azure.com) und setzen Sie â€žModelâ€œ auf den exakten Namen Ihrer Bereitstellung.",
+    "azureHint": "Azure AI Foundry: Geben Sie Ihren Ressourcen-Endpunkt ein (z. B. https://your-resource.cognitiveservices.azure.com) und setzen Sie â€žModel“ auf den exakten Namen Ihrer Bereitstellung.",
     "customProvider": "Benutzerdefiniert",
     "fallback": {
       "whisperModelDescription": "Modell",
@@ -580,8 +580,8 @@
         "rateLimited": "Download-Server begrenzt Anfragen. Bitte warten Sie einige Minuten und versuchen Sie es erneut.",
         "server": "Serverfehler ({{error}}). Bitte versuchen Sie es spÃ¤ter erneut.",
         "generic": "Download fehlgeschlagen: {{error}}",
-        "extractionFailed": "Modell heruntergeladen, aber Installation fehlgeschlagen. Klicken Sie auf â€žHerunterladenâ€œ, um die Installation ohne erneuten Download zu wiederholen.",
-        "tlsError": "Zertifikatsfehler â€” Ihr Netzwerk verwendet mÃ¶glicherweise SSL-Inspektion, die Downloads blockiert. Versuchen Sie es Ã¼ber ein anderes Netzwerk.",
+        "extractionFailed": "Modell heruntergeladen, aber Installation fehlgeschlagen. Klicken Sie auf â€žHerunterladen“, um die Installation ohne erneuten Download zu wiederholen.",
+        "tlsError": "Zertifikatsfehler — Ihr Netzwerk verwendet mÃ¶glicherweise SSL-Inspektion, die Downloads blockiert. Versuchen Sie es Ã¼ber ein anderes Netzwerk.",
         "unknown": "Unbekannter Fehler"
       },
       "downloadFailed": {
@@ -737,7 +737,7 @@
       "continueWithApple": "Weiter mit Apple",
       "continueWithGoogle": "Weiter mit Google",
       "continueWithMicrosoft": "Weiter mit Microsoft",
-      "protocolUnavailable": "Browser-Anmeldung nicht verfÃ¼gbar â€” registrieren Sie das Dhwani://-Protokoll in den Standardanwendungs-Einstellungen Ihres Systems erneut."
+      "protocolUnavailable": "Browser-Anmeldung nicht verfÃ¼gbar — registrieren Sie das Dhwani://-Protokoll in den Standardanwendungs-Einstellungen Ihres Systems erneut."
     },
     "welcomeSubtitle": "Diktieren Sie Ã¼berall mit Ihrer Stimme",
     "welcomeTitle": "Willkommen bei Dhwani",
@@ -1246,7 +1246,7 @@
       },
       "examplesTitle": "Beispiele",
       "helper": "WÃ¤hlen Sie etwas Kurzes und NatÃ¼rliches zum Aussprechen",
-      "howItWorksDescription": "Wenn Sie 'Hey {{agentName}}' gefolgt von einer Anweisung sagen, fÃ¼hrt die KI Ihren Befehl aus â€” Inhalte verfassen, Text formatieren oder Fragen beantworten â€” statt ihn wÃ¶rtlich zu transkribieren.",
+      "howItWorksDescription": "Wenn Sie 'Hey {{agentName}}' gefolgt von einer Anweisung sagen, fÃ¼hrt die KI Ihren Befehl aus — Inhalte verfassen, Text formatieren oder Fragen beantworten — statt ihn wÃ¶rtlich zu transkribieren.",
       "howItWorksTitle": "So funktioniert es",
       "instructionMode": "Anweisung",
       "placeholder": "z. B. Jarvis, Nova, Atlas...",
@@ -1337,7 +1337,7 @@
     },
     "dictionary": {
       "title": "BenutzerwÃ¶rterbuch",
-      "description": "Bringen Sie der KI Ihren Wortschatz bei â€” Namen, Fachbegriffe und AusdrÃ¼cke, die sie sonst Ã¼bersehen kÃ¶nnte",
+      "description": "Bringen Sie der KI Ihren Wortschatz bei — Namen, Fachbegriffe und AusdrÃ¼cke, die sie sonst Ã¼bersehen kÃ¶nnte",
       "addWordOrPhrase": "Wort oder Ausdruck hinzufÃ¼gen",
       "placeholder": "Wort oder Ausdruck hinzufÃ¼gen...",
       "add": "HinzufÃ¼gen",
@@ -1348,7 +1348,7 @@
       "clearDictionaryTitle": "WÃ¶rterbuch lÃ¶schen?",
       "clearDictionaryDescription": "Dadurch werden alle WÃ¶rter aus Ihrem benutzerdefinierten WÃ¶rterbuch entfernt. Diese Aktion kann nicht rÃ¼ckgÃ¤ngig gemacht werden.",
       "clearAll": "Alles lÃ¶schen",
-      "agentNameAutoManaged": "Automatisch verwaltet â€” synchronisiert mit dem Agentennamen",
+      "agentNameAutoManaged": "Automatisch verwaltet — synchronisiert mit dem Agentennamen",
       "removeWord": "Wort entfernen",
       "noWords": "Noch keine WÃ¶rter",
       "wordsAppearHere": "HinzugefÃ¼gte WÃ¶rter erscheinen hier",
@@ -1401,7 +1401,7 @@
       },
       "voiceAgentHotkey": {
         "title": "Sprachagent-Hotkey",
-        "description": "Sagen Sie, was Sie brauchen â€” Ihr KI-Agent schreibt das Ergebnis, nicht Ihre Worte"
+        "description": "Sagen Sie, was Sie brauchen — Ihr KI-Agent schreibt das Ergebnis, nicht Ihre Worte"
       },
       "microphone": {
         "description": "WÃ¤hlen Sie das EingabegerÃ¤t fÃ¼r das Diktat",
@@ -1564,7 +1564,7 @@
         "newVersionAvailable": "Neue Version verfÃ¼gbar",
         "restarting": "Wird neu gestartet...",
         "title": "Updates",
-        "versionPlaceholder": "â€”",
+        "versionPlaceholder": "—",
         "whatsNew": "Neu in v{{version}}"
       },
       "polishHotkey": {
@@ -1858,7 +1858,7 @@
         "lastUsed": "Zuletzt verwendet {{date}}",
         "neverUsed": "Nie verwendet",
         "keyCreatedTitle": "API-SchlÃ¼ssel erstellt",
-        "keyCreatedDescription": "Kopieren Sie diesen SchlÃ¼ssel jetzt â€” Sie kÃ¶nnen ihn nicht erneut sehen."
+        "keyCreatedDescription": "Kopieren Sie diesen SchlÃ¼ssel jetzt — Sie kÃ¶nnen ihn nicht erneut sehen."
       }
     }
   },
@@ -2128,7 +2128,7 @@
       "chunkProgress": "Transkribiere Teil {{completed}} von {{total}}...",
       "paidPlanRequired": "Cloud-Transkription fÃ¼r Dateien Ã¼ber 25 MB erfordert einen kostenpflichtigen Plan. GroÃŸe Dateien werden mit Dhwani Cloud fÃ¼r zuverlÃ¤ssige, hochwertige Ergebnisse verarbeitet.",
       "byokTooLarge": "API-SchlÃ¼ssel von Drittanbietern unterstÃ¼tzen nur Dateien bis 25 MB.",
-      "byokTooLargeDetail": "FÃ¼r Dateien Ã¼ber 25 MB Ã¼bernimmt Dhwani Cloud das Aufteilen, die parallele Verarbeitung und das ZusammenfÃ¼hren â€” so erhÃ¤ltst du zuverlÃ¤ssige Ergebnisse ohne die EinschrÃ¤nkungen von Drittanbietern.",
+      "byokTooLargeDetail": "FÃ¼r Dateien Ã¼ber 25 MB Ã¼bernimmt Dhwani Cloud das Aufteilen, die parallele Verarbeitung und das ZusammenfÃ¼hren — so erhÃ¤ltst du zuverlÃ¤ssige Ergebnisse ohne die EinschrÃ¤nkungen von Drittanbietern.",
       "byokTooLargeNeedsAccount": "Erstelle ein Konto und wechsle zu einem kostenpflichtigen Plan, um grÃ¶ÃŸere Dateien mit Dhwani Cloud zu transkribieren.",
       "byokTooLargeNeedsUpgrade": "Wechsle zu einem kostenpflichtigen Plan, um grÃ¶ÃŸere Dateien mit Dhwani Cloud zu transkribieren.",
       "switchToCloudForLargeFiles": "Wechsle zu Dhwani Cloud, um diese Datei zu transkribieren.",
@@ -2290,7 +2290,7 @@
     "exportDictionary": "WÃ¶rterbuch exportieren",
     "exportFailed": "Export fehlgeschlagen",
     "editWord": "{{word}} bearbeiten",
-    "noMatches": "Keine Treffer â€” Enter drÃ¼cken, um \"{{word}}\" hinzuzufÃ¼gen",
+    "noMatches": "Keine Treffer — Enter drÃ¼cken, um \"{{word}}\" hinzuzufÃ¼gen",
     "tabDictionary": "WÃ¶rterbuch",
     "tabSnippets": "Snippets",
     "snippets": {
@@ -2319,7 +2319,7 @@
         "signoffTrigger": "GruÃŸformel",
         "signoffText": "Viele GrÃ¼ÃŸe, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "AuslÃ¶ser-Phrase hinzufÃ¼gen â€“ â€žmein Kalenderâ€œ, â€žmein LinkedInâ€œ"
+      "addPlaceholder": "AuslÃ¶ser-Phrase hinzufÃ¼gen â€“ â€žmein Kalender“, â€žmein LinkedIn“"
     },
     "emptyTitle": "Dein WÃ¶rterbuch ist leer",
     "emptyDescription": "FÃ¼ge WÃ¶rter hinzu, die {{agentName}} immer richtig erkennen soll: Namen, Tools, AbkÃ¼rzungen.",
@@ -2610,7 +2610,7 @@
       "local": {
         "label": "Lokal",
         "freeBadge": "Kostenlos",
-        "description": "Greife direkt auf deine lokalen Notizen zu. Kein Login oder API-Key â€” funktioniert, solange Dhwani lÃ¤uft."
+        "description": "Greife direkt auf deine lokalen Notizen zu. Kein Login oder API-Key — funktioniert, solange Dhwani lÃ¤uft."
       },
       "cloud": {
         "label": "Cloud",
@@ -2631,7 +2631,7 @@
     },
     "notABot": {
       "title": "Dhwani ist ein Meeting-Rekorder, kein Bot",
-      "description": "Dhwani erfasst Audio direkt von deinem System â€” es nimmt niemals als Teilnehmer an deinen Meetings teil. Verbinde einfach deinen Kalender und mach Notizen wie gewohnt."
+      "description": "Dhwani erfasst Audio direkt von deinem System — es nimmt niemals als Teilnehmer an deinen Meetings teil. Verbinde einfach deinen Kalender und mach Notizen wie gewohnt."
     }
   },
   "calendar": {
@@ -2671,7 +2671,7 @@
     "signInDescription": "Erstellen Sie ein Konto oder melden Sie sich an, um Meetings aufzunehmen und zu transkribieren.",
     "connectCalendar": "Kalender verbinden",
     "connectCalendarDescription": "VerknÃ¼pfe deinen Google Kalender, um anstehende Meetings zu sehen und automatisch Notizen aufzuzeichnen.",
-    "notABot": "Dhwani nimmt Ã¼ber dein Systemaudio auf â€” es tritt niemals als Bot deinen Meetings bei.",
+    "notABot": "Dhwani nimmt Ã¼ber dein Systemaudio auf — es tritt niemals als Bot deinen Meetings bei.",
     "connectCalendarButton": "Kalender verbinden"
   },
   "notesView": {
@@ -2683,7 +2683,7 @@
     },
     "searchEmpty": {
       "title": "Keine Ergebnisse",
-      "description": "Keine Notizen fÃ¼r â€ž{{query}}â€œ gefunden."
+      "description": "Keine Notizen fÃ¼r â€ž{{query}}“ gefunden."
     },
     "noteType": {
       "personal": "persÃ¶nlich",

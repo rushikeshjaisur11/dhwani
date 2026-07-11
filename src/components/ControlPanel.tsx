@@ -72,6 +72,7 @@ interface ControlPanelProps {
 
 export default function ControlPanel({ initialSettingsSection }: ControlPanelProps = {}) {
   const { t } = useTranslation();
+  const userName = localStorage.getItem("userName") ?? "Rushikesh";
   const history = useTranscriptions();
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(!!initialSettingsSection);
@@ -679,7 +680,81 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
         </Suspense>
       )}
 
+      {/* Top Window Bar (spans full width) */}
+      <div
+        className="flex items-center justify-between w-full h-11 shrink-0 px-4 mt-1.5 select-none"
+        style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+      >
+        <div
+          className="flex items-center gap-2.5"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        >
+          {/* Sidebar toggle icon (styled static placeholder for layout parity) */}
+          <button
+            onClick={() => {}}
+            className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground transition-colors cursor-pointer"
+            title="Toggle Sidebar"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+          </button>
+
+          {/* User Profile Avatar */}
+          <div
+            onClick={() => {
+              setSettingsSection("general");
+              setShowSettings(true);
+            }}
+            className="w-6 h-6 rounded-full bg-[#EDE4FB] border border-[#C4B0F7]/40 flex items-center justify-center text-[11px] font-bold text-[#2B1A47] cursor-pointer hover:opacity-90 select-none uppercase"
+            title={t("sidebar.settings")}
+          >
+            {userName.charAt(0)}
+          </div>
+        </div>
+
+        {/* Drag space in the middle */}
+        <div className="flex-1 h-full" />
+
+        <div
+          className="flex items-center gap-2.5"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        >
+          {/* Notification Bell */}
+          <button className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground transition-colors relative cursor-pointer">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-primary rounded-full" />
+          </button>
+
+          {/* Window Controls */}
+          {platform !== "darwin" && <WindowControls />}
+        </div>
+      </div>
+
       <div className="flex flex-1 overflow-hidden">
+        {/* Left Sidebar */}
         <div
           className="shrink-0 overflow-hidden transition-[width] duration-300 ease-out"
           style={{ width: isSidePanelLayout ? 0 : undefined }}
@@ -711,39 +786,31 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             }
           />
         </div>
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <div
-            className="flex items-center justify-between w-full h-10 shrink-0"
-            style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
-          >
-            {isSidePanelLayout && (
-              <div
-                className={platform === "darwin" ? "ml-[84px] mt-[16px]" : "ml-2"}
-                style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+
+        {/* Main Content Card (Middle) */}
+        <main className="flex-1 flex flex-col overflow-hidden m-3 mt-0 mr-3 mb-3 bg-card rounded-[24px] border border-border/40 dark:border-white/5 shadow-sm">
+          {isSidePanelLayout && (
+            <div
+              className="h-12 flex items-center px-4 border-b border-border/10 shrink-0"
+              style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+            >
+              <Button
+                variant="outline-flat"
+                size="sm"
+                onClick={handleExitMeetingMode}
+                className="h-7 px-2.5 pl-1.5 gap-1"
               >
-                <Button
-                  variant="outline-flat"
-                  size="sm"
-                  onClick={handleExitMeetingMode}
-                  className="h-7 px-2.5 pl-1.5 gap-1"
-                >
-                  <ChevronLeft size={14} strokeWidth={1.8} />
-                  {t("controlPanel.backToNotes")}
-                </Button>
-              </div>
-            )}
-            <div className="flex-1" />
-            {platform !== "darwin" && (
-              <div className="pr-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-                <WindowControls />
-              </div>
-            )}
-          </div>
-          <div className="flex-1 overflow-y-auto pt-1">
+                <ChevronLeft size={14} strokeWidth={1.8} />
+                {t("controlPanel.backToNotes")}
+              </Button>
+            </div>
+          )}
+
+          <div className="flex-1 overflow-y-auto">
             {(gpuAccelAvailable.cuda || gpuAccelAvailable.vulkan) &&
               activeView === "home" &&
               !gpuBannerDismissed && (
-                <div className="max-w-3xl mx-auto w-full mb-3">
+                <div className="max-w-3xl mx-auto w-full p-4 pb-0">
                   <div className="rounded-lg border border-primary/20 dark:border-primary/15 bg-primary/5 p-3">
                     <div className="flex items-start gap-3">
                       <div className="shrink-0 w-8 h-8 rounded-md bg-primary/10 dark:bg-primary/15 flex items-center justify-center">
@@ -785,6 +852,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                   </div>
                 </div>
               )}
+
             {activeView === "home" && (
               <HistoryView
                 history={history}

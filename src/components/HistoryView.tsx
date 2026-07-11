@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
-import { Loader2, Sparkles, X, Mic, Trash2, Archive } from "lucide-react";
+import { Loader2, Sparkles, X, Mic, Trash2, Archive, Search } from "lucide-react";
 import TranscriptionItem from "./ui/TranscriptionItem";
 import { Kbd } from "./ui/Kbd";
 import type { TranscriptionItem as TranscriptionItemType } from "../types/electron";
@@ -47,6 +47,10 @@ export default function HistoryView({
   const { t } = useTranslation();
   const dataRetentionEnabled = useSettingsStore((s) => s.dataRetentionEnabled);
   const { isConnected } = useUpcomingEvents();
+
+  useEffect(() => {
+    localStorage.removeItem("promoBannerDismissed");
+  }, []);
 
   const groupedHistory = useMemo(() => {
     if (history.length === 0) return [];
@@ -114,52 +118,85 @@ export default function HistoryView({
   const userName = localStorage.getItem("userName") ?? "Rushikesh";
 
   return (
-    <div className="px-4 pt-4 pb-6">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="text-xl font-bold text-foreground mb-4 flex items-center flex-nowrap gap-1.5 whitespace-nowrap overflow-hidden">
-          <span>
+    <div className="px-3 pt-4 pb-6">
+      <div className="mx-auto max-w-5xl @container">
+        <div className="text-[clamp(14px,3.5cqw,24px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-visible">
+          <span className="shrink-0 min-w-max">
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
               name: userName,
             })}
           </span>
           {hotkeyParts.map((part, i) => (
-            <span key={i} className="flex items-center gap-1.5">
-              <Kbd className="text-sm px-2.5 py-1">{part}</Kbd>
-              {i < hotkeyParts.length - 1 && <span className="text-muted-foreground">+</span>}
+            <span key={i} className="flex items-center gap-1 shrink-0">
+              <Kbd className="text-xs font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-md select-none h-6 flex items-center justify-center font-sans">
+                {part}
+              </Kbd>
+              {i < hotkeyParts.length - 1 && (
+                <span className="text-muted-foreground font-bold px-0.5">+</span>
+              )}
             </span>
           ))}
-        </h1>
+        </div>
         {!promoDismissed && (
           <div
             className={cn(
-              "tilt-card accent-bar mb-4 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-br from-[var(--color-flow-ink)] to-[#3a2f5c]",
+              "mb-6 relative rounded-[24px] overflow-hidden p-8 shadow-md bg-gradient-to-r from-[#1c2226] via-[#2f2824] to-[#1c201a]",
               "transition-[opacity,transform] duration-200 ease-in",
               promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
             )}
           >
-            <div className="referral-mesh-bg" />
-            <button
-              onClick={dismissPromo}
-              aria-label={t("common.close")}
-              className="absolute top-3.5 right-3.5 z-10 p-1.5 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
-            >
-              <X size={14} />
-            </button>
-            <div className="relative z-[1] max-w-sm">
-              <h3 className="text-white font-semibold text-xl mb-1.5">
-                {t("controlPanel.promo.title", { defaultValue: "Dictate anywhere, distraction-free" })}
-              </h3>
-              <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                {t("controlPanel.promo.description", {
-                  defaultValue: "Press your hotkey and start talking — Dhwani cleans it up for you.",
-                })}
-              </p>
-              <Button variant="cta" onClick={() => onOpenSettings("general")}>
-                {t("controlPanel.promo.cta", { defaultValue: "Show me how" })}
-              </Button>
-            </div>
-          </div>
+                <button
+                  onClick={dismissPromo}
+                  aria-label={t("common.close")}
+                  className="absolute top-4 right-4 z-10 p-1 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+                >
+                  <X size={12} />
+                </button>
+                <div className="relative z-[1] max-w-md">
+                  <h3 className="text-white text-2xl mb-1.5 font-serif font-normal">
+                    Transform works anywhere you write
+                  </h3>
+                  <p className="text-white/75 text-xs mb-6 max-w-sm leading-relaxed">
+                    Apply a Transform to rewrite, clean up, or restructure text after you dictate.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => onOpenSettings("intelligence")}
+                      className="h-8 px-4 rounded-full bg-white hover:bg-white/90 text-black text-xs font-semibold transition-colors cursor-pointer"
+                    >
+                      Try it out
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className="text-xs font-semibold text-white/80 hover:text-white transition-colors cursor-pointer"
+                    >
+                      How it works
+                    </button>
+                  </div>
+                </div>
+                {/* Visual floating app bubbles representing integrations */}
+                <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
+                  <div className="relative w-44 h-24">
+                    {/* Notion Bubble */}
+                    <div className="absolute top-0 right-10 w-7 h-7 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">N</span>
+                    </div>
+                    {/* Slack Bubble */}
+                    <div className="absolute bottom-2 left-6 w-8 h-8 rounded-full bg-[#3F0F3F]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">#</span>
+                    </div>
+                    {/* Gmail Bubble */}
+                    <div className="absolute bottom-0 right-12 w-8 h-8 rounded-full bg-[#EA4335]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">M</span>
+                    </div>
+                    {/* LinkedIn Bubble */}
+                    <div className="absolute top-6 left-20 w-8 h-8 rounded-full bg-[#0077B5]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">in</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
         )}
         {history.length === 0 && <div className="mb-2 flex justify-end">{discardedToggle}</div>}
         {!useCleanupModel && !aiCTADismissed && (
@@ -326,27 +363,23 @@ export default function HistoryView({
                 </div>
               </div>
             ) : (
-              <div className="group">
+              <div className="group pb-8">
                 {groupedHistory.map((group, index) => (
-                  <div key={group.label} className={index > 0 ? "mt-4" : ""}>
-                    <div className="sticky -top-1 z-10 -mx-4 px-5 pt-2 pb-2 bg-background flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wide">
+                  <div key={group.label} className={index > 0 ? "mt-8" : ""}>
+                    <div className="flex items-center justify-between mb-3 px-1">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                         {group.label}
                       </span>
                       {index === 0 && (
-                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
-                          {discardedToggle}
-                          <button
-                            onClick={clearAllTranscriptions}
-                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] text-muted-foreground/60 hover:!text-destructive hover:!bg-destructive/8 dark:hover:!bg-destructive/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/30 transition-all duration-200"
-                          >
-                            <Trash2 size={11} />
-                            <span>{t("controlPanel.history.clearAll")}</span>
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => onOpenSettings("general")}
+                          className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/50 hover:text-foreground transition-colors cursor-pointer"
+                        >
+                          <Search size={14} strokeWidth={2.5} />
+                        </button>
                       )}
                     </div>
-                    <div className="space-y-1.5 relative z-0">
+                    <div className="border border-border/40 dark:border-white/10 rounded-[16px] bg-transparent divide-y divide-border/30 dark:divide-white/5 overflow-hidden shadow-sm">
                       {group.items.map((item) => (
                         <TranscriptionItem
                           key={item.id}

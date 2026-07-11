@@ -96,13 +96,18 @@ jobs:
           echo "GOOGLE_CALENDAR_CLIENT_ID=${{ secrets.GOOGLE_CALENDAR_CLIENT_ID }}" >> .env
           echo "GOOGLE_CALENDAR_CLIENT_SECRET=${{ secrets.GOOGLE_CALENDAR_CLIENT_SECRET }}" >> .env
 
+      - name: Decode Code Signing Cert
+        shell: pwsh
+        run: |
+          $pfxBytes = [System.Convert]::FromBase64String("${{ secrets.WINDOWS_CERTS_PFX_BASE64 }}")
+          [System.IO.File]::WriteAllBytes("local-cert.pfx", $pfxBytes)
+
       - name: Build and Sign Application
-        run: npm run build:win -- --publish always
+        run: npm run build:renderer ; npx electron-builder --win --config electron-builder.unsigned-win.json --publish always
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL }}
           VITE_OPENWHISPR_API_URL: ${{ vars.VITE_OPENWHISPR_API_URL }}
           VITE_OPENWHISPR_OAUTH_CALLBACK_URL: ${{ vars.VITE_OPENWHISPR_OAUTH_CALLBACK_URL }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          WIN_CSC_LINK: local-cert.pfx
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CERTS_PASSWORD }}

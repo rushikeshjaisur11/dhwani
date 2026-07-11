@@ -5,8 +5,12 @@ import { useSettings } from "./useSettings";
 // need (device labels only exist via WebRTC in the renderer; settings live
 // in the renderer's Zustand store) and applies selections made from the tray.
 export function useTraySync() {
-  const { selectedMicDeviceId, setSelectedMicDeviceId, preferredLanguage, updateTranscriptionSettings } =
-    useSettings();
+  const {
+    selectedMicDeviceId,
+    setSelectedMicDeviceId,
+    preferredLanguage,
+    updateTranscriptionSettings,
+  } = useSettings();
 
   useEffect(() => {
     let cancelled = false;

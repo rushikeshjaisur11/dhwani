@@ -49,11 +49,11 @@ class GlobeKeyManager extends EventEmitter {
 
   start() {
     if (!this.isSupported) {
-      debugLogger.info("[GlobeKeyManager] Skipped â€” not macOS");
+      debugLogger.info("[GlobeKeyManager] Skipped — not macOS");
       return;
     }
     if (this.process) {
-      debugLogger.info("[GlobeKeyManager] Skipped â€” already running");
+      debugLogger.info("[GlobeKeyManager] Skipped — already running");
       return;
     }
 
@@ -107,7 +107,7 @@ class GlobeKeyManager extends EventEmitter {
     this._restartResetTimer = setTimeout(() => {
       this._restartResetTimer = null;
       if (this._restartCount > 0) {
-        debugLogger.info("[GlobeKeyManager] Sustained uptime â€” restart counter reset");
+        debugLogger.info("[GlobeKeyManager] Sustained uptime — restart counter reset");
         this._restartCount = 0;
       }
     }, RESTART_RESET_MS);
@@ -172,7 +172,7 @@ class GlobeKeyManager extends EventEmitter {
 
     child.on("exit", (code, signal) => {
       debugLogger.info("[GlobeKeyManager] Process exited", { code, signal });
-      // Only clear instance state if this is still the current process â€” a prior
+      // Only clear instance state if this is still the current process — a prior
       // stop()+start() (e.g. setSuppressedMouseButtons) may have already replaced it.
       if (this.process !== child) {
         return;
@@ -183,7 +183,7 @@ class GlobeKeyManager extends EventEmitter {
         this._restartResetTimer = null;
       }
 
-      // Intentional stop â€” don't restart or report
+      // Intentional stop — don't restart or report
       if (this._isStopping || signal === "SIGINT" || signal === "SIGTERM") {
         return;
       }
@@ -196,7 +196,7 @@ class GlobeKeyManager extends EventEmitter {
         return;
       }
 
-      // Exit code 0 but we didn't request stop â€” the event tap was likely
+      // Exit code 0 but we didn't request stop — the event tap was likely
       // invalidated (e.g. after sleep/wake). Attempt automatic restart.
       if (this._restartCount < MAX_RESTART_ATTEMPTS) {
         this._restartCount++;
@@ -287,7 +287,7 @@ class GlobeKeyManager extends EventEmitter {
       debugLogger.warn("[GlobeKeyManager] Could not verify binary architecture", {
         error: err.message,
       });
-      // Don't block startup on verification failure â€” let spawn attempt proceed
+      // Don't block startup on verification failure — let spawn attempt proceed
       return null;
     }
   }

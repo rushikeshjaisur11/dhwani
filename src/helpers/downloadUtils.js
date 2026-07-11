@@ -119,7 +119,7 @@ function downloadAttempt(url, tempPath, options) {
       const statusCode = response.statusCode;
 
       if (statusCode === 200 && startOffset > 0) {
-        // Server doesn't support Range â€” restart from beginning
+        // Server doesn't support Range — restart from beginning
         downloadedSize = 0;
         activeFile = fs.createWriteStream(tempPath, { flags: "w" });
         totalSize = parseInt(headerValue(response.headers, "content-length"), 10) || 0;
@@ -157,7 +157,7 @@ function downloadAttempt(url, tempPath, options) {
         stallTimer = setTimeout(() => {
           cleanup();
           reject(
-            Object.assign(new Error("Download stalled â€” no data received for 30s"), {
+            Object.assign(new Error("Download stalled — no data received for 30s"), {
               code: "ETIMEDOUT",
             })
           );
@@ -407,7 +407,7 @@ async function checkDiskSpace(directory, requiredBytes) {
     const availableBytes = stats.bavail * stats.bsize;
     return { ok: availableBytes >= requiredBytes, availableBytes };
   } catch {
-    // statfs not supported or directory doesn't exist â€” skip check
+    // statfs not supported or directory doesn't exist — skip check
     return { ok: true, availableBytes: Infinity };
   }
 }

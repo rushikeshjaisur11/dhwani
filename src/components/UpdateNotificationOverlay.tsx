@@ -93,7 +93,13 @@ export default function UpdateNotificationOverlay() {
           <div className="shrink-0 bg-primary/10 rounded-md p-1">
             <svg viewBox="0 0 1024 1024" className="w-4.5 h-4.5">
               <defs>
-                <linearGradient id="dhwaniUpdateOverlayGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient
+                  id="dhwaniUpdateOverlayGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
                   <stop offset="0%" stopColor="#8B6EF0" />
                   <stop offset="100%" stopColor="#4A34A8" />
                 </linearGradient>

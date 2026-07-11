@@ -119,7 +119,7 @@
   "upgradePrompt": {
     "paymentFailed": "We couldn't process your payment",
     "weeklyLimit": "You've reached your weekly limit",
-    "pastDueDescription": "You're on the free plan for now â€” don't worry, you still get {{limit}} words per week.\nUpdate your payment method to get back to unlimited Pro.",
+    "pastDueDescription": "You're on the free plan for now — don't worry, you still get {{limit}} words per week.\nUpdate your payment method to get back to unlimited Pro.",
     "limitDescription": "{{used}} of {{limit}} words used.\nYour transcription was saved and pasted.",
     "updatePayment": "Update payment method",
     "updatePaymentDescription": "Get back to unlimited Pro transcriptions.",
@@ -203,16 +203,16 @@
       "grant": "Grant",
       "grantAccess": "Grant Access",
       "accessibilityTitle": "Accessibility",
-      "accessibilityDescription": "Types the finished text straight into whatever app you're in â€” docs, email, chat.",
+      "accessibilityDescription": "Types the finished text straight into whatever app you're in — docs, email, chat.",
       "testAndGrant": "Test & Grant",
       "requiredForApp": "Required for Dhwani to work",
       "microphoneRequired": "Microphone access required",
       "openSystemSettings": "Open System Settings",
       "systemAudioTitle": "System Audio",
-      "systemAudioDescription": "Lets the meeting recorder hear the other side of your calls â€” meetings, lectures, podcasts. You can turn this on later in Settings.",
+      "systemAudioDescription": "Lets the meeting recorder hear the other side of your calls — meetings, lectures, podcasts. You can turn this on later in Settings.",
       "optional": "Optional",
       "recommended": "Recommended",
-      "accessibilityTroubleshooting": "In System Settings â†’ Accessibility, switch Dhwani's toggle off and back on. If that doesn't work, remove Dhwani from the list and add it back. Still stuck? Email support@Dhwani.com."
+      "accessibilityTroubleshooting": "In System Settings → Accessibility, switch Dhwani's toggle off and back on. If that doesn't work, remove Dhwani from the list and add it back. Still stuck? Email support@Dhwani.com."
     },
     "transcription": {
       "title": "Transcription Setup",
@@ -235,17 +235,17 @@
       "title": "Voice Agent Setup",
       "description": "Talk to your AI agent with a single keypress",
       "hotkey": "Hotkey",
-      "howItWorks": "Press the key and say what you want â€” for example â€œwrite a short thank-you noteâ€. {{agentName}} types the result wherever your cursor is. No need to say â€œHey {{agentName}}â€ first.",
+      "howItWorks": "Press the key and say what you want — for example “write a short thank-you note”. {{agentName}} types the result wherever your cursor is. No need to say “Hey {{agentName}}” first.",
       "test": "Try it",
       "testInstruction": "Click below, press {{hotkey}} and say a command",
       "testSetHotkey": "Set a hotkey above to try it",
       "testPlaceholder": "Click here, press your hotkey and say one of the examples...",
       "examples": [
-        "Translate to Italian: â€œI talk faster than I typeâ€",
+        "Translate to Italian: “I talk faster than I type”",
         "Write a short email to my boss telling him I want a promotion, his name is Mark",
         "What is 5 Ã— 5?"
       ],
-      "optionalNote": "Optional â€” you can set or change it anytime in Settings."
+      "optionalNote": "Optional — you can set or change it anytime in Settings."
     },
     "connectivity": {
       "title": "We can't reach Dhwani Cloud from this network",
@@ -255,7 +255,7 @@
     },
     "useCase": {
       "title": "Why are you here?",
-      "description": "We're a small team shipping every week. What you pick sets up the app for you â€” and tells us what to build next.",
+      "description": "We're a small team shipping every week. What you pick sets up the app for you — and tells us what to build next.",
       "noteLabel": "Anything else you'd like us to know?",
       "notePlaceholder": "Optional",
       "options": {
@@ -289,28 +289,28 @@
     "meeting": {
       "title": "Meeting notes",
       "description": "Capture and summarize your meetings",
-      "autoDetect": "Dhwani automatically detects when you're in a meeting and offers to start notes â€” nothing is recorded without you.",
+      "autoDetect": "Dhwani automatically detects when you're in a meeting and offers to start notes — nothing is recorded without you.",
       "notification": {
         "title": "Meeting detected",
         "body": "It sounds like you're in a meeting. Want to take notes?",
         "cta": "Start Recording"
       },
       "hotkeyLabel": "Meeting hotkey",
-      "hotkeyHint": "Optional â€” press it in any meeting to start a note instantly."
+      "hotkeyHint": "Optional — press it in any meeting to start a note instantly."
     },
     "finish": {
       "title": "You're all set",
-      "cloudDescription": "You're on Dhwani Cloud â€” fast, accurate, zero data retention, 2,000 words free every week. Prefer everything on-device? Switch to local processing in Settings.",
+      "cloudDescription": "You're on Dhwani Cloud — fast, accurate, zero data retention, 2,000 words free every week. Prefer everything on-device? Switch to local processing in Settings.",
       "localDescription": "You're set up with local processing or your own key. Adjust how your audio is processed anytime in Settings.",
       "cleanupNote": "AI text cleanup runs with sensible defaults. You can adjust it anytime in Settings.",
       "openSettings": "Open Settings",
       "skipForNow": "Skip for now",
       "corti": {
         "title": "You told us you're here for clinical transcription",
-        "description": "We've partnered with Corti â€” clinical-grade speech-to-text with the highest accuracy, and it's HIPAA compliant.",
+        "description": "We've partnered with Corti — clinical-grade speech-to-text with the highest accuracy, and it's HIPAA compliant.",
         "createAccount": "Create your Corti account",
         "creditBadge": "$50 free credit",
-        "regionHint": "Choose where your audio is processed â€” US or EU.",
+        "regionHint": "Choose where your audio is processed — US or EU.",
         "useCorti": "Use Corti",
         "skip": "Not now",
         "step1": "Sign up on corti.ai",
@@ -324,11 +324,11 @@
       "cloudUnreachable": {
         "title": "Can't reach Dhwani Cloud",
         "generic": "Network request failed. Check your connection.",
-        "dnsBlocked": "DNS isn't resolving Dhwani.com â€” an ad blocker or filter may be blocking it.",
-        "refused": "Connection was refused â€” likely a firewall or VPN.",
-        "timeout": "Network timed out â€” VPN, captive portal, or unstable connection.",
-        "tls": "TLS handshake failed â€” check your system clock or for a corporate proxy.",
-        "fallback": "Cloud unreachable â€” using local engine for this recording."
+        "dnsBlocked": "DNS isn't resolving Dhwani.com — an ad blocker or filter may be blocking it.",
+        "refused": "Connection was refused — likely a firewall or VPN.",
+        "timeout": "Network timed out — VPN, captive portal, or unstable connection.",
+        "tls": "TLS handshake failed — check your system clock or for a corporate proxy.",
+        "fallback": "Cloud unreachable — using local engine for this recording."
       }
     }
   },
@@ -419,7 +419,7 @@
     },
     "cloudMigration": {
       "title": "Welcome to Dhwani Cloud",
-      "description": "We've switched your transcription to Dhwani Cloud for faster, more accurate results. Your previous settings are saved â€” switch back anytime in Settings.",
+      "description": "We've switched your transcription to Dhwani Cloud for faster, more accurate results. Your previous settings are saved — switch back anytime in Settings.",
       "viewSettings": "View Settings"
     },
     "aiCta": {
@@ -596,7 +596,7 @@
         "server": "Server error ({{error}}). Please try again later.",
         "generic": "Download failed: {{error}}",
         "extractionFailed": "Model downloaded but installation failed. Click download to retry installation without re-downloading.",
-        "tlsError": "Certificate error â€” your network may use SSL inspection that blocks downloads. Try downloading from a different network.",
+        "tlsError": "Certificate error — your network may use SSL inspection that blocks downloads. Try downloading from a different network.",
         "unknown": "Unknown error"
       },
       "downloadFailed": {
@@ -752,7 +752,7 @@
       "continueWithApple": "Continue with Apple",
       "continueWithGoogle": "Continue with Google",
       "continueWithMicrosoft": "Continue with Microsoft",
-      "protocolUnavailable": "Browser sign-in unavailable â€” re-register the Dhwani:// protocol in your system's Default Apps settings."
+      "protocolUnavailable": "Browser sign-in unavailable — re-register the Dhwani:// protocol in your system's Default Apps settings."
     },
     "welcomeSubtitle": "Dictate anywhere using your voice",
     "welcomeTitle": "Welcome to Dhwani",
@@ -795,7 +795,7 @@
     "signInDescription": "Create an account or sign in to record and transcribe meetings.",
     "connectCalendar": "Connect your calendar",
     "connectCalendarDescription": "Link your Google Calendar to see upcoming meetings and automatically record notes.",
-    "notABot": "Dhwani records using your system audio â€” it never joins meetings as a bot.",
+    "notABot": "Dhwani records using your system audio — it never joins meetings as a bot.",
     "connectCalendarButton": "Connect Calendar"
   },
   "cleanupPrompt": "Cleanup",
@@ -1245,7 +1245,7 @@
         "lastUsed": "Last used {{date}}",
         "neverUsed": "Never used",
         "keyCreatedTitle": "API key created",
-        "keyCreatedDescription": "Copy this key now â€” you won't be able to see it again."
+        "keyCreatedDescription": "Copy this key now — you won't be able to see it again."
       }
     },
     "account": {
@@ -1434,7 +1434,7 @@
       },
       "examplesTitle": "Examples",
       "helper": "Pick something short and natural to say aloud",
-      "howItWorksDescription": "When you say \"Hey {{agentName}}\" followed by an instruction, the AI executes your command â€” composing content, formatting text, or answering questions â€” instead of transcribing it verbatim.",
+      "howItWorksDescription": "When you say \"Hey {{agentName}}\" followed by an instruction, the AI executes your command — composing content, formatting text, or answering questions — instead of transcribing it verbatim.",
       "howItWorksTitle": "How it works",
       "instructionMode": "Instruction",
       "placeholder": "e.g. Jarvis, Nova, Atlas...",
@@ -1525,7 +1525,7 @@
     },
     "dictionary": {
       "title": "Custom Dictionary",
-      "description": "Teach the AI your vocabulary â€” names, jargon, and terms it might otherwise miss",
+      "description": "Teach the AI your vocabulary — names, jargon, and terms it might otherwise miss",
       "addWordOrPhrase": "Add word or phrase",
       "placeholder": "Add a word or phrase...",
       "add": "Add",
@@ -1536,7 +1536,7 @@
       "clearDictionaryTitle": "Clear dictionary?",
       "clearDictionaryDescription": "This will remove all words from your custom dictionary. This action cannot be undone.",
       "clearAll": "Clear all",
-      "agentNameAutoManaged": "Auto-managed â€” synced from agent name",
+      "agentNameAutoManaged": "Auto-managed — synced from agent name",
       "removeWord": "Remove word",
       "noWords": "No words yet",
       "wordsAppearHere": "Words you add will appear here",
@@ -1589,7 +1589,7 @@
       },
       "voiceAgentHotkey": {
         "title": "Voice Agent Hotkey",
-        "description": "Speak a request â€” your AI agent types the result, not your words"
+        "description": "Speak a request — your AI agent types the result, not your words"
       },
       "polishHotkey": {
         "title": "Polish Hotkey",
@@ -1779,7 +1779,7 @@
         "newVersionAvailable": "New version available",
         "restarting": "Restarting...",
         "title": "Updates",
-        "versionPlaceholder": "â€”",
+        "versionPlaceholder": "—",
         "whatsNew": "What's new in v{{version}}"
       }
     },
@@ -1813,7 +1813,7 @@
       "description": "Control what data leaves your device. Everything is off by default.",
       "title": "Privacy",
       "usageAnalytics": "Usage analytics",
-      "usageAnalyticsDescription": "Help us improve Dhwani by sharing anonymous performance metrics. We never send transcription content â€” only timing and error data.",
+      "usageAnalyticsDescription": "Help us improve Dhwani by sharing anonymous performance metrics. We never send transcription content — only timing and error data.",
       "audioRetention": "Audio Retention",
       "audioRetentionDescription": "Store audio recordings locally for re-transcription and download. Files are automatically deleted after the retention period.",
       "audioRetentionDisabled": "Disabled",
@@ -2253,7 +2253,7 @@
     "rollingLimit": "Rolling weekly limit",
     "upgradeToPro": "Upgrade to Pro",
     "useYourOwnKey": "Use Your Own Key",
-    "upgradeUnlimited": "Upgrade to Pro â€” unlimited transcriptions"
+    "upgradeUnlimited": "Upgrade to Pro — unlimited transcriptions"
   },
   "notes": {
     "sidebar": {
@@ -2351,7 +2351,7 @@
       "largeFileNote": "Large files are split and transcribed in parallel.",
       "chunkProgress": "Transcribing part {{completed}} of {{total}}...",
       "byokTooLarge": "Third-party API keys only support files up to 25 MB.",
-      "byokTooLargeDetail": "For files over 25 MB, Dhwani Cloud handles splitting, parallel processing, and reassembly â€” so you get reliable results without depending on third-party provider limits.",
+      "byokTooLargeDetail": "For files over 25 MB, Dhwani Cloud handles splitting, parallel processing, and reassembly — so you get reliable results without depending on third-party provider limits.",
       "byokTooLargeNeedsAccount": "Create an account and upgrade to a paid plan to transcribe larger files with Dhwani Cloud.",
       "byokTooLargeNeedsUpgrade": "Upgrade to a paid plan to transcribe larger files with Dhwani Cloud.",
       "switchToCloudForLargeFiles": "Switch to Dhwani Cloud to transcribe this file.",
@@ -2431,7 +2431,7 @@
       },
       "actions": {
         "title": "AI-Powered Actions",
-        "description": "Actions transform your notes â€” clean up transcriptions, summarize meetings, and more. Use built-in actions or create your own.",
+        "description": "Actions transform your notes — clean up transcriptions, summarize meetings, and more. Use built-in actions or create your own.",
         "builtInLabel": "Built-in",
         "createTitle": "Create your own action",
         "createDescription": "Define a custom action with your own AI prompt. You can always edit or add more later in settings.",
@@ -2486,7 +2486,7 @@
         "notLabeled": "Speakers not labeled",
         "finalizing": "Finalizing speakersâ€¦",
         "justYou": "just you",
-        "defaultingHint": "defaulting to 1 other â€” change if more",
+        "defaultingHint": "defaulting to 1 other — change if more",
         "toggleAria": "Toggle speaker identification for this recording",
         "incAria": "Increase expected speaker count",
         "decAria": "Decrease expected speaker count",
@@ -2576,7 +2576,7 @@
     "clearTitle": "Clear dictionary?",
     "clearDescription": "This will remove all words from your custom dictionary. This action cannot be undone.",
     "addWord": "Add word",
-    "addPlaceholder": "Add words separated by commas â€” Dhwani, Supabase, John Snow, ARR",
+    "addPlaceholder": "Add words separated by commas — Dhwani, Supabase, John Snow, ARR",
     "removeWord": "Remove {{word}}",
     "clearAll": "Clear all",
     "add": "Add",
@@ -2590,7 +2590,7 @@
     "exportDictionary": "Export dictionary",
     "exportFailed": "Export failed",
     "editWord": "Edit {{word}}",
-    "noMatches": "No matches â€” press Enter to add \"{{word}}\"",
+    "noMatches": "No matches — press Enter to add \"{{word}}\"",
     "tabDictionary": "Dictionary",
     "tabSnippets": "Snippets",
     "snippets": {
@@ -2609,7 +2609,7 @@
       "duplicate": "A snippet with this trigger already exists",
       "emptyTitle": "The stuff you shouldn't have to say",
       "emptyTitleAccent": "twice",
-      "emptyDescription": "Speak a trigger word and Dhwani replaces it with whatever you saved â€” URLs, intros, sign-offs, prompts.",
+      "emptyDescription": "Speak a trigger word and Dhwani replaces it with whatever you saved — URLs, intros, sign-offs, prompts.",
       "new": "New snippet",
       "examples": {
         "linkedinTrigger": "My LinkedIn",
@@ -2621,7 +2621,7 @@
         "signoffTrigger": "Sign off",
         "signoffText": "Best, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "Add a trigger phrase â€” \"investor ask\", \"cal link\""
+      "addPlaceholder": "Add a trigger phrase — \"investor ask\", \"cal link\""
     },
     "emptyTitle": "Your dictionary is empty",
     "emptyDescription": "Add words {{agentName}} should always get right: names, tools, acronyms.",
@@ -2703,11 +2703,11 @@
     "enabledDescription": "Dictate instructions to your agent. Activate by saying \"{{agentName}}\". Configurable below.",
     "modes": {
       "Dhwani": "Dhwani Cloud",
-      "DhwaniDesc": "Use the Dhwani-managed agent â€” no API key needed.",
+      "DhwaniDesc": "Use the Dhwani-managed agent — no API key needed.",
       "providers": "Bring your own key",
       "providersDesc": "Connect to OpenAI, Anthropic, Gemini, or Groq with your own API key.",
       "local": "Local",
-      "localDesc": "Run a local LLM on your device â€” fully private.",
+      "localDesc": "Run a local LLM on your device — fully private.",
       "selfHosted": "Self-hosted",
       "selfHostedDesc": "Point at a self-hosted OpenAI-compatible endpoint.",
       "enterprise": "Enterprise",
@@ -2848,7 +2848,7 @@
       "local": {
         "label": "Local",
         "freeBadge": "Free",
-        "description": "Read your local notes directly. No login or API key â€” works while Dhwani is running."
+        "description": "Read your local notes directly. No login or API key — works while Dhwani is running."
       },
       "cloud": {
         "label": "Cloud",
@@ -2869,7 +2869,7 @@
     },
     "notABot": {
       "title": "Dhwani is a meeting recorder, not a bot",
-      "description": "Dhwani captures audio directly from your system â€” it never joins your meetings as a participant. Just connect your calendar and take notes as normal."
+      "description": "Dhwani captures audio directly from your system — it never joins your meetings as a participant. Just connect your calendar and take notes as normal."
     }
   },
   "notesView": {
