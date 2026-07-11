@@ -944,9 +944,6 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             )}
           </div>
         </main>
-
-        {/* Render ContextPanel (stats) as a separate card on the right side */}
-        <ContextPanel activeView={activeView} />
       </div>
       <BackgroundActionToastListener />
     </div>

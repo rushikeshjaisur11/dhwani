@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Loader2, Sparkles, X, Mic, Trash2, Archive, Search } from "lucide-react";
 import TranscriptionItem from "./ui/TranscriptionItem";
 import { Kbd } from "./ui/Kbd";
+import ContextPanel from "./ContextPanel";
 import type { TranscriptionItem as TranscriptionItemType } from "../types/electron";
 import { formatHotkeyLabel } from "../utils/hotkeys";
 import { formatDateGroup } from "../utils/dateFormatting";
@@ -120,7 +121,7 @@ export default function HistoryView({
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-base font-semibold text-foreground mb-6 flex flex-wrap items-center gap-1.5 leading-tight">
+        <h1 className="text-base font-semibold text-foreground mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap overflow-hidden shrink-0 min-w-max">
           <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
@@ -128,7 +129,7 @@ export default function HistoryView({
             })}
           </span>
           {hotkeyParts.map((part, i) => (
-            <span key={i} className="flex items-center gap-1">
+            <span key={i} className="flex items-center gap-1 shrink-0">
               <Kbd className="text-xs font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-[6px] select-none h-6 flex items-center justify-center font-sans">
                 {part}
               </Kbd>
@@ -138,66 +139,71 @@ export default function HistoryView({
             </span>
           ))}
         </h1>
-        {!promoDismissed && (
-          <div
-            className={cn(
-              "mb-6 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-r from-[#1c2226] via-[#2f2824] to-[#1c201a]",
-              "transition-[opacity,transform] duration-200 ease-in",
-              promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
+        <div className="flex gap-6 mb-8 items-stretch min-h-[220px]">
+          <div className="flex-1 min-w-0 flex">
+            {!promoDismissed && (
+              <div
+                className={cn(
+                  "w-full relative rounded-[24px] overflow-hidden p-8 shadow-md bg-gradient-to-r from-[#1c2226] via-[#2f2824] to-[#1c201a] flex flex-col justify-center",
+                  "transition-[opacity,transform] duration-200 ease-in",
+                  promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
+                )}
+              >
+                <button
+                  onClick={dismissPromo}
+                  aria-label={t("common.close")}
+                  className="absolute top-4 right-4 z-10 p-1 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+                >
+                  <X size={12} />
+                </button>
+                <div className="relative z-[1] max-w-md">
+                  <h3 className="text-white text-2xl mb-1.5 font-serif font-normal">
+                    Transform works anywhere you write
+                  </h3>
+                  <p className="text-white/75 text-xs mb-6 max-w-sm leading-relaxed">
+                    Apply a Transform to rewrite, clean up, or restructure text after you dictate.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => onOpenSettings("intelligence")}
+                      className="h-8 px-4 rounded-full bg-white hover:bg-white/90 text-black text-xs font-semibold transition-colors cursor-pointer"
+                    >
+                      Try it out
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className="text-xs font-semibold text-white/80 hover:text-white transition-colors cursor-pointer"
+                    >
+                      How it works
+                    </button>
+                  </div>
+                </div>
+                {/* Visual floating app bubbles representing integrations */}
+                <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
+                  <div className="relative w-44 h-24">
+                    {/* Notion Bubble */}
+                    <div className="absolute top-0 right-10 w-7 h-7 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">N</span>
+                    </div>
+                    {/* Slack Bubble */}
+                    <div className="absolute bottom-2 left-6 w-8 h-8 rounded-full bg-[#3F0F3F]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">#</span>
+                    </div>
+                    {/* Gmail Bubble */}
+                    <div className="absolute bottom-0 right-12 w-8 h-8 rounded-full bg-[#EA4335]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">M</span>
+                    </div>
+                    {/* LinkedIn Bubble */}
+                    <div className="absolute top-6 left-20 w-8 h-8 rounded-full bg-[#0077B5]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                      <span className="text-[10px] text-white font-bold">in</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
-          >
-            <button
-              onClick={dismissPromo}
-              aria-label={t("common.close")}
-              className="absolute top-4 right-4 z-10 p-1 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
-            >
-              <X size={12} />
-            </button>
-            <div className="relative z-[1] max-w-md">
-              <h3 className="text-white text-2xl mb-1.5 font-serif font-normal">
-                Transform works anywhere you write
-              </h3>
-              <p className="text-white/75 text-xs mb-4 max-w-sm leading-relaxed">
-                Apply a Transform to rewrite, clean up, or restructure text after you dictate.
-              </p>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => onOpenSettings("intelligence")}
-                  className="h-8 px-4 rounded-full bg-white hover:bg-white/90 text-black text-xs font-semibold transition-colors cursor-pointer"
-                >
-                  Try it out
-                </button>
-                <button
-                  onClick={() => {}}
-                  className="text-xs font-semibold text-white/80 hover:text-white transition-colors cursor-pointer"
-                >
-                  How it works
-                </button>
-              </div>
-            </div>
-            {/* Visual floating app bubbles representing integrations */}
-            <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
-              <div className="relative w-44 h-24">
-                {/* Notion Bubble */}
-                <div className="absolute top-0 right-10 w-7 h-7 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">N</span>
-                </div>
-                {/* Slack Bubble */}
-                <div className="absolute bottom-2 left-6 w-8 h-8 rounded-full bg-[#3F0F3F]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">#</span>
-                </div>
-                {/* Gmail Bubble */}
-                <div className="absolute bottom-0 right-12 w-8 h-8 rounded-full bg-[#EA4335]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">M</span>
-                </div>
-                {/* LinkedIn Bubble */}
-                <div className="absolute top-6 left-20 w-8 h-8 rounded-full bg-[#0077B5]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">in</span>
-                </div>
-              </div>
-            </div>
           </div>
-        )}
+          <ContextPanel activeView="home" />
+        </div>
         {history.length === 0 && <div className="mb-2 flex justify-end">{discardedToggle}</div>}
         {!useCleanupModel && !aiCTADismissed && (
           <div
@@ -363,11 +369,11 @@ export default function HistoryView({
                 </div>
               </div>
             ) : (
-              <div className="group">
+              <div className="group pb-8">
                 {groupedHistory.map((group, index) => (
-                  <div key={group.label} className={index > 0 ? "mt-4" : ""}>
-                    <div className="sticky -top-1 z-10 -mx-4 px-5 pt-3 pb-2 bg-white dark:bg-[oklch(0.22_0.014_60)] flex items-center justify-between border-b border-border/10">
-                      <span className="text-[10px] font-bold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
+                  <div key={group.label} className={index > 0 ? "mt-8" : ""}>
+                    <div className="flex items-center justify-between mb-3 px-1">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                         {group.label}
                       </span>
                       {index === 0 && (
@@ -379,7 +385,7 @@ export default function HistoryView({
                         </button>
                       )}
                     </div>
-                    <div className="divide-y divide-border/30 dark:divide-white/5 relative z-0">
+                    <div className="border border-border/40 dark:border-white/10 rounded-[16px] bg-transparent divide-y divide-border/30 dark:divide-white/5 overflow-hidden shadow-sm">
                       {group.items.map((item) => (
                         <TranscriptionItem
                           key={item.id}

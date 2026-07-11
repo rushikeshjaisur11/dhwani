@@ -95,8 +95,8 @@ export default function TranscriptionItem({
   return (
     <div
       className={cn(
-        "group py-3.5 transition-colors duration-150 bg-transparent",
-        isFailed ? "bg-destructive/5 px-2 rounded-lg" : isDiscarded ? "opacity-60" : ""
+        "group px-5 py-4 transition-colors duration-150 bg-transparent",
+        isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : ""
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
