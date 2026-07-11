@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import UpcomingMeetings from "./UpcomingMeetings";
 import { useUpcomingEvents } from "../hooks/useUpcomingEvents";
+import { useInsightsStats } from "../hooks/useInsightsStats";
 import type { ControlPanelView } from "./ControlPanelSidebar";
 
 // ponytail: same stats card content on both "home" and "insights" — a
@@ -17,16 +17,8 @@ interface ContextPanelProps {
 
 export default function ContextPanel({ activeView }: ContextPanelProps) {
   const { t } = useTranslation();
-  const [stats, setStats] = useState<{
-    totalWords: number;
-    averageWPM: number;
-    dayStreak: number;
-  } | null>(null);
+  const { stats } = useInsightsStats();
   const { events, isLoading: eventsLoading, isConnected } = useUpcomingEvents();
-
-  useEffect(() => {
-    window.electronAPI.getInsightsStats().then(setStats);
-  }, []);
 
   if (!VIEWS_WITH_STATS.includes(activeView)) return null;
 

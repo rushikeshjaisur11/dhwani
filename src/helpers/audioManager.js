@@ -2311,8 +2311,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
 
     try {
+      const foregroundApp = await this.foregroundAppPromise;
       const result = await window.electronAPI.saveTranscription(text, rawText, {
         clientTranscriptionId,
+        targetApp: foregroundApp?.app ?? null,
       });
       if (result?.id) syncService.debouncedPush("transcription", result.id);
 

@@ -2888,6 +2888,37 @@
     "averageWPM": "平均WPM",
     "wordsToday": "本日の単語数",
     "wordsThisWeek": "今週の単語数",
-    "dayStreak": "連続日数"
+    "dayStreak": "連続日数",
+    "wpmGauge": {
+      "title": "1分あたりの単語数",
+      "best": "自己ベスト: {{value}}",
+      "pctOfBest": "自己ベストの{{pct}}%"
+    },
+    "fixes": {
+      "title": "修正回数",
+      "subtitle": "Dhwaniによる自動修正"
+    },
+    "totalWordsCard": {
+      "subtitle": "今日{{today}}・今週{{week}}"
+    },
+    "streak": {
+      "title": "{{count}}日連続",
+      "longest": "最長連続記録: {{count}}日",
+      "less": "少ない",
+      "more": "多い"
+    },
+    "appUsage": {
+      "title": "デスクトップ使用状況",
+      "totalApps": "{{count}}個のアプリを使用"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "お使いのシステムへのおすすめ",
+    "reasons": {
+      "nvidiaGpu": "NVIDIA GPUで最速・最高精度のモデルを実行できます",
+      "highRamManyCores": "システムのメモリとCPUコア数が十分なため、より高い精度が得られます",
+      "moderateRam": "システムの利用可能なメモリに対してバランスの取れた選択です",
+      "lowRam": "システムの利用可能なメモリに対して最速の選択肢です"
+    }
   }
 }

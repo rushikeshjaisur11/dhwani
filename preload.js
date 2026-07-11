@@ -246,6 +246,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   setGpuDeviceIndex: (purpose, uuid) => ipcRenderer.invoke("set-gpu-device-index", purpose, uuid),
   getGpuDeviceIndex: (purpose) => ipcRenderer.invoke("get-gpu-device-index", purpose),
   detectGpu: () => ipcRenderer.invoke("detect-gpu"),
+  getRecommendedModel: () => ipcRenderer.invoke("get-recommended-model"),
   getCudaWhisperStatus: () => ipcRenderer.invoke("get-cuda-whisper-status"),
   downloadCudaWhisperBinary: () => ipcRenderer.invoke("download-cuda-whisper-binary"),
   cancelCudaWhisperDownload: () => ipcRenderer.invoke("cancel-cuda-whisper-download"),

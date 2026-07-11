@@ -2883,6 +2883,37 @@
     "averageWPM": "平均每分鐘字數",
     "wordsToday": "今日字數",
     "wordsThisWeek": "本週字數",
-    "dayStreak": "連續天數"
+    "dayStreak": "連續天數",
+    "wpmGauge": {
+      "title": "每分鐘字數",
+      "best": "最佳: {{value}}",
+      "pctOfBest": "達到最佳的{{pct}}%"
+    },
+    "fixes": {
+      "title": "自動修正次數",
+      "subtitle": "由 Dhwani 自動清理"
+    },
+    "totalWordsCard": {
+      "subtitle": "今天 {{today}} · 本週 {{week}}"
+    },
+    "streak": {
+      "title": "連續 {{count}} 天",
+      "longest": "最長連續: {{count}} 天",
+      "less": "少",
+      "more": "多"
+    },
+    "appUsage": {
+      "title": "桌面使用情況",
+      "totalApps": "使用了 {{count}} 個應用"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "為您的系統推薦",
+    "reasons": {
+      "nvidiaGpu": "您的 NVIDIA GPU 可以運行最快、最準確的模型",
+      "highRamManyCores": "您的系統有足夠的記憶體和 CPU 核心以獲得更高準確度",
+      "moderateRam": "適合您系統可用記憶體的均衡選擇",
+      "lowRam": "適合您系統可用記憶體的最快選項"
+    }
   }
 }

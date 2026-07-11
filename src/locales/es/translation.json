@@ -2888,6 +2888,37 @@
     "averageWPM": "PPM promedio",
     "wordsToday": "Palabras hoy",
     "wordsThisWeek": "Palabras esta semana",
-    "dayStreak": "Racha de días"
+    "dayStreak": "Racha de días",
+    "wpmGauge": {
+      "title": "Palabras por minuto",
+      "best": "Mejor: {{value}}",
+      "pctOfBest": "{{pct}}% de tu mejor marca"
+    },
+    "fixes": {
+      "title": "Correcciones realizadas",
+      "subtitle": "Limpiado automáticamente por Dhwani"
+    },
+    "totalWordsCard": {
+      "subtitle": "{{today}} hoy · {{week}} esta semana"
+    },
+    "streak": {
+      "title": "Racha de {{count}} días",
+      "longest": "Racha más larga: {{count}} días",
+      "less": "Menos",
+      "more": "Más"
+    },
+    "appUsage": {
+      "title": "Uso de escritorio",
+      "totalApps": "{{count}} apps usadas"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "Recomendado para tu sistema",
+    "reasons": {
+      "nvidiaGpu": "Tu GPU NVIDIA puede ejecutar el modelo más rápido y preciso",
+      "highRamManyCores": "Tu sistema tiene suficiente memoria y núcleos de CPU para mayor precisión",
+      "moderateRam": "Una opción equilibrada para la memoria disponible de tu sistema",
+      "lowRam": "La opción más rápida para la memoria disponible de tu sistema"
+    }
   }
 }

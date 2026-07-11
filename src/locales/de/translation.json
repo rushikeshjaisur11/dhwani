@@ -2888,6 +2888,37 @@
     "averageWPM": "Durchschnittliche WPM",
     "wordsToday": "Wörter heute",
     "wordsThisWeek": "Wörter diese Woche",
-    "dayStreak": "Tage-Serie"
+    "dayStreak": "Tage-Serie",
+    "wpmGauge": {
+      "title": "Wörter pro Minute",
+      "best": "Bestwert: {{value}}",
+      "pctOfBest": "{{pct}}% des Bestwerts"
+    },
+    "fixes": {
+      "title": "Korrekturen",
+      "subtitle": "Automatisch von Dhwani bereinigt"
+    },
+    "totalWordsCard": {
+      "subtitle": "{{today}} heute · {{week}} diese Woche"
+    },
+    "streak": {
+      "title": "{{count}} Tage in Folge",
+      "longest": "Längste Serie: {{count}} Tage",
+      "less": "Weniger",
+      "more": "Mehr"
+    },
+    "appUsage": {
+      "title": "Desktop-Nutzung",
+      "totalApps": "{{count}} Apps genutzt"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "Für Ihr System empfohlen",
+    "reasons": {
+      "nvidiaGpu": "Ihre NVIDIA-GPU kann das schnellste, genaueste Modell ausführen",
+      "highRamManyCores": "Ihr System hat genug Arbeitsspeicher und CPU-Kerne für höhere Genauigkeit",
+      "moderateRam": "Eine ausgewogene Wahl für den verfügbaren Speicher Ihres Systems",
+      "lowRam": "Die schnellste Option für den verfügbaren Speicher Ihres Systems"
+    }
   }
 }

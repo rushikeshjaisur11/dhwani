@@ -2507,6 +2507,37 @@
       "usage": "Your Usage",
       "voice": "Your Voice",
       "voiceComingSoon": "Voice insights are coming soon."
+    },
+    "wpmGauge": {
+      "title": "Words per minute",
+      "best": "Best: {{value}}",
+      "pctOfBest": "{{pct}}% of best"
+    },
+    "fixes": {
+      "title": "Fixes made",
+      "subtitle": "Cleaned up automatically by Dhwani"
+    },
+    "totalWordsCard": {
+      "subtitle": "{{today}} today · {{week}} this week"
+    },
+    "streak": {
+      "title": "{{count}} day streak",
+      "longest": "Longest: {{count}} days",
+      "less": "Less",
+      "more": "More"
+    },
+    "appUsage": {
+      "title": "Desktop usage",
+      "totalApps": "{{count}} apps used"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "Recommended for your system",
+    "reasons": {
+      "nvidiaGpu": "Your NVIDIA GPU can run the fastest, most accurate model",
+      "highRamManyCores": "Your system has enough memory and CPU cores for higher accuracy",
+      "moderateRam": "A balanced choice for your system's available memory",
+      "lowRam": "The fastest option for your system's available memory"
     }
   },
   "scratchpad": {

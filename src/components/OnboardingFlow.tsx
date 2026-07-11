@@ -130,6 +130,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const readableVoiceAgentKey = formatHotkeyLabel(voiceAgentKey);
   const { alertDialog, confirmDialog, showAlertDialog, hideAlertDialog, hideConfirmDialog } =
     useDialogs();
+
+  // Auto-select the whisper model recommended for this machine's hardware,
+  // but only if the user has never explicitly chosen one (localStorage default
+  // is always "base" via settingsStore, so we check raw storage instead).
+  useEffect(() => {
+    if (window.localStorage.getItem("whisperModel")) return;
+    window.electronAPI?.getRecommendedModel?.().then((result) => {
+      if (result?.modelId) {
+        updateTranscriptionSettings({ whisperModel: result.modelId });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
+  }, []);
   const [connectivityDialog, setConnectivityDialog] = useState<{
     open: boolean;
     cause: string;

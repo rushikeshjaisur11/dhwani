@@ -532,6 +532,7 @@ declare global {
           errorMessage?: string | null;
           errorCode?: TranscriptionErrorCode;
           clientTranscriptionId?: string;
+          targetApp?: string | null;
         }
       ) => Promise<{ id: number; success: boolean; transcription?: TranscriptionItem }>;
       getTranscriptions: (
@@ -547,6 +548,11 @@ declare global {
         wordsToday: number;
         wordsThisWeek: number;
         dayStreak: number;
+        longestStreak: number;
+        fixesMade: number;
+        personalBestWPM: number;
+        dailyActivity: Array<{ date: string; words: number; count: number }>;
+        appUsage: Array<{ app: string; count: number; words: number; pct: number }>;
       }>;
       getTranscriptionById: (id: number) => Promise<TranscriptionItem | null>;
 
@@ -782,6 +788,17 @@ declare global {
       ) => Promise<{ success: boolean }>;
       getGpuDeviceIndex?: (purpose: "transcription" | "intelligence") => Promise<string>;
       detectGpu: () => Promise<GpuInfo>;
+      getRecommendedModel: () => Promise<{
+        modelId: string;
+        reason: string;
+        profile: {
+          totalMemGb: number;
+          cpuCores: number;
+          platform: string;
+          hasNvidiaGpu: boolean;
+          vramMb: number;
+        };
+      }>;
       getCudaWhisperStatus: () => Promise<CudaWhisperStatus>;
       downloadCudaWhisperBinary: () => Promise<{ success: boolean; error?: string }>;
       cancelCudaWhisperDownload: () => Promise<{ success: boolean }>;

@@ -527,6 +527,11 @@ class DatabaseManager {
       } catch (err) {
         if (!err.message.includes("duplicate column")) throw err;
       }
+      try {
+        this.db.exec("ALTER TABLE transcriptions ADD COLUMN target_app TEXT");
+      } catch (err) {
+        if (!err.message.includes("duplicate column")) throw err;
+      }
 
       // Sync columns for custom_dictionary
       try {
@@ -612,6 +617,7 @@ class DatabaseManager {
       errorMessage = null,
       errorCode = null,
       clientTranscriptionId = randomUUID(),
+      targetApp = null,
     } = {}
   ) {
     try {
@@ -619,7 +625,7 @@ class DatabaseManager {
         throw new Error("Database not initialized");
       }
       const stmt = this.db.prepare(
-        "INSERT INTO transcriptions (text, raw_text, status, error_message, error_code, client_transcription_id) VALUES (?, ?, ?, ?, ?, ?)"
+        "INSERT INTO transcriptions (text, raw_text, status, error_message, error_code, client_transcription_id, target_app) VALUES (?, ?, ?, ?, ?, ?, ?)"
       );
       const result = stmt.run(
         text,
@@ -627,7 +633,8 @@ class DatabaseManager {
         status,
         errorMessage,
         errorCode,
-        clientTranscriptionId
+        clientTranscriptionId,
+        targetApp
       );
 
       const fetchStmt = this.db.prepare("SELECT * FROM transcriptions WHERE id = ?");
@@ -651,7 +658,7 @@ class DatabaseManager {
 
       const rows = this.db
         .prepare(
-          `SELECT text, timestamp, audio_duration_ms FROM transcriptions
+          `SELECT text, raw_text, timestamp, audio_duration_ms, target_app FROM transcriptions
            WHERE deleted_at IS NULL AND status = 'completed' AND text != ''`
         )
         .all();
@@ -667,17 +674,44 @@ class DatabaseManager {
       let totalDurationMs = 0;
       let wordsToday = 0;
       let wordsThisWeek = 0;
+      let fixesMade = 0;
+      let personalBestWPM = 0;
       const activeDayKeys = new Set();
+      const dailyActivityMap = new Map(); // dateKey -> { date, words, count }
+      const appUsageMap = new Map(); // app -> { count, words }
 
       for (const row of rows) {
         const words = countWords(row.text);
         totalWords += words;
-        if (row.audio_duration_ms) totalDurationMs += row.audio_duration_ms;
+        if (row.audio_duration_ms) {
+          totalDurationMs += row.audio_duration_ms;
+          const rowMinutes = row.audio_duration_ms / 60000;
+          if (rowMinutes > 0) {
+            personalBestWPM = Math.max(personalBestWPM, Math.round(words / rowMinutes));
+          }
+        }
+        if (row.raw_text && row.raw_text.trim() !== row.text.trim()) {
+          fixesMade += 1;
+        }
 
         const ts = new Date(row.timestamp);
-        activeDayKeys.add(ts.toDateString());
+        const dayKey = ts.toDateString();
+        activeDayKeys.add(dayKey);
         if (ts >= startOfToday) wordsToday += words;
         if (ts >= startOfWeek) wordsThisWeek += words;
+
+        const isoDate = ts.toISOString().slice(0, 10);
+        const dayEntry = dailyActivityMap.get(isoDate) ?? { date: isoDate, words: 0, count: 0 };
+        dayEntry.words += words;
+        dayEntry.count += 1;
+        dailyActivityMap.set(isoDate, dayEntry);
+
+        if (row.target_app) {
+          const appEntry = appUsageMap.get(row.target_app) ?? { app: row.target_app, count: 0, words: 0 };
+          appEntry.count += 1;
+          appEntry.words += words;
+          appUsageMap.set(row.target_app, appEntry);
+        }
       }
 
       let dayStreak = 0;
@@ -687,8 +721,32 @@ class DatabaseManager {
         cursor.setDate(cursor.getDate() - 1);
       }
 
+      let longestStreak = 0;
+      let currentRun = 0;
+      const sortedDayKeys = [...activeDayKeys]
+        .map((key) => new Date(key))
+        .sort((a, b) => a - b);
+      let previousDay = null;
+      for (const day of sortedDayKeys) {
+        if (previousDay && day - previousDay === 86400000) {
+          currentRun += 1;
+        } else {
+          currentRun = 1;
+        }
+        longestStreak = Math.max(longestStreak, currentRun);
+        previousDay = day;
+      }
+
       const totalMinutes = totalDurationMs / 60000;
       const averageWPM = totalMinutes > 0 ? Math.round(totalWords / totalMinutes) : 0;
+
+      const totalAppWords = [...appUsageMap.values()].reduce((sum, entry) => sum + entry.words, 0);
+      const appUsage = [...appUsageMap.values()]
+        .map((entry) => ({
+          ...entry,
+          pct: totalAppWords > 0 ? Math.round((entry.words / totalAppWords) * 100) : 0,
+        }))
+        .sort((a, b) => b.words - a.words);
 
       return {
         totalWords,
@@ -697,6 +755,11 @@ class DatabaseManager {
         wordsToday,
         wordsThisWeek,
         dayStreak,
+        longestStreak,
+        fixesMade,
+        personalBestWPM,
+        dailyActivity: [...dailyActivityMap.values()].sort((a, b) => (a.date < b.date ? -1 : 1)),
+        appUsage,
       };
     } catch (error) {
       debugLogger.error("Error computing insights stats", { error: error.message }, "database");
