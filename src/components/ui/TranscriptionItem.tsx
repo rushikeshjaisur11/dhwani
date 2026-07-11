@@ -262,23 +262,23 @@ export default function TranscriptionItem({
             <>
               <button
                 onClick={() => onCopy(item.text)}
-                className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
                 title={t("controlPanel.history.copyText")}
               >
                 <Copy size={14} />
               </button>
               <button
-                className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
                 title="Flag entry"
               >
                 <Flag size={14} />
               </button>
               <button
-                onClick={() => onDelete(item.id)}
-                className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-destructive transition-colors cursor-pointer"
-                title={t("controlPanel.history.deleteItem")}
+                onClick={handleDelete}
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-all cursor-pointer"
+                title={t("common.delete")}
               >
-                <MoreVertical size={14} />
+                <Trash2 size={14} strokeWidth={2.5} />
               </button>
             </>
           )}
