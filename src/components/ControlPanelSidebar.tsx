@@ -91,9 +91,6 @@ export default function ControlPanelSidebar({
           <div className="w-[3px] h-3.5 bg-foreground dark:bg-white rounded-full" />
         </div>
         <span className="font-bold tracking-tight text-lg text-foreground">Dhwani</span>
-        <span className="text-[10px] font-semibold bg-[#EDE4FB] text-[#2B1A47] px-2 py-0.5 rounded-[6px] ml-1 whitespace-nowrap">
-          Pro Trial
-        </span>
       </div>
 
       {WORKSPACES_ENABLED && (

@@ -216,7 +216,7 @@ class KDEShortcutManager {
       return false;
     }
 
-    // Modifier-only shortcuts (e.g. Control+Super) don't work on X11 â€”
+    // Modifier-only shortcuts (e.g. Control+Super) don't work on X11 —
     // XGrabKey requires an actual key code, not just modifiers.
     // On Wayland, KWin handles modifier-only natively, so allow them.
     const QT_MODIFIER_MASK = 0xfe000000;
@@ -252,7 +252,7 @@ class KDEShortcutManager {
             (aid) => Array.isArray(aid) && aid[0] !== COMPONENT_NAME
           );
           if (otherOwners.length > 0) {
-            debugLogger.log("[KDEShortcut] Shortcut conflict â€” key owned by another component", {
+            debugLogger.log("[KDEShortcut] Shortcut conflict — key owned by another component", {
               slot: slotName,
               hotkey: electronHotkey,
               owners: otherOwners.map((a) => a[0]),
@@ -261,7 +261,7 @@ class KDEShortcutManager {
           }
         }
       } catch (checkErr) {
-        // globalShortcutsByKey may not exist on older KDE â€” proceed without check
+        // globalShortcutsByKey may not exist on older KDE — proceed without check
         debugLogger.log(
           "[KDEShortcut] Could not check for conflicts, proceeding:",
           checkErr.message
@@ -280,7 +280,7 @@ class KDEShortcutManager {
       // another component owns it.
       const assignedKey = Array.isArray(result) && result.length > 0 ? result[0] : null;
       if (assignedKey !== null && assignedKey !== qtKey) {
-        debugLogger.log("[KDEShortcut] Shortcut conflict â€” setShortcut assigned different key", {
+        debugLogger.log("[KDEShortcut] Shortcut conflict — setShortcut assigned different key", {
           slot: slotName,
           requested: `0x${qtKey.toString(16)}`,
           assigned: `0x${assignedKey.toString(16)}`,

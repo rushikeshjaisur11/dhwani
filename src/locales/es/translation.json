@@ -197,7 +197,7 @@
       "systemAudioDescription": "Permite que el grabador de reuniones escuche al resto de participantes de tus llamadas: reuniones, clases, pÃ³dcasts. Puedes activarlo mÃ¡s tarde en Ajustes.",
       "optional": "Opcional",
       "recommended": "Recomendado",
-      "accessibilityTroubleshooting": "En ConfiguraciÃ³n del Sistema â†’ Accesibilidad, desactiva el interruptor de Dhwani y vuelve a activarlo. Si eso no funciona, elimina Dhwani de la lista y aÃ±Ã¡delo de nuevo. Â¿Sigues con problemas? Escribe a support@Dhwani.com."
+      "accessibilityTroubleshooting": "En ConfiguraciÃ³n del Sistema → Accesibilidad, desactiva el interruptor de Dhwani y vuelve a activarlo. Si eso no funciona, elimina Dhwani de la lista y aÃ±Ã¡delo de nuevo. Â¿Sigues con problemas? Escribe a support@Dhwani.com."
     },
     "transcription": {
       "title": "ConfiguraciÃ³n de transcripciÃ³n",
@@ -581,7 +581,7 @@
         "server": "Error del servidor ({{error}}). IntÃ©ntalo mÃ¡s tarde.",
         "generic": "FallÃ³ la descarga: {{error}}",
         "extractionFailed": "Modelo descargado, pero la instalaciÃ³n fallÃ³. Haz clic en descargar para reintentar la instalaciÃ³n sin volver a descargar.",
-        "tlsError": "Error de certificado â€” tu red puede usar inspecciÃ³n SSL que bloquea las descargas. Intenta descargar desde otra red.",
+        "tlsError": "Error de certificado — tu red puede usar inspecciÃ³n SSL que bloquea las descargas. Intenta descargar desde otra red.",
         "unknown": "Error desconocido"
       },
       "downloadFailed": {
@@ -737,7 +737,7 @@
       "continueWithApple": "Continuar con Apple",
       "continueWithGoogle": "Continuar con Google",
       "continueWithMicrosoft": "Continuar con Microsoft",
-      "protocolUnavailable": "Inicio de sesiÃ³n por navegador no disponible â€” vuelve a registrar el protocolo Dhwani:// en los ajustes de Aplicaciones predeterminadas del sistema."
+      "protocolUnavailable": "Inicio de sesiÃ³n por navegador no disponible — vuelve a registrar el protocolo Dhwani:// en los ajustes de Aplicaciones predeterminadas del sistema."
     },
     "welcomeSubtitle": "Dicta en cualquier lugar usando tu voz",
     "welcomeTitle": "Bienvenido a Dhwani",
@@ -1294,7 +1294,7 @@
       },
       "examplesTitle": "Ejemplos",
       "helper": "Elige algo corto y natural para decir en voz alta",
-      "howItWorksDescription": "Cuando dices \"Hey {{agentName}}\" seguido de una instrucciÃ³n, la IA ejecuta tu comando â€” redactando contenido, formateando texto o respondiendo preguntas â€” en lugar de transcribirlo literalmente.",
+      "howItWorksDescription": "Cuando dices \"Hey {{agentName}}\" seguido de una instrucciÃ³n, la IA ejecuta tu comando — redactando contenido, formateando texto o respondiendo preguntas — en lugar de transcribirlo literalmente.",
       "howItWorksTitle": "CÃ³mo funciona",
       "instructionMode": "InstrucciÃ³n",
       "placeholder": "p. ej. Jarvis, Nova, Atlas...",
@@ -1396,7 +1396,7 @@
       "clearDictionaryTitle": "Â¿Borrar diccionario?",
       "clearDictionaryDescription": "Esto eliminarÃ¡ todas las palabras de tu diccionario personalizado. Esta acciÃ³n no se puede deshacer.",
       "clearAll": "Borrar todo",
-      "agentNameAutoManaged": "Gestionado automÃ¡ticamente â€” sincronizado con el nombre del agente",
+      "agentNameAutoManaged": "Gestionado automÃ¡ticamente — sincronizado con el nombre del agente",
       "removeWord": "Eliminar palabra",
       "noWords": "AÃºn no hay palabras",
       "wordsAppearHere": "Las palabras que aÃ±adas aparecerÃ¡n aquÃ­",
@@ -1612,7 +1612,7 @@
         "newVersionAvailable": "Nueva versiÃ³n disponible",
         "restarting": "Reiniciando...",
         "title": "Actualizaciones",
-        "versionPlaceholder": "â€”",
+        "versionPlaceholder": "—",
         "whatsNew": "Novedades en v{{version}}"
       },
       "polishHotkey": {
@@ -1906,7 +1906,7 @@
         "lastUsed": "Ãšltimo uso {{date}}",
         "neverUsed": "Nunca utilizada",
         "keyCreatedTitle": "Clave API creada",
-        "keyCreatedDescription": "Copia esta clave ahora â€” no podrÃ¡s verla de nuevo."
+        "keyCreatedDescription": "Copia esta clave ahora — no podrÃ¡s verla de nuevo."
       }
     }
   },
@@ -2338,7 +2338,7 @@
     "exportDictionary": "Exportar diccionario",
     "exportFailed": "Error al exportar",
     "editWord": "Editar {{word}}",
-    "noMatches": "Sin coincidencias â€” pulsa Enter para aÃ±adir \"{{word}}\"",
+    "noMatches": "Sin coincidencias — pulsa Enter para aÃ±adir \"{{word}}\"",
     "tabDictionary": "Diccionario",
     "tabSnippets": "Snippets",
     "snippets": {
@@ -2437,7 +2437,7 @@
     "rollingLimit": "LÃ­mite semanal renovable",
     "upgradeToPro": "Actualizar a Pro",
     "useYourOwnKey": "Usar tu propia clave API",
-    "upgradeUnlimited": "Actualizar a Pro â€” transcripciones ilimitadas"
+    "upgradeUnlimited": "Actualizar a Pro — transcripciones ilimitadas"
   },
   "support": {
     "documentation": "DocumentaciÃ³n",
@@ -2658,7 +2658,7 @@
       "local": {
         "label": "Local",
         "freeBadge": "Gratis",
-        "description": "Lee tus notas locales directamente. Sin inicio de sesiÃ³n ni clave API â€” funciona mientras Dhwani estÃ© abierto."
+        "description": "Lee tus notas locales directamente. Sin inicio de sesiÃ³n ni clave API — funciona mientras Dhwani estÃ© abierto."
       },
       "cloud": {
         "label": "Nube",
@@ -2679,7 +2679,7 @@
     },
     "notABot": {
       "title": "Dhwani es un grabador de reuniones, no un bot",
-      "description": "Dhwani captura el audio directamente de tu sistema â€” nunca se une a tus reuniones como participante. Solo conecta tu calendario y toma notas con normalidad."
+      "description": "Dhwani captura el audio directamente de tu sistema — nunca se une a tus reuniones como participante. Solo conecta tu calendario y toma notas con normalidad."
     }
   },
   "calendar": {
@@ -2719,7 +2719,7 @@
     "signInDescription": "Crea una cuenta o inicia sesiÃ³n para grabar y transcribir reuniones.",
     "connectCalendar": "Conecta tu calendario",
     "connectCalendarDescription": "Vincula tu Google Calendar para ver prÃ³ximas reuniones y grabar notas automÃ¡ticamente.",
-    "notABot": "Dhwani graba usando el audio de tu sistema â€” nunca se une a las reuniones como un bot.",
+    "notABot": "Dhwani graba usando el audio de tu sistema — nunca se une a las reuniones como un bot.",
     "connectCalendarButton": "Conectar calendario"
   },
   "notesView": {

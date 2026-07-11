@@ -167,16 +167,16 @@
       "grant": "Conceder",
       "grantAccess": "Conceder acesso",
       "accessibilityTitle": "Acessibilidade",
-      "accessibilityDescription": "Digita o texto final diretamente no aplicativo em que vocÃª estiver â€” documentos, e-mail, chat.",
+      "accessibilityDescription": "Digita o texto final diretamente no aplicativo em que vocÃª estiver — documentos, e-mail, chat.",
       "testAndGrant": "Testar e conceder",
       "requiredForApp": "NecessÃ¡rio para o Dhwani funcionar",
       "microphoneRequired": "Acesso ao microfone necessÃ¡rio",
       "openSystemSettings": "Abrir ConfiguraÃ§Ãµes do Sistema",
       "systemAudioTitle": "Ãudio do Sistema",
-      "systemAudioDescription": "Permite que o gravador de reuniÃµes ouÃ§a o outro lado das suas chamadas â€” reuniÃµes, aulas, podcasts. VocÃª pode ativar depois nas ConfiguraÃ§Ãµes.",
+      "systemAudioDescription": "Permite que o gravador de reuniÃµes ouÃ§a o outro lado das suas chamadas — reuniÃµes, aulas, podcasts. VocÃª pode ativar depois nas ConfiguraÃ§Ãµes.",
       "optional": "Opcional",
       "recommended": "Recomendado",
-      "accessibilityTroubleshooting": "Em ConfiguraÃ§Ãµes do Sistema â†’ Acessibilidade, desative o interruptor do Dhwani e ative-o novamente. Se isso nÃ£o funcionar, remova o Dhwani da lista e adicione-o de volta. Ainda com problemas? Envie um e-mail para support@Dhwani.com."
+      "accessibilityTroubleshooting": "Em ConfiguraÃ§Ãµes do Sistema → Acessibilidade, desative o interruptor do Dhwani e ative-o novamente. Se isso nÃ£o funcionar, remova o Dhwani da lista e adicione-o de volta. Ainda com problemas? Envie um e-mail para support@Dhwani.com."
     },
     "transcription": {
       "title": "ConfiguraÃ§Ã£o de transcriÃ§Ã£o",
@@ -199,7 +199,7 @@
       "title": "ConfiguraÃ§Ã£o do agente de voz",
       "description": "Fale com seu agente de IA com um Ãºnico atalho",
       "hotkey": "Atalho",
-      "howItWorks": "Pressione a tecla e diga o que quer â€” por exemplo, â€œescreva uma breve nota de agradecimentoâ€. {{agentName}} escreve o resultado onde estiver o cursor. NÃ£o precisa dizer â€œHey {{agentName}}â€ antes.",
+      "howItWorks": "Pressione a tecla e diga o que quer — por exemplo, "escreva uma breve nota de agradecimentoâ€. {{agentName}} escreve o resultado onde estiver o cursor. NÃ£o precisa dizer "Hey {{agentName}}â€ antes.",
       "test": "Experimente",
       "testInstruction": "Clique abaixo, pressione {{hotkey}} e diga um comando",
       "testSetHotkey": "Defina um atalho acima para experimentar",
@@ -209,7 +209,7 @@
         "Escreva um e-mail curto para o meu chefe dizendo que quero uma promoÃ§Ã£o, ele se chama Mark",
         "Quanto Ã© 5 Ã— 5?"
       ],
-      "optionalNote": "Opcional â€” vocÃª pode definir ou alterar a qualquer momento nas configuraÃ§Ãµes."
+      "optionalNote": "Opcional — vocÃª pode definir ou alterar a qualquer momento nas configuraÃ§Ãµes."
     },
     "connectivity": {
       "title": "NÃ£o conseguimos acessar o Dhwani Cloud nesta rede",
@@ -219,7 +219,7 @@
     },
     "useCase": {
       "title": "O que traz vocÃª aqui?",
-      "description": "Somos uma equipe pequena lanÃ§ando melhorias toda semana. O que vocÃª escolher configura o app para vocÃª â€” e nos diz o que construir em seguida.",
+      "description": "Somos uma equipe pequena lanÃ§ando melhorias toda semana. O que vocÃª escolher configura o app para vocÃª — e nos diz o que construir em seguida.",
       "noteLabel": "Algo mais que gostaria de nos contar?",
       "notePlaceholder": "Opcional",
       "options": {
@@ -253,28 +253,28 @@
     "meeting": {
       "title": "Notas de reuniÃ£o",
       "description": "Capture e resuma suas reuniÃµes",
-      "autoDetect": "O Dhwani detecta automaticamente quando vocÃª estÃ¡ em uma reuniÃ£o e oferece iniciar notas â€” nada Ã© gravado sem vocÃª.",
+      "autoDetect": "O Dhwani detecta automaticamente quando vocÃª estÃ¡ em uma reuniÃ£o e oferece iniciar notas — nada Ã© gravado sem vocÃª.",
       "notification": {
         "title": "ReuniÃ£o detectada",
         "body": "Parece que vocÃª estÃ¡ em uma reuniÃ£o. Quer fazer anotaÃ§Ãµes?",
         "cta": "ComeÃ§ar a gravar"
       },
       "hotkeyLabel": "Atalho de reuniÃ£o",
-      "hotkeyHint": "Opcional â€” pressione-o em qualquer reuniÃ£o para iniciar uma nota na hora."
+      "hotkeyHint": "Opcional — pressione-o em qualquer reuniÃ£o para iniciar uma nota na hora."
     },
     "finish": {
       "title": "Tudo pronto",
-      "cloudDescription": "VocÃª estÃ¡ no Dhwani Cloud â€” rÃ¡pido, preciso, zero retenÃ§Ã£o de dados e 2.000 palavras grÃ¡tis por semana. Prefere tudo no seu dispositivo? Mude para o processamento local nas ConfiguraÃ§Ãµes.",
+      "cloudDescription": "VocÃª estÃ¡ no Dhwani Cloud — rÃ¡pido, preciso, zero retenÃ§Ã£o de dados e 2.000 palavras grÃ¡tis por semana. Prefere tudo no seu dispositivo? Mude para o processamento local nas ConfiguraÃ§Ãµes.",
       "localDescription": "VocÃª estÃ¡ configurado com processamento local ou sua prÃ³pria chave. Ajuste como seu Ã¡udio Ã© processado a qualquer momento nas ConfiguraÃ§Ãµes.",
       "cleanupNote": "A limpeza de texto por IA usa padrÃµes sensatos. VocÃª pode ajustÃ¡-la a qualquer momento nas ConfiguraÃ§Ãµes.",
       "openSettings": "Abrir ConfiguraÃ§Ãµes",
       "skipForNow": "Pular por enquanto",
       "corti": {
         "title": "VocÃª nos disse que estÃ¡ aqui pela transcriÃ§Ã£o clÃ­nica",
-        "description": "Firmamos parceria com a Corti â€” voz para texto de nÃ­vel clÃ­nico com a maior precisÃ£o e em conformidade com a HIPAA.",
+        "description": "Firmamos parceria com a Corti — voz para texto de nÃ­vel clÃ­nico com a maior precisÃ£o e em conformidade com a HIPAA.",
         "createAccount": "Crie sua conta Corti",
         "creditBadge": "US$ 50 de crÃ©dito grÃ¡tis",
-        "regionHint": "Escolha onde seu Ã¡udio Ã© processado â€” EUA ou UE.",
+        "regionHint": "Escolha onde seu Ã¡udio Ã© processado — EUA ou UE.",
         "useCorti": "Usar Corti",
         "skip": "Agora nÃ£o",
         "step1": "Cadastre-se em corti.ai",
@@ -288,11 +288,11 @@
       "cloudUnreachable": {
         "title": "NÃ£o foi possÃ­vel acessar o Dhwani Cloud",
         "generic": "A solicitaÃ§Ã£o de rede falhou. Verifique sua conexÃ£o.",
-        "dnsBlocked": "O DNS nÃ£o estÃ¡ resolvendo Dhwani.com â€” pode ser um bloqueador de anÃºncios ou filtro.",
-        "refused": "A conexÃ£o foi recusada â€” provavelmente um firewall ou VPN.",
-        "timeout": "Tempo limite da rede esgotado â€” VPN, portal cativo ou conexÃ£o instÃ¡vel.",
-        "tls": "Falha no handshake TLS â€” verifique o relÃ³gio do sistema ou um proxy corporativo.",
-        "fallback": "Cloud indisponÃ­vel â€” usando o motor local para esta gravaÃ§Ã£o."
+        "dnsBlocked": "O DNS nÃ£o estÃ¡ resolvendo Dhwani.com — pode ser um bloqueador de anÃºncios ou filtro.",
+        "refused": "A conexÃ£o foi recusada — provavelmente um firewall ou VPN.",
+        "timeout": "Tempo limite da rede esgotado — VPN, portal cativo ou conexÃ£o instÃ¡vel.",
+        "tls": "Falha no handshake TLS — verifique o relÃ³gio do sistema ou um proxy corporativo.",
+        "fallback": "Cloud indisponÃ­vel — usando o motor local para esta gravaÃ§Ã£o."
       }
     }
   },
@@ -322,8 +322,8 @@
     },
     "billing": {
       "pastDueTitle": "NÃ£o foi possÃ­vel processar seu pagamento",
-      "pastDueDescription": "Sem problemas â€” vocÃª estÃ¡ no plano gratuito por enquanto. Atualize o pagamento em ConfiguraÃ§Ãµes para voltar ao Pro.",
-      "bannerDescription": "VocÃª estÃ¡ no plano gratuito por enquanto â€” ainda tem {{limit}} palavras por semana. Atualize seu pagamento para voltar ao Pro.",
+      "pastDueDescription": "Sem problemas — vocÃª estÃ¡ no plano gratuito por enquanto. Atualize o pagamento em ConfiguraÃ§Ãµes para voltar ao Pro.",
+      "bannerDescription": "VocÃª estÃ¡ no plano gratuito por enquanto — ainda tem {{limit}} palavras por semana. Atualize seu pagamento para voltar ao Pro.",
       "updatePayment": "Atualizar pagamento"
     },
     "history": {
@@ -383,7 +383,7 @@
     },
     "cloudMigration": {
       "title": "Boas-vindas ao Dhwani Cloud",
-      "description": "Mudamos sua transcriÃ§Ã£o para o Dhwani Cloud para resultados mais rÃ¡pidos e precisos. Suas configuraÃ§Ãµes anteriores foram salvas â€” volte quando quiser em ConfiguraÃ§Ãµes.",
+      "description": "Mudamos sua transcriÃ§Ã£o para o Dhwani Cloud para resultados mais rÃ¡pidos e precisos. Suas configuraÃ§Ãµes anteriores foram salvas — volte quando quiser em ConfiguraÃ§Ãµes.",
       "viewSettings": "Ver configuraÃ§Ãµes"
     },
     "aiCta": {
@@ -560,7 +560,7 @@
         "server": "Erro do servidor ({{error}}). Tente mais tarde.",
         "generic": "Falha no download: {{error}}",
         "extractionFailed": "Modelo baixado, mas a instalaÃ§Ã£o falhou. Clique em baixar para tentar a instalaÃ§Ã£o novamente sem precisar baixar de novo.",
-        "tlsError": "Erro de certificado â€” sua rede pode usar inspeÃ§Ã£o SSL que bloqueia downloads. Tente baixar de outra rede.",
+        "tlsError": "Erro de certificado — sua rede pode usar inspeÃ§Ã£o SSL que bloqueia downloads. Tente baixar de outra rede.",
         "unknown": "Erro desconhecido"
       },
       "downloadFailed": {
@@ -628,7 +628,7 @@
         "windowsReady": "O Windows nÃ£o exige permissÃµes especiais para colagem automÃ¡tica. Tudo pronto!",
         "linuxReadyWithMethod": "A colagem automÃ¡tica estÃ¡ disponÃ­vel usando {{method}}. Tudo pronto!",
         "waylandClipboardMode": "A colagem automÃ¡tica nÃ£o estÃ¡ disponÃ­vel nesta sessÃ£o Wayland. O Dhwani copiarÃ¡ o texto para a Ã¡rea de transferÃªncia e vocÃª poderÃ¡ colar com Ctrl+V.",
-        "optionalPasteTool": "Para colagem automÃ¡tica, instale {{tool}}:\n\n{{installCmd}}{{waylandNote}}\n\nSem isso, vocÃª ainda pode usar o Dhwani â€” o texto serÃ¡ copiado para a Ã¡rea de transferÃªncia e vocÃª poderÃ¡ colar com Ctrl+V."
+        "optionalPasteTool": "Para colagem automÃ¡tica, instale {{tool}}:\n\n{{installCmd}}{{waylandNote}}\n\nSem isso, vocÃª ainda pode usar o Dhwani — o texto serÃ¡ copiado para a Ã¡rea de transferÃªncia e vocÃª poderÃ¡ colar com Ctrl+V."
       },
       "alerts": {
         "accessibilityNeeded": "PermissÃµes de acessibilidade necessÃ¡rias! Conceda nas configuraÃ§Ãµes do sistema."
@@ -717,7 +717,7 @@
       "continueWithApple": "Continuar com a Apple",
       "continueWithGoogle": "Continuar com o Google",
       "continueWithMicrosoft": "Continuar com a Microsoft",
-      "protocolUnavailable": "Login pelo navegador indisponÃ­vel â€” registre novamente o protocolo Dhwani:// nas configuraÃ§Ãµes de Aplicativos PadrÃ£o do sistema."
+      "protocolUnavailable": "Login pelo navegador indisponÃ­vel — registre novamente o protocolo Dhwani:// nas configuraÃ§Ãµes de Aplicativos PadrÃ£o do sistema."
     },
     "welcomeSubtitle": "Use sua voz para ditar em qualquer lugar",
     "welcomeTitle": "Boas-vindas ao Dhwani"
@@ -1075,8 +1075,8 @@
       "planDescriptions": {
         "freeUsage": "{{used}} / {{limit}} palavras esta semana",
         "nextBilling": "PrÃ³xima cobranÃ§a: {{date}}",
-        "pastDue": "{{used}} / {{limit}} palavras gratuitas esta semana â€” atualize o pagamento para restaurar o Pro",
-        "trial": "{{days}} dias restantes â€” transcriÃ§Ãµes ilimitadas",
+        "pastDue": "{{used}} / {{limit}} palavras gratuitas esta semana — atualize o pagamento para restaurar o Pro",
+        "trial": "{{days}} dias restantes — transcriÃ§Ãµes ilimitadas",
         "unlimited": "Ilimitado"
       },
       "planLabels": {
@@ -1225,7 +1225,7 @@
       },
       "examplesTitle": "Exemplos",
       "helper": "Escolha algo curto e natural de se dizer em voz alta",
-      "howItWorksDescription": "Quando vocÃª diz \"Ei {{agentName}}\" seguido de uma instruÃ§Ã£o, a IA executa seu comando â€” redigindo conteÃºdo, formatando texto ou respondendo perguntas â€” em vez de transcrevÃª-lo literalmente.",
+      "howItWorksDescription": "Quando vocÃª diz \"Ei {{agentName}}\" seguido de uma instruÃ§Ã£o, a IA executa seu comando — redigindo conteÃºdo, formatando texto ou respondendo perguntas — em vez de transcrevÃª-lo literalmente.",
       "howItWorksTitle": "Como funciona",
       "instructionMode": "InstruÃ§Ã£o",
       "placeholder": "ex.: Jarvis, Nova, Atlas...",
@@ -1316,7 +1316,7 @@
     },
     "dictionary": {
       "title": "DicionÃ¡rio personalizado",
-      "description": "Ensine Ã  IA o seu vocabulÃ¡rio â€” nomes, jargÃµes e termos que ela poderia nÃ£o reconhecer",
+      "description": "Ensine Ã  IA o seu vocabulÃ¡rio — nomes, jargÃµes e termos que ela poderia nÃ£o reconhecer",
       "addWordOrPhrase": "Adicionar palavra ou frase",
       "placeholder": "Adicionar uma palavra ou frase...",
       "add": "Adicionar",
@@ -1327,7 +1327,7 @@
       "clearDictionaryTitle": "Limpar dicionÃ¡rio?",
       "clearDictionaryDescription": "Isso removerÃ¡ todas as palavras do seu dicionÃ¡rio personalizado. Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
       "clearAll": "Limpar tudo",
-      "agentNameAutoManaged": "Gerenciado automaticamente â€” sincronizado com o nome do agente",
+      "agentNameAutoManaged": "Gerenciado automaticamente — sincronizado com o nome do agente",
       "removeWord": "Remover palavra",
       "noWords": "Nenhuma palavra ainda",
       "wordsAppearHere": "Palavras que vocÃª adicionar aparecerÃ£o aqui",
@@ -1380,7 +1380,7 @@
       },
       "voiceAgentHotkey": {
         "title": "Atalho do agente de voz",
-        "description": "Diga o que vocÃª precisa â€” seu agente de IA escreve o resultado, nÃ£o suas palavras"
+        "description": "Diga o que vocÃª precisa — seu agente de IA escreve o resultado, nÃ£o suas palavras"
       },
       "microphone": {
         "description": "Selecione qual dispositivo de entrada usar para ditado",
@@ -1543,7 +1543,7 @@
         "newVersionAvailable": "Nova versÃ£o disponÃ­vel",
         "restarting": "Reiniciando...",
         "title": "AtualizaÃ§Ãµes",
-        "versionPlaceholder": "â€”",
+        "versionPlaceholder": "—",
         "whatsNew": "Novidades na v{{version}}"
       },
       "polishHotkey": {
@@ -1600,7 +1600,7 @@
       "description": "Controle quais dados saem do seu dispositivo. Tudo estÃ¡ desativado por padrÃ£o.",
       "title": "Privacidade",
       "usageAnalytics": "AnÃ¡lise de uso",
-      "usageAnalyticsDescription": "Ajude-nos a melhorar o Dhwani compartilhando mÃ©tricas anÃ´nimas de desempenho. Nunca enviamos conteÃºdo de transcriÃ§Ã£o â€” apenas dados de tempo e erros.",
+      "usageAnalyticsDescription": "Ajude-nos a melhorar o Dhwani compartilhando mÃ©tricas anÃ´nimas de desempenho. Nunca enviamos conteÃºdo de transcriÃ§Ã£o — apenas dados de tempo e erros.",
       "dataRetention": "RetenÃ§Ã£o de dados",
       "dataRetentionDescription": "Armazenar transcriÃ§Ãµes e Ã¡udio localmente no seu histÃ³rico. Quando desativado, as transcriÃ§Ãµes sÃ£o coladas mas nÃ£o salvas.",
       "hoursAgo": "hÃ¡ {{count}}h",
@@ -1837,7 +1837,7 @@
         "lastUsed": "Ãšltimo uso {{date}}",
         "neverUsed": "Nunca utilizada",
         "keyCreatedTitle": "Clave API creada",
-        "keyCreatedDescription": "Copia esta clave ahora â€” no podrÃ¡s verla de nuevo."
+        "keyCreatedDescription": "Copia esta clave ahora — no podrÃ¡s verla de nuevo."
       }
     }
   },
@@ -1942,7 +1942,7 @@
   "upgradePrompt": {
     "paymentFailed": "NÃ£o foi possÃ­vel processar seu pagamento",
     "weeklyLimit": "VocÃª atingiu seu limite semanal",
-    "pastDueDescription": "VocÃª estÃ¡ no plano gratuito por enquanto â€” sem problemas, vocÃª ainda tem {{limit}} palavras por semana.\nAtualize sua forma de pagamento para voltar ao Pro ilimitado.",
+    "pastDueDescription": "VocÃª estÃ¡ no plano gratuito por enquanto — sem problemas, vocÃª ainda tem {{limit}} palavras por semana.\nAtualize sua forma de pagamento para voltar ao Pro ilimitado.",
     "limitDescription": "{{used}} de {{limit}} palavras usadas.\nSua transcriÃ§Ã£o foi salva e colada.",
     "updatePayment": "Atualizar forma de pagamento",
     "updatePaymentDescription": "Volte Ã s transcriÃ§Ãµes ilimitadas do Pro.",
@@ -2128,7 +2128,7 @@
       "chunkProgress": "Transcrevendo parte {{completed}} de {{total}}...",
       "paidPlanRequired": "A transcriÃ§Ã£o na nuvem para arquivos acima de 25 MB requer um plano pago. Arquivos grandes sÃ£o processados com o Dhwani Cloud para resultados confiÃ¡veis e de alta qualidade.",
       "byokTooLarge": "Chaves API de terceiros suportam apenas arquivos de atÃ© 25 MB.",
-      "byokTooLargeDetail": "Para arquivos acima de 25 MB, o Dhwani Cloud cuida da divisÃ£o, processamento paralelo e remontagem â€” para resultados confiÃ¡veis sem depender dos limites de provedores de terceiros.",
+      "byokTooLargeDetail": "Para arquivos acima de 25 MB, o Dhwani Cloud cuida da divisÃ£o, processamento paralelo e remontagem — para resultados confiÃ¡veis sem depender dos limites de provedores de terceiros.",
       "byokTooLargeNeedsAccount": "Crie uma conta e mude para um plano pago para transcrever arquivos maiores com o Dhwani Cloud.",
       "byokTooLargeNeedsUpgrade": "Mude para um plano pago para transcrever arquivos maiores com o Dhwani Cloud.",
       "switchToCloudForLargeFiles": "Mude para o Dhwani Cloud para transcrever este arquivo.",
@@ -2208,7 +2208,7 @@
       },
       "actions": {
         "title": "AÃ§Ãµes com IA",
-        "description": "As aÃ§Ãµes transformam suas notas â€” limpam transcriÃ§Ãµes, resumem reuniÃµes e muito mais. Use aÃ§Ãµes integradas ou crie as suas.",
+        "description": "As aÃ§Ãµes transformam suas notas — limpam transcriÃ§Ãµes, resumem reuniÃµes e muito mais. Use aÃ§Ãµes integradas ou crie as suas.",
         "builtInLabel": "Integrada",
         "createTitle": "Crie sua prÃ³pria aÃ§Ã£o",
         "createDescription": "Defina uma aÃ§Ã£o personalizada com seu prÃ³prio prompt de IA. VocÃª sempre pode editar ou adicionar mais nas configuraÃ§Ãµes.",
@@ -2278,7 +2278,7 @@
     "clearAll": "Limpar tudo",
     "clearTitle": "Limpar o dicionÃ¡rio?",
     "clearDescription": "Isso removerÃ¡ todas as palavras do seu dicionÃ¡rio personalizado. Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
-    "addPlaceholder": "Adicione palavras separadas por vÃ­rgulas â€” Dhwani, Supabase, John Snow, ARR",
+    "addPlaceholder": "Adicione palavras separadas por vÃ­rgulas — Dhwani, Supabase, John Snow, ARR",
     "add": "Adicionar",
     "importWords": "Importar palavras",
     "importPlaceholder": "Cole palavras separadas por vÃ­rgulas...",
@@ -2290,7 +2290,7 @@
     "exportDictionary": "Exportar dicionÃ¡rio",
     "exportFailed": "Falha ao exportar",
     "editWord": "Editar {{word}}",
-    "noMatches": "Nenhuma correspondÃªncia â€” pressione Enter para adicionar \"{{word}}\"",
+    "noMatches": "Nenhuma correspondÃªncia — pressione Enter para adicionar \"{{word}}\"",
     "tabDictionary": "DicionÃ¡rio",
     "tabSnippets": "Snippets",
     "snippets": {
@@ -2319,7 +2319,7 @@
         "signoffTrigger": "Assinatura",
         "signoffText": "AbraÃ§os, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "Adicione uma frase-gatilho â€” \"minha agenda\", \"meu LinkedIn\""
+      "addPlaceholder": "Adicione uma frase-gatilho — \"minha agenda\", \"meu LinkedIn\""
     },
     "emptyTitle": "Seu dicionÃ¡rio estÃ¡ vazio",
     "emptyDescription": "Adicione palavras que {{agentName}} deve sempre acertar: nomes, ferramentas, siglas.",
@@ -2389,7 +2389,7 @@
     "rollingLimit": "Limite semanal contÃ­nuo",
     "upgradeToPro": "Fazer upgrade para Pro",
     "useYourOwnKey": "Usar sua prÃ³pria chave API",
-    "upgradeUnlimited": "Fazer upgrade para Pro â€” transcriÃ§Ãµes ilimitadas"
+    "upgradeUnlimited": "Fazer upgrade para Pro — transcriÃ§Ãµes ilimitadas"
   },
   "support": {
     "documentation": "DocumentaÃ§Ã£o",
@@ -2610,7 +2610,7 @@
       "local": {
         "label": "Local",
         "freeBadge": "GrÃ¡tis",
-        "description": "Leia suas notas locais diretamente. Sem login ou chave de API â€” funciona enquanto o Dhwani estiver aberto."
+        "description": "Leia suas notas locais diretamente. Sem login ou chave de API — funciona enquanto o Dhwani estiver aberto."
       },
       "cloud": {
         "label": "Nuvem",
@@ -2631,7 +2631,7 @@
     },
     "notABot": {
       "title": "O Dhwani Ã© um gravador de reuniÃµes, nÃ£o um bot",
-      "description": "O Dhwani captura Ã¡udio diretamente do seu sistema â€” ele nunca entra nas suas reuniÃµes como participante. Basta conectar seu calendÃ¡rio e fazer anotaÃ§Ãµes normalmente."
+      "description": "O Dhwani captura Ã¡udio diretamente do seu sistema — ele nunca entra nas suas reuniÃµes como participante. Basta conectar seu calendÃ¡rio e fazer anotaÃ§Ãµes normalmente."
     }
   },
   "calendar": {
@@ -2671,7 +2671,7 @@
     "signInDescription": "Crie uma conta ou entre para gravar e transcrever reuniÃµes.",
     "connectCalendar": "Conecte seu calendÃ¡rio",
     "connectCalendarDescription": "Vincule seu Google Calendar para ver prÃ³ximas reuniÃµes e gravar notas automaticamente.",
-    "notABot": "O Dhwani grava usando o Ã¡udio do seu sistema â€” ele nunca entra nas reuniÃµes como um bot.",
+    "notABot": "O Dhwani grava usando o Ã¡udio do seu sistema — ele nunca entra nas reuniÃµes como um bot.",
     "connectCalendarButton": "Conectar calendÃ¡rio"
   },
   "notesView": {

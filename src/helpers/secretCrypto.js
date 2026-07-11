@@ -76,7 +76,7 @@ function _initKeychain() {
     return true;
   } catch (error) {
     debugLogger.warn(
-      "OS keychain unavailable â€” falling back to safeStorage",
+      "OS keychain unavailable — falling back to safeStorage",
       { error: error?.message, platform: process.platform },
       "secretCrypto"
     );
@@ -127,7 +127,7 @@ function decrypt(blob) {
       const value = Buffer.concat([decipher.update(ct), decipher.final()]).toString("utf8");
       return { value, needsReencrypt: false };
     } catch {
-      // Legacy safeStorage blob â€” handled by the fallback below.
+      // Legacy safeStorage blob — handled by the fallback below.
     }
   }
   if (safeStorage.isEncryptionAvailable()) {

@@ -128,7 +128,7 @@ async function ensureYdotool() {
     } catch {}
   }
 
-  // Something is missing â€” build an informative message
+  // Something is missing — build an informative message
   const missing = [];
 
   if (!hasYdotool) {

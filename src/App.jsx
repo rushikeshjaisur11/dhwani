@@ -482,12 +482,12 @@ export default function App() {
                 <VoiceWaveIndicator isListening={true} />
               ) : null}
 
-              {/* Listening ring â€” animated gradient sweep + slow rotation, Flow Bar style */}
+              {/* Listening ring — animated gradient sweep + slow rotation, Flow Bar style */}
               {(micState === "recording" || micState === "command") && (
                 <span className="flow-bar-ring flow-bar-ring--listening" aria-hidden="true" />
               )}
 
-              {/* Processing ring â€” shimmer sweep across the pill */}
+              {/* Processing ring — shimmer sweep across the pill */}
               {(micState === "processing" || micState === "command-processing") && (
                 <span className="flow-bar-ring flow-bar-ring--processing" aria-hidden="true" />
               )}

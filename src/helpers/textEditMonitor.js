@@ -24,9 +24,9 @@ const MACOS_AX_ENABLE_SCRIPT = (pid) =>
   `end tell`;
 
 // Returns the character before the cursor for smart-spacing. Output protocol:
-//   "OK:X"   â€” preceding char is X
-//   "START:" â€” cursor at field start, no preceding char
-//   ""       â€” unknown / read failed (caller falls back to append-mode spacing)
+//   "OK:X"   — preceding char is X
+//   "START:" — cursor at field start, no preceding char
+//   ""       — unknown / read failed (caller falls back to append-mode spacing)
 // AppleScript `character N` is 1-indexed; AXSelectedTextRange.location is
 // 0-indexed, so the char at offset (loc-1) is `character loc`.
 const MACOS_AX_PRECEDING_CHAR_SCRIPT = (pid) =>
@@ -149,7 +149,7 @@ class TextEditMonitor extends EventEmitter {
    * Cmd+V lands in its focused field (#668). Resolves true once the target is
    * confirmed frontmost. If it is already frontmost we do nothing: re-activating
    * an already-active Chromium app (e.g. Claude Desktop) drops its field's first
-   * responder â€” the focus loss this fixes â€” and skipping also avoids a needless
+   * responder — the focus loss this fixes — and skipping also avoids a needless
    * activation round-trip. Otherwise we activate and poll until the OS reports the
    * target frontmost, the macOS analogue of Linux's `xdotool windowactivate --sync`.
    */

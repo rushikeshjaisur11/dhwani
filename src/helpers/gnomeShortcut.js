@@ -261,7 +261,7 @@ class GnomeShortcutManager {
       const conflict = this.findConflictingBinding(shortcut, existing, keybindingPath);
       if (conflict) {
         debugLogger.log(
-          `[GnomeShortcut] Shortcut conflict â€” "${shortcut}" already used by "${conflict}"`,
+          `[GnomeShortcut] Shortcut conflict — "${shortcut}" already used by "${conflict}"`,
           {
             slot: slotName,
             conflictPath: conflict,
@@ -334,7 +334,7 @@ class GnomeShortcutManager {
       const conflict = this.findConflictingBinding(shortcut, existing, keybindingPath);
       if (conflict) {
         debugLogger.log(
-          `[GnomeShortcut] Shortcut conflict on update â€” "${shortcut}" already used by "${conflict}"`
+          `[GnomeShortcut] Shortcut conflict on update — "${shortcut}" already used by "${conflict}"`
         );
         return false;
       }

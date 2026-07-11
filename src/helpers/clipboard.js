@@ -155,7 +155,7 @@ class ClipboardManager {
   // PRIMARY selection (X11's "highlight to copy") is what terminals like alacritty,
   // foot, konsole, xterm, and st bind Shift+Insert to. Mirror the transcription
   // there so Shift+Insert pastes reliably regardless of which selection the
-  // terminal uses. Falls through wl-copy â†’ xclip â†’ xsel â†’ Electron's selection
+  // terminal uses. Falls through wl-copy → xclip → xsel → Electron's selection
   // target so we cover Wayland, X11, and XWayland setups.
   _writePrimarySelection(text) {
     if (process.platform !== "linux") return;
@@ -1406,7 +1406,7 @@ class ClipboardManager {
     const signalsMatch = (needle) => windowSignals.some((signal) => signal.includes(needle));
     const detectedIsKonsole = signalsMatch("konsole");
 
-    // Shift+Insert is the universal Linux paste shortcut â€” works in terminals and
+    // Shift+Insert is the universal Linux paste shortcut — works in terminals and
     // GUI apps, and (unlike Ctrl+V) is not intercepted by TUI agents like Codex,
     // Claude Code, or OpenCode as "paste image". Use it whenever the target window
     // can't be classified, or for Konsole which silently drops simulated Ctrl+Shift+V.
@@ -1954,7 +1954,7 @@ class ClipboardManager {
 â— COMMON ISSUE: If you've rebuilt/reinstalled Dhwani, the old permissions may be "stuck" and preventing new ones.
 
 ðŸ”§ To fix this:
-1. Open System Settings â†’ Privacy & Security â†’ Accessibility
+1. Open System Settings → Privacy & Security → Accessibility
 2. Look for ANY old "Dhwani" entries and REMOVE them (click the - button)
 3. Also remove any entries that say "Electron" or have unclear names
 4. Click the + button and manually add the NEW Dhwani app
@@ -1973,7 +1973,7 @@ Would you like to open System Settings now?`;
 
 ðŸ”§ To fix this:
 1. Open System Settings (or System Preferences on older macOS)
-2. Go to Privacy & Security â†’ Accessibility
+2. Go to Privacy & Security → Accessibility
 3. Click the lock icon and enter your password
 4. Add Dhwani to the list and check the box
 5. Restart Dhwani

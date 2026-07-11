@@ -120,7 +120,7 @@ export default function SidebarModal<T extends string>({
 
               {/* Sidebar */}
               <div
-                className={`${actualSidebarWidth} shrink-0 border-r border-border/40 dark:border-border-subtle flex flex-col bg-surface-1 dark:bg-surface-0 transition-[width] duration-200 ease-out`}
+                className={`${actualSidebarWidth} shrink-0 border-r border-border/40 dark:border-border-subtle flex flex-col bg-background transition-[width] duration-200 ease-out`}
               >
                 {/* Navigation */}
                 <nav
@@ -215,7 +215,7 @@ export default function SidebarModal<T extends string>({
               </div>
 
               {/* Main Content */}
-              <div className="flex-1 overflow-y-auto bg-background dark:bg-surface-1">
+              <div className="flex-1 overflow-y-auto bg-card">
                 <SettingsLayoutProvider value={{ isCompact }}>
                   <div className={isCompact ? "p-4" : "p-6"}>{children}</div>
                 </SettingsLayoutProvider>

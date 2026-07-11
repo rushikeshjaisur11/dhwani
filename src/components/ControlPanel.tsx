@@ -604,7 +604,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   };
 
   return (
-    <div className="h-screen bg-[#F4F4F3] dark:bg-[oklch(0.18_0.012_60)] flex flex-col">
+    <div className="h-screen bg-background flex flex-col">
       <MeetingRecordingMount />
       <MeetingRecordingPill
         activeView={activeView}
@@ -788,7 +788,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
         </div>
 
         {/* Main Content Card (Middle) */}
-        <main className="flex-1 flex flex-col overflow-hidden m-3 mt-0 mr-3 mb-3 bg-white dark:bg-[oklch(0.22_0.014_60)] rounded-[24px] border border-border/40 dark:border-white/5 shadow-sm">
+        <main className="flex-1 flex flex-col overflow-hidden m-3 mt-0 mr-3 mb-3 bg-card rounded-[24px] border border-border/40 dark:border-white/5 shadow-sm">
           {isSidePanelLayout && (
             <div
               className="h-12 flex items-center px-4 border-b border-border/10 shrink-0"

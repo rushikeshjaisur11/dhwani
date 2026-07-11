@@ -38,7 +38,7 @@ export default function ContextPanel({ activeView }: ContextPanelProps) {
   );
 
   return (
-    <div className="w-[280px] h-fit shrink-0 hidden lg:block m-3 mt-0 ml-0 p-5 rounded-[24px] bg-[#F9F9F8] dark:bg-[oklch(0.24_0.014_60)] border border-border/40 dark:border-white/5 shadow-sm space-y-5">
+    <div className="w-[280px] h-fit shrink-0 hidden lg:block m-3 mt-0 ml-0 p-5 rounded-[24px] bg-card border border-border/40 dark:border-white/5 shadow-sm space-y-5">
       {/* Statistics Grid */}
       <div className="space-y-4">
         <div className="flex items-baseline gap-2">

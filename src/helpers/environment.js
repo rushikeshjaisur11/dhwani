@@ -63,7 +63,7 @@ const PERSISTED_KEYS = [
   "VERTEX_LOCATION",
 ];
 
-// Module-level so writes are serialized across all instances â€” hotkeyManager
+// Module-level so writes are serialized across all instances — hotkeyManager
 // creates its own EnvironmentManager alongside the main.js singleton.
 let envWriteQueue = Promise.resolve();
 
@@ -143,7 +143,7 @@ class EnvironmentManager {
     } catch (error) {
       if (error.code === "ENOENT") return;
       debugLogger.error(
-        "Failed to decrypt secret â€” user must re-enter",
+        "Failed to decrypt secret — user must re-enter",
         { key: envVarName, code: error.code, error: error.message },
         "environment"
       );
@@ -204,7 +204,7 @@ class EnvironmentManager {
       }
     } catch (error) {
       debugLogger.error(
-        "Secret migration aborted â€” plaintext .env preserved",
+        "Secret migration aborted — plaintext .env preserved",
         { error: error.message, migrated },
         "environment"
       );
@@ -230,7 +230,7 @@ class EnvironmentManager {
   }
 
   async _writeEnvFile(envPath) {
-    // Only strip plaintext secrets once migration has fully completed â€”
+    // Only strip plaintext secrets once migration has fully completed —
     // otherwise a partial-migration recovery can lose unencrypted secrets.
     const stripSecrets =
       this._encryptionAvailable() && fs.existsSync(this._getMigrationSentinelPath());
@@ -365,7 +365,7 @@ class EnvironmentManager {
     return this._saveKey("CUSTOM_CLEANUP_API_KEY", key);
   }
 
-  // Enterprise providers â€” AWS Bedrock
+  // Enterprise providers — AWS Bedrock
   getBedrockRegion() {
     return this._getKey("BEDROCK_REGION");
   }
@@ -397,7 +397,7 @@ class EnvironmentManager {
     return this._saveKey("BEDROCK_SESSION_TOKEN", key);
   }
 
-  // Enterprise providers â€” Azure OpenAI
+  // Enterprise providers — Azure OpenAI
   getAzureEndpoint() {
     return this._getKey("AZURE_OPENAI_ENDPOINT");
   }
@@ -423,7 +423,7 @@ class EnvironmentManager {
     return this._saveKey("AZURE_OPENAI_API_VERSION", value);
   }
 
-  // Enterprise providers â€” GCP Vertex AI
+  // Enterprise providers — GCP Vertex AI
   getVertexProject() {
     return this._getKey("VERTEX_PROJECT");
   }
