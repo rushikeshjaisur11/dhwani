@@ -65,6 +65,8 @@ const MAIN_WINDOW_CONFIG = {
 const CONTROL_PANEL_CONFIG = {
   width: 1024,
   height: 768,
+  minWidth: 1024,
+  minHeight: 600,
   backgroundColor: "#faf7f1",
   webPreferences: {
     preload: path.join(__dirname, "..", "..", "preload.js"),
