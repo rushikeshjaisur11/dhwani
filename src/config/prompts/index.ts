@@ -11,6 +11,9 @@ export interface ResolvePromptOptions {
   uiLanguage?: string;
   language?: string;
   customDictionary?: string[];
+  activeApp?: string;
+  polishInstructions?: string[];
+  styleInstruction?: string;
 }
 
 export function resolvePrompt(kind: PromptKind, opts: ResolvePromptOptions): string {
@@ -43,9 +46,17 @@ export function appendDictionarySuffix(
 function applySubstitutions(template: string, opts: ResolvePromptOptions): string {
   const name = opts.agentName?.trim() || "Assistant";
   let prompt = template.replace(/\{\{agentName\}\}/g, name);
+  prompt = prompt.replace(/\{\{activeApp\}\}/g, opts.activeApp?.trim() || "");
+  prompt = prompt.replace(
+    /\{\{polishInstructions\}\}/g,
+    opts.polishInstructions?.length
+      ? opts.polishInstructions.map((i) => `- ${i}`).join("\n")
+      : "- Improve clarity and concision while preserving meaning"
+  );
 
   const langInstruction = getLanguageInstruction(opts.language);
   if (langInstruction) prompt += "\n\n" + langInstruction;
+  if (opts.styleInstruction) prompt += "\n\n" + opts.styleInstruction;
 
   return appendDictionarySuffix(prompt, opts.customDictionary, opts.uiLanguage);
 }

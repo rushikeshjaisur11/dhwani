@@ -88,6 +88,16 @@ const buttonVariants = cva(
           "dark:text-foreground/90 dark:hover:bg-white/8",
         ].join(" "),
 
+        // CTA — solid black pill button (Wispr-style primary promo CTA)
+        cta: [
+          "relative text-[var(--color-cta-text)] font-semibold tracking-[0.005em]",
+          "bg-[var(--color-cta-bg)] rounded-[var(--radius-pill)]",
+          "shadow-sm",
+          "hover:opacity-90",
+          "active:opacity-80 active:scale-[0.985]",
+          "transition-[opacity,transform] duration-200 ease-out",
+        ].join(" "),
+
         // Link — uses design tokens
         link: [
           "font-medium",

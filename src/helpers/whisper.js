@@ -189,13 +189,13 @@ class WhisperManager {
       }
     }
 
-    debugLogger.info("OpenWhispr dependency check", status);
+    debugLogger.info("Dhwani dependency check", status);
 
     // Log a summary for easy scanning
     const serverStatus = status.whisperServer.available
-      ? `✓ ${status.whisperServer.path}`
-      : "✗ Not found";
-    const ffmpegStatus = status.ffmpeg.available ? `✓ ${status.ffmpeg.path}` : "✗ Not found";
+      ? `âœ“ ${status.whisperServer.path}`
+      : "âœ— Not found";
+    const ffmpegStatus = status.ffmpeg.available ? `âœ“ ${status.ffmpeg.path}` : "âœ— Not found";
     const modelsStatus =
       status.models.length > 0
         ? status.models.map((m) => `${m.name} (${m.size})`).join(", ")
@@ -296,7 +296,9 @@ class WhisperManager {
     }
 
     await this.serverManager.start(modelPath, {
-      useCuda: this.serverManager.useCuda,
+      // Lazy start must resolve CUDA from the user's setting — a stopped
+      // server's useCuda is always false (see #cuda-fallback for the retry).
+      useCuda: this.serverManager.useCuda || process.env.WHISPER_CUDA_ENABLED === "true",
       vadEnabled,
       vadModelPath,
       vadConfig: options.vadConfig || null,

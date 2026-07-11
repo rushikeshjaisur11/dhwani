@@ -5,6 +5,12 @@ const DEFAULT_CHAT_AGENT_PROMPT =
   "Keep answers brief unless the user asks for detail. " +
   "You may be given a transcription of spoken input, so handle informal phrasing gracefully.";
 
+const DEFAULT_POLISH_PROMPT =
+  "You are rewriting a piece of text the user just selected in another application. " +
+  "Apply the requested edits below, but preserve the original meaning, facts, and " +
+  "any code, names, or formatting that shouldn't change. Return only the rewritten " +
+  "text with no preamble, quotes, or explanation.\n\nRequested edits:\n{{polishInstructions}}";
+
 export const PROMPT_KINDS = {
   cleanup: {
     i18nKey: "cleanupPrompt" as const,
@@ -17,6 +23,10 @@ export const PROMPT_KINDS = {
   chatAgent: {
     i18nKey: null,
     fallback: DEFAULT_CHAT_AGENT_PROMPT,
+  },
+  polish: {
+    i18nKey: null,
+    fallback: DEFAULT_POLISH_PROMPT,
   },
 } as const satisfies Record<string, { i18nKey: keyof PromptBundle | null; fallback: string }>;
 

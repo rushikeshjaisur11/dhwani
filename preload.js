@@ -28,8 +28,29 @@ contextBridge.exposeInMainWorld("electronAPI", {
   showDictationPanel: () => ipcRenderer.invoke("show-dictation-panel"),
   onToggleDictation: registerListener("toggle-dictation", (callback) => () => callback()),
   onToggleVoiceAgent: registerListener("toggle-voice-agent", (callback) => () => callback()),
+  onTriggerPolish: registerListener("trigger-polish", (callback) => () => callback()),
   onStartDictation: registerListener("start-dictation", (callback) => () => callback()),
   onStopDictation: registerListener("stop-dictation", (callback) => () => callback()),
+
+  // Tray menu sync (Microphone / Languages submenus + settings deep link)
+  registerPasteLastTranscriptHotkey: (hotkey) =>
+    ipcRenderer.invoke("register-paste-last-transcript-hotkey", hotkey),
+  getPasteLastTranscriptKey: () => ipcRenderer.invoke("get-paste-last-transcript-key"),
+  syncTrayMicrophones: (devices, selectedId) =>
+    ipcRenderer.send("tray-sync-microphones", devices, selectedId),
+  syncTrayLanguage: (selectedCode) => ipcRenderer.send("tray-sync-language", selectedCode),
+  onTraySelectMicrophone: registerListener(
+    "tray-select-microphone",
+    (callback) => (_event, deviceId) => callback(deviceId)
+  ),
+  onTraySelectLanguage: registerListener(
+    "tray-select-language",
+    (callback) => (_event, code) => callback(code)
+  ),
+  onOpenSettingsSection: registerListener(
+    "open-settings-section",
+    (callback) => (_event, section) => callback(section)
+  ),
 
   // Database functions
   saveTranscription: (text, rawText, options) =>
@@ -38,6 +59,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("db-get-transcriptions", limit, options),
   clearTranscriptions: () => ipcRenderer.invoke("db-clear-transcriptions"),
   deleteTranscription: (id) => ipcRenderer.invoke("db-delete-transcription", id),
+  getInsightsStats: () => ipcRenderer.invoke("db-get-insights-stats"),
 
   // Audio storage functions
   saveTranscriptionAudio: (id, audioBuffer, metadata) =>
@@ -124,6 +146,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   updateAction: (id, updates) => ipcRenderer.invoke("db-update-action", id, updates),
   deleteAction: (id) => ipcRenderer.invoke("db-delete-action", id),
 
+  // Foreground app detection (app-aware cleanup)
+  getForegroundApp: () => ipcRenderer.invoke("get-foreground-app"),
+
   // Audio file operations
   selectAudioFile: () => ipcRenderer.invoke("select-audio-file"),
   getFileSize: (filePath) => ipcRenderer.invoke("get-file-size", filePath),
@@ -194,6 +219,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   promptAccessibilityPermission: () => ipcRenderer.invoke("prompt-accessibility-permission"),
   readClipboard: () => ipcRenderer.invoke("read-clipboard"),
   writeClipboard: (text) => ipcRenderer.invoke("write-clipboard", text),
+  captureSelectedText: () => ipcRenderer.invoke("capture-selected-text"),
   checkPasteTools: () => ipcRenderer.invoke("check-paste-tools"),
 
   // Local Whisper functions (whisper.cpp)
@@ -220,6 +246,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   setGpuDeviceIndex: (purpose, uuid) => ipcRenderer.invoke("set-gpu-device-index", purpose, uuid),
   getGpuDeviceIndex: (purpose) => ipcRenderer.invoke("get-gpu-device-index", purpose),
   detectGpu: () => ipcRenderer.invoke("detect-gpu"),
+  getRecommendedModel: () => ipcRenderer.invoke("get-recommended-model"),
   getCudaWhisperStatus: () => ipcRenderer.invoke("get-cuda-whisper-status"),
   downloadCudaWhisperBinary: () => ipcRenderer.invoke("download-cuda-whisper-binary"),
   cancelCudaWhisperDownload: () => ipcRenderer.invoke("cancel-cuda-whisper-download"),
@@ -696,6 +723,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   notifyActivationModeChanged: (mode) => ipcRenderer.send("activation-mode-changed", mode),
   notifyHotkeyChanged: (hotkey) => ipcRenderer.send("hotkey-changed", hotkey),
   registerMeetingHotkey: (hotkey) => ipcRenderer.invoke("register-meeting-hotkey", hotkey),
+  registerPolishHotkey: (hotkey) => ipcRenderer.invoke("register-polish-hotkey", hotkey),
+  getPolishKey: () => ipcRenderer.invoke("get-polish-key"),
 
   // Floating icon auto-hide
   notifyFloatingIconAutoHideChanged: (enabled) =>

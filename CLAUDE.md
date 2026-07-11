@@ -1,10 +1,10 @@
-# OpenWhispr Technical Reference for AI Assistants
+# Dhwani Technical Reference for AI Assistants
 
-This document provides comprehensive technical details about the OpenWhispr project architecture for AI assistants working on the codebase.
+This document provides comprehensive technical details about the Dhwani project architecture for AI assistants working on the codebase.
 
 ## Project Overview
 
-OpenWhispr is an Electron-based desktop dictation application that uses whisper.cpp for speech-to-text transcription. It supports both local (privacy-focused) and cloud (OpenAI API) processing modes.
+Dhwani is an Electron-based desktop dictation application that uses whisper.cpp for speech-to-text transcription. It supports both local (privacy-focused) and cloud (OpenAI API) processing modes. It is a fork of [OpenWhispr](https://github.com/OpenWhispr/openwhispr); some upstream identifiers (auth/API hosts, prebuilt-binary source repos) are intentionally kept — see the "Kept OpenWhispr references" note near the end of this file.
 
 ## Architecture Overview
 
@@ -75,7 +75,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
   - Converts Electron hotkey format to GNOME keysym format
   - Only active on Linux + Wayland + GNOME desktop
 - **hyprlandShortcut.js**: Hyprland Wayland global shortcut integration
-  - Uses D-Bus service to receive hotkey toggle commands (same `com.openwhispr.App` service)
+  - Uses D-Bus service to receive hotkey toggle commands (same `com.dhwani.App` service)
   - Registers shortcuts via `hyprctl keyword bind` (runtime keybinding)
   - Converts Electron hotkey format to Hyprland bind format (`MODS, key`)
   - Only active on Linux + Wayland + Hyprland (detected via `HYPRLAND_INSTANCE_SIGNATURE`)
@@ -112,7 +112,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
 - **vectorIndex.js**: Qdrant collection management — upsert, delete, search, batch reindex
 - **windowConfig.js**: Centralized window configuration
 - **windowManager.js**: Window creation and lifecycle management
-- **cliBridge.js**: Loopback HTTP server on ports 8200–8219, bearer-token auth (token at `~/.openwhispr/cli-bridge.json`), 127.0.0.1-only. Used by the unified CLI to talk to a running desktop app.
+- **cliBridge.js**: Loopback HTTP server on ports 8200–8219, bearer-token auth (token at `~/.dhwani/cli-bridge.json`), 127.0.0.1-only. Used by the unified CLI to talk to a running desktop app.
 - **postMigrationDetector.js**: Detects users returning from the pre-Gizmo bundle ID via a `.bundle-migrated` sentinel in userData; consumed by `ipcHandlers.js` to drive the `PostMigrationOnboarding` modal
 
 ### React Components (src/components/)
@@ -153,7 +153,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
   - Bundled binaries in `resources/bin/whisper-cpp-{platform}-{arch}`
   - Falls back to system installation (`brew install whisper-cpp`)
   - GGML model downloads from HuggingFace
-  - Models stored in `~/.cache/openwhispr/whisper-models/`
+  - Models stored in `~/.cache/dhwani/whisper-models/`
 
 ### NVIDIA Parakeet Integration (via sherpa-onnx)
 
@@ -161,7 +161,7 @@ OpenWhispr is an Electron-based desktop dictation application that uses whisper.
   - Uses sherpa-onnx runtime for cross-platform ONNX inference
   - Bundled binaries in `resources/bin/sherpa-onnx-{platform}-{arch}`
   - INT8 quantized models for efficient CPU inference
-  - Models stored in `~/.cache/openwhispr/parakeet-models/`
+  - Models stored in `~/.cache/dhwani/parakeet-models/`
   - Server pre-warming on startup when `LOCAL_TRANSCRIPTION_PROVIDER=nvidia` is set
   - Provider preference persisted to `.env` via `saveAllKeysToEnvFile()` on server start/stop
 
@@ -192,9 +192,9 @@ Always-on offline semantic search that finds notes by meaning, not just keywords
 
 **Storage**:
 
-- Qdrant data: `~/.cache/openwhispr/qdrant-data/`
+- Qdrant data: `~/.cache/dhwani/qdrant-data/`
 - Qdrant binary: `resources/bin/qdrant-{platform}-{arch}` (bundled — downloaded during `prebuild` / `predev`)
-- Embedding model: `~/.cache/openwhispr/embedding-models/all-MiniLM-L6-v2/` (auto-downloaded on first launch)
+- Embedding model: `~/.cache/dhwani/embedding-models/all-MiniLM-L6-v2/` (auto-downloaded on first launch)
 
 **Dependencies**: `@qdrant/js-client-rest`, `onnxruntime-node`
 
@@ -244,7 +244,7 @@ FFmpeg is bundled with the app and doesn't require system installation:
 
 ### 3. Local Whisper Models (GGML format)
 
-Models stored in `~/.cache/openwhispr/whisper-models/`:
+Models stored in `~/.cache/dhwani/whisper-models/`:
 
 - tiny: ~75MB (fastest, lowest quality)
 - base: ~142MB (recommended balance)
@@ -465,21 +465,21 @@ Improve transcription accuracy for specific words, names, or technical terms:
 
 ### 14. GNOME Wayland Global Hotkeys
 
-On GNOME Wayland, Electron's `globalShortcut` API doesn't work due to Wayland's security model. OpenWhispr uses native GNOME shortcuts:
+On GNOME Wayland, Electron's `globalShortcut` API doesn't work due to Wayland's security model. Dhwani uses native GNOME shortcuts:
 
 **Architecture**:
 
 1. `main.js` enables `GlobalShortcutsPortal` feature flag for Wayland
 2. `hotkeyManager.js` detects GNOME + Wayland and initializes `GnomeShortcutManager`
-3. `gnomeShortcut.js` creates D-Bus service at `com.openwhispr.App`
+3. `gnomeShortcut.js` creates D-Bus service at `com.dhwani.App`
 4. Shortcuts registered via `gsettings` as custom GNOME keybindings
 5. GNOME triggers `dbus-send` command which calls the D-Bus `Toggle()` method
 
 **Key Constants**:
 
-- D-Bus service: `com.openwhispr.App`
-- D-Bus path: `/com/openwhispr/App`
-- gsettings path: `/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/openwhispr/`
+- D-Bus service: `com.dhwani.App`
+- D-Bus path: `/com/dhwani/App`
+- gsettings path: `/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dhwani/`
 
 **IPC Integration**:
 
@@ -495,13 +495,13 @@ On GNOME Wayland, Electron's `globalShortcut` API doesn't work due to Wayland's 
 
 ### 15. Hyprland Wayland Global Hotkeys
 
-On Hyprland (wlroots Wayland compositor), Electron's `globalShortcut` API and the `GlobalShortcutsPortal` feature don't work reliably. OpenWhispr uses native Hyprland keybindings:
+On Hyprland (wlroots Wayland compositor), Electron's `globalShortcut` API and the `GlobalShortcutsPortal` feature don't work reliably. Dhwani uses native Hyprland keybindings:
 
 **Architecture**:
 
 1. `main.js` enables `GlobalShortcutsPortal` feature flag for Wayland (fallback)
 2. `hotkeyManager.js` detects Hyprland + Wayland and initializes `HyprlandShortcutManager`
-3. `hyprlandShortcut.js` creates D-Bus service at `com.openwhispr.App` (same as GNOME)
+3. `hyprlandShortcut.js` creates D-Bus service at `com.dhwani.App` (same as GNOME)
 4. Shortcuts registered via `hyprctl keyword bind` (runtime keybinding)
 5. Hyprland triggers `dbus-send` command which calls the D-Bus `Toggle()` method
 
@@ -618,7 +618,7 @@ const { t } = useTranslation();
 1. Every new UI string must have a translation key in `en/translation.json` and all other language files
 2. Use `useTranslation()` hook in components and hooks
 3. Keep `{{variable}}` interpolation syntax for dynamic values
-4. Do NOT translate: brand names (OpenWhispr, Pro), technical terms (Markdown, Signal ID), format names (MP3, WAV), AI system prompts
+4. Do NOT translate: brand names (Dhwani, Pro), technical terms (Markdown, Signal ID), format names (MP3, WAV), AI system prompts
 5. Group keys by feature area (e.g., `notes.editor.*`, `referral.toasts.*`)
 
 ### Adding New Features
@@ -696,7 +696,7 @@ const { t } = useTranslation();
 
 7. **Local Semantic Search Not Working**:
    - Qdrant binary should be in `resources/bin/qdrant-{platform}-{arch}` (auto-downloaded during `predev`/`prebuild`)
-   - Embedding model should be in `~/.cache/openwhispr/embedding-models/all-MiniLM-L6-v2/model.onnx` (auto-downloaded on first app launch)
+   - Embedding model should be in `~/.cache/dhwani/embedding-models/all-MiniLM-L6-v2/model.onnx` (auto-downloaded on first app launch)
    - Run `npm run download:qdrant` and `npm run download:embedding-model` manually if missing
    - Check debug logs for "qdrant" entries (port, health check, errors)
    - If Qdrant fails to start, search still works via FTS5 keyword fallback
@@ -786,3 +786,29 @@ const { t } = useTranslation();
 - Cloud model selection
 - Batch transcription
 - Export formats beyond clipboard
+
+## Kept OpenWhispr references
+
+Dhwani is a fork of [OpenWhispr](https://github.com/OpenWhispr/openwhispr). Most branding, identifiers,
+and local paths have been renamed to Dhwani (`scripts/check-brand.js` guards against regressions). A
+few references to "OpenWhispr" remain **intentionally** because they point at real infrastructure this
+fork doesn't own or duplicate — renaming them would break the feature, not just the branding:
+
+- **`auth.openwhispr.com` / `api.openwhispr.com`** (`main.js`, `src/config/constants.ts`,
+  `src/lib/auth.ts`) — the real hosted "OpenWhispr Cloud" backend (sign-in, cloud reasoning proxy via
+  Groq/OpenRouter). The `openwhispr` inference provider (`src/services/ai/inferenceProviders/openwhispr.ts`)
+  and `VITE_OPENWHISPR_API_URL` talk to this service. There is currently no sign-in UI to reach it, but the
+  plumbing is real, not dead code — deleting it removes a working feature, not just a brand leak.
+- **`openwhispr://` / `openwhispr-dev` / `openwhispr-staging` deep-link schemes** (`main.js`,
+  `googleCalendarOAuth.js`) — the OAuth desktop-callback page hosted at `openwhispr.com` hardcodes a
+  redirect to this scheme. Renaming it locally without controlling that page breaks the Google Calendar
+  OAuth return flow (and any future OpenWhispr Cloud sign-in).
+- **`OpenWhispr/openwhispr` and `OpenWhispr/whisper.cpp` GitHub repos** (`scripts/download-*.js`,
+  `menuManager.js`, `whisperCudaManager.js`) — prebuilt binaries are genuinely downloaded from these
+  upstream release pages. Purging these would break `predev`/`prebuild` binary downloads unless the
+  binaries are re-hosted or the repos are forked under this project's org — not done here.
+
+Everything else — userData/cache directories, the CLI bridge file, the Linux D-Bus service names, the
+macOS/Windows app identity, log-level env var, and all UI-facing text — has been renamed to Dhwani, with
+one-time migrations where a rename would otherwise orphan existing local data (see `modelDirUtils.js`,
+`main.js`'s `configureChannelUserDataPath`).

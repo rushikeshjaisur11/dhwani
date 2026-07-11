@@ -13,6 +13,7 @@ export const useAudioRecording = (toast, options = {}) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isCommandMode, setIsCommandMode] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [partialTranscript, setPartialTranscript] = useState("");
   const audioManagerRef = useRef(null);
@@ -30,6 +31,7 @@ export const useAudioRecording = (toast, options = {}) => {
       if (currentState.isRecording || currentState.isProcessing) return false;
 
       audioManagerRef.current.setVoiceAgentRequested(voiceAgentRequested);
+      setIsCommandMode(voiceAgentRequested);
 
       // Retry STT config fetch if it wasn't loaded on mount (e.g. auth wasn't ready)
       if (!audioManagerRef.current.sttConfig) {
@@ -94,6 +96,7 @@ export const useAudioRecording = (toast, options = {}) => {
         setIsRecording(isRecording);
         setIsProcessing(isProcessing);
         setIsStreaming(isStreaming ?? false);
+        if (!isRecording && !isProcessing) setIsCommandMode(false);
         if (!isStreaming) {
           setPartialTranscript("");
         }
@@ -143,6 +146,17 @@ export const useAudioRecording = (toast, options = {}) => {
           const isStreaming = result.source?.includes("streaming");
           const { autoPasteEnabled, keepTranscriptionInClipboard } = getSettings();
 
+          // The renderer window usually isn't focused while dictating into another
+          // app, and Clipboard.writeText throws NotAllowedError without focus —
+          // catch it here so a clipboard failure can't skip saveTranscription below.
+          const writeClipboard = async (text) => {
+            try {
+              await navigator.clipboard.writeText(text);
+            } catch (error) {
+              logger.warn("Clipboard write failed", { error: error?.message }, "clipboard");
+            }
+          };
+
           if (autoPasteEnabled) {
             const pasteStart = performance.now();
             await audioManagerRef.current.safePaste(result.text, {
@@ -160,7 +174,7 @@ export const useAudioRecording = (toast, options = {}) => {
               "streaming"
             );
           } else if (keepTranscriptionInClipboard) {
-            await navigator.clipboard.writeText(result.text);
+            await writeClipboard(result.text);
           }
 
           audioManagerRef.current.saveTranscription(result.text, result.rawText ?? result.text, {
@@ -172,18 +186,6 @@ export const useAudioRecording = (toast, options = {}) => {
               title: t("hooks.audioRecording.fallback.title"),
               description: t("hooks.audioRecording.fallback.description"),
               variant: "default",
-            });
-          }
-
-          // Cloud usage: limit reached after this transcription
-          if (result.source === "openwhispr" && result.limitReached) {
-            // Notify control panel to show UpgradePrompt dialog
-            window.electronAPI?.notifyLimitReached?.({
-              wordsUsed: result.wordsUsed,
-              limit:
-                result.wordsRemaining !== undefined
-                  ? result.wordsUsed + result.wordsRemaining
-                  : 2000,
             });
           }
 
@@ -306,6 +308,7 @@ export const useAudioRecording = (toast, options = {}) => {
     isRecording,
     isProcessing,
     isStreaming,
+    isCommandMode,
     transcript,
     partialTranscript,
     startRecording: performStartRecording,

@@ -246,14 +246,14 @@ class ClipboardManager {
     for (const nircmdPath of possiblePaths) {
       try {
         if (fs.existsSync(nircmdPath)) {
-          this.safeLog(`✅ Found nircmd.exe at: ${nircmdPath}`);
+          this.safeLog(`âœ… Found nircmd.exe at: ${nircmdPath}`);
           this.nircmdPath = nircmdPath;
           return nircmdPath;
         }
       } catch {}
     }
 
-    this.safeLog("⚠️ nircmd.exe not found, will use PowerShell fallback");
+    this.safeLog("âš ï¸ nircmd.exe not found, will use PowerShell fallback");
     return null;
   }
 
@@ -629,7 +629,7 @@ class ClipboardManager {
     } else {
       clipboard.writeText(original.data);
     }
-    this.safeLog("🔄 Clipboard restored");
+    this.safeLog("ðŸ”„ Clipboard restored");
   }
 
   async _restoreClipboardAfterDelay(original, { delayMs, expectedText, restore } = {}) {
@@ -733,7 +733,7 @@ class ClipboardManager {
       const originalPrimary =
         platform === "linux" && shouldRestore ? this._readPrimarySelection() : null;
       if (shouldRestore) {
-        this.safeLog("💾 Saved original clipboard:", originalClipboard.type);
+        this.safeLog("ðŸ’¾ Saved original clipboard:", originalClipboard.type);
       }
 
       if (platform === "linux") {
@@ -746,19 +746,19 @@ class ClipboardManager {
       } else {
         clipboard.writeText(text);
       }
-      this.safeLog("📋 Text copied to clipboard:", text.substring(0, 50) + "...");
+      this.safeLog("ðŸ“‹ Text copied to clipboard:", text.substring(0, 50) + "...");
 
       let pasteResult = { restoreComplete: Promise.resolve() };
 
       if (platform === "darwin") {
         method = this.resolveFastPasteBinary() ? "cgevent" : "applescript";
-        this.safeLog("🔍 Checking accessibility permissions for paste operation...");
+        this.safeLog("ðŸ” Checking accessibility permissions for paste operation...");
         const hasPermissions = await this.checkAccessibilityPermissions(allowClipboardFallback);
 
         if (!hasPermissions) {
-          this.safeLog("⚠️ No accessibility permissions - text copied to clipboard only");
+          this.safeLog("âš ï¸ No accessibility permissions - text copied to clipboard only");
           if (allowClipboardFallback) {
-            this.safeLog("✅ Clipboard fallback used (manual paste required)");
+            this.safeLog("âœ… Clipboard fallback used (manual paste required)");
             return { restoreComplete: Promise.resolve() };
           }
           const errorMsg =
@@ -766,14 +766,14 @@ class ClipboardManager {
           throw new Error(errorMsg);
         }
 
-        this.safeLog("✅ Permissions granted, attempting to paste...");
+        this.safeLog("âœ… Permissions granted, attempting to paste...");
         try {
           pasteResult = await this.pasteMacOS(originalClipboard, {
             ...options,
             expectedClipboardText: text,
           });
         } catch (firstError) {
-          this.safeLog("⚠️ First paste attempt failed, retrying...", firstError?.message);
+          this.safeLog("âš ï¸ First paste attempt failed, retrying...", firstError?.message);
           clipboard.writeText(text);
           await new Promise((r) => setTimeout(r, 200));
           pasteResult = await this.pasteMacOS(originalClipboard, {
@@ -799,7 +799,7 @@ class ClipboardManager {
         method = pasteResult?.method || "linux-tools";
       }
 
-      this.safeLog("✅ Paste operation complete", {
+      this.safeLog("âœ… Paste operation complete", {
         platform,
         method,
         elapsedMs: Date.now() - startTime,
@@ -807,7 +807,7 @@ class ClipboardManager {
       });
       return pasteResult || { restoreComplete: Promise.resolve() };
     } catch (error) {
-      this.safeLog("❌ Paste operation failed", {
+      this.safeLog("âŒ Paste operation failed", {
         platform,
         method,
         elapsedMs: Date.now() - startTime,
@@ -971,7 +971,7 @@ class ClipboardManager {
         let hasTimedOut = false;
         const startTime = Date.now();
 
-        this.safeLog("⚡ Windows fast-paste starting");
+        this.safeLog("âš¡ Windows fast-paste starting");
 
         const pasteProcess = spawn(fastPastePath, [], {
           stdio: ["ignore", "pipe", "pipe"],
@@ -997,7 +997,7 @@ class ClipboardManager {
           const output = stdoutData.trim();
 
           if (code === 0) {
-            this.safeLog("✅ Windows fast-paste success", {
+            this.safeLog("âœ… Windows fast-paste success", {
               elapsedMs: elapsed,
               output,
             });
@@ -1013,7 +1013,7 @@ class ClipboardManager {
             }
           } else {
             this.safeLog(
-              `❌ Windows fast-paste failed (code ${code}), falling back to nircmd/PowerShell`,
+              `âŒ Windows fast-paste failed (code ${code}), falling back to nircmd/PowerShell`,
               { elapsedMs: elapsed, stderr: stderrData.trim() }
             );
             this.pasteWithNircmdOrPowerShell(originalClipboard, options)
@@ -1025,7 +1025,7 @@ class ClipboardManager {
         pasteProcess.on("error", (error) => {
           if (hasTimedOut) return;
           clearTimeout(timeoutId);
-          this.safeLog("❌ Windows fast-paste error, falling back to nircmd/PowerShell", {
+          this.safeLog("âŒ Windows fast-paste error, falling back to nircmd/PowerShell", {
             elapsedMs: Date.now() - startTime,
             error: error.message,
           });
@@ -1034,7 +1034,7 @@ class ClipboardManager {
 
         const timeoutId = setTimeout(() => {
           hasTimedOut = true;
-          this.safeLog("⏱️ Windows fast-paste timeout, falling back to nircmd/PowerShell");
+          this.safeLog("â±ï¸ Windows fast-paste timeout, falling back to nircmd/PowerShell");
           killProcess(pasteProcess, "SIGKILL");
           pasteProcess.removeAllListeners();
           this.pasteWithNircmdOrPowerShell(originalClipboard, options).then(resolve).catch(reject);
@@ -1060,7 +1060,7 @@ class ClipboardManager {
         let hasTimedOut = false;
         const startTime = Date.now();
 
-        this.safeLog(`⚡ nircmd paste starting (delay: ${pasteDelay}ms)`);
+        this.safeLog(`âš¡ nircmd paste starting (delay: ${pasteDelay}ms)`);
 
         const pasteProcess = spawn(nircmdPath, ["sendkeypress", "ctrl+v"]);
 
@@ -1077,7 +1077,7 @@ class ClipboardManager {
           const elapsed = Date.now() - startTime;
 
           if (code === 0) {
-            this.safeLog(`✅ nircmd paste success`, {
+            this.safeLog(`âœ… nircmd paste success`, {
               elapsedMs: elapsed,
               restoreDelayMs: restoreDelay,
             });
@@ -1092,7 +1092,7 @@ class ClipboardManager {
               resolve({ restoreComplete: Promise.resolve() });
             }
           } else {
-            this.safeLog(`❌ nircmd failed (code ${code}), falling back to PowerShell`, {
+            this.safeLog(`âŒ nircmd failed (code ${code}), falling back to PowerShell`, {
               elapsedMs: elapsed,
               stderr: errorOutput,
             });
@@ -1104,7 +1104,7 @@ class ClipboardManager {
           if (hasTimedOut) return;
           clearTimeout(timeoutId);
           const elapsed = Date.now() - startTime;
-          this.safeLog(`❌ nircmd error, falling back to PowerShell`, {
+          this.safeLog(`âŒ nircmd error, falling back to PowerShell`, {
             elapsedMs: elapsed,
             error: error.message,
           });
@@ -1114,7 +1114,7 @@ class ClipboardManager {
         const timeoutId = setTimeout(() => {
           hasTimedOut = true;
           const elapsed = Date.now() - startTime;
-          this.safeLog(`⏱️ nircmd timeout, falling back to PowerShell`, { elapsedMs: elapsed });
+          this.safeLog(`â±ï¸ nircmd timeout, falling back to PowerShell`, { elapsedMs: elapsed });
           killProcess(pasteProcess, "SIGKILL");
           pasteProcess.removeAllListeners();
           this.pasteWithPowerShell(originalClipboard, options).then(resolve).catch(reject);
@@ -1132,7 +1132,7 @@ class ClipboardManager {
         let hasTimedOut = false;
         const startTime = Date.now();
 
-        this.safeLog(`🪟 PowerShell paste starting (delay: ${pasteDelay}ms)`);
+        this.safeLog(`ðŸªŸ PowerShell paste starting (delay: ${pasteDelay}ms)`);
 
         const pasteProcess = spawn("powershell.exe", [
           "-NoProfile",
@@ -1158,7 +1158,7 @@ class ClipboardManager {
           const elapsed = Date.now() - startTime;
 
           if (code === 0) {
-            this.safeLog(`✅ PowerShell paste success`, {
+            this.safeLog(`âœ… PowerShell paste success`, {
               elapsedMs: elapsed,
               restoreDelayMs: restoreDelay,
             });
@@ -1173,7 +1173,7 @@ class ClipboardManager {
               resolve({ restoreComplete: Promise.resolve() });
             }
           } else {
-            this.safeLog(`❌ PowerShell paste failed`, {
+            this.safeLog(`âŒ PowerShell paste failed`, {
               code,
               elapsedMs: elapsed,
               stderr: errorOutput,
@@ -1190,7 +1190,7 @@ class ClipboardManager {
           if (hasTimedOut) return;
           clearTimeout(timeoutId);
           const elapsed = Date.now() - startTime;
-          this.safeLog(`❌ PowerShell paste error`, {
+          this.safeLog(`âŒ PowerShell paste error`, {
             elapsedMs: elapsed,
             error: error.message,
           });
@@ -1204,7 +1204,7 @@ class ClipboardManager {
         const timeoutId = setTimeout(() => {
           hasTimedOut = true;
           const elapsed = Date.now() - startTime;
-          this.safeLog(`⏱️ PowerShell paste timeout`, { elapsedMs: elapsed });
+          this.safeLog(`â±ï¸ PowerShell paste timeout`, { elapsedMs: elapsed });
           killProcess(pasteProcess, "SIGKILL");
           pasteProcess.removeAllListeners();
           reject(
@@ -1397,7 +1397,7 @@ class ClipboardManager {
     const detectedWindowComm = preDetectWindowComm(detectedWindowPid);
     const detectedIsElectron = preDetectIsElectron(detectedWindowPid);
     if (detectedIsElectron) {
-      this.safeLog("🪟 Electron window detected, using Shift+Insert paste", {
+      this.safeLog("ðŸªŸ Electron window detected, using Shift+Insert paste", {
         pid: detectedWindowPid,
         windowClass: detectedWindowClass,
       });
@@ -1482,7 +1482,7 @@ class ClipboardManager {
           const args = ["--uinput"];
           appendModeFlag(args);
           await spawnFastPaste(args, "uinput");
-          this.safeLog("✅ Paste successful using native linux-fast-paste (uinput)");
+          this.safeLog("âœ… Paste successful using native linux-fast-paste (uinput)");
           debugLogger.info(
             "Paste successful",
             { tool: "linux-fast-paste", method: "uinput", detectedWindowClass },
@@ -1499,7 +1499,7 @@ class ClipboardManager {
                 shiftInsert: useShiftInsert,
                 terminal: earlyIsTerminal,
               });
-              this.safeLog("✅ Paste successful using linux-fast-paste --portal (RemoteDesktop)");
+              this.safeLog("âœ… Paste successful using linux-fast-paste --portal (RemoteDesktop)");
               debugLogger.info(
                 "Paste successful",
                 { tool: "linux-fast-paste", method: "portal", token: !!portalResult },
@@ -1581,7 +1581,7 @@ class ClipboardManager {
 
           try {
             await spawnFastPaste(xtestArgs, "XTest/XWayland fallback");
-            this.safeLog("✅ Paste successful using native linux-fast-paste (XTest/XWayland)");
+            this.safeLog("âœ… Paste successful using native linux-fast-paste (XTest/XWayland)");
             debugLogger.info(
               "Paste successful",
               { tool: "linux-fast-paste", method: "xtest-xwayland" },
@@ -1600,7 +1600,7 @@ class ClipboardManager {
           }
         }
 
-        this.safeLog("⚠️ Native linux-fast-paste failed, falling back to system tools");
+        this.safeLog("âš ï¸ Native linux-fast-paste failed, falling back to system tools");
       } else {
         const xtestArgs = [];
         if (targetWindowId) xtestArgs.push("--window", targetWindowId);
@@ -1608,7 +1608,7 @@ class ClipboardManager {
 
         try {
           await spawnFastPaste(xtestArgs, "XTest");
-          this.safeLog("✅ Paste successful using native linux-fast-paste (XTest)");
+          this.safeLog("âœ… Paste successful using native linux-fast-paste (XTest)");
           debugLogger.info(
             "Paste successful",
             { tool: "linux-fast-paste", method: "xtest" },
@@ -1620,7 +1620,7 @@ class ClipboardManager {
           };
         } catch (error) {
           this.safeLog(
-            `⚠️ Native linux-fast-paste failed: ${error?.message || error}, falling back to system tools`
+            `âš ï¸ Native linux-fast-paste failed: ${error?.message || error}, falling back to system tools`
           );
           debugLogger.warn(
             "Native linux-fast-paste failed, falling back",
@@ -1636,7 +1636,7 @@ class ClipboardManager {
       if (windowSignals.length === 0) return false;
       const isTerminalWindow = terminalClasses.some((term) => signalsMatch(term));
       if (isTerminalWindow) {
-        this.safeLog(`🖥️ Terminal detected: ${windowSignals.join(" | ")}`);
+        this.safeLog(`ðŸ–¥ï¸ Terminal detected: ${windowSignals.join(" | ")}`);
       }
       return isTerminalWindow;
     };
@@ -1655,7 +1655,7 @@ class ClipboardManager {
 
     if (targetWindowId) {
       this.safeLog(
-        `🎯 Targeting window ID ${targetWindowId} for paste (signals: ${windowSignals.join(" | ") || "none"})`
+        `ðŸŽ¯ Targeting window ID ${targetWindowId} for paste (signals: ${windowSignals.join(" | ") || "none"})`
       );
     }
 
@@ -1807,7 +1807,7 @@ class ClipboardManager {
     for (const tool of available) {
       try {
         const pasteResult = await pasteWith(tool);
-        this.safeLog(`✅ Paste successful using ${tool.cmd}`);
+        this.safeLog(`âœ… Paste successful using ${tool.cmd}`);
         debugLogger.info("Paste successful", { tool: tool.cmd }, "clipboard");
         return { method: tool.cmd, ...pasteResult };
       } catch (error) {
@@ -1817,7 +1817,7 @@ class ClipboardManager {
           error: error?.message || String(error),
         };
         failedAttempts.push(failureInfo);
-        this.safeLog(`⚠️ Paste with ${tool.cmd} failed:`, error?.message || error);
+        this.safeLog(`âš ï¸ Paste with ${tool.cmd} failed:`, error?.message || error);
         debugLogger.warn("Paste tool failed, trying next", failureInfo, "clipboard");
       }
     }
@@ -1834,7 +1834,7 @@ class ClipboardManager {
         },
         "clipboard"
       );
-      this.safeLog("🔄 Trying xdotool type fallback for terminal...");
+      this.safeLog("ðŸ”„ Trying xdotool type fallback for terminal...");
       const textToType = clipboard.readText();
       const typeArgs = targetWindowId
         ? ["windowactivate", "--sync", targetWindowId, "type", "--clearmodifiers", "--", textToType]
@@ -1842,7 +1842,7 @@ class ClipboardManager {
 
       try {
         const pasteResult = await pasteWith({ cmd: "xdotool", args: typeArgs });
-        this.safeLog("✅ Paste successful using xdotool type fallback");
+        this.safeLog("âœ… Paste successful using xdotool type fallback");
         debugLogger.info("Terminal paste successful via xdotool type", {}, "clipboard");
         return { method: "xdotool-type", ...pasteResult };
       } catch (error) {
@@ -1852,7 +1852,7 @@ class ClipboardManager {
           error: error?.message || String(error),
         };
         failedAttempts.push(fallbackFailure);
-        this.safeLog(`⚠️ xdotool type fallback failed:`, error?.message || error);
+        this.safeLog(`âš ï¸ xdotool type fallback failed:`, error?.message || error);
         debugLogger.warn("xdotool type fallback failed", fallbackFailure, "clipboard");
       }
     }
@@ -1949,38 +1949,38 @@ class ClipboardManager {
 
     let dialogMessage;
     if (isStuckPermission) {
-      dialogMessage = `🔒 OpenWhispr needs Accessibility permissions, but it looks like you may have OLD PERMISSIONS from a previous version.
+      dialogMessage = `ðŸ”’ Dhwani needs Accessibility permissions, but it looks like you may have OLD PERMISSIONS from a previous version.
 
-❗ COMMON ISSUE: If you've rebuilt/reinstalled OpenWhispr, the old permissions may be "stuck" and preventing new ones.
+â— COMMON ISSUE: If you've rebuilt/reinstalled Dhwani, the old permissions may be "stuck" and preventing new ones.
 
-🔧 To fix this:
+ðŸ”§ To fix this:
 1. Open System Settings → Privacy & Security → Accessibility
-2. Look for ANY old "OpenWhispr" entries and REMOVE them (click the - button)
+2. Look for ANY old "Dhwani" entries and REMOVE them (click the - button)
 3. Also remove any entries that say "Electron" or have unclear names
-4. Click the + button and manually add the NEW OpenWhispr app
+4. Click the + button and manually add the NEW Dhwani app
 5. Make sure the checkbox is enabled
-6. Restart OpenWhispr
+6. Restart Dhwani
 
-⚠️ This is especially common during development when rebuilding the app.
+âš ï¸ This is especially common during development when rebuilding the app.
 
-📝 Without this permission, text will only copy to clipboard (no automatic pasting).
+ðŸ“ Without this permission, text will only copy to clipboard (no automatic pasting).
 
 Would you like to open System Settings now?`;
     } else {
-      dialogMessage = `🔒 OpenWhispr needs Accessibility permissions to paste text into other applications.
+      dialogMessage = `ðŸ”’ Dhwani needs Accessibility permissions to paste text into other applications.
 
-📋 Current status: Clipboard copy works, but pasting (Cmd+V simulation) fails.
+ðŸ“‹ Current status: Clipboard copy works, but pasting (Cmd+V simulation) fails.
 
-🔧 To fix this:
+ðŸ”§ To fix this:
 1. Open System Settings (or System Preferences on older macOS)
 2. Go to Privacy & Security → Accessibility
 3. Click the lock icon and enter your password
-4. Add OpenWhispr to the list and check the box
-5. Restart OpenWhispr
+4. Add Dhwani to the list and check the box
+5. Restart Dhwani
 
-⚠️ Without this permission, dictated text will only be copied to clipboard but won't paste automatically.
+âš ï¸ Without this permission, dictated text will only be copied to clipboard but won't paste automatically.
 
-💡 In production builds, this permission is required for full functionality.
+ðŸ’¡ In production builds, this permission is required for full functionality.
 
 Would you like to open System Settings now?`;
     }
@@ -2054,6 +2054,48 @@ Would you like to open System Settings now?`;
       clipboard.writeText(text);
     }
     return { success: true };
+  }
+
+  // ponytail: Windows-only via PowerShell SendKeys ^c (same fallback mechanism
+  // already used by pasteWithPowerShell), not the native fast-paste binary —
+  // avoids a native recompile for the Polish MVP. Upgrade to a windows-fast-paste
+  // --copy mode (or macOS CGEvent / Linux xdotool key) if this proves unreliable.
+  async captureSelectedText() {
+    if (process.platform !== "win32") {
+      return { success: false, text: "", error: "capture-selected-text-unsupported-platform" };
+    }
+
+    const originalClipboard = clipboard.readText();
+    // Clear the clipboard first so we can tell "nothing selected" (clipboard
+    // stays empty) apart from "selection matches previous clipboard contents".
+    clipboard.writeText("");
+
+    await new Promise((resolve) => {
+      const copyProcess = spawn("powershell.exe", [
+        "-NoProfile",
+        "-NonInteractive",
+        "-WindowStyle",
+        "Hidden",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('^c')",
+      ]);
+      copyProcess.on("close", () => resolve());
+      copyProcess.on("error", () => resolve());
+    });
+
+    // Give the target app time to populate the clipboard after Ctrl+C.
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    const capturedText = clipboard.readText();
+    clipboard.writeText(originalClipboard);
+
+    if (!capturedText) {
+      return { success: false, text: "", error: "no-selection" };
+    }
+
+    return { success: true, text: capturedText };
   }
 
   checkPasteTools() {

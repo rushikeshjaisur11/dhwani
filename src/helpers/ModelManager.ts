@@ -8,6 +8,7 @@ import { inferenceConfig } from "../config/InferenceConfig";
 import { MODEL_CONSTRAINTS } from "../config/constants";
 import { parseLlamaCppOutput } from "../utils/llamaOutputParser";
 const { downloadFile: runtimeDownloadFile } = require("./downloadUtils");
+const { getCacheRoot } = require("./modelDirUtils");
 
 // Error types
 export class ModelError extends Error {
@@ -45,8 +46,7 @@ class ModelManager {
   }
 
   private getModelsDir(): string {
-    const homeDir = app.getPath("home");
-    return path.join(homeDir, ".cache", "openwhispr", "models");
+    return path.join(getCacheRoot(), "models");
   }
 
   async ensureModelsDir(): Promise<void> {

@@ -42,7 +42,9 @@ const PERSISTED_KEYS = [
   "DICTATION_KEY",
   "CHAT_AGENT_KEY",
   "VOICE_AGENT_KEY",
+  "POLISH_KEY",
   "MEETING_KEY",
+  "PASTE_LAST_TRANSCRIPT_KEY",
   "ACTIVATION_MODE",
   "FLOATING_ICON_AUTO_HIDE",
   "PANEL_START_POSITION",
@@ -232,7 +234,7 @@ class EnvironmentManager {
     // otherwise a partial-migration recovery can lose unencrypted secrets.
     const stripSecrets =
       this._encryptionAvailable() && fs.existsSync(this._getMigrationSentinelPath());
-    let envContent = "# OpenWhispr Environment Variables\n";
+    let envContent = "# Dhwani Environment Variables\n";
     for (const key of PERSISTED_KEYS) {
       if (stripSecrets && SECRET_KEY_SET.has(key)) continue;
       if (process.env[key]) {
@@ -473,12 +475,32 @@ class EnvironmentManager {
     return result;
   }
 
+  getPolishKey() {
+    return this._getKey("POLISH_KEY");
+  }
+
+  savePolishKey(key) {
+    const result = this._saveKey("POLISH_KEY", key);
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
   getMeetingKey() {
     return this._getKey("MEETING_KEY");
   }
 
   saveMeetingKey(key) {
     const result = this._saveKey("MEETING_KEY", key);
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
+  getPasteLastTranscriptKey() {
+    return this._getKey("PASTE_LAST_TRANSCRIPT_KEY");
+  }
+
+  savePasteLastTranscriptKey(key) {
+    const result = this._saveKey("PASTE_LAST_TRANSCRIPT_KEY", key);
     this.saveAllKeysToEnvFile().catch(() => {});
     return result;
   }

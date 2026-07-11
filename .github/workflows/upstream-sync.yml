@@ -1,0 +1,72 @@
+name: Upstream Sync Check
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Diff tracked paths against OpenWhispr upstream
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/OpenWhispr/openwhispr.git
+
+      - name: Fetch upstream
+        run: git fetch upstream main
+
+      - name: Diff tracked paths
+        id: diff
+        run: |
+          PATHS="resources native src/locales src/config/languageRegistry.json src/models/modelRegistryData.json scripts/download-whisper-cpp.js scripts/download-llama-server.js scripts/download-sherpa-onnx.js scripts/download-nircmd.js scripts/download-windows-fast-paste.js scripts/download-windows-key-listener.js scripts/download-windows-mic-listener.js scripts/download-meeting-aec-helper.js scripts/download-qdrant.js scripts/download-minilm.js scripts/download-diarization-models.js scripts/download-whisper-vad-model.js"
+          DIFF=$(git diff --stat main upstream/main -- $PATHS)
+          if [ -z "$DIFF" ]; then
+            echo "has_diff=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_diff=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "diff<<EOF"
+              echo "$DIFF"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open/update tracking issue
+        if: steps.diff.outputs.has_diff == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = "OpenWhispr upstream has changes in paths Dhwani tracks (resources/, native/, src/locales/, model registry, language registry, download scripts).\n\n```\n" + `${{ steps.diff.outputs.diff }}` + "\n```\n\nReview with:\n```\ngit fetch upstream main\ngit diff main upstream/main -- resources native src/locales src/config/languageRegistry.json src/models/modelRegistryData.json scripts/download-*.js\n```\nCherry-pick relevant changes manually, then re-run `node scripts/check-brand.js`.";
+            const title = "Upstream sync: OpenWhispr changes in tracked paths";
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: ["upstream-sync"],
+            });
+            if (existing.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ["upstream-sync"],
+              });
+            }

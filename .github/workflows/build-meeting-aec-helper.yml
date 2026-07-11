@@ -26,10 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, platform: linux, arch: x64 }
           - { os: windows-latest, platform: win32, arch: x64 }
-          - { os: macos-latest, platform: darwin, arch: arm64 }
-          - { os: macos-latest, platform: darwin, arch: x64 }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -40,12 +37,7 @@ jobs:
           node-version: "22"
 
       - name: Setup MSVC (Windows)
-        if: matrix.platform == 'win32'
         uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Install Linux build deps
-        if: matrix.platform == 'linux'
-        run: sudo apt-get update && sudo apt-get install -y cmake build-essential python3
 
       - name: Build meeting AEC helper
         run: node scripts/build-meeting-aec-helper.js --arch ${{ matrix.arch }}
@@ -55,18 +47,11 @@ jobs:
       - name: Verify binary
         shell: bash
         run: |
-          BIN="resources/bin/meeting-aec-helper-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.platform == 'win32' && '.exe' || '' }}"
+          BIN="resources/bin/meeting-aec-helper-${{ matrix.platform }}-${{ matrix.arch }}.exe"
           test -f "$BIN" || { echo "Binary not found: $BIN"; exit 1; }
           ls -la "$BIN"
 
-      - name: Package (tar.gz)
-        if: matrix.platform != 'win32'
-        run: |
-          cd resources/bin
-          tar -czf "../../meeting-aec-helper-${{ matrix.platform }}-${{ matrix.arch }}.tar.gz" "meeting-aec-helper-${{ matrix.platform }}-${{ matrix.arch }}"
-
       - name: Package (zip)
-        if: matrix.platform == 'win32'
         shell: pwsh
         run: |
           Compress-Archive -Path "resources/bin/meeting-aec-helper-win32-x64.exe" -DestinationPath "meeting-aec-helper-win32-x64.zip"

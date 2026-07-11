@@ -1,9 +1,9 @@
 {
-  "appId": "com.gizmolabs.openwhispr",
+  "appId": "com.rushikesh.dhwani",
   "afterPack": "scripts/afterPack.js",
-  "productName": "OpenWhispr",
+  "productName": "Dhwani",
   "protocols": {
-    "name": "OpenWhispr Protocol",
+    "name": "Dhwani Protocol",
     "schemes": ["openwhispr"]
   },
   "directories": {
@@ -147,20 +147,14 @@
     "extendInfo": {
       "LSUIElement": false,
       "CFBundleIconName": "openwhispr",
-      "NSMicrophoneUsageDescription": "OpenWhispr uses the microphone to capture your voice for transcription.",
-      "NSAudioCaptureUsageDescription": "OpenWhispr uses system audio to capture other participants' audio from calls and meetings.",
-      "NSAccessibilityUsageDescription": "OpenWhispr needs accessibility permissions to paste transcribed text into other applications."
+      "NSMicrophoneUsageDescription": "Dhwani uses the microphone to capture your voice for transcription.",
+      "NSAudioCaptureUsageDescription": "Dhwani uses system audio to capture other participants' audio from calls and meetings.",
+      "NSAccessibilityUsageDescription": "Dhwani needs accessibility permissions to paste transcribed text into other applications."
     }
   },
   "win": {
-    "target": ["nsis", "portable"],
+    "target": ["nsis", "zip"],
     "icon": "src/assets/icon.ico",
-    "azureSignOptions": {
-      "endpoint": "https://eus.codesigning.azure.net/",
-      "certificateProfileName": "openwhispr-release",
-      "codeSigningAccountName": "OpenWhispr",
-      "publisherName": "CN=Gizmo Labs Inc., O=Gizmo Labs Inc., L=Wilmington, S=Delaware, C=US"
-    },
     "extraResources": [
       {
         "from": "resources/bin/nircmd.exe",
@@ -239,10 +233,11 @@
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "include": "resources/nsis/cleanup-models.nsh"
+    "include": "resources/nsis/cleanup-models.nsh",
+    "differentialPackage": false
   },
   "dmg": {
-    "title": "OpenWhispr",
+    "title": "Dhwani",
     "icon": "src/assets/icon.icns",
     "window": {
       "width": 540,
@@ -251,8 +246,8 @@
   },
   "publish": {
     "provider": "github",
-    "owner": "OpenWhispr",
-    "repo": "openwhispr",
+    "owner": "rushikeshjaisur11",
+    "repo": "dhwani",
     "private": false,
     "releaseType": "draft"
   }

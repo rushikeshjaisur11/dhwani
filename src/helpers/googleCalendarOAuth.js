@@ -33,7 +33,7 @@ class GoogleCalendarOAuth {
   }
 
   _getProtocol() {
-    const channel = process.env.OPENWHISPR_CHANNEL || "production";
+    const channel = process.env.DHWANI_CHANNEL || "production";
     return PROTOCOL_BY_CHANNEL[channel] || PROTOCOL_BY_CHANNEL.production;
   }
 

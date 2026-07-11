@@ -488,8 +488,23 @@ declare global {
       showDictationPanel: () => Promise<void>;
       onToggleDictation: (callback: () => void) => () => void;
       onToggleVoiceAgent?: (callback: () => void) => () => void;
+      onTriggerPolish?: (callback: () => void) => () => void;
       onStartDictation?: (callback: () => void) => () => void;
       onStopDictation?: (callback: () => void) => () => void;
+
+      // Tray menu sync (Microphone / Languages submenus + settings deep link)
+      registerPasteLastTranscriptHotkey?: (
+        hotkey: string
+      ) => Promise<{ success: boolean; message?: string }>;
+      getPasteLastTranscriptKey?: () => Promise<string>;
+      syncTrayMicrophones?: (
+        devices: { deviceId: string; label: string }[],
+        selectedId: string
+      ) => void;
+      syncTrayLanguage?: (selectedCode: string) => void;
+      onTraySelectMicrophone?: (callback: (deviceId: string) => void) => () => void;
+      onTraySelectLanguage?: (callback: (code: string) => void) => () => void;
+      onOpenSettingsSection?: (callback: (section: string) => void) => () => void;
 
       // STT config
       getSttConfig?: () => Promise<{
@@ -517,6 +532,7 @@ declare global {
           errorMessage?: string | null;
           errorCode?: TranscriptionErrorCode;
           clientTranscriptionId?: string;
+          targetApp?: string | null;
         }
       ) => Promise<{ id: number; success: boolean; transcription?: TranscriptionItem }>;
       getTranscriptions: (
@@ -525,6 +541,19 @@ declare global {
       ) => Promise<TranscriptionItem[]>;
       clearTranscriptions: () => Promise<{ cleared: number; success: boolean }>;
       deleteTranscription: (id: number) => Promise<{ success: boolean }>;
+      getInsightsStats: () => Promise<{
+        totalWords: number;
+        totalDictations: number;
+        averageWPM: number;
+        wordsToday: number;
+        wordsThisWeek: number;
+        dayStreak: number;
+        longestStreak: number;
+        fixesMade: number;
+        personalBestWPM: number;
+        dailyActivity: Array<{ date: string; words: number; count: number }>;
+        appUsage: Array<{ app: string; count: number; words: number; pct: number }>;
+      }>;
       getTranscriptionById: (id: number) => Promise<TranscriptionItem | null>;
 
       // Audio retention operations
@@ -722,6 +751,7 @@ declare global {
       promptAccessibilityPermission: () => Promise<boolean>;
       readClipboard: () => Promise<string>;
       writeClipboard: (text: string) => Promise<{ success: boolean }>;
+      captureSelectedText: () => Promise<{ success: boolean; text: string; error?: string }>;
       checkPasteTools: () => Promise<PasteToolsResult>;
 
       // Audio
@@ -758,6 +788,17 @@ declare global {
       ) => Promise<{ success: boolean }>;
       getGpuDeviceIndex?: (purpose: "transcription" | "intelligence") => Promise<string>;
       detectGpu: () => Promise<GpuInfo>;
+      getRecommendedModel: () => Promise<{
+        modelId: string;
+        reason: string;
+        profile: {
+          totalMemGb: number;
+          cpuCores: number;
+          platform: string;
+          hasNvidiaGpu: boolean;
+          vramMb: number;
+        };
+      }>;
       getCudaWhisperStatus: () => Promise<CudaWhisperStatus>;
       downloadCudaWhisperBinary: () => Promise<{ success: boolean; error?: string }>;
       cancelCudaWhisperDownload: () => Promise<{ success: boolean }>;
@@ -1101,6 +1142,8 @@ declare global {
       notifyActivationModeChanged?: (mode: "tap" | "push") => void;
       notifyHotkeyChanged?: (hotkey: string) => void;
       registerMeetingHotkey?: (hotkey: string) => Promise<{ success: boolean; message?: string }>;
+      registerPolishHotkey?: (hotkey: string) => Promise<{ success: boolean; message?: string }>;
+      getPolishKey?: () => Promise<string>;
       notifyFloatingIconAutoHideChanged?: (enabled: boolean) => void;
       onFloatingIconAutoHideChanged?: (callback: (enabled: boolean) => void) => () => void;
       notifyStartMinimizedChanged?: (enabled: boolean) => void;
@@ -1842,6 +1885,7 @@ declare global {
         provider: string;
         model: string;
         language?: string;
+        overlay?: boolean;
       }) => Promise<{ success: boolean }>;
       stopDictationPreview?: (opts?: { showCleanup?: boolean }) => Promise<{ success: boolean }>;
       dismissDictationPreview?: () => Promise<{ success: boolean }>;

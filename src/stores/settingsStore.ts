@@ -133,6 +133,11 @@ const BOOLEAN_SETTINGS = new Set([
   "noteFilesEnabled",
   "showTranscriptionPreview",
   "cleanupDisableThinking",
+  "polishEnabled",
+  "polishInstructionConcise",
+  "polishInstructionClarity",
+  "polishInstructionTone",
+  "polishInstructionStructure",
   "dictationAgentDisableThinking",
   "noteFormattingDisableThinking",
   "chatAgentDisableThinking",
@@ -261,8 +266,8 @@ migrateProviderSettings();
 // persists is available to copy. Before this context existed the upload page
 // used the base dictation settings, so copy each value the user actually set
 // into the matching `upload*` key. Fresh installs have no base keys persisted,
-// so nothing is copied and the upload context falls through to its OpenWhispr
-// Cloud defaults.
+// so nothing is copied and the upload context falls through to its
+// OpenWhispr Cloud defaults.
 const UPLOAD_TRANSCRIPTION_PAIRS: ReadonlyArray<[string, string]> = [
   ["useLocalWhisper", "uploadUseLocalWhisper"],
   ["whisperModel", "uploadWhisperModel"],
@@ -480,6 +485,17 @@ export interface SettingsState
 
   cleanupDisableThinking: boolean;
   dictationAgentDisableThinking: boolean;
+
+  polishEnabled: boolean;
+  polishInstructionConcise: boolean;
+  polishInstructionClarity: boolean;
+  polishInstructionTone: boolean;
+  polishInstructionStructure: boolean;
+  polishKey: string;
+  styleToneWork: string;
+  styleToneEmail: string;
+  styleTonePersonal: string;
+  styleToneOther: string;
   noteFormattingDisableThinking: boolean;
   chatAgentDisableThinking: boolean;
 
@@ -534,6 +550,17 @@ export interface SettingsState
   setDictationAgentDisableThinking: (value: boolean) => void;
   setNoteFormattingDisableThinking: (value: boolean) => void;
   setChatAgentDisableThinking: (value: boolean) => void;
+
+  setPolishEnabled: (value: boolean) => void;
+  setPolishInstructionConcise: (value: boolean) => void;
+  setPolishInstructionClarity: (value: boolean) => void;
+  setPolishInstructionTone: (value: boolean) => void;
+  setPolishInstructionStructure: (value: boolean) => void;
+  setPolishKey: (key: string) => void;
+  setStyleToneWork: (value: string) => void;
+  setStyleToneEmail: (value: string) => void;
+  setStyleTonePersonal: (value: string) => void;
+  setStyleToneOther: (value: string) => void;
 
   setUseLocalWhisper: (value: boolean) => void;
   setWhisperModel: (value: string) => void;
@@ -1160,6 +1187,17 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
 
   cleanupDisableThinking: readBoolean("cleanupDisableThinking", true),
   dictationAgentDisableThinking: readBoolean("dictationAgentDisableThinking", true),
+
+  polishEnabled: readBoolean("polishEnabled", true),
+  polishInstructionConcise: readBoolean("polishInstructionConcise", true),
+  polishInstructionClarity: readBoolean("polishInstructionClarity", true),
+  polishInstructionTone: readBoolean("polishInstructionTone", true),
+  polishInstructionStructure: readBoolean("polishInstructionStructure", false),
+  polishKey: readString("polishKey", ""),
+  styleToneWork: readString("styleToneWork", "off"),
+  styleToneEmail: readString("styleToneEmail", "off"),
+  styleTonePersonal: readString("styleTonePersonal", "off"),
+  styleToneOther: readString("styleToneOther", "off"),
   noteFormattingDisableThinking: readBoolean("noteFormattingDisableThinking", true),
   chatAgentDisableThinking: readBoolean("chatAgentDisableThinking", true),
 
@@ -1183,6 +1221,11 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setDictationAgentCustomApiKey: createStringSetter("dictationAgentCustomApiKey"),
 
   setCleanupDisableThinking: createBooleanSetter("cleanupDisableThinking"),
+  setPolishEnabled: createBooleanSetter("polishEnabled"),
+  setPolishInstructionConcise: createBooleanSetter("polishInstructionConcise"),
+  setPolishInstructionClarity: createBooleanSetter("polishInstructionClarity"),
+  setPolishInstructionTone: createBooleanSetter("polishInstructionTone"),
+  setPolishInstructionStructure: createBooleanSetter("polishInstructionStructure"),
   setDictationAgentDisableThinking: createBooleanSetter("dictationAgentDisableThinking"),
   setNoteFormattingDisableThinking: createBooleanSetter("noteFormattingDisableThinking"),
   setChatAgentDisableThinking: createBooleanSetter("chatAgentDisableThinking"),
@@ -1399,6 +1442,14 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (isBrowser) localStorage.setItem("meetingKey", key);
     set({ meetingKey: key });
   },
+  setPolishKey: (key: string) => {
+    if (isBrowser) localStorage.setItem("polishKey", key);
+    set({ polishKey: key });
+  },
+  setStyleToneWork: createStringSetter("styleToneWork"),
+  setStyleToneEmail: createStringSetter("styleToneEmail"),
+  setStyleTonePersonal: createStringSetter("styleTonePersonal"),
+  setStyleToneOther: createStringSetter("styleToneOther"),
   setVoiceAgentKey: createRegisteredHotkeySetter(
     "voiceAgentKey",
     "voice agent hotkey",
@@ -1645,8 +1696,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
       cloudTranscriptionModel,
     } = useSettingsStore.getState();
     // Each Settings tab selects on its InferenceMode field, so set it for every
-    // scope — otherwise the UI keeps showing the previous mode (e.g. OpenWhispr
-    // Cloud) even though the cloud routing now points at the new provider.
+    // scope — otherwise the UI keeps showing the previous mode
+    // (e.g. OpenWhispr Cloud) even though the cloud routing now points at the
+    // new provider.
     const mode = deriveTranscriptionMode(
       useLocalWhisper,
       cloudTranscriptionMode,

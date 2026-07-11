@@ -8,9 +8,10 @@ export function getCleanupSystemPrompt(
   agentName: string | null,
   customDictionary?: string[],
   language?: string,
-  uiLanguage?: string
+  uiLanguage?: string,
+  activeApp?: string
 ): string {
-  return resolvePrompt("cleanup", { agentName, language, customDictionary, uiLanguage });
+  return resolvePrompt("cleanup", { agentName, language, customDictionary, uiLanguage, activeApp });
 }
 
 export function getWordBoost(customDictionary?: string[]): string[] {

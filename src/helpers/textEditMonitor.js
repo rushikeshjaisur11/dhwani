@@ -92,7 +92,7 @@ class TextEditMonitor extends EventEmitter {
    * macOS: capture the active app's PID via NSWorkspace before the overlay steals focus.
    * Must be called at hotkey press time, BEFORE showDictationPanel()/mainWindow.show().
    * NSWorkspace.frontmostApplication correctly identifies the key window owner,
-   * ignoring panel-type windows like the OpenWhispr overlay.
+   * ignoring panel-type windows like the Dhwani overlay.
    */
   captureTargetPid() {
     if (process.platform !== "darwin") return;
@@ -113,10 +113,15 @@ class TextEditMonitor extends EventEmitter {
       }
       const script =
         'ObjC.import("AppKit"); $.NSWorkspace.sharedWorkspace.frontmostApplication.processIdentifier';
-      execFile("osascript", ["-l", "JavaScript", "-e", script], { timeout: 2000 }, (err, stdout) => {
-        const pid = err ? NaN : parseInt(stdout.trim(), 10);
-        resolve(isNaN(pid) ? null : pid);
-      });
+      execFile(
+        "osascript",
+        ["-l", "JavaScript", "-e", script],
+        { timeout: 2000 },
+        (err, stdout) => {
+          const pid = err ? NaN : parseInt(stdout.trim(), 10);
+          resolve(isNaN(pid) ? null : pid);
+        }
+      );
     });
   }
 

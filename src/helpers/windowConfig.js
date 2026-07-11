@@ -30,6 +30,7 @@ const FLOATING_OVERLAY_TYPE =
 
 const WINDOW_SIZES = {
   BASE: { width: 96, height: 96 },
+  RECORDING: { width: 176, height: 64 },
   WITH_MENU: { width: 240, height: 280 },
   WITH_TOAST: { width: 400, height: 500 },
   EXPANDED: { width: 400, height: 500 },
@@ -62,9 +63,11 @@ const MAIN_WINDOW_CONFIG = {
 
 // Control panel window configuration
 const CONTROL_PANEL_CONFIG = {
-  width: 1200,
-  height: 800,
-  backgroundColor: "#1c1c2e",
+  width: 1024,
+  height: 768,
+  minWidth: 1024,
+  minHeight: 600,
+  backgroundColor: "#faf7f1",
   webPreferences: {
     preload: path.join(__dirname, "..", "..", "preload.js"),
     nodeIntegration: false,

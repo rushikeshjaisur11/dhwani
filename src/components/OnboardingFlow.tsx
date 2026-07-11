@@ -30,8 +30,7 @@ import { useSystemAudioPermission } from "../hooks/useSystemAudioPermission";
 import { useSettings } from "../hooks/useSettings";
 import { useSettingsStore } from "../stores/settingsStore";
 import LanguageSelector from "./ui/LanguageSelector";
-import AuthenticationStep from "./AuthenticationStep";
-import EmailVerificationStep from "./EmailVerificationStep";
+import logoIcon from "../assets/icon.png";
 import { setAgentName as saveAgentName } from "../utils/agentName";
 import { formatHotkeyLabel, getDefaultHotkey, isGlobeLikeHotkey } from "../utils/hotkeys";
 import { useAuth } from "../hooks/useAuth";
@@ -122,9 +121,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const cortiClientSecret = useSettingsStore((s) => s.cortiClientSecret);
 
   const [hotkey, setHotkey] = useState(dictationKey || getDefaultHotkey());
-  const [agentName, setAgentName] = useState("OpenWhispr");
-  const [skipAuth, setSkipAuth] = useState(false);
-  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
+  const [agentName, setAgentName] = useState("Dhwani");
+  const skipAuth = true; // local-only build: onboarding always runs the no-account flow
   const [isModelDownloaded, setIsModelDownloaded] = useState(false);
   const { isUsingNativeShortcut, isUsingHyprland, hyprlandConfigStatus, supportsPushToTalk } =
     useHotkeyModeInfo("onboarding");
@@ -132,6 +130,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const readableVoiceAgentKey = formatHotkeyLabel(voiceAgentKey);
   const { alertDialog, confirmDialog, showAlertDialog, hideAlertDialog, hideConfirmDialog } =
     useDialogs();
+
+  // Auto-select the whisper model recommended for this machine's hardware,
+  // but only if the user has never explicitly chosen one (localStorage default
+  // is always "base" via settingsStore, so we check raw storage instead).
+  useEffect(() => {
+    if (window.localStorage.getItem("whisperModel")) return;
+    window.electronAPI?.getRecommendedModel?.().then((result) => {
+      if (result?.modelId) {
+        updateTranscriptionSettings({ whisperModel: result.modelId });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
+  }, []);
   const [connectivityDialog, setConnectivityDialog] = useState<{
     open: boolean;
     cause: string;
@@ -497,31 +508,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const renderStep = () => {
     switch (currentStepId) {
       case "welcome":
-        if (pendingVerificationEmail) {
-          return (
-            <EmailVerificationStep
-              email={pendingVerificationEmail}
-              onVerified={() => {
-                setPendingVerificationEmail(null);
-                nextStep();
-              }}
-              onBack={() => setPendingVerificationEmail(null)}
-            />
-          );
-        }
         return (
-          <AuthenticationStep
-            onContinueWithoutAccount={() => {
-              setSkipAuth(true);
-              nextStep();
-            }}
-            onAuthComplete={() => {
-              nextStep();
-            }}
-            onNeedsVerification={(email) => {
-              setPendingVerificationEmail(email);
-            }}
-          />
+          <div className="space-y-6 text-center">
+            <img src={logoIcon} alt="Dhwani" className="w-14 h-14 mx-auto rounded-xl shadow-sm" />
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground mb-2">
+                {t("auth.welcomeTitle")}
+              </h2>
+              <p className="text-muted-foreground">{t("auth.welcomeSubtitle")}</p>
+            </div>
+            <Button onClick={nextStep} className="w-full max-w-xs mx-auto h-10">
+              {t("common.next")}
+            </Button>
+          </div>
         );
 
       case "usecase":
@@ -932,10 +931,17 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       ? window.electronAPI.getPlatform()
       : "darwin";
 
+  // ponytail: applies Flow Bar tokens (font, card radius, CTA gradient) to the
+  // onboarding shell only, not a per-step re-theme — the 8 step bodies still use
+  // the app's default --color-primary/foreground tokens. Upgrade to full per-step
+  // styling if the shell-only pass looks inconsistent against Wispr's reference.
   return (
     <div
       className="h-screen flex flex-col bg-background"
-      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      style={{
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        fontFamily: "var(--font-family-flow-sans)",
+      }}
     >
       <ConfirmDialog
         open={confirmDialog.open}
@@ -1007,7 +1013,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         className={`flex-1 px-6 md:px-12 overflow-y-auto ${currentStep === 0 ? "flex items-center" : "py-6"}`}
       >
         <div className={`w-full ${currentStep === 0 ? "max-w-sm" : "max-w-3xl"} mx-auto`}>
-          <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-xl overflow-hidden">
+          <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-2xl overflow-hidden">
             <CardContent className={currentStep === 0 ? "p-6" : "p-6 md:p-8"}>
               {renderStep()}
             </CardContent>
@@ -1050,7 +1056,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   <Button
                     onClick={nextStep}
                     disabled={!canProceed()}
-                    className="h-8 px-6 rounded-full text-xs"
+                    className="h-8 px-6 rounded-full text-xs border-0 text-white disabled:opacity-40"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, var(--color-flow-accent), var(--color-flow-accent-strong))",
+                    }}
                   >
                     {t("common.next")}
                     <ChevronRight className="w-3.5 h-3.5" />

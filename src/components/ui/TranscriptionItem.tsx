@@ -11,6 +11,8 @@ import {
   Loader2,
   AlertCircle,
   ArchiveRestore,
+  Flag,
+  MoreVertical,
 } from "lucide-react";
 import type {
   TranscriptionItem as TranscriptionItemType,
@@ -54,10 +56,13 @@ export default function TranscriptionItem({
   const timestampDate = new Date(timestampSource);
   const formattedTime = Number.isNaN(timestampDate.getTime())
     ? ""
-    : timestampDate.toLocaleTimeString(i18n.language, {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+    : timestampDate
+        .toLocaleTimeString(i18n.language, {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        })
+        .toLowerCase();
 
   const handleRetry = async () => {
     if (isRetrying || !onRetryTranscription) return;
@@ -90,19 +95,15 @@ export default function TranscriptionItem({
   return (
     <div
       className={cn(
-        "group rounded-md border px-3 py-2.5 transition-colors duration-150",
-        isFailed
-          ? "border-destructive/30 bg-destructive/5 hover:bg-destructive/10"
-          : isDiscarded
-            ? "border-border/30 bg-muted/20 hover:bg-muted/30 opacity-80"
-            : "border-border/40 dark:border-border-subtle/60 bg-card/50 dark:bg-surface-2/60 hover:bg-muted/30 dark:hover:bg-surface-2/80"
+        "group px-5 py-4 transition-colors duration-150 bg-transparent hover:bg-muted/50 dark:hover:bg-white/5 hover:rounded-lg",
+        isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : ""
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex items-start gap-3">
         {formattedTime && (
-          <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums pt-0.5">
+          <span className="w-16 shrink-0 text-xs text-muted-foreground/60 tabular-nums pt-0.5 text-left">
             {formattedTime}
           </span>
         )}
@@ -258,27 +259,41 @@ export default function TranscriptionItem({
           )}
           {showUtilityGroup && <div className="w-px h-3 bg-border/30" />}
           {!isFailed && !isDiscarded && (
-            <Tooltip content={t("controlPanel.history.copyText")}>
+            <>
+              <button
+                onClick={() => onCopy(item.text)}
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                title={t("controlPanel.history.copyText")}
+              >
+                <Copy size={14} />
+              </button>
+              <button
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                title="Flag entry"
+              >
+                <Flag size={14} />
+              </button>
+              <button
+                onClick={() => onDelete(item.id)}
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-all cursor-pointer"
+                title={t("common.delete")}
+              >
+                <Trash2 size={14} strokeWidth={2.5} />
+              </button>
+            </>
+          )}
+          {(isFailed || isDiscarded) && (
+            <Tooltip content={t("controlPanel.history.deleteItem")}>
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={() => onCopy(item.text)}
-                className="h-6 w-6 rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/10"
+                onClick={() => onDelete(item.id)}
+                className="h-6 w-6 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
               >
-                <Copy size={12} />
+                <Trash2 size={12} />
               </Button>
             </Tooltip>
           )}
-          <Tooltip content={t("controlPanel.history.deleteItem")}>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => onDelete(item.id)}
-              className="h-6 w-6 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-            >
-              <Trash2 size={12} />
-            </Button>
-          </Tooltip>
         </div>
       </div>
 

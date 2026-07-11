@@ -464,6 +464,15 @@ class WindowManager {
     this._sendDictationToggle("toggle-voice-agent");
   }
 
+  sendTriggerPolish() {
+    // Polish operates on the current selection in the target app, not the
+    // dictation window, so capture its PID for paste refocus like voiceAgent.
+    if (this.textEditMonitor) this.textEditMonitor.captureTargetPid();
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      this.mainWindow.webContents.send("trigger-polish");
+    }
+  }
+
   sendStartDictation() {
     if (this.hotkeyManager.isInListeningMode()) {
       return;

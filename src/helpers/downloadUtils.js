@@ -6,7 +6,7 @@ const { execFile } = require("child_process");
 const { pipeline } = require("stream");
 const debugLogger = require("./debugLogger");
 
-const USER_AGENT = "OpenWhispr/1.0";
+const USER_AGENT = "Dhwani/1.0";
 const PROGRESS_THROTTLE_MS = 100;
 const DEFAULT_MAX_RETRIES = 3;
 const MAX_BACKOFF_MS = 30000;
@@ -422,7 +422,7 @@ function extractZipWindows(zipPath, destDir) {
           [
             "-NoProfile",
             "-Command",
-            `Expand-Archive -Force -Path '${zipPath}' -DestinationPath '${destDir}'`,
+            `Expand-Archive -Force -ErrorAction Stop -Path '${zipPath}' -DestinationPath '${destDir}'`,
           ],
           (psError) => {
             if (psError) reject(new Error(`Zip extraction failed: ${psError.message}`));

@@ -49,6 +49,7 @@ interface LocalModelCardProps {
   isDownloading: boolean;
   isCancelling: boolean;
   recommended?: boolean;
+  systemRecommended?: boolean;
   provider: string;
   languageLabel?: string;
   onSelect: () => void;
@@ -69,6 +70,7 @@ function LocalModelCard({
   isDownloading,
   isCancelling,
   recommended,
+  systemRecommended,
   provider,
   languageLabel,
   onSelect,
@@ -118,6 +120,11 @@ function LocalModelCard({
           </span>
           {recommended && (
             <span className={cardStyles.badges.recommended}>{t("common.recommended")}</span>
+          )}
+          {systemRecommended && (
+            <span className={cardStyles.badges.recommended}>
+              {t("modelRecommendation.badge")}
+            </span>
           )}
           {languageLabel && (
             <span className="text-xs text-muted-foreground/50 font-medium shrink-0">
@@ -362,6 +369,14 @@ export default function TranscriptionModelPicker({
     percentage: 0,
   });
   const [cudaDismissed, setCudaDismissed] = useState(false);
+  const [recommendedModel, setRecommendedModel] = useState<{
+    modelId: string;
+    reason: string;
+  } | null>(null);
+
+  useEffect(() => {
+    window.electronAPI?.getRecommendedModel?.().then(setRecommendedModel);
+  }, []);
 
   useEffect(() => {
     if (selectedLocalProvider !== internalLocalProvider) {
@@ -810,6 +825,7 @@ export default function TranscriptionModelPicker({
               isDownloading={isDownloadingModel(modelId)}
               isCancelling={isCancelling}
               recommended={info.recommended}
+              systemRecommended={recommendedModel?.modelId === modelId}
               provider="whisper"
               onSelect={() => handleWhisperModelSelect(modelId)}
               onDelete={() => handleDelete(modelId)}
@@ -1094,6 +1110,21 @@ export default function TranscriptionModelPicker({
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+          {internalLocalProvider === "whisper" &&
+            recommendedModel &&
+            WHISPER_MODEL_INFO[recommendedModel.modelId] &&
+            recommendedModel.modelId !== selectedLocalModel && (
+              <div className="rounded-md border border-border bg-surface-1 p-2.5 flex items-start gap-2.5">
+                <Zap size={13} className="text-primary shrink-0 mt-0.5" />
+                <p className="text-xs text-foreground">
+                  <span className="font-medium">{t("modelRecommendation.badge")}: </span>
+                  {WHISPER_MODEL_INFO[recommendedModel.modelId].name}
+                  {" — "}
+                  {t(recommendedModel.reason)}
+                </p>
               </div>
             )}
 

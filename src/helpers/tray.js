@@ -1,8 +1,15 @@
-const { Tray, Menu, nativeImage, app } = require("electron");
+const { Tray, Menu, nativeImage, app, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const debugLogger = require("./debugLogger");
 const { i18nMain } = require("./i18nMain");
+const languageRegistry = require("../config/languageRegistry.json");
+
+// ponytail: no real support inbox yet — points at the public repo's issue
+// tracker until a dedicated support/feedback destination exists.
+const HELP_CENTER_URL = "https://github.com/rushikeshjaisur11/dhwani#readme";
+const SUPPORT_URL = "https://github.com/rushikeshjaisur11/dhwani/issues";
+const FEEDBACK_URL = "https://github.com/rushikeshjaisur11/dhwani/issues/new";
 
 class TrayManager {
   constructor() {
@@ -10,7 +17,38 @@ class TrayManager {
     this.mainWindow = null;
     this.controlPanelWindow = null;
     this.windowManager = null;
+    this.updateManager = null;
     this.attachedControlPanels = new WeakSet();
+    this.pasteLastTranscriptCallback = null;
+    this.micDevices = [];
+    this.selectedMicId = "";
+    this.selectedLanguageCode = "auto";
+  }
+
+  setUpdateManager(updateManager) {
+    this.updateManager = updateManager;
+  }
+
+  setPasteLastTranscriptCallback(callback) {
+    this.pasteLastTranscriptCallback = callback;
+  }
+
+  setMicrophoneState(devices, selectedId) {
+    this.micDevices = Array.isArray(devices) ? devices : [];
+    this.selectedMicId = selectedId || "";
+    this.updateTrayMenu();
+  }
+
+  setLanguageState(code) {
+    this.selectedLanguageCode = code || "auto";
+    this.updateTrayMenu();
+  }
+
+  _sendToRenderer(channel, ...args) {
+    const target = this.controlPanelWindow || this.mainWindow;
+    if (target && !target.isDestroyed()) {
+      target.webContents.send(channel, ...args);
+    }
   }
 
   setWindows(mainWindow, controlPanelWindow) {
@@ -227,6 +265,27 @@ class TrayManager {
     }
   }
 
+  _buildMicrophoneSubmenu() {
+    if (this.micDevices.length === 0) {
+      return [{ label: i18nMain.t("tray.microphone.none"), enabled: false }];
+    }
+    return this.micDevices.map((device) => ({
+      label: device.label,
+      type: "radio",
+      checked: device.deviceId === this.selectedMicId,
+      click: () => this._sendToRenderer("tray-select-microphone", device.deviceId),
+    }));
+  }
+
+  _buildLanguagesSubmenu() {
+    return languageRegistry.languages.map((lang) => ({
+      label: lang.label,
+      type: "radio",
+      checked: lang.code === this.selectedLanguageCode,
+      click: () => this._sendToRenderer("tray-select-language", lang.code),
+    }));
+  }
+
   buildContextMenuTemplate() {
     const dictationVisible = this.windowManager?.isDictationPanelVisible?.() ?? false;
 
@@ -245,15 +304,60 @@ class TrayManager {
           this.updateTrayMenu();
         },
       },
+      { type: "separator" },
       {
         label: i18nMain.t("tray.openControlPanel"),
         click: async () => {
           await this.showControlPanelFromTray();
         },
       },
+      {
+        label: i18nMain.t("tray.checkForUpdates"),
+        click: () => {
+          this.updateManager?.checkForUpdates?.();
+        },
+      },
+      {
+        label: i18nMain.t("tray.pasteLastTranscript"),
+        accelerator: "Alt+Shift+Z",
+        click: () => {
+          this.pasteLastTranscriptCallback?.();
+        },
+      },
+      { type: "separator" },
+      {
+        label: i18nMain.t("tray.shortcuts"),
+        click: async () => {
+          await this.showControlPanelFromTray();
+          this._sendToRenderer("open-settings-section", "hotkeys");
+        },
+      },
+      {
+        label: i18nMain.t("tray.microphone.label"),
+        submenu: this._buildMicrophoneSubmenu(),
+      },
+      {
+        label: i18nMain.t("tray.languages"),
+        submenu: this._buildLanguagesSubmenu(),
+      },
+      { type: "separator" },
+      {
+        label: i18nMain.t("tray.helpCenter"),
+        click: () => shell.openExternal(HELP_CENTER_URL),
+      },
+      {
+        label: i18nMain.t("tray.talkToSupport"),
+        accelerator: "Super+/",
+        click: () => shell.openExternal(SUPPORT_URL),
+      },
+      {
+        label: i18nMain.t("tray.shareFeedback"),
+        click: () => shell.openExternal(FEEDBACK_URL),
+      },
       { type: "separator" },
       {
         label: i18nMain.t("tray.quit"),
+        accelerator: "Super+Q",
         click: () => {
           debugLogger.info("Quitting app via tray menu", undefined, "tray");
           app.quit();

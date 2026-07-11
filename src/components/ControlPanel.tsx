@@ -2,16 +2,15 @@ import React, { Suspense, useState, useEffect, useRef, useCallback } from "react
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Download, RefreshCw, Loader2, AlertTriangle, Zap, ChevronLeft } from "lucide-react";
-import UpgradePrompt from "./UpgradePrompt";
 import PostMigrationOnboarding from "./PostMigrationOnboarding";
 import { ConfirmDialog, AlertDialog } from "./ui/dialog";
 import { useDialogs } from "../hooks/useDialogs";
 import { useHotkey } from "../hooks/useHotkey";
+import { useTraySync } from "../hooks/useTraySync";
 import { useToast } from "./ui/useToast";
 import { useUpdater } from "../hooks/useUpdater";
 import { useSettings } from "../hooks/useSettings";
 import { useAuth } from "../hooks/useAuth";
-import { useUsage } from "../hooks/useUsage";
 import {
   useTranscriptions,
   useShowDiscarded,
@@ -41,6 +40,7 @@ import {
 } from "../stores/noteStore";
 import { fetchProviders as fetchStreamingProviders } from "../stores/streamingProvidersStore";
 import HistoryView from "./HistoryView";
+import ContextPanel from "./ContextPanel";
 import BackgroundActionToastListener from "./notes/BackgroundActionToastListener";
 import { syncService } from "../services/SyncService.js";
 import AcceptInvitationModal from "./AcceptInvitationModal";
@@ -53,11 +53,15 @@ import { WORKSPACES_ENABLED } from "../lib/features";
 const platform = getCachedPlatform();
 
 const SettingsModal = React.lazy(() => import("./SettingsModal"));
-const ReferralModal = React.lazy(() => import("./ReferralModal"));
 const PersonalNotesView = React.lazy(() => import("./notes/PersonalNotesView"));
 const DictionaryView = React.lazy(() => import("./DictionaryView"));
+const InsightsView = React.lazy(() => import("./InsightsView"));
 const UploadAudioView = React.lazy(() => import("./notes/UploadAudioView"));
 const IntegrationsView = React.lazy(() => import("./IntegrationsView"));
+const SnippetsView = React.lazy(() => import("./SnippetsView"));
+const StyleView = React.lazy(() => import("./StyleView"));
+const TransformsView = React.lazy(() => import("./TransformsView"));
+const ScratchpadView = React.lazy(() => import("./ScratchpadView"));
 const ChatView = React.lazy(() => import("./chat/ChatView"));
 const CommandSearch = React.lazy(() => import("./CommandSearch"));
 
@@ -68,24 +72,20 @@ interface ControlPanelProps {
 
 export default function ControlPanel({ initialSettingsSection }: ControlPanelProps = {}) {
   const { t } = useTranslation();
+  const userName = localStorage.getItem("userName") ?? "Rushikesh";
   const history = useTranscriptions();
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(!!initialSettingsSection);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [showPostMigration, setShowPostMigration] = useState(false);
-  const [limitData, setLimitData] = useState<{ wordsUsed: number; limit: number } | null>(null);
-  const hasShownUpgradePrompt = useRef(false);
   const [settingsSection, setSettingsSection] = useState<string | undefined>(
     initialSettingsSection
   );
   const [aiCTADismissed, setAiCTADismissed] = useState(
     () => localStorage.getItem("aiCTADismissed") === "true"
   );
-  const [showReferrals, setShowReferrals] = useState(false);
   const [invitationToken, setInvitationToken] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
   const showDiscarded = useShowDiscarded();
-  const [showCloudMigrationBanner, setShowCloudMigrationBanner] = useState(false);
   const [activeView, setActiveView] = useState<ControlPanelView>("home");
   const isMeetingMode = useIsMeetingMode();
   const isNarrowWindow = useIsNarrowWindow();
@@ -106,11 +106,18 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   const [gpuBannerDismissed, setGpuBannerDismissed] = useState(
     () => localStorage.getItem("gpuBannerDismissedUnified") === "true"
   );
-  const cloudMigrationProcessed = useRef(false);
   const updateReadyToastShown = useRef(false);
   const updateErrorToastShown = useRef<Error | null>(null);
   const { hotkey } = useHotkey();
   const { toast } = useToast();
+  useTraySync();
+
+  useEffect(() => {
+    return window.electronAPI.onOpenSettingsSection?.((section) => {
+      setSettingsSection(section);
+      setShowSettings(true);
+    });
+  }, []);
   const {
     useLocalWhisper,
     localTranscriptionProvider,
@@ -118,8 +125,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
     setUseLocalWhisper,
     setCloudTranscriptionMode,
   } = useSettings();
-  const { isSignedIn, isLoaded: authLoaded, user } = useAuth();
-  const usage = useUsage();
+  const { isSignedIn, isLoaded: authLoaded } = useAuth();
 
   const {
     status: updateStatus,
@@ -226,40 +232,6 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   }, [updateError, toast, t]);
 
   useEffect(() => {
-    const dispose = window.electronAPI?.onLimitReached?.(
-      (data: { wordsUsed: number; limit: number }) => {
-        if (!hasShownUpgradePrompt.current) {
-          hasShownUpgradePrompt.current = true;
-          setLimitData(data);
-          setShowUpgradePrompt(true);
-        } else {
-          toast({
-            title: t("controlPanel.limit.weeklyTitle"),
-            description: t("controlPanel.limit.weeklyDescription"),
-            duration: 5000,
-          });
-        }
-      }
-    );
-
-    return () => {
-      dispose?.();
-    };
-  }, [toast, t]);
-
-  useEffect(() => {
-    if (!usage?.isPastDue || !usage.hasLoaded) return;
-    if (sessionStorage.getItem("pastDueNotified")) return;
-    sessionStorage.setItem("pastDueNotified", "true");
-    toast({
-      title: t("controlPanel.billing.pastDueTitle"),
-      description: t("controlPanel.billing.pastDueDescription"),
-      variant: "destructive",
-      duration: 8000,
-    });
-  }, [usage?.isPastDue, usage?.hasLoaded, toast, t]);
-
-  useEffect(() => {
     if (!WORKSPACES_ENABLED) return;
     const unsubscribe = window.electronAPI?.onWorkspaceInvitationToken?.((token) => {
       setInvitationToken(token);
@@ -275,19 +247,6 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
       clearPendingInvitationToken();
     }
   }, [authLoaded, isSignedIn]);
-
-  useEffect(() => {
-    if (!authLoaded || !isSignedIn || cloudMigrationProcessed.current) return;
-    const isPending = localStorage.getItem("pendingCloudMigration") === "true";
-    const alreadyShown = localStorage.getItem("cloudMigrationShown") === "true";
-    if (!isPending || alreadyShown) return;
-
-    cloudMigrationProcessed.current = true;
-    setUseLocalWhisper(false);
-    setCloudTranscriptionMode("openwhispr");
-    localStorage.removeItem("pendingCloudMigration");
-    setShowCloudMigrationBanner(true);
-  }, [authLoaded, isSignedIn, setUseLocalWhisper, setCloudTranscriptionMode]);
 
   useEffect(() => {
     if (platform === "darwin" || gpuBannerDismissed) return;
@@ -673,13 +632,6 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
         onOk={() => {}}
       />
 
-      <UpgradePrompt
-        open={showUpgradePrompt}
-        onOpenChange={setShowUpgradePrompt}
-        wordsUsed={limitData?.wordsUsed}
-        limit={limitData?.limit}
-      />
-
       <PostMigrationOnboarding
         open={showPostMigration}
         onOpenChange={setShowPostMigration}
@@ -696,12 +648,6 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             }}
             initialSection={settingsSection}
           />
-        </Suspense>
-      )}
-
-      {showReferrals && (
-        <Suspense fallback={null}>
-          <ReferralModal open={showReferrals} onOpenChange={setShowReferrals} />
         </Suspense>
       )}
 
@@ -734,7 +680,81 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
         </Suspense>
       )}
 
+      {/* Top Window Bar (spans full width) */}
+      <div
+        className="flex items-center justify-between w-full h-11 shrink-0 px-4 mt-1.5 select-none"
+        style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+      >
+        <div
+          className="flex items-center gap-2.5"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        >
+          {/* Sidebar toggle icon (styled static placeholder for layout parity) */}
+          <button
+            onClick={() => {}}
+            className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground transition-colors cursor-pointer"
+            title="Toggle Sidebar"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+          </button>
+
+          {/* User Profile Avatar */}
+          <div
+            onClick={() => {
+              setSettingsSection("general");
+              setShowSettings(true);
+            }}
+            className="w-6 h-6 rounded-full bg-[#EDE4FB] border border-[#C4B0F7]/40 flex items-center justify-center text-[11px] font-bold text-[#2B1A47] cursor-pointer hover:opacity-90 select-none uppercase"
+            title={t("sidebar.settings")}
+          >
+            {userName.charAt(0)}
+          </div>
+        </div>
+
+        {/* Drag space in the middle */}
+        <div className="flex-1 h-full" />
+
+        <div
+          className="flex items-center gap-2.5"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        >
+          {/* Notification Bell */}
+          <button className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground transition-colors relative cursor-pointer">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-primary rounded-full" />
+          </button>
+
+          {/* Window Controls */}
+          {platform !== "darwin" && <WindowControls />}
+        </div>
+      </div>
+
       <div className="flex flex-1 overflow-hidden">
+        {/* Left Sidebar */}
         <div
           className="shrink-0 overflow-hidden transition-[width] duration-300 ease-out"
           style={{ width: isSidePanelLayout ? 0 : undefined }}
@@ -747,19 +767,6 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
               setSettingsSection(undefined);
               setShowSettings(true);
             }}
-            onOpenReferrals={() => setShowReferrals(true)}
-            onUpgrade={() => {
-              setSettingsSection("plansBilling");
-              setShowSettings(true);
-            }}
-            isOverLimit={usage?.isOverLimit ?? false}
-            userName={user?.name}
-            userEmail={user?.email}
-            userImage={user?.image}
-            isSignedIn={isSignedIn}
-            authLoaded={authLoaded}
-            isProUser={!!(usage?.isSubscribed || usage?.isTrial)}
-            usageLoaded={usage?.hasLoaded ?? false}
             updateAction={
               !updateStatus.isDevelopment &&
               (updateStatus.updateAvailable ||
@@ -779,71 +786,31 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             }
           />
         </div>
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <div
-            className="flex items-center justify-between w-full h-10 shrink-0"
-            style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
-          >
-            {isSidePanelLayout && (
-              <div
-                className={platform === "darwin" ? "ml-[84px] mt-[16px]" : "ml-2"}
-                style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+
+        {/* Main Content Card (Middle) */}
+        <main className="flex-1 flex flex-col overflow-hidden m-3 mt-0 mr-3 mb-3 bg-card rounded-[24px] border border-border/40 dark:border-white/5 shadow-sm">
+          {isSidePanelLayout && (
+            <div
+              className="h-12 flex items-center px-4 border-b border-border/10 shrink-0"
+              style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+            >
+              <Button
+                variant="outline-flat"
+                size="sm"
+                onClick={handleExitMeetingMode}
+                className="h-7 px-2.5 pl-1.5 gap-1"
               >
-                <Button
-                  variant="outline-flat"
-                  size="sm"
-                  onClick={handleExitMeetingMode}
-                  className="h-7 px-2.5 pl-1.5 gap-1"
-                >
-                  <ChevronLeft size={14} strokeWidth={1.8} />
-                  {t("controlPanel.backToNotes")}
-                </Button>
-              </div>
-            )}
-            <div className="flex-1" />
-            {platform !== "darwin" && (
-              <div className="pr-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-                <WindowControls />
-              </div>
-            )}
-          </div>
-          <div className="flex-1 overflow-y-auto pt-1">
-            {usage?.isPastDue && activeView === "home" && (
-              <div className="max-w-3xl mx-auto w-full mb-3">
-                <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="shrink-0 w-8 h-8 rounded-md bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-                      <AlertTriangle size={16} className="text-amber-600 dark:text-amber-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-amber-900 dark:text-amber-200 mb-0.5">
-                        {t("controlPanel.billing.pastDueTitle")}
-                      </p>
-                      <p className="text-xs text-amber-700 dark:text-amber-300/80 mb-2">
-                        {t("controlPanel.billing.bannerDescription", {
-                          limit: usage.limit.toLocaleString(),
-                        })}
-                      </p>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="h-7 text-xs"
-                        onClick={() => {
-                          setSettingsSection("account");
-                          setShowSettings(true);
-                        }}
-                      >
-                        {t("controlPanel.billing.updatePayment")}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+                <ChevronLeft size={14} strokeWidth={1.8} />
+                {t("controlPanel.backToNotes")}
+              </Button>
+            </div>
+          )}
+
+          <div className="flex-1 overflow-y-auto">
             {(gpuAccelAvailable.cuda || gpuAccelAvailable.vulkan) &&
               activeView === "home" &&
               !gpuBannerDismissed && (
-                <div className="max-w-3xl mx-auto w-full mb-3">
+                <div className="max-w-3xl mx-auto w-full p-4 pb-0">
                   <div className="rounded-lg border border-primary/20 dark:border-primary/15 bg-primary/5 p-3">
                     <div className="flex items-start gap-3">
                       <div className="shrink-0 w-8 h-8 rounded-md bg-primary/10 dark:bg-primary/15 flex items-center justify-center">
@@ -885,13 +852,12 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                   </div>
                 </div>
               )}
+
             {activeView === "home" && (
               <HistoryView
                 history={history}
                 isLoading={isLoading}
                 hotkey={hotkey}
-                showCloudMigrationBanner={showCloudMigrationBanner}
-                setShowCloudMigrationBanner={setShowCloudMigrationBanner}
                 aiCTADismissed={aiCTADismissed}
                 setAiCTADismissed={setAiCTADismissed}
                 useCleanupModel={useCleanupModel}
@@ -931,6 +897,11 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                 <DictionaryView />
               </Suspense>
             )}
+            {activeView === "insights" && (
+              <Suspense fallback={null}>
+                <InsightsView />
+              </Suspense>
+            )}
             {activeView === "upload" && (
               <Suspense fallback={null}>
                 <UploadAudioView
@@ -948,17 +919,32 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             )}
             {activeView === "integrations" && (
               <Suspense fallback={null}>
-                <IntegrationsView
-                  isPaid={!!(usage?.isSubscribed || usage?.isTrial)}
-                  onUpgrade={() => {
-                    setSettingsSection("plansBilling");
-                    setShowSettings(true);
-                  }}
-                />
+                <IntegrationsView />
+              </Suspense>
+            )}
+            {activeView === "snippets" && (
+              <Suspense fallback={null}>
+                <SnippetsView />
+              </Suspense>
+            )}
+            {activeView === "style" && (
+              <Suspense fallback={null}>
+                <StyleView />
+              </Suspense>
+            )}
+            {activeView === "transforms" && (
+              <Suspense fallback={null}>
+                <TransformsView />
+              </Suspense>
+            )}
+            {activeView === "scratchpad" && (
+              <Suspense fallback={null}>
+                <ScratchpadView />
               </Suspense>
             )}
           </div>
         </main>
+        <ContextPanel activeView={activeView} />
       </div>
       <BackgroundActionToastListener />
     </div>

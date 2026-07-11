@@ -31,6 +31,8 @@ import { syncService } from "../services/SyncService.js";
 import { evaluateFinishedRecording } from "./recordingValidation";
 import { matchesDictionaryPrompt } from "../utils/dictionaryEchoFilter.js";
 import { getDictionaryHintWords } from "../utils/snippets";
+import { resolveStyleInstruction } from "../utils/appCategory";
+import { playPasteCue } from "../utils/dictationCues";
 
 const REASONING_CACHE_TTL = 30000; // 30 seconds
 const RECORDING_TIMESLICE_MS = 250; // flush chunks periodically so short recordings still carry audio frames. See #871.
@@ -46,7 +48,12 @@ function dictationAgentReachable(settings) {
   });
 }
 
-function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested) {
+function formatActiveApp(foregroundApp) {
+  if (!foregroundApp?.app) return undefined;
+  return foregroundApp.title ? `${foregroundApp.app} — ${foregroundApp.title}` : foregroundApp.app;
+}
+
+function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, activeApp) {
   const cleanupReachable =
     !!settings.useCleanupModel && (!!settings.cleanupModel?.trim() || isCloudCleanupMode());
   const agentModel = settings.dictationAgentModel?.trim() || "";
@@ -88,6 +95,7 @@ function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested) {
           language: settings.preferredLanguage,
           customDictionary: getDictionaryHintWords(settings),
           uiLanguage: settings.uiLanguage,
+          activeApp,
         }),
       },
     };
@@ -95,7 +103,19 @@ function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested) {
   if (kind === "cleanup") {
     return {
       kind: "cleanup",
-      config: { disableThinking: settings.cleanupDisableThinking },
+      config: {
+        disableThinking: settings.cleanupDisableThinking,
+        // Resolved here (rather than the provider fallback) so {{activeApp}}
+        // reflects the window the user dictated into.
+        systemPrompt: resolvePrompt("cleanup", {
+          agentName,
+          language: settings.preferredLanguage,
+          customDictionary: getDictionaryHintWords(settings),
+          uiLanguage: settings.uiLanguage,
+          activeApp,
+          styleInstruction: resolveStyleInstruction(activeApp, settings),
+        }),
+      },
     };
   }
   return { kind: "skip" };
@@ -112,6 +132,15 @@ const isValidApiKey = (key, provider = "openai") => {
   if (!key || key.trim() === "") return false;
   const placeholder = PLACEHOLDER_KEYS[provider] || PLACEHOLDER_KEYS.openai;
   return key !== placeholder;
+};
+
+// Exact hostname match (not substring) so e.g. "api.groq.com.attacker.net" doesn't match "api.groq.com".
+const isEndpointHost = (endpoint, hostname) => {
+  try {
+    return new URL(endpoint).hostname === hostname;
+  } catch {
+    return false;
+  }
 };
 
 const STREAMING_PROVIDERS = {
@@ -583,7 +612,13 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           const provider = localTranscriptionProvider === "nvidia" ? "nvidia" : "whisper";
           const model = provider === "nvidia" ? parakeetModel : whisperModel;
           const language = getBaseLanguageCode(getSettings().preferredLanguage);
-          window.electronAPI?.startDictationPreview?.({ provider, model, language });
+          window.electronAPI?.startDictationPreview?.({
+            provider,
+            model,
+            language,
+            overlay: showTranscriptionPreview,
+            initialPrompt: this.getCustomDictionaryPrompt() || undefined,
+          });
         } catch (e) {
           logger.warn("Preview worklet setup failed", { error: e.message }, "audio");
         }
@@ -624,10 +659,19 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
   stopRecording() {
     if (this.mediaRecorder?.state === "recording") {
+      this.captureForegroundApp();
       this.mediaRecorder.stop();
       return true;
     }
     return false;
+  }
+
+  captureForegroundApp() {
+    // Fired at recording-stop so the PowerShell lookup runs concurrently with
+    // transcription; resolves null on any failure (cleanup stays app-agnostic).
+    this.foregroundAppPromise = window.electronAPI.getForegroundApp
+      ? window.electronAPI.getForegroundApp().catch(() => null)
+      : Promise.resolve(null);
   }
 
   cancelRecording() {
@@ -764,10 +808,6 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       };
 
       this.onTranscriptionComplete?.(result);
-
-      if (result?.source === "openwhispr") {
-        window.dispatchEvent(new Event("usage-changed"));
-      }
 
       const roundTripDurationMs = Math.round(performance.now() - pipelineStart);
 
@@ -1272,7 +1312,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           normalizedText,
           getSettings(),
           agentName,
-          this.voiceAgentRequested
+          this.voiceAgentRequested,
+          formatActiveApp(await this.foregroundAppPromise)
         );
         if (route.kind === "skip") return normalizedText;
 
@@ -1523,7 +1564,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         processedText,
         settings,
         agentName,
-        this.voiceAgentRequested
+        this.voiceAgentRequested,
+        formatActiveApp(await this.foregroundAppPromise)
       );
       const cleanupCloudMode = settings.cleanupCloudMode || "openwhispr";
 
@@ -1676,7 +1718,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       // Groq rejects prompts > 896 chars (incl. when reached via "custom" provider).
       // 890 leaves margin for UTF-16 vs codepoint counting drift.
-      const isGroqEndpoint = provider === "groq" || endpoint.includes("api.groq.com");
+      const isGroqEndpoint = provider === "groq" || isEndpointHost(endpoint, "api.groq.com");
       const MAX_PROMPT_CHARS = isGroqEndpoint ? 890 : 900;
       let dictionaryPrompt = this.getCustomDictionaryPrompt();
       if (dictionaryPrompt) {
@@ -1705,10 +1747,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       const isCustomEndpoint =
         provider === "custom" ||
-        (!endpoint.includes("api.openai.com") &&
-          !endpoint.includes("api.groq.com") &&
-          !endpoint.includes("api.x.ai") &&
-          !endpoint.includes("api.mistral.ai"));
+        (!isEndpointHost(endpoint, "api.openai.com") &&
+          !isEndpointHost(endpoint, "api.groq.com") &&
+          !isEndpointHost(endpoint, "api.x.ai") &&
+          !isEndpointHost(endpoint, "api.mistral.ai"));
 
       const apiCallStart = performance.now();
 
@@ -2246,6 +2288,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
   async safePaste(text, options = {}) {
     try {
       await window.electronAPI.pasteText(text, options);
+      void playPasteCue();
       return true;
     } catch (error) {
       const message =
@@ -2268,8 +2311,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
 
     try {
+      const foregroundApp = await this.foregroundAppPromise;
       const result = await window.electronAPI.saveTranscription(text, rawText, {
         clientTranscriptionId,
+        targetApp: foregroundApp?.app ?? null,
       });
       if (result?.id) syncService.debouncedPush("transcription", result.id);
 
@@ -2761,7 +2806,11 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       if (isStaleDeviceError(error) && !forceDefaultMic && !stopRequested) {
         // Pinned mic is gone (Chromium rotates IDs / device unplugged). Retry once on the default mic. See #900.
-        logger.warn("Pinned microphone unavailable, retrying streaming on default mic", {}, "streaming");
+        logger.warn(
+          "Pinned microphone unavailable, retrying streaming on default mic",
+          {},
+          "streaming"
+        );
         this.cachedMicDeviceId = null;
         await this.cleanupStreaming();
         this.isRecording = false;
@@ -2811,6 +2860,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
 
     if (!this.isStreaming) return false;
+
+    this.captureForegroundApp();
 
     const durationSeconds = this.recordingStartTime
       ? (Date.now() - this.recordingStartTime) / 1000
@@ -2932,7 +2983,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         finalText,
         stSettings,
         agentName,
-        this.voiceAgentRequested
+        this.voiceAgentRequested,
+        formatActiveApp(await this.foregroundAppPromise)
       );
       const cleanupCloudMode = stSettings.cleanupCloudMode || "openwhispr";
 

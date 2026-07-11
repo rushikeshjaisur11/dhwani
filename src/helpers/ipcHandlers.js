@@ -122,7 +122,7 @@ const CLOUD_CHUNK_CONCURRENCY = 5;
 const CLOUD_CHUNK_SEGMENT_SECONDS = 240;
 
 function buildMultipartBody(fileBuffer, fileName, contentType, fields = {}) {
-  const boundary = `----OpenWhispr${Date.now()}`;
+  const boundary = `----Dhwani${Date.now()}`;
   const parts = [];
 
   parts.push(
@@ -795,6 +795,10 @@ class IPCHandlers {
 
     ipcMain.handle("save-openai-key", async (event, key) => {
       return this.environmentManager.saveOpenAIKey(key);
+    });
+
+    ipcMain.handle("db-get-insights-stats", async () => {
+      return this.databaseManager.getInsightsStats();
     });
 
     ipcMain.handle("db-save-transcription", async (event, text, rawText, options) => {
@@ -1539,6 +1543,11 @@ class IPCHandlers {
       }
     });
 
+    ipcMain.handle("get-foreground-app", async () => {
+      const { getForegroundApp } = require("./foregroundApp");
+      return await getForegroundApp();
+    });
+
     ipcMain.handle("transcribe-audio-file", async (event, filePath, options = {}) => {
       const fs = require("fs");
       try {
@@ -1627,6 +1636,10 @@ class IPCHandlers {
 
     ipcMain.handle("write-clipboard", async (event, text) => {
       return this.clipboardManager.writeClipboard(text, event.sender);
+    });
+
+    ipcMain.handle("capture-selected-text", async () => {
+      return this.clipboardManager.captureSelectedText();
     });
 
     ipcMain.handle("check-paste-tools", async () => {
@@ -1790,6 +1803,13 @@ class IPCHandlers {
     ipcMain.handle("list-gpus", async () => {
       const { listNvidiaGpus } = require("../utils/gpuDetection");
       return listNvidiaGpus();
+    });
+
+    ipcMain.handle("get-recommended-model", async () => {
+      const { getSystemProfile } = require("../utils/systemProfile");
+      const { recommendWhisperModel } = require("../utils/modelRecommender");
+      const profile = await getSystemProfile();
+      return { ...recommendWhisperModel(profile), profile };
     });
 
     ipcMain.handle("set-gpu-device-index", async (_event, purpose, uuid) => {
@@ -2135,7 +2155,8 @@ class IPCHandlers {
 
       // Delete downloaded models
       try {
-        const whisperDir = path.join(os.homedir(), ".cache", "openwhispr", "whisper-models");
+        const { getModelsDirForService } = require("./modelDirUtils");
+        const whisperDir = getModelsDirForService("whisper");
         if (fs.existsSync(whisperDir)) fs.rmSync(whisperDir, { recursive: true, force: true });
       } catch (e) {
         errors.push(`Whisper models: ${e.message}`);
@@ -5105,6 +5126,8 @@ class IPCHandlers {
     let dictationPreviewLanguage = null;
     let dictationPreviewSessionActive = false;
     let dictationPreviewChunkCount = 0;
+    let dictationPreviewOverlay = true;
+    let dictationPreviewPrompt = null;
 
     const resetDictationPreviewState = ({ preserveSession = false } = {}) => {
       if (dictationPreviewTimer) {
@@ -5120,6 +5143,8 @@ class IPCHandlers {
       dictationPreviewProvider = null;
       dictationPreviewModel = null;
       dictationPreviewLanguage = null;
+      dictationPreviewOverlay = true;
+      dictationPreviewPrompt = null;
     };
 
     const transcribeDictationPreviewChunk = async () => {
@@ -5154,15 +5179,20 @@ class IPCHandlers {
           });
         } else {
           const vadOptions = this._resolveWhisperVadOptions("dictation");
+          const initialPrompt = dictationPreviewPrompt || null;
           result = await this.whisperManager.transcribeLocalWhisper(wav, {
             model: dictationPreviewModel,
             language: dictationPreviewLanguage,
+            initialPrompt,
             ...vadOptions,
           });
         }
 
         if (result?.success && result.text?.trim()) {
-          this.windowManager.appendTranscriptionPreview(result.text.trim());
+          const chunkText = result.text.trim();
+          if (dictationPreviewOverlay) {
+            this.windowManager.appendTranscriptionPreview(chunkText);
+          }
         } else if (result && !result.success) {
           debugLogger.warn("Dictation preview chunk returned failure", {
             error: result.error || result.message,
@@ -5734,18 +5764,23 @@ class IPCHandlers {
       return { success: true, text: result.text || "" };
     });
 
-    ipcMain.handle("start-dictation-preview", async (_event, { provider, model, language }) => {
-      resetDictationPreviewState();
-      dictationPreviewMode = true;
-      dictationPreviewSessionActive = true;
-      dictationPreviewProvider = provider;
-      dictationPreviewModel = model;
-      dictationPreviewLanguage = language || null;
-      dictationPreviewChunkCount = 0;
-      this.windowManager.showTranscriptionPreview("");
-      dictationPreviewTimer = setInterval(() => transcribeDictationPreviewChunk(), 1500);
-      return { success: true };
-    });
+    ipcMain.handle(
+      "start-dictation-preview",
+      async (_event, { provider, model, language, overlay = true, initialPrompt = null }) => {
+        resetDictationPreviewState();
+        dictationPreviewMode = true;
+        dictationPreviewSessionActive = true;
+        dictationPreviewProvider = provider;
+        dictationPreviewModel = model;
+        dictationPreviewLanguage = language || null;
+        dictationPreviewPrompt = initialPrompt || null;
+        dictationPreviewChunkCount = 0;
+        dictationPreviewOverlay = overlay;
+        if (overlay) this.windowManager.showTranscriptionPreview("");
+        dictationPreviewTimer = setInterval(() => transcribeDictationPreviewChunk(), 1500);
+        return { success: true };
+      }
+    );
 
     ipcMain.on("dictation-preview-audio", (_event, audioBuffer) => {
       if (!dictationPreviewMode) return;
@@ -5801,8 +5836,10 @@ class IPCHandlers {
       clearInterval(dictationPreviewTimer);
       dictationPreviewTimer = null;
       await transcribeDictationPreviewChunk();
+      const hadOverlay = dictationPreviewOverlay;
       resetDictationPreviewState({ preserveSession: true });
-      if (!dictationPreviewSessionActive) {
+      if (!dictationPreviewSessionActive || !hadOverlay) {
+        dictationPreviewSessionActive = false;
         return { success: true };
       }
       this.windowManager.holdTranscriptionPreview(options);
@@ -6678,25 +6715,25 @@ class IPCHandlers {
         // Parse lines
         const lines = envContent.split("\n");
         const logLevelIndex = lines.findIndex((line) =>
-          line.trim().startsWith("OPENWHISPR_LOG_LEVEL=")
+          line.trim().startsWith("DHWANI_LOG_LEVEL=")
         );
 
         if (enabled) {
           // Set to debug
           if (logLevelIndex !== -1) {
-            lines[logLevelIndex] = "OPENWHISPR_LOG_LEVEL=debug";
+            lines[logLevelIndex] = "DHWANI_LOG_LEVEL=debug";
           } else {
             // Add new line
             if (lines.length > 0 && lines[lines.length - 1] !== "") {
               lines.push("");
             }
             lines.push("# Debug logging setting");
-            lines.push("OPENWHISPR_LOG_LEVEL=debug");
+            lines.push("DHWANI_LOG_LEVEL=debug");
           }
         } else {
           // Remove or set to info
           if (logLevelIndex !== -1) {
-            lines[logLevelIndex] = "OPENWHISPR_LOG_LEVEL=info";
+            lines[logLevelIndex] = "DHWANI_LOG_LEVEL=info";
           }
         }
 
@@ -6704,7 +6741,7 @@ class IPCHandlers {
         fs.writeFileSync(envPath, lines.join("\n"), "utf8");
 
         // Update environment variable
-        process.env.OPENWHISPR_LOG_LEVEL = enabled ? "debug" : "info";
+        process.env.DHWANI_LOG_LEVEL = enabled ? "debug" : "info";
 
         // Refresh logger state
         debugLogger.refreshLogLevel();

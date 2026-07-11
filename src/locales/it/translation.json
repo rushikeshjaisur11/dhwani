@@ -4,9 +4,9 @@
       "sectionTitle": "Lingua",
       "sectionDescription": "Imposta separatamente la lingua dell'interfaccia e quella di trascrizione",
       "uiLabel": "Lingua dell'interfaccia",
-      "uiDescription": "Scegli la lingua usata nell'interfaccia di OpenWhispr",
+      "uiDescription": "Scegli la lingua usata nell'interfaccia di Dhwani",
       "transcriptionLabel": "Lingua di trascrizione",
-      "transcriptionDescription": "Scegli la lingua che parli per una trascrizione più accurata"
+      "transcriptionDescription": "Scegli la lingua che parli per una trascrizione piÃ¹ accurata"
     },
     "noteFiles": {
       "title": "Salva note come file",
@@ -33,16 +33,16 @@
       "hide": "Nascondi pannello dettatura"
     },
     "openControlPanel": "Apri pannello di controllo",
-    "quit": "Esci da OpenWhispr",
-    "tooltip": "OpenWhispr - Dettatura vocale"
+    "quit": "Esci da Dhwani",
+    "tooltip": "Dhwani - Dettatura vocale"
   },
   "menu": {
-    "appLabel": "OpenWhispr",
-    "quit": "Esci da OpenWhispr",
+    "appLabel": "Dhwani",
+    "quit": "Esci da Dhwani",
     "speech": "Voce",
     "settings": "Impostazioni...",
     "help": "Aiuto",
-    "learnMore": "Scopri di più",
+    "learnMore": "Scopri di piÃ¹",
     "file": "File",
     "closeWindow": "Chiudi finestra"
   },
@@ -57,8 +57,8 @@
       "message": "Impossibile aprire il link nel browser:\n{{url}}\n\nErrore: {{error}}"
     },
     "loadFailure": {
-      "title": "Caricamento di OpenWhispr non riuscito",
-      "message": "OpenWhispr non ha potuto caricare la sua interfaccia.",
+      "title": "Caricamento di Dhwani non riuscito",
+      "message": "Dhwani non ha potuto caricare la sua interfaccia.",
       "detail": {
         "window": "Finestra: {{windowName}}",
         "error": "Errore {{errorCode}}: {{errorDescription}}",
@@ -69,43 +69,43 @@
   },
   "startup": {
     "error": {
-      "title": "Errore di avvio di OpenWhispr",
+      "title": "Errore di avvio di Dhwani",
       "message": "Impossibile avviare l'applicazione:\n\n{{error}}\n\nSegnala questo problema."
     },
     "globeHotkey": {
       "title": "Tasto Globe non disponibile",
-      "message": "OpenWhispr non è riuscito ad attivare il tasto Globe.",
+      "message": "Dhwani non Ã¨ riuscito ad attivare il tasto Globe.",
       "details": {
         "unknown": "Errore sconosciuto durante l'avvio del listener Globe.",
-        "fallback": "La scorciatoia Globe resterà disabilitata; le scorciatoie esistenti continueranno a funzionare.",
+        "fallback": "La scorciatoia Globe resterÃ  disabilitata; le scorciatoie esistenti continueranno a funzionare.",
         "devHint": "Esegui `npm run compile:globe` e ricompila l'app per rigenerare il binario.",
-        "reinstallHint": "Reinstalla OpenWhispr o contatta il supporto se il problema persiste."
+        "reinstallHint": "Reinstalla Dhwani o contatta il supporto se il problema persiste."
       }
     }
   },
   "hotkey": {
     "errors": {
-      "callbackRequired": "È necessaria una funzione callback per configurare la scorciatoia",
-      "globeOnlyMac": "Il tasto Globe è disponibile solo su macOS.",
+      "callbackRequired": "Ãˆ necessaria una funzione callback per configurare la scorciatoia",
+      "globeOnlyMac": "Il tasto Globe Ã¨ disponibile solo su macOS.",
       "mouseButtonOnlyMac": "Le scorciatoie con i tasti del mouse sono attualmente supportate solo su macOS.",
-      "alreadyRegistered": "\"{{hotkey}}\" è già registrata da un'altra applicazione.",
+      "alreadyRegistered": "\"{{hotkey}}\" Ã¨ giÃ  registrata da un'altra applicazione.",
       "osReserved": "\"{{hotkey}}\" potrebbe essere riservata dal sistema operativo.",
       "registrationFailed": "Impossibile registrare \"{{hotkey}}\". Potrebbe essere in uso da un'altra applicazione.",
       "trySuggestions": "Prova: {{suggestions}}",
-      "slotConflict": "Questa scorciatoia è già utilizzata per {{slot}}."
+      "slotConflict": "Questa scorciatoia Ã¨ giÃ  utilizzata per {{slot}}."
     }
   },
   "systemSettings": {
     "microphone": "Apri le impostazioni di sistema per configurare i permessi del microfono.",
     "sound": "Apri le impostazioni audio di sistema (ad esempio, pavucontrol).",
-    "accessibility": "Le impostazioni di accessibilità non sono disponibili su questa piattaforma.",
+    "accessibility": "Le impostazioni di accessibilitÃ  non sono disponibili su questa piattaforma.",
     "systemAudio": "Le impostazioni audio di sistema non sono disponibili su questa piattaforma."
   },
   "upgradePrompt": {
     "paymentFailed": "Non siamo riusciti a elaborare il pagamento",
     "weeklyLimit": "Hai raggiunto il limite settimanale",
     "pastDueDescription": "Sei nel piano gratuito per ora — nessun problema, hai ancora {{limit}} parole a settimana.\nAggiorna il metodo di pagamento per tornare a Pro illimitato.",
-    "limitDescription": "{{used}} di {{limit}} parole utilizzate.\nLa trascrizione è stata salvata e incollata.",
+    "limitDescription": "{{used}} di {{limit}} parole utilizzate.\nLa trascrizione Ã¨ stata salvata e incollata.",
     "updatePayment": "Aggiorna metodo di pagamento",
     "updatePaymentDescription": "Torna alle trascrizioni Pro illimitate.",
     "upgradeToPro": "Passa a Pro",
@@ -123,7 +123,7 @@
     "close": "Chiudi"
   },
   "windows": {
-    "pttUnavailable": "Il listener nativo Push-to-Talk non è disponibile"
+    "pttUnavailable": "Il listener nativo Push-to-Talk non Ã¨ disponibile"
   },
   "common": {
     "back": "Indietro",
@@ -150,15 +150,15 @@
     "close": "Chiudi",
     "dismiss": "Ignora",
     "save": "Enregistrer",
-    "saving": "Enregistrement…",
-    "create": "Créer",
+    "saving": "Enregistrementâ€¦",
+    "create": "CrÃ©er",
     "delete": "Supprimer",
     "actions": "Actions",
     "error": "Une erreur s'est produite",
     "unknownError": "Une erreur inconnue s'est produite",
     "copy": "Copier",
-    "copied": "Copié",
-    "done": "Terminé",
+    "copied": "CopiÃ©",
+    "done": "TerminÃ©",
     "skip": "Salta"
   },
   "onboarding": {
@@ -174,7 +174,7 @@
     },
     "hotkey": {
       "couldNotRegisterTitle": "Impossibile registrare questa scorciatoia",
-      "couldNotRegisterDescription": "Questa combinazione potrebbe essere già in uso. Prova con un'altra."
+      "couldNotRegisterDescription": "Questa combinazione potrebbe essere giÃ  in uso. Prova con un'altra."
     },
     "setup": {
       "title": "Configurazione",
@@ -184,31 +184,31 @@
     "permissions": {
       "title": "Permessi",
       "microphoneTitle": "Microfono",
-      "microphoneDescription": "Trasforma la tua voce in testo. Non viene registrato nulla finché non premi la scorciatoia.",
+      "microphoneDescription": "Trasforma la tua voce in testo. Non viene registrato nulla finchÃ© non premi la scorciatoia.",
       "grant": "Concedi",
       "grantAccess": "Concedi accesso",
-      "accessibilityTitle": "Accessibilità",
+      "accessibilityTitle": "AccessibilitÃ ",
       "accessibilityDescription": "Digita il testo finale direttamente nell'app in cui ti trovi — documenti, email, chat.",
       "testAndGrant": "Testa e concedi",
-      "requiredForApp": "Necessario per usare OpenWhispr",
+      "requiredForApp": "Necessario per usare Dhwani",
       "microphoneRequired": "Accesso al microfono richiesto",
       "openSystemSettings": "Apri Impostazioni di Sistema",
       "systemAudioTitle": "Audio di Sistema",
-      "systemAudioDescription": "Permette al registratore delle riunioni di sentire l'altro lato delle tue chiamate — riunioni, lezioni, podcast. Puoi attivarlo più tardi nelle Impostazioni.",
+      "systemAudioDescription": "Permette al registratore delle riunioni di sentire l'altro lato delle tue chiamate — riunioni, lezioni, podcast. Puoi attivarlo piÃ¹ tardi nelle Impostazioni.",
       "optional": "Facoltativo",
       "recommended": "Consigliato",
-      "accessibilityTroubleshooting": "In Impostazioni di Sistema → Accessibilità, disattiva l'interruttore di OpenWhispr e riattivalo. Se non funziona, rimuovi OpenWhispr dall'elenco e aggiungilo di nuovo. Ancora problemi? Scrivi a support@openwhispr.com."
+      "accessibilityTroubleshooting": "In Impostazioni di Sistema → AccessibilitÃ , disattiva l'interruttore di Dhwani e riattivalo. Se non funziona, rimuovi Dhwani dall'elenco e aggiungilo di nuovo. Ancora problemi? Scrivi a support@Dhwani.com."
     },
     "transcription": {
       "title": "Configurazione trascrizione",
-      "description": "Scegli modalità e provider",
+      "description": "Scegli modalitÃ  e provider",
       "preferredLanguage": "Lingua preferita"
     },
     "activation": {
       "title": "Configurazione dettatura",
       "description": "Configura come avviare la dettatura",
       "hotkey": "Scorciatoia",
-      "mode": "Modalità",
+      "mode": "ModalitÃ ",
       "tapDescription": "Premi per avviare/fermare",
       "holdDescription": "Tieni premuto mentre parli",
       "test": "Test",
@@ -226,26 +226,26 @@
       "testSetHotkey": "Imposta una scorciatoia sopra per provarlo",
       "testPlaceholder": "Fai clic qui, premi la tua scorciatoia e pronuncia uno degli esempi...",
       "examples": [
-        "Traduci in italiano: «Parlo più velocemente di quanto scrivo»",
+        "Traduci in italiano: Â«Parlo piÃ¹ velocemente di quanto scrivoÂ»",
         "Scrivi una breve email al mio capo dicendogli che voglio una promozione, si chiama Mark",
-        "Quanto fa 5 × 5?"
+        "Quanto fa 5 Ã— 5?"
       ],
       "optionalNote": "Facoltativo — puoi impostarla o modificarla in qualsiasi momento nelle impostazioni."
     },
     "connectivity": {
-      "title": "Non riusciamo a raggiungere OpenWhispr Cloud da questa rete",
-      "body": "{{cause}} Puoi passare al motore locale o continuare e riprovare più tardi.",
+      "title": "Non riusciamo a raggiungere Dhwani Cloud da questa rete",
+      "body": "{{cause}} Puoi passare al motore locale o continuare e riprovare piÃ¹ tardi.",
       "useLocal": "Usa motore locale",
       "continue": "Continua comunque"
     },
     "useCase": {
       "title": "Cosa ti porta qui?",
-      "description": "Siamo un piccolo team e pubblichiamo ogni settimana. Ciò che scegli configura l'app per te — e ci dice cosa costruire dopo.",
-      "noteLabel": "C'è altro che vorresti farci sapere?",
+      "description": "Siamo un piccolo team e pubblichiamo ogni settimana. CiÃ² che scegli configura l'app per te — e ci dice cosa costruire dopo.",
+      "noteLabel": "C'Ã¨ altro che vorresti farci sapere?",
       "notePlaceholder": "Facoltativo",
       "options": {
         "dictation": {
-          "title": "Scrivere più velocemente",
+          "title": "Scrivere piÃ¹ velocemente",
           "description": "Detta in qualsiasi app invece di digitare"
         },
         "meetings": {
@@ -274,7 +274,7 @@
     "meeting": {
       "title": "Note delle riunioni",
       "description": "Cattura e riassumi le tue riunioni",
-      "autoDetect": "OpenWhispr rileva automaticamente quando sei in riunione e ti propone di avviare le note — nulla viene registrato senza di te.",
+      "autoDetect": "Dhwani rileva automaticamente quando sei in riunione e ti propone di avviare le note — nulla viene registrato senza di te.",
       "notification": {
         "title": "Riunione rilevata",
         "body": "Sembra che tu sia in riunione. Vuoi prendere appunti?",
@@ -285,7 +285,7 @@
     },
     "finish": {
       "title": "Tutto pronto",
-      "cloudDescription": "Sei su OpenWhispr Cloud: veloce, preciso, zero conservazione dei dati e 2.000 parole gratis a settimana. Preferisci tutto sul tuo dispositivo? Passa all'elaborazione locale nelle Impostazioni.",
+      "cloudDescription": "Sei su Dhwani Cloud: veloce, preciso, zero conservazione dei dati e 2.000 parole gratis a settimana. Preferisci tutto sul tuo dispositivo? Passa all'elaborazione locale nelle Impostazioni.",
       "localDescription": "Sei configurato con l'elaborazione locale o con la tua chiave. Regola come viene elaborato il tuo audio in qualsiasi momento nelle Impostazioni.",
       "cleanupNote": "La pulizia del testo con IA usa impostazioni predefinite sensate. Puoi regolarla in qualsiasi momento nelle Impostazioni.",
       "openSettings": "Apri Impostazioni",
@@ -307,9 +307,9 @@
   "streaming": {
     "errors": {
       "cloudUnreachable": {
-        "title": "Impossibile raggiungere OpenWhispr Cloud",
-        "generic": "La richiesta di rete è fallita. Controlla la connessione.",
-        "dnsBlocked": "Il DNS non risolve openwhispr.com — potrebbe esserci un ad blocker o un filtro.",
+        "title": "Impossibile raggiungere Dhwani Cloud",
+        "generic": "La richiesta di rete Ã¨ fallita. Controlla la connessione.",
+        "dnsBlocked": "Il DNS non risolve Dhwani.com — potrebbe esserci un ad blocker o un filtro.",
         "refused": "Connessione rifiutata — probabilmente un firewall o una VPN.",
         "timeout": "Timeout di rete — VPN, captive portal o connessione instabile.",
         "tls": "Handshake TLS fallito — controlla l'orologio di sistema o un proxy aziendale.",
@@ -321,12 +321,12 @@
     "update": {
       "readyTitle": "Aggiornamento pronto da installare",
       "readyDescription": "Fai clic su 'Installa aggiornamento' per riavviare con l'ultima versione.",
-      "problemTitle": "Si è verificato un problema con l'aggiornamento",
-      "problemDescription": "Non siamo riusciti a completare l'aggiornamento. Riprova più tardi.",
+      "problemTitle": "Si Ã¨ verificato un problema con l'aggiornamento",
+      "problemDescription": "Non siamo riusciti a completare l'aggiornamento. Riprova piÃ¹ tardi.",
       "installTitle": "Installa aggiornamento",
-      "installDescription": "OpenWhispr verrà riavviato per applicare l'aggiornamento. Il lavoro in corso verrà salvato.",
+      "installDescription": "Dhwani verrÃ  riavviato per applicare l'aggiornamento. Il lavoro in corso verrÃ  salvato.",
       "couldNotInstallTitle": "Impossibile installare l'aggiornamento",
-      "couldNotInstallDescription": "Qualcosa è andato storto. Riprova.",
+      "couldNotInstallDescription": "Qualcosa Ã¨ andato storto. Riprova.",
       "couldNotDownloadTitle": "Impossibile scaricare l'aggiornamento",
       "couldNotDownloadDescription": "Controlla la connessione e riprova.",
       "installing": "Installazione...",
@@ -338,8 +338,8 @@
       "weeklyDescription": "Il limite si rinnova in modo progressivo. Passa a Pro o usa la tua chiave API per un uso illimitato."
     },
     "accessibilityMissing": {
-      "title": "Autorizzazioni di accessibilità necessarie",
-      "description": "Abbiamo rilevato che OpenWhispr ha bisogno delle autorizzazioni di accessibilità per funzionare correttamente. Abilitale qui sotto."
+      "title": "Autorizzazioni di accessibilitÃ  necessarie",
+      "description": "Abbiamo rilevato che Dhwani ha bisogno delle autorizzazioni di accessibilitÃ  per funzionare correttamente. Abilitale qui sotto."
     },
     "billing": {
       "pastDueTitle": "Non siamo riusciti a elaborare il pagamento",
@@ -349,25 +349,25 @@
     },
     "history": {
       "couldNotLoadTitle": "Impossibile caricare la cronologia",
-      "couldNotLoadDescription": "Si è verificato un errore nel caricamento delle trascrizioni. Chiudi e riapri l'app.",
+      "couldNotLoadDescription": "Si Ã¨ verificato un errore nel caricamento delle trascrizioni. Chiudi e riapri l'app.",
       "copiedTitle": "Copiato!",
       "copiedDescription": "Testo copiato negli appunti",
       "couldNotCopyTitle": "Impossibile copiare",
-      "couldNotCopyDescription": "Si è verificato un errore durante la copia. Riprova.",
+      "couldNotCopyDescription": "Si Ã¨ verificato un errore durante la copia. Riprova.",
       "deleteTitle": "Elimina trascrizione",
-      "deleteDescription": "Questa trascrizione verrà rimossa definitivamente.",
+      "deleteDescription": "Questa trascrizione verrÃ  rimossa definitivamente.",
       "couldNotDeleteTitle": "Impossibile eliminare",
-      "couldNotDeleteDescription": "Questa trascrizione potrebbe essere già stata rimossa.",
-      "couldNotDeleteDescriptionGeneric": "Qualcosa è andato storto. Riprova.",
+      "couldNotDeleteDescription": "Questa trascrizione potrebbe essere giÃ  stata rimossa.",
+      "couldNotDeleteDescriptionGeneric": "Qualcosa Ã¨ andato storto. Riprova.",
       "empty": "Nessuna trascrizione",
-      "dataRetentionDisabled": "La conservazione dei dati è disattivata. Trascrizioni e audio non vengono salvati nella cronologia.",
+      "dataRetentionDisabled": "La conservazione dei dati Ã¨ disattivata. Trascrizioni e audio non vengono salvati nella cronologia.",
       "press": "Premi",
       "toStart": "per iniziare",
       "dateGroups": {
         "today": "Oggi",
         "yesterday": "Ieri"
       },
-      "transcriptionFailed": "La trascrizione è fallita",
+      "transcriptionFailed": "La trascrizione Ã¨ fallita",
       "failedCtaSettings": "Configura il tuo provider di trascrizione",
       "failedCtaAndRetry": "poi clicca su riprova",
       "failedCtaSettingsOnly": "Configura il tuo provider di trascrizione nelle Impostazioni",
@@ -378,7 +378,7 @@
       "clearAllDescription": "Tutte le trascrizioni e i file audio verranno rimossi definitivamente.",
       "clearAllSuccess": "Cronologia cancellata",
       "clearAllErrorTitle": "Impossibile cancellare la cronologia",
-      "clearAllErrorDescription": "Qualcosa è andato storto. Riprova.",
+      "clearAllErrorDescription": "Qualcosa Ã¨ andato storto. Riprova.",
       "copyText": "Copia testo",
       "deleteItem": "Elimina",
       "viewRawTranscript": "Visualizza trascrizione grezza",
@@ -386,7 +386,7 @@
       "showInFolderWindows": "Mostra in Esplora file",
       "showInFolderLinux": "Mostra nel gestore file",
       "retryTranscription": "Ritrascrivi",
-      "retrying": "Ritrascrizione in corso…",
+      "retrying": "Ritrascrizione in corsoâ€¦",
       "retrySuccess": "Trascrizione aggiornata",
       "retryError": "Ritrascrizione non riuscita",
       "audioNotFound": "File audio non trovato o scaduto",
@@ -397,14 +397,14 @@
         "hide": "Nascondi scartate",
         "badge": "Scartata",
         "recording": "Registrazione scartata",
-        "recordingWithDuration": "Registrazione scartata · {{duration}}",
+        "recordingWithDuration": "Registrazione scartata Â· {{duration}}",
         "recover": "Recupera",
         "recovered": "Recuperata"
       }
     },
     "cloudMigration": {
-      "title": "Benvenuto in OpenWhispr Cloud",
-      "description": "Abbiamo spostato la trascrizione su OpenWhispr Cloud per risultati più rapidi e accurati. Le impostazioni precedenti sono state salvate: puoi tornare indietro in qualsiasi momento dalle Impostazioni.",
+      "title": "Benvenuto in Dhwani Cloud",
+      "description": "Abbiamo spostato la trascrizione su Dhwani Cloud per risultati piÃ¹ rapidi e accurati. Le impostazioni precedenti sono state salvate: puoi tornare indietro in qualsiasi momento dalle Impostazioni.",
       "viewSettings": "Apri impostazioni"
     },
     "aiCta": {
@@ -415,7 +415,7 @@
     "loading": "Caricamento...",
     "gpu": {
       "bannerTitle": "Accelerazione GPU disponibile",
-      "bannerDescription": "Attiva l'accelerazione GPU per prestazioni più veloci.",
+      "bannerDescription": "Attiva l'accelerazione GPU per prestazioni piÃ¹ veloci.",
       "enableButton": "Attiva GPU",
       "dismissButton": "Non ora"
     },
@@ -456,7 +456,7 @@
     "availableModels": "Modelli disponibili",
     "disableThinking": {
       "label": "Disattiva output di ragionamento",
-      "help": "Salta i token di ragionamento per un output più pulito. Consigliato per la pulizia. Alcuni server ignorano questo suggerimento."
+      "help": "Salta i token di ragionamento per un output piÃ¹ pulito. Consigliato per la pulizia. Alcuni server ignorano questo suggerimento."
     },
     "selfHosted": {
       "endpointHelp": "Punta a un server compatibile con OpenAI sulla tua rete locale (es. Ollama, LM Studio, vLLM o llama-server)."
@@ -465,7 +465,7 @@
       "title": "Provider Enterprise",
       "description": "Connettiti ai provider cloud usando le credenziali della tua organizzazione.",
       "testConnection": "Testa connessione",
-      "testing": "Test in corso…",
+      "testing": "Test in corsoâ€¦",
       "testSuccess": "Connesso",
       "testFailed": "Connessione fallita",
       "authMode": "Autenticazione",
@@ -532,10 +532,10 @@
         "sessionExpired": "Sessione scaduta",
         "offline": "Sei offline",
         "dailyLimitReached": "Limite giornaliero raggiunto",
-        "providerRateLimited": "Limite di velocità del provider"
+        "providerRateLimited": "Limite di velocitÃ  del provider"
       },
       "fallback": {
-        "title": "Modalità fallback",
+        "title": "ModalitÃ  fallback",
         "description": "Whisper locale non riuscito. Utilizzata l'API OpenAI."
       },
       "noAudio": {
@@ -543,7 +543,7 @@
         "description": "La registrazione non contiene audio rilevabile. Riprova."
       },
       "errorDescriptions": {
-        "sessionExpired": "La tua sessione OpenWhispr Cloud non è disponibile. Effettua di nuovo l'accesso dalle Impostazioni.",
+        "sessionExpired": "La tua sessione Dhwani Cloud non Ã¨ disponibile. Effettua di nuovo l'accesso dalle Impostazioni.",
         "offline": "Sei offline. La trascrizione cloud richiede una connessione Internet.",
         "dailyLimitReached": "Hai raggiunto il limite di trascrizioni di oggi. Riprova domani o aggiorna il tuo piano.",
         "providerRateLimited": "Il tuo provider di trascrizione ha limitato la richiesta. Attendi un momento e riprova."
@@ -564,8 +564,8 @@
       },
       "errors": {
         "enterValidHotkey": "Inserisci una scorciatoia valida",
-        "unsupportedShortcut": "Questa scorciatoia non è supportata.",
-        "couldNotRegister": "Questo tasto non può essere registrato. Scegline un altro.",
+        "unsupportedShortcut": "Questa scorciatoia non Ã¨ supportata.",
+        "couldNotRegister": "Questo tasto non puÃ² essere registrato. Scegline un altro.",
         "failedToRegister": "Registrazione scorciatoia non riuscita. Riprova."
       },
       "messages": {
@@ -578,9 +578,9 @@
         "notFound": "Impossibile raggiungere il server di download. Controlla la connessione.",
         "corrupted": "Download incompleto o corrotto. Riprova.",
         "rateLimited": "Il server limita le richieste. Attendi qualche minuto e riprova.",
-        "server": "Errore server ({{error}}). Riprova più tardi.",
+        "server": "Errore server ({{error}}). Riprova piÃ¹ tardi.",
         "generic": "Download non riuscito: {{error}}",
-        "extractionFailed": "Modello scaricato, ma l'installazione non è riuscita. Clicca su scarica per ritentare l'installazione senza riscaricare.",
+        "extractionFailed": "Modello scaricato, ma l'installazione non Ã¨ riuscita. Clicca su scarica per ritentare l'installazione senza riscaricare.",
         "tlsError": "Errore di certificato — la tua rete potrebbe usare l'ispezione SSL che blocca i download. Prova a scaricare da un'altra rete.",
         "unknown": "Errore sconosciuto"
       },
@@ -605,7 +605,7 @@
       },
       "downloadCancelled": {
         "title": "Download annullato",
-        "description": "Il download è stato annullato."
+        "description": "Il download Ã¨ stato annullato."
       }
     },
     "permissions": {
@@ -619,7 +619,7 @@
       "micErrors": {
         "accessFailed": "Accesso al microfono non riuscito. Riprova.",
         "noMicrophones": "Nessun microfono rilevato. Collega o seleziona un microfono in {{settingsPath}}.",
-        "permissionDenied": "Permesso negato. Apri {{privacyPath}} e consenti OpenWhispr.",
+        "permissionDenied": "Permesso negato. Apri {{privacyPath}} e consenti Dhwani.",
         "couldNotStart": "Impossibile avviare il microfono selezionato. Scegli un dispositivo in {{settingsPath}} e ripeti il test.",
         "noActiveInput": "Nessun ingresso audio attivo trovato. Scegli un microfono in {{settingsPath}}.",
         "unknown": "Accesso al microfono non riuscito: {{error}}. Seleziona un altro dispositivo e riprova.",
@@ -628,31 +628,31 @@
       "settingsTitles": {
         "microphone": "Impostazioni microfono",
         "sound": "Impostazioni audio",
-        "accessibility": "Impostazioni accessibilità"
+        "accessibility": "Impostazioni accessibilitÃ "
       },
       "settingsErrors": {
         "unableToOpenMicrophone": "Impossibile aprire le impostazioni del microfono. Apri manualmente le impostazioni di sistema.",
         "unableToOpenSound": "Impossibile aprire le impostazioni audio. Apri manualmente le impostazioni di sistema.",
-        "unableToOpenAccessibility": "Impossibile aprire le impostazioni di accessibilità. Apri manualmente le impostazioni di sistema."
+        "unableToOpenAccessibility": "Impossibile aprire le impostazioni di accessibilitÃ . Apri manualmente le impostazioni di sistema."
       },
       "micUnavailable": "Le API del microfono non sono disponibili in questo ambiente. Riavvia l'app.",
       "titles": {
         "microphoneUnavailable": "Microfono non disponibile",
         "microphonePermissionRequired": "Permesso microfono richiesto",
-        "accessibilityNeeded": "Permessi di accessibilità necessari",
+        "accessibilityNeeded": "Permessi di accessibilitÃ  necessari",
         "readyToGo": "Tutto pronto!",
-        "waylandClipboardMode": "Modalità appunti su Wayland",
+        "waylandClipboardMode": "ModalitÃ  appunti su Wayland",
         "optionalPasteTool": "Opzionale: installa strumento di incollaggio"
       },
       "descriptions": {
-        "accessibilityNeeded": "Concedi i permessi di accessibilità nelle impostazioni di sistema per abilitare l'incollaggio automatico.",
-        "windowsReady": "Windows non richiede permessi speciali per l'incollaggio automatico. È tutto pronto!",
-        "linuxReadyWithMethod": "L'incollaggio automatico è disponibile tramite {{method}}. È tutto pronto!",
-        "waylandClipboardMode": "L'incollaggio automatico non è disponibile in questa sessione Wayland. OpenWhispr copierà il testo negli appunti e potrai incollare con Ctrl+V.",
-        "optionalPasteTool": "Per l'incollaggio automatico, installa {{tool}}:\n\n{{installCmd}}{{waylandNote}}\n\nAnche senza questo puoi usare OpenWhispr: il testo verrà copiato negli appunti e potrai incollare con Ctrl+V."
+        "accessibilityNeeded": "Concedi i permessi di accessibilitÃ  nelle impostazioni di sistema per abilitare l'incollaggio automatico.",
+        "windowsReady": "Windows non richiede permessi speciali per l'incollaggio automatico. Ãˆ tutto pronto!",
+        "linuxReadyWithMethod": "L'incollaggio automatico Ã¨ disponibile tramite {{method}}. Ãˆ tutto pronto!",
+        "waylandClipboardMode": "L'incollaggio automatico non Ã¨ disponibile in questa sessione Wayland. Dhwani copierÃ  il testo negli appunti e potrai incollare con Ctrl+V.",
+        "optionalPasteTool": "Per l'incollaggio automatico, installa {{tool}}:\n\n{{installCmd}}{{waylandNote}}\n\nAnche senza questo puoi usare Dhwani: il testo verrÃ  copiato negli appunti e potrai incollare con Ctrl+V."
       },
       "alerts": {
-        "accessibilityNeeded": "Permessi di accessibilità necessari! Concedili nelle impostazioni di sistema."
+        "accessibilityNeeded": "Permessi di accessibilitÃ  necessari! Concedili nelle impostazioni di sistema."
       },
       "notes": {
         "waylandWtype": "\n\nNota: per le app XWayland, funziona anche xdotool.",
@@ -662,7 +662,7 @@
         "defaultPasteTool": "xdotool",
         "xdotoolXwayland": "xdotool (app XWayland)"
       },
-      "accessibilityTestText": "Test accessibilità OpenWhispr",
+      "accessibilityTestText": "Test accessibilitÃ  Dhwani",
       "warning": {
         "messages": {
           "macos": "Controlla le impostazioni Audio per selezionare il dispositivo di ingresso",
@@ -688,13 +688,13 @@
       "emailPlaceholder": "tu@esempio.com"
     },
     "errors": {
-      "accountExistsSignIn": "Esiste già un account con questa e-mail. Accedi.",
+      "accountExistsSignIn": "Esiste giÃ  un account con questa e-mail. Accedi.",
       "accountNotFoundCreate": "Nessun account trovato con questa e-mail. Crea un account.",
-      "authNotConfigured": "L'autenticazione non è configurata",
+      "authNotConfigured": "L'autenticazione non Ã¨ configurata",
       "createAccountFailed": "Creazione account non riuscita",
       "failedProviderSignIn": "Accesso con {{provider}} non riuscito",
       "failedUserCheck": "Verifica dell'account utente non riuscita",
-      "generic": "Qualcosa è andato storto. Riprova.",
+      "generic": "Qualcosa Ã¨ andato storto. Riprova.",
       "invalidCredentials": "E-mail o password non valide",
       "plusAliasUnsupported": "Gli alias e-mail con '+' non sono supportati"
     },
@@ -715,7 +715,7 @@
       "enterPasswordPlaceholder": "Inserisci la password",
       "forgotPassword": "Password dimenticata?",
       "fullNamePlaceholder": "Nome completo",
-      "haveAccount": "Hai già un account?",
+      "haveAccount": "Hai giÃ  un account?",
       "newHere": "Nuovo qui?",
       "passwordMinLength": "La password deve essere di almeno 8 caratteri",
       "signIn": "Accedi",
@@ -738,10 +738,10 @@
       "continueWithApple": "Continua con Apple",
       "continueWithGoogle": "Continua con Google",
       "continueWithMicrosoft": "Continua con Microsoft",
-      "protocolUnavailable": "Accesso dal browser non disponibile — registra di nuovo il protocollo openwhispr:// nelle impostazioni Applicazioni predefinite del sistema."
+      "protocolUnavailable": "Accesso dal browser non disponibile — registra di nuovo il protocollo Dhwani:// nelle impostazioni Applicazioni predefinite del sistema."
     },
     "welcomeSubtitle": "Detta ovunque usando la tua voce",
-    "welcomeTitle": "Benvenuto in OpenWhispr"
+    "welcomeTitle": "Benvenuto in Dhwani"
   },
   "cleanupPrompt": "Correzione",
   "developerSection": {
@@ -749,7 +749,7 @@
     "debugMode": {
       "disabledDescription": "Attiva per acquisire informazioni diagnostiche dettagliate",
       "enabledDescription": "Registrazione di elaborazione audio, richieste API e operazioni di sistema",
-      "label": "Modalità debug"
+      "label": "ModalitÃ  debug"
     },
     "description": "Acquisisci log dettagliati per diagnosticare i problemi",
     "openLogsFolder": "Apri cartella log",
@@ -760,9 +760,9 @@
     "sharing": {
       "footer": "I log non contengono chiavi API o dati sensibili",
       "steps": {
-        "0": "Riproduci il problema con la modalità debug attiva",
+        "0": "Riproduci il problema con la modalitÃ  debug attiva",
         "1": "Fai clic su \"Apri cartella log\" qui sopra",
-        "2": "Allega il file di log più recente alla segnalazione"
+        "2": "Allega il file di log piÃ¹ recente alla segnalazione"
       },
       "title": "Condivisione dei log per il supporto"
     },
@@ -773,11 +773,11 @@
         "title": "Copiato"
       },
       "copyFailed": {
-        "description": "Si è verificato un errore durante la copia negli appunti.",
+        "description": "Si Ã¨ verificato un errore durante la copia negli appunti.",
         "title": "Impossibile copiare"
       },
       "debugDisabled": {
-        "description": "Il logging di debug è stato disattivato",
+        "description": "Il logging di debug Ã¨ stato disattivato",
         "title": "Log di debug disattivato"
       },
       "debugEnabled": {
@@ -785,15 +785,15 @@
         "title": "Log di debug attivato"
       },
       "loadFailed": {
-        "description": "Qualcosa è andato storto. Prova a riaprire le Impostazioni.",
+        "description": "Qualcosa Ã¨ andato storto. Prova a riaprire le Impostazioni.",
         "title": "Impossibile caricare le impostazioni di debug"
       },
       "openLogsFailed": {
-        "description": "Si è verificato un errore nell'apertura della cartella dei log.",
+        "description": "Si Ã¨ verificato un errore nell'apertura della cartella dei log.",
         "title": "Impossibile aprire la cartella dei log"
       },
       "updateFailed": {
-        "description": "Qualcosa è andato storto. Riprova.",
+        "description": "Qualcosa Ã¨ andato storto. Riprova.",
         "title": "Impossibile aggiornare il logging di debug"
       }
     },
@@ -814,27 +814,27 @@
     "checkEmailDescription": "Abbiamo inviato un link di verifica a",
     "checkEmailTitle": "Controlla la tua e-mail",
     "errors": {
-      "resendFailed": "Non è stato possibile reinviare l'e-mail. Riprova.",
+      "resendFailed": "Non Ã¨ stato possibile reinviare l'e-mail. Riprova.",
       "serverUnreachable": "Impossibile raggiungere il server. Controlla la connessione e riprova."
     },
     "resendButton": "Reinvia e-mail di verifica",
     "resendIn": "Reinvia tra {{seconds}}s",
-    "verifiedDescription": "Il tuo account è pronto.",
+    "verifiedDescription": "Il tuo account Ã¨ pronto.",
     "verifiedTitle": "E-mail verificata",
     "waiting": "In attesa della verifica...",
     "backToSignIn": "Torna all'accesso"
   },
   "errorBoundary": {
-    "description": "Si è verificato un errore imprevisto. Ricarica per riprovare.",
+    "description": "Si Ã¨ verificato un errore imprevisto. Ricarica per riprovare.",
     "reload": "Ricarica",
-    "title": "Qualcosa è andato storto"
+    "title": "Qualcosa Ã¨ andato storto"
   },
   "forgotPassword": {
     "back": "Indietro",
     "backToSignIn": "Torna all'accesso",
     "emailPlaceholder": "Inserisci la tua e-mail",
     "goBack": "Torna indietro",
-    "notConfigured": "L'autenticazione non è ancora configurata.",
+    "notConfigured": "L'autenticazione non Ã¨ ancora configurata.",
     "sendResetLink": "Invia link di reimpostazione",
     "sending": "Invio...",
     "subtitle": "Inserisci la tua e-mail e ti invieremo un link di reimpostazione",
@@ -848,7 +848,7 @@
   },
   "actionPrompt": "Prompt di azione",
   "hotkeyGuidance": {
-    "blockedDescription": "Queste scorciatoie sono bloccate perché comunemente usate dal sistema.",
+    "blockedDescription": "Queste scorciatoie sono bloccate perchÃ© comunemente usate dal sistema.",
     "blockedTitle": "Scorciatoie bloccate",
     "description": "Usa queste regole per scegliere una scorciatoia che non entri in conflitto con il sistema.",
     "examplesTitle": "Esempi validi",
@@ -866,11 +866,11 @@
         "4": "Alt+Space"
       },
       "macos": {
-        "0": "⌥Space",
-        "1": "⌃⌥S",
-        "2": "⌃⌥D",
+        "0": "âŒ¥Space",
+        "1": "âŒƒâŒ¥S",
+        "2": "âŒƒâŒ¥D",
         "3": "Fn",
-        "4": "⌘⇧J"
+        "4": "âŒ˜â‡§J"
       },
       "windows": {
         "0": "Ctrl+Alt+Space",
@@ -885,8 +885,8 @@
     "showFewer": "Mostra meno",
     "title": "Guida alle scorciatoie",
     "validationRules": {
-      "0": "È necessario almeno un tasto modificatore (Ctrl, Alt, Shift, ecc.)",
-      "1": "Non è possibile usare scorciatoie riservate dal sistema",
+      "0": "Ãˆ necessario almeno un tasto modificatore (Ctrl, Alt, Shift, ecc.)",
+      "1": "Non Ã¨ possibile usare scorciatoie riservate dal sistema",
       "2": "I tasti singoli non sono consentiti",
       "3": "Alcune combinazioni potrebbero entrare in conflitto con altre app"
     }
@@ -903,10 +903,10 @@
     "keyHint": "+ tasto",
     "listening": "In ascolto...",
     "pressAnyKey": "Premi un tasto qualsiasi o Ctrl+Shift+K",
-    "pressAnyKeyMac": "Premi un tasto qualsiasi o ⌘⇧K",
+    "pressAnyKeyMac": "Premi un tasto qualsiasi o âŒ˜â‡§K",
     "recording": "Registrazione",
     "tryShortcut": "Prova Ctrl+Shift+K",
-    "tryShortcutMac": "Prova ⌘⇧K",
+    "tryShortcutMac": "Prova âŒ˜â‡§K",
     "remove": "Rimuovi scorciatoia"
   },
   "languageSelector": {
@@ -920,9 +920,9 @@
     },
     "helpText": "Seleziona un microfono specifico o usa l'impostazione predefinita di sistema.",
     "inputDevice": "Dispositivo di ingresso",
-    "noBuiltInDetected": "Nessun microfono integrato rilevato. Verrà usato quello predefinito di sistema.",
+    "noBuiltInDetected": "Nessun microfono integrato rilevato. VerrÃ  usato quello predefinito di sistema.",
     "preferBuiltIn": {
-      "description": "I microfoni esterni possono causare latenza o ridurre la qualità della trascrizione",
+      "description": "I microfoni esterni possono causare latenza o ridurre la qualitÃ  della trascrizione",
       "label": "Preferisci microfono integrato"
     },
     "selectPlaceholder": "Seleziona un microfono",
@@ -931,7 +931,7 @@
     "using": "In uso: {{device}}"
   },
   "pasteToolsInfo": {
-    "checking": "Verifica delle funzionalità di sistema...",
+    "checking": "Verifica delle funzionalitÃ  di sistema...",
     "installCommands": {
       "archLinux": "# Arch Linux",
       "debianUbuntu": "# Debian / Ubuntu",
@@ -948,10 +948,10 @@
     "recheckChecking": "Verifica...",
     "title": "Incollaggio automatico",
     "usingMethodPrefix": "In uso",
-    "waylandClipboardDescription": "L'incollaggio automatico non è disponibile in questa sessione Wayland. OpenWhispr copierà il testo negli appunti, così potrai incollare manualmente con Ctrl+V.",
-    "waylandClipboardTitle": "Modalità appunti su Wayland",
+    "waylandClipboardDescription": "L'incollaggio automatico non Ã¨ disponibile in questa sessione Wayland. Dhwani copierÃ  il testo negli appunti, cosÃ¬ potrai incollare manualmente con Ctrl+V.",
+    "waylandClipboardTitle": "ModalitÃ  appunti su Wayland",
     "windowsReady": "Windows supporta l'incollaggio automatico senza configurazione aggiuntiva!",
-    "withoutToolPrefix": "Senza questo strumento, OpenWhispr copierà il testo negli appunti. Potrai poi incollare manualmente con Ctrl+V.",
+    "withoutToolPrefix": "Senza questo strumento, Dhwani copierÃ  il testo negli appunti. Potrai poi incollare manualmente con Ctrl+V.",
     "xwaylandAppsOnly": "l'incollaggio automatico funziona solo per le app XWayland"
   },
   "promptStudio": {
@@ -964,18 +964,18 @@
     "defaultTestInput": "Ehi Whispr, che tempo fa oggi?",
     "dialogs": {
       "reset": {
-        "description": "Il prompt è stato reimpostato al valore predefinito.",
+        "description": "Il prompt Ã¨ stato reimpostato al valore predefinito.",
         "title": "Reimpostazione completata"
       },
       "saved": {
-        "description": "Il tuo prompt personalizzato verrà usato per tutta l'elaborazione IA futura.",
+        "description": "Il tuo prompt personalizzato verrÃ  usato per tutta l'elaborazione IA futura.",
         "title": "Prompt salvato"
       }
     },
     "edit": {
       "agentNameLabel": "Nome dell'agente:",
       "cautionLabel": "Attenzione",
-      "cautionTextPrefix": "La modifica di questo prompt potrebbe influire sulla qualità della trascrizione.",
+      "cautionTextPrefix": "La modifica di questo prompt potrebbe influire sulla qualitÃ  della trascrizione.",
       "cautionTextSuffix": "Mantieni il segnaposto {{agentName}} per preservare il rilevamento dell'agente.",
       "placeholder": "Inserisci il tuo prompt di sistema personalizzato..."
     },
@@ -985,13 +985,13 @@
       "view": "Visualizza"
     },
     "test": {
-      "addressHint": "Prova a rivolgerti a \"{{agentName}}\" per testare la modalità istruzione",
+      "addressHint": "Prova a rivolgerti a \"{{agentName}}\" per testare la modalitÃ  istruzione",
       "aiModels": "Modelli IA",
       "baseUrlMissing": "URL base di {{provider}} mancante. Aggiungilo nelle impostazioni Modelli IA.",
       "cleanup": "Correzione",
-      "disabledInSettingsPrefix": "Il miglioramento testo con IA è disattivato.",
+      "disabledInSettingsPrefix": "Il miglioramento testo con IA Ã¨ disattivato.",
       "disabledInSettingsSuffix": "Attivalo in Modelli IA per testare i prompt.",
-      "disabledReasoning": "Il miglioramento testo con IA è disattivato. Attivalo in Modelli IA per testare i prompt.",
+      "disabledReasoning": "Il miglioramento testo con IA Ã¨ disattivato. Attivalo in Modelli IA per testare i prompt.",
       "failed": "Test fallito: {{error}}",
       "inputLabel": "Input",
       "inputPlaceholder": "Inserisci il testo da testare...",
@@ -1001,7 +1001,7 @@
       "none": "Nessuno",
       "outputLabel": "Output",
       "processing": "Elaborazione...",
-      "openwhisprCloud": "OpenWhispr Cloud",
+      "DhwaniCloud": "Dhwani Cloud",
       "providerLabel": "Provider",
       "run": "Esegui test",
       "customEndpoint": "Endpoint personalizzato"
@@ -1054,7 +1054,7 @@
       },
       "workspace": {
         "label": "Espace de travail",
-        "description": "Membres, équipes, facturation et clés API"
+        "description": "Membres, Ã©quipes, facturation et clÃ©s API"
       }
     },
     "title": "Impostazioni"
@@ -1070,24 +1070,24 @@
         "trial": "Prova"
       },
       "billing": {
-        "couldNotOpenDescription": "Si è verificato un problema nell'apertura della pagina di fatturazione. Riprova.",
+        "couldNotOpenDescription": "Si Ã¨ verificato un problema nell'apertura della pagina di fatturazione. Riprova.",
         "couldNotOpenTitle": "Impossibile aprire la fatturazione",
         "manageBilling": "Gestisci fatturazione",
         "opening": "Apertura...",
         "updatePaymentMethod": "Aggiorna metodo di pagamento"
       },
       "checkout": {
-        "couldNotOpenDescription": "Si è verificato un problema nell'apertura della pagina di pagamento. Riprova.",
+        "couldNotOpenDescription": "Si Ã¨ verificato un problema nell'apertura della pagina di pagamento. Riprova.",
         "couldNotOpenTitle": "Impossibile aprire il pagamento",
         "opening": "Apertura...",
         "upgradeToPro": "Passa a Pro"
       },
       "disabled": "Disabilitato",
-      "featuresDisabled": "Funzionalità account disabilitate",
-      "featuresDisabledDescription": "Imposta VITE_AUTH_URL nel file .env per abilitare le funzionalità dell'account.",
-      "notConfigured": "L'autenticazione non è configurata",
+      "featuresDisabled": "FunzionalitÃ  account disabilitate",
+      "featuresDisabledDescription": "Imposta VITE_AUTH_URL nel file .env per abilitare le funzionalitÃ  dell'account.",
+      "notConfigured": "L'autenticazione non Ã¨ configurata",
       "notSignedIn": "Non hai effettuato l'accesso",
-      "notSignedInDescription": "Crea un account per sbloccare le funzionalità premium.",
+      "notSignedInDescription": "Crea un account per sbloccare le funzionalitÃ  premium.",
       "offline": "Offline",
       "pastDue": {
         "description": "Sei nel piano gratuito per ora. Aggiorna il metodo di pagamento per tornare a Pro.",
@@ -1109,7 +1109,7 @@
       "planTitle": "Piano",
       "rollingWeeklyLimit": "Limite settimanale progressivo",
       "signOut": {
-        "failedDescription": "Qualcosa è andato storto durante la disconnessione. Riprova.",
+        "failedDescription": "Qualcosa Ã¨ andato storto durante la disconnessione. Riprova.",
         "failedTitle": "Impossibile disconnettersi",
         "signOut": "Disconnetti",
         "signingOut": "Disconnessione..."
@@ -1135,7 +1135,7 @@
           "price": "$0",
           "period": "per sempre",
           "features": [
-            "## OpenWhispr Cloud",
+            "## Dhwani Cloud",
             "2.000 parole/settimana di trascrizione",
             "5 ore di registrazioni riunioni/mese",
             "## Sempre gratuito",
@@ -1144,7 +1144,7 @@
             "Oltre 100 lingue supportate",
             "Dizionario personalizzato",
             "Nessuna conservazione dei dati",
-            "Supporto della comunità"
+            "Supporto della comunitÃ "
           ]
         },
         "pro": {
@@ -1154,7 +1154,7 @@
           "annualPrice": "$80",
           "annualPeriod": "/anno",
           "annualEquivalent": "$6.67",
-          "includesPrefix": "Tutte le funzionalità Free +",
+          "includesPrefix": "Tutte le funzionalitÃ  Free +",
           "features": [
             "Trascrizione cloud illimitata",
             "20 ore di registrazioni riunioni/mese",
@@ -1174,11 +1174,11 @@
           "annualPrice": "$200",
           "annualPeriod": "/anno",
           "annualEquivalent": "$16.67",
-          "includesPrefix": "Tutte le funzionalità Pro +",
-          "badge": "Più popolare",
+          "includesPrefix": "Tutte le funzionalitÃ  Pro +",
+          "badge": "PiÃ¹ popolare",
           "features": [
             "Registrazioni riunioni illimitate",
-            "Modalità agente",
+            "ModalitÃ  agente",
             "Chatta con i tuoi dati",
             "Supporto prioritario"
           ],
@@ -1189,12 +1189,12 @@
           "name": "Enterprise",
           "price": "Personalizzato",
           "subtitle": "Per sicurezza avanzata e supporto dedicato",
-          "includesPrefix": "Tutte le funzionalità Business +",
+          "includesPrefix": "Tutte le funzionalitÃ  Business +",
           "features": [
             "Crediti API gestiti",
             "Sincronizzazione cloud tra dispositivi",
-            "Funzionalità di team e amministrazione",
-            "SSO e conformità",
+            "FunzionalitÃ  di team e amministrazione",
+            "SSO e conformitÃ ",
             "Supporto dedicato"
           ],
           "cta": "Contatta le vendite"
@@ -1225,16 +1225,16 @@
       "wordsRemaining": "{{remaining}} rimanenti",
       "deleteAccount": {
         "label": "Elimina account",
-        "labelDescription": "Elimina permanentemente il tuo account, tutti i dati cloud e i dati locali. Questa azione non può essere annullata.",
+        "labelDescription": "Elimina permanentemente il tuo account, tutti i dati cloud e i dati locali. Questa azione non puÃ² essere annullata.",
         "button": "Elimina il mio account",
         "deleting": "Eliminazione...",
         "title": "Eliminare il tuo account?",
-        "description": "Questo eliminerà permanentemente il tuo account OpenWhispr, tutte le note sincronizzate nel cloud e tutti i dati locali, incluse trascrizioni, registrazioni audio, modelli scaricati, connessioni calendario e impostazioni. Questa azione non può essere annullata.",
+        "description": "Questo eliminerÃ  permanentemente il tuo account Dhwani, tutte le note sincronizzate nel cloud e tutti i dati locali, incluse trascrizioni, registrazioni audio, modelli scaricati, connessioni calendario e impostazioni. Questa azione non puÃ² essere annullata.",
         "confirmText": "Elimina tutto",
         "successTitle": "Account eliminato",
-        "successDescription": "Il tuo account e tutti i dati sono stati eliminati. L'app si ricaricherà ora.",
+        "successDescription": "Il tuo account e tutti i dati sono stati eliminati. L'app si ricaricherÃ  ora.",
         "failedTitle": "Eliminazione fallita",
-        "failedDescription": "Qualcosa è andato storto durante l'eliminazione del tuo account. I tuoi dati locali potrebbero essere stati parzialmente rimossi. Riprova."
+        "failedDescription": "Qualcosa Ã¨ andato storto durante l'eliminazione del tuo account. I tuoi dati locali potrebbero essere stati parzialmente rimossi. Riprova."
       }
     },
     "agentConfig": {
@@ -1254,7 +1254,7 @@
       "title": "Agente vocale",
       "examples": {
         "formalEmail": "Hey {{agentName}}, scrivi un'email formale sul budget",
-        "professional": "Hey {{agentName}}, rendi questo più professionale",
+        "professional": "Hey {{agentName}}, rendi questo piÃ¹ professionale",
         "bulletPoints": "Hey {{agentName}}, converti questo in elenco puntato"
       }
     },
@@ -1265,24 +1265,24 @@
       "enableTextCleanup": "Attiva correzione testo",
       "enableTextCleanupDescription": "L'IA rimuove parole superflue, corregge grammatica e punteggiatura",
       "modes": {
-        "openwhispr": "OpenWhispr Cloud",
+        "Dhwani": "Dhwani Cloud",
         "providers": "Provider cloud",
         "local": "Locale",
         "selfHosted": "Self-hosted",
-        "openwhisprDesc": "Risultati affidabili. Nessuna configurazione necessaria.",
+        "DhwaniDesc": "Risultati affidabili. Nessuna configurazione necessaria.",
         "providersDesc": "Usa la tua chiave API.",
         "localDesc": "Modelli sul dispositivo. Totalmente privato.",
         "selfHostedDesc": "Il tuo server nella tua rete.",
         "enterprise": "Enterprise",
         "enterpriseDesc": "Usa l'account cloud della tua organizzazione (AWS, Azure, GCP)."
       },
-      "openwhisprCloud": "OpenWhispr Cloud",
-      "openwhisprCloudDescription": "Risultati affidabili. Nessuna configurazione necessaria.",
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "Risultati affidabili. Nessuna configurazione necessaria.",
       "title": "Miglioramento testo con IA",
       "toasts": {
         "switchedCloud": {
-          "description": "Il miglioramento del testo userà il servizio cloud di OpenWhispr.",
-          "title": "Passato a OpenWhispr Cloud"
+          "description": "Il miglioramento del testo userÃ  il servizio cloud di Dhwani.",
+          "title": "Passato a Dhwani Cloud"
         },
         "switchedCustom": {
           "description": "Configura il tuo provider e la tua chiave API.",
@@ -1315,7 +1315,7 @@
       "removeModels": {
         "confirmText": "Elimina modelli",
         "description": "Questa operazione elimina tutti i modelli Whisper memorizzati nella cache locale ({{path}}) e libera spazio su disco. Puoi scaricarli di nuovo dal selettore modelli.",
-        "failedDescription": "Qualcosa è andato storto nella rimozione dei modelli. Riprova.",
+        "failedDescription": "Qualcosa Ã¨ andato storto nella rimozione dei modelli. Riprova.",
         "failedDescriptionShort": "Impossibile rimuovere i modelli in cache.",
         "failedTitle": "Impossibile rimuovere i modelli",
         "successDescription": "Tutti i modelli in cache sono stati rimossi.",
@@ -1325,10 +1325,10 @@
       "removing": "Rimozione...",
       "resetAll": {
         "confirmText": "Elimina tutto",
-        "description": "Questo eliminerà permanentemente tutte le impostazioni locali, trascrizioni, registrazioni audio, modelli IA scaricati, connessioni calendario e dati memorizzati nella cache. I dati cloud e il tuo account non saranno interessati. L'app si ricaricherà dopo il ripristino.",
-        "failedDescription": "Qualcosa è andato storto. Riprova o reinstalla l'app.",
+        "description": "Questo eliminerÃ  permanentemente tutte le impostazioni locali, trascrizioni, registrazioni audio, modelli IA scaricati, connessioni calendario e dati memorizzati nella cache. I dati cloud e il tuo account non saranno interessati. L'app si ricaricherÃ  dopo il ripristino.",
+        "failedDescription": "Qualcosa Ã¨ andato storto. Riprova o reinstalla l'app.",
         "failedTitle": "Impossibile reimpostare",
-        "successDescription": "Tutto è stato reimpostato. L'app si ricaricherà ora.",
+        "successDescription": "Tutto Ã¨ stato reimpostato. L'app si ricaricherÃ  ora.",
         "successTitle": "Tutto fatto",
         "title": "Reimposta tutti i dati dell'app"
       },
@@ -1346,7 +1346,7 @@
       "autoLearnDescription": "Quando correggi una trascrizione nell'app di destinazione, la parola corretta viene aggiunta automaticamente al tuo dizionario.",
       "yourWords": "Le tue parole",
       "clearDictionaryTitle": "Svuotare il dizionario?",
-      "clearDictionaryDescription": "Verranno rimosse tutte le parole dal tuo dizionario personalizzato. Questa azione non può essere annullata.",
+      "clearDictionaryDescription": "Verranno rimosse tutte le parole dal tuo dizionario personalizzato. Questa azione non puÃ² essere annullata.",
       "clearAll": "Cancella tutto",
       "agentNameAutoManaged": "Gestito automaticamente — sincronizzato con il nome dell'agente",
       "removeWord": "Rimuovi parola",
@@ -1355,13 +1355,13 @@
       "howItWorksTitle": "Come funziona",
       "howItWorksDescription": "Le parole vengono fornite come suggerimenti di contesto al modello vocale, aiutandolo a riconoscere termini poco comuni. Per parole difficili, prova ad aggiungere contesto come \"The word is Synty\" insieme alla parola stessa.",
       "tipLabel": "Suggerimento",
-      "tipDescription": "Separa più parole con le virgole. Aggiungi frasi di contesto come \"The word is Synty\" per un migliore riconoscimento."
+      "tipDescription": "Separa piÃ¹ parole con le virgole. Aggiungi frasi di contesto come \"The word is Synty\" per un migliore riconoscimento."
     },
     "general": {
       "appearance": {
         "auto": "Automatico",
         "dark": "Scuro",
-        "description": "Personalizza l'aspetto di OpenWhispr",
+        "description": "Personalizza l'aspetto di Dhwani",
         "light": "Chiaro",
         "theme": "Tema",
         "themeDescription": "Scegli chiaro, scuro o in base al sistema",
@@ -1369,8 +1369,8 @@
       },
       "floatingIcon": {
         "autoHide": "Nascondi automaticamente quando inattivo",
-        "autoHideDescription": "Mantieni l'icona nascosta finché non inizi a dettare",
-        "description": "Controlla quando l'icona di dettatura è visibile sullo schermo",
+        "autoHideDescription": "Mantieni l'icona nascosta finchÃ© non inizi a dettare",
+        "description": "Controlla quando l'icona di dettatura Ã¨ visibile sullo schermo",
         "title": "Icona flottante",
         "startPosition": "Posizione iniziale",
         "startPositionDescription": "Dove appare il pannello di registrazione vocale sullo schermo",
@@ -1379,7 +1379,7 @@
         "bottomLeft": "In basso a sinistra"
       },
       "hotkey": {
-        "activationMode": "Modalità di attivazione",
+        "activationMode": "ModalitÃ  di attivazione",
         "description": "La combinazione di tasti che avvia e ferma la dettatura vocale",
         "resetToDefault": "Ripristina a {{hotkey}}",
         "title": "Scorciatoia di dettatura",
@@ -1389,12 +1389,12 @@
         "linuxPttSetupDescription": "Il tuo utente ha bisogno di accesso ai dispositivi di input della tastiera.",
         "linuxPttSetupNote": "Dopo aver eseguito il comando, esci e riaccedi.",
         "hyprlandConfigWriteWarningTitle": "Le scorciatoie di Hyprland non verranno mantenute",
-        "hyprlandConfigWriteWarningDescription": "OpenWhispr non può scrivere in {{path}}, quindi le scorciatoie non sopravvivranno a un ricaricamento della configurazione di Hyprland. Assicurati che il file esista e sia scrivibile.",
-        "hyprlandUnbindDescription": "Su Hyprland, OpenWhispr riserva la scorciatoia selezionata. Qualsiasi associazione Hyprland esistente che usa la stessa combinazione di tasti verrà rimossa quando OpenWhispr registra la sua scorciatoia."
+        "hyprlandConfigWriteWarningDescription": "Dhwani non puÃ² scrivere in {{path}}, quindi le scorciatoie non sopravvivranno a un ricaricamento della configurazione di Hyprland. Assicurati che il file esista e sia scrivibile.",
+        "hyprlandUnbindDescription": "Su Hyprland, Dhwani riserva la scorciatoia selezionata. Qualsiasi associazione Hyprland esistente che usa la stessa combinazione di tasti verrÃ  rimossa quando Dhwani registra la sua scorciatoia."
       },
       "meetingHotkey": {
-        "title": "Scorciatoia modalità meeting",
-        "description": "Avvia la modalità meeting e posiziona il pannello a lato dello schermo",
+        "title": "Scorciatoia modalitÃ  meeting",
+        "description": "Avvia la modalitÃ  meeting e posiziona il pannello a lato dello schermo",
         "layoutLabel": "Quando attivata da scorciatoia, apri in:",
         "layoutFullWidth": "Larghezza completa",
         "layoutSidePanel": "Pannello laterale"
@@ -1416,7 +1416,7 @@
       },
       "notifications": {
         "title": "Notifiche",
-        "description": "Scegli quali notifiche OpenWhispr può mostrare",
+        "description": "Scegli quali notifiche Dhwani puÃ² mostrare",
         "disableAll": "Disattiva tutte le notifiche",
         "disableAllDescription": "Silenzia tutto tranne i messaggi di errore",
         "meetingDetection": "Rilevamento riunioni",
@@ -1424,7 +1424,7 @@
         "calendarReminders": "Promemoria calendario",
         "calendarRemindersDescription": "Avvisa quando una riunione programmata sta per iniziare",
         "updates": "Aggiornamenti app",
-        "updatesDescription": "Avvisa quando è disponibile una nuova versione"
+        "updatesDescription": "Avvisa quando Ã¨ disponibile una nuova versione"
       },
       "clipboard": {
         "title": "Appunti",
@@ -1435,16 +1435,16 @@
       },
       "startup": {
         "launchAtLogin": "Avvia all'accesso",
-        "launchAtLoginDescription": "Avvia OpenWhispr automaticamente all'accesso",
+        "launchAtLoginDescription": "Avvia Dhwani automaticamente all'accesso",
         "title": "Avvio",
-        "description": "Controlla il comportamento di OpenWhispr all'avvio",
+        "description": "Controlla il comportamento di Dhwani all'avvio",
         "startMinimized": "Avvia ridotto a icona",
         "startMinimizedDescription": "Avvia senza mostrare la finestra del pannello di controllo"
       },
       "waylandPaste": {
         "title": "Configurazione incolla su Wayland",
         "description": "L'incolla automatico su Wayland richiede ydotool. Controlla lo stato di ogni componente qui sotto.",
-        "allGoodDesc": "L'incolla automatico è pronto.",
+        "allGoodDesc": "L'incolla automatico Ã¨ pronto.",
         "recheck": "Ricontrolla",
         "copy": "Copia",
         "ydotoolDesc": "Strumento di automazione input per Wayland",
@@ -1468,11 +1468,11 @@
           },
           "ydotoold": {
             "step1Title": "Installa ydotoold",
-            "step1Desc": "Su Ubuntu e Pop!_OS, ydotoold è un pacchetto separato. Su Fedora è incluso in ydotool."
+            "step1Desc": "Su Ubuntu e Pop!_OS, ydotoold Ã¨ un pacchetto separato. Su Fedora Ã¨ incluso in ydotool."
           },
           "uinput": {
-            "ruleFoundTitle": "Regola udev già configurata",
-            "ruleFoundDesc": "La regola udev per /dev/uinput è già presente nel sistema ma non è ancora attiva. Prova a ricaricarla:",
+            "ruleFoundTitle": "Regola udev giÃ  configurata",
+            "ruleFoundDesc": "La regola udev per /dev/uinput Ã¨ giÃ  presente nel sistema ma non Ã¨ ancora attiva. Prova a ricaricarla:",
             "rebootTitle": "Se il ricaricamento non ha funzionato, riavvia",
             "rebootDesc": "Su alcune distribuzioni, le modifiche udev si applicano solo dopo un riavvio completo. Riavvia il computer e torna qui per ricontrollare.",
             "step1Title": "Crea una regola udev",
@@ -1483,7 +1483,7 @@
           "group": {
             "step1Title": "Aggiungi il tuo utente al gruppo input",
             "step2Title": "Esci e rientra",
-            "step2Desc": "Le modifiche ai gruppi hanno effetto solo dopo un nuovo accesso. Esci dal desktop, accedi di nuovo e riapri OpenWhispr."
+            "step2Desc": "Le modifiche ai gruppi hanno effetto solo dopo un nuovo accesso. Esci dal desktop, accedi di nuovo e riapri Dhwani."
           },
           "service": {
             "step1Title": "Crea la cartella del servizio",
@@ -1507,8 +1507,8 @@
           "manualTitle": "Aggiungi questo alla tua configurazione",
           "manualDesc": "Configuralo tu stesso, poi ricostruisci.",
           "flakeTitle": "Stai installando tramite il nostro flake?",
-          "flakeDesc": "Se installi OpenWhispr dal flake, programs.openwhispr.enable attiva ydotool, il modulo uinput e le appartenenze ai gruppi per te.",
-          "rebuildNote": "Esegui sudo nixos-rebuild switch, poi disconnettiti e riconnettiti affinché la modifica al gruppo e la regola /dev/uinput abbiano effetto. Sostituisci <you> con il tuo nome utente."
+          "flakeDesc": "Se installi Dhwani dal flake, programs.Dhwani.enable attiva ydotool, il modulo uinput e le appartenenze ai gruppi per te.",
+          "rebuildNote": "Esegui sudo nixos-rebuild switch, poi disconnettiti e riconnettiti affinchÃ© la modifica al gruppo e la regola /dev/uinput abbiano effetto. Sostituisci <you> con il tuo nome utente."
         }
       },
       "updates": {
@@ -1520,31 +1520,31 @@
         "checkForUpdates": "Controlla aggiornamenti",
         "checking": "Verifica...",
         "currentVersion": "Versione corrente",
-        "devMode": "In esecuzione in modalità sviluppo",
+        "devMode": "In esecuzione in modalitÃ  sviluppo",
         "dialogs": {
           "almostThere": {
-            "description": "L'aggiornamento è quasi pronto. Attendi un momento.",
+            "description": "L'aggiornamento Ã¨ quasi pronto. Attendi un momento.",
             "title": "Quasi fatto"
           },
           "checkFailed": {
-            "description": "Si è verificato un problema durante la verifica degli aggiornamenti. Riprova più tardi.",
+            "description": "Si Ã¨ verificato un problema durante la verifica degli aggiornamenti. Riprova piÃ¹ tardi.",
             "title": "Impossibile verificare gli aggiornamenti"
           },
           "downloadFailed": {
-            "description": "Si è verificato un problema durante il download dell'aggiornamento. Riprova.",
+            "description": "Si Ã¨ verificato un problema durante il download dell'aggiornamento. Riprova.",
             "title": "Impossibile scaricare l'aggiornamento"
           },
           "installFailed": {
-            "description": "Si è verificato un problema durante l'installazione dell'aggiornamento. Riprova.",
+            "description": "Si Ã¨ verificato un problema durante l'installazione dell'aggiornamento. Riprova.",
             "title": "Impossibile installare l'aggiornamento"
           },
           "installUpdate": {
             "confirmText": "Installa e riavvia",
-            "description": "OpenWhispr verrà riavviato per applicare l'aggiornamento.",
+            "description": "Dhwani verrÃ  riavviato per applicare l'aggiornamento.",
             "title": "Installa aggiornamento"
           },
           "noUpdates": {
-            "description": "Hai già l'ultima versione.",
+            "description": "Hai giÃ  l'ultima versione.",
             "title": "Nessun aggiornamento"
           },
           "updateAvailable": {
@@ -1552,33 +1552,56 @@
             "title": "Aggiornamento disponibile"
           },
           "updateError": {
-            "description": "Qualcosa è andato storto con l'aggiornamento. Riprova.",
+            "description": "Qualcosa Ã¨ andato storto con l'aggiornamento. Riprova.",
             "title": "Errore di aggiornamento"
           }
         },
         "downloadUpdate": "Scarica aggiornamento {{version}}",
         "downloading": "Download in corso... {{progress}}%",
         "installAndRestart": "Installa e riavvia",
-        "latestVersion": "Hai già l'ultima versione",
-        "newVersion": "È disponibile una versione più recente",
+        "latestVersion": "Hai giÃ  l'ultima versione",
+        "newVersion": "Ãˆ disponibile una versione piÃ¹ recente",
         "newVersionAvailable": "Nuova versione disponibile",
         "restarting": "Riavvio...",
         "title": "Aggiornamenti",
         "versionPlaceholder": "—",
-        "whatsNew": "Novità nella v{{version}}"
+        "whatsNew": "NovitÃ  nella v{{version}}"
+      },
+      "polishHotkey": {
+        "title": "Scorciatoia Polish",
+        "description": "Seleziona del testo in qualsiasi app e riscrivilo sul posto con l'IA",
+        "enabledLabel": "Attiva Polish",
+        "instructionsLabel": "Modifiche da applicare",
+        "instructionConcise": "Rendi più conciso",
+        "instructionClarity": "Migliora chiarezza e scorrevolezza",
+        "instructionTone": "Mantieni il tono originale",
+        "instructionStructure": "Aggiungi struttura quando utile"
+      },
+      "personalizedStyles": {
+        "title": "Stili personalizzati",
+        "description": "Imposta un tono di scrittura per la pulizia della dettatura in base all'app in uso",
+        "off": "Disattivato",
+        "casual": "Informale",
+        "formal": "Formale",
+        "contexts": {
+          "work": "App di lavoro",
+          "email": "App e-mail",
+          "personal": "App personali/messaggistica",
+          "other": "Tutto il resto"
+        }
       }
     },
     "permissions": {
       "accessibilityDescription": "Necessario per l'incollaggio automatico dopo la trascrizione",
-      "accessibilityTitle": "Accessibilità",
-      "description": "Testa e gestisci i permessi di sistema necessari per il corretto funzionamento di OpenWhispr",
+      "accessibilityTitle": "AccessibilitÃ ",
+      "description": "Testa e gestisci i permessi di sistema necessari per il corretto funzionamento di Dhwani",
       "microphoneDescription": "Cattura la tua voce per la dettatura e la trascrizione",
       "microphoneTitle": "Microfono",
       "resetAccessibility": {
-        "description": "Questa operazione rimuoverà OpenWhispr dai permessi di accessibilità. Dovrai concedere nuovamente l'accesso in Impostazioni di sistema > Privacy e sicurezza > Accessibilità.",
-        "label": "Reimposta permessi di accessibilità",
-        "rowDescription": "Risolvi i problemi dopo la reinstallazione o ricompilazione dell'app rimuovendo e riaggiungendo OpenWhispr nelle Impostazioni di sistema",
-        "title": "Reimposta permessi di accessibilità"
+        "description": "Questa operazione rimuoverÃ  Dhwani dai permessi di accessibilitÃ . Dovrai concedere nuovamente l'accesso in Impostazioni di sistema > Privacy e sicurezza > AccessibilitÃ .",
+        "label": "Reimposta permessi di accessibilitÃ ",
+        "rowDescription": "Risolvi i problemi dopo la reinstallazione o ricompilazione dell'app rimuovendo e riaggiungendo Dhwani nelle Impostazioni di sistema",
+        "title": "Reimposta permessi di accessibilitÃ "
       },
       "optional": "Facoltativo",
       "systemAudioTitle": "Audio di Sistema",
@@ -1593,12 +1616,12 @@
     "privacy": {
       "cloudBackup": "Backup cloud",
       "cloudBackupDescription": "Salva trascrizioni e note nel cloud per un accesso senza interruzioni da tutti i dispositivi.",
-      "cloudNotesMigration": "Backup delle note in corso… {{done}} / {{total}}",
+      "cloudNotesMigration": "Backup delle note in corsoâ€¦ {{done}} / {{total}}",
       "cloudNotesMigrationDone": "Tutte le note salvate nel cloud",
-      "description": "Controlla quali dati escono dal tuo dispositivo. Tutto è disattivato per impostazione predefinita.",
+      "description": "Controlla quali dati escono dal tuo dispositivo. Tutto Ã¨ disattivato per impostazione predefinita.",
       "title": "Privacy",
       "usageAnalytics": "Analisi dell'utilizzo",
-      "usageAnalyticsDescription": "Aiutaci a migliorare OpenWhispr condividendo metriche di prestazione anonime. Non inviamo mai il contenuto delle trascrizioni, solo dati su tempi ed errori.",
+      "usageAnalyticsDescription": "Aiutaci a migliorare Dhwani condividendo metriche di prestazione anonime. Non inviamo mai il contenuto delle trascrizioni, solo dati su tempi ed errori.",
       "dataRetention": "Conservazione dei dati",
       "dataRetentionDescription": "Salva trascrizioni e audio localmente nella cronologia. Se disattivato, le trascrizioni vengono incollate ma non salvate.",
       "hoursAgo": "{{count}}h fa",
@@ -1614,7 +1637,7 @@
       "audioStorageFiles": "{{count}} file, {{size}}",
       "audioStorageEmpty": "Nessun file audio salvato",
       "clearAllAudio": "Elimina tutti i file audio",
-      "clearAllAudioConfirm": "Eliminare tutti i file audio salvati? Questa azione è irreversibile.",
+      "clearAllAudioConfirm": "Eliminare tutti i file audio salvati? Questa azione Ã¨ irreversibile.",
       "saveDiscarded": "Salva le dettature scartate",
       "saveDiscardedDescription": "Quando annulli una dettatura con Escape, conserva l'audio nella cronologia per poterla recuperare. Richiede la conservazione di dati e audio attiva."
     },
@@ -1649,24 +1672,24 @@
     "transcription": {
       "customSetup": "Configurazione personalizzata",
       "customSetupDescription": "Usa il tuo provider e la tua chiave API.",
-      "description": "Scegli come OpenWhispr trascrive la tua voce",
+      "description": "Scegli come Dhwani trascrive la tua voce",
       "modes": {
-        "openwhispr": "OpenWhispr Cloud",
+        "Dhwani": "Dhwani Cloud",
         "providers": "Provider cloud",
         "local": "Locale",
         "selfHosted": "Self-hosted",
-        "openwhisprDesc": "Risultati affidabili. Nessuna configurazione necessaria.",
+        "DhwaniDesc": "Risultati affidabili. Nessuna configurazione necessaria.",
         "providersDesc": "Usa la tua chiave API.",
         "localDesc": "Modelli sul dispositivo. Totalmente privato.",
         "selfHostedDesc": "Il tuo server nella tua rete."
       },
-      "openwhisprCloud": "OpenWhispr Cloud",
-      "openwhisprCloudDescription": "Risultati affidabili. Nessuna configurazione necessaria.",
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "Risultati affidabili. Nessuna configurazione necessaria.",
       "title": "Riconoscimento vocale",
       "toasts": {
         "switchedCloud": {
-          "description": "La trascrizione userà il servizio cloud di OpenWhispr.",
-          "title": "Passato a OpenWhispr Cloud"
+          "description": "La trascrizione userÃ  il servizio cloud di Dhwani.",
+          "title": "Passato a Dhwani Cloud"
         },
         "switchedCustom": {
           "description": "Configura il tuo provider e la tua chiave API.",
@@ -1698,38 +1721,38 @@
       "transcriptionPreview": "Anteprima dal vivo",
       "transcriptionPreviewDescription": "Mostra la trascrizione in una finestra flottante prima della correzione",
       "vad": {
-        "title": "Rilevamento attività vocale",
+        "title": "Rilevamento attivitÃ  vocale",
         "description": "Configura come Silero VAD rileva e segmenta il parlato per la trascrizione locale Whisper",
         "toggles": {
           "dictation": {
             "title": "Silero VAD per dettatura",
-            "description": "Abilita il rilevamento di attività vocale per la dettatura locale"
+            "description": "Abilita il rilevamento di attivitÃ  vocale per la dettatura locale"
           },
           "noteRecording": {
             "title": "Silero VAD per registrazione note",
-            "description": "Abilita il rilevamento di attività vocale per la registrazione locale delle note"
+            "description": "Abilita il rilevamento di attivitÃ  vocale per la registrazione locale delle note"
           },
           "meeting": {
             "title": "Silero VAD per riunioni",
-            "description": "Abilita il rilevamento di attività vocale per la trascrizione locale delle riunioni"
+            "description": "Abilita il rilevamento di attivitÃ  vocale per la trascrizione locale delle riunioni"
           }
         },
         "fields": {
           "threshold": {
             "label": "Soglia VAD",
-            "info": "Probabilità oltre la quale un frame viene classificato come parlato."
+            "info": "ProbabilitÃ  oltre la quale un frame viene classificato come parlato."
           },
           "minSpeechDurationMs": {
             "label": "Durata minima del parlato (ms)",
-            "info": "I segmenti di parlato più brevi vengono scartati come rumore o falsi positivi."
+            "info": "I segmenti di parlato piÃ¹ brevi vengono scartati come rumore o falsi positivi."
           },
           "minSilenceDurationMs": {
             "label": "Durata minima di silenzio (ms)",
-            "info": "Il silenzio deve durare almeno questo tempo per terminare un segmento. Pause più brevi restano nel segmento."
+            "info": "Il silenzio deve durare almeno questo tempo per terminare un segmento. Pause piÃ¹ brevi restano nel segmento."
           },
           "maxSpeechDurationS": {
             "label": "Durata massima del parlato (s)",
-            "info": "I segmenti più lunghi vengono divisi nei punti di silenzio per mantenere blocchi gestibili."
+            "info": "I segmenti piÃ¹ lunghi vengono divisi nei punti di silenzio per mantenere blocchi gestibili."
           },
           "speechPadMs": {
             "label": "Riempimento del parlato (ms)",
@@ -1755,110 +1778,110 @@
     },
     "workspace": {
       "title": "Espace de travail",
-      "description": "Collaborez, partagez des notes et gérez la facturation au même endroit.",
+      "description": "Collaborez, partagez des notes et gÃ©rez la facturation au mÃªme endroit.",
       "empty": {
-        "title": "Créez votre premier espace de travail",
+        "title": "CrÃ©ez votre premier espace de travail",
         "description": "Les espaces de travail vous permettent de collaborer et partager des notes.",
-        "create": "Créer un espace"
+        "create": "CrÃ©er un espace"
       },
       "tab": {
-        "general": "Général",
+        "general": "GÃ©nÃ©ral",
         "members": "Membres",
-        "teams": "Équipes",
+        "teams": "Ã‰quipes",
         "billing": "Facturation",
-        "developer": "Développeur"
+        "developer": "DÃ©veloppeur"
       },
       "role": {
-        "owner": "Propriétaire",
+        "owner": "PropriÃ©taire",
         "admin": "Administrateur",
         "member": "Membre"
       },
       "general": {
         "nameLabel": "Nom",
         "slugLabel": "Slug",
-        "slugHint": "Utilisé dans les URL. Minuscules, chiffres et tirets uniquement.",
-        "saved": "Espace mis à jour",
+        "slugHint": "UtilisÃ© dans les URL. Minuscules, chiffres et tirets uniquement.",
+        "saved": "Espace mis Ã  jour",
         "dangerTitle": "Supprimer l'espace",
-        "dangerDescription": "Toutes les notes, dossiers et intégrations partagés seront supprimés. Cette action est irréversible.",
+        "dangerDescription": "Toutes les notes, dossiers et intÃ©grations partagÃ©s seront supprimÃ©s. Cette action est irrÃ©versible.",
         "delete": "Supprimer l'espace",
         "confirmTitle": "Supprimer {{name}} ?",
-        "confirmDescription": "Cela annule l'abonnement et supprime définitivement toutes les données."
+        "confirmDescription": "Cela annule l'abonnement et supprime dÃ©finitivement toutes les donnÃ©es."
       },
       "members": {
         "title": "Membres",
-        "description": "{{count}} sur {{seats}} sièges utilisés.",
+        "description": "{{count}} sur {{seats}} siÃ¨ges utilisÃ©s.",
         "invite": "Inviter",
         "empty": "Aucun membre pour l'instant.",
-        "roleUpdated": "Rôle mis à jour",
+        "roleUpdated": "RÃ´le mis Ã  jour",
         "promote": "Promouvoir administrateur",
-        "demote": "Rétrograder membre",
-        "transferOwnership": "Transférer la propriété",
+        "demote": "RÃ©trograder membre",
+        "transferOwnership": "TransfÃ©rer la propriÃ©tÃ©",
         "remove": "Retirer de l'espace"
       },
       "invites": {
         "title": "Invitations en attente",
         "resend": "Renvoyer",
-        "revoke": "Révoquer",
-        "resent": "Invitation renvoyée"
+        "revoke": "RÃ©voquer",
+        "resent": "Invitation renvoyÃ©e"
       },
       "teams": {
-        "title": "Équipes",
-        "description": "Groupez les membres pour un partage ciblé.",
-        "new": "Nouvelle équipe",
-        "empty": "Aucune équipe.",
-        "createFirst": "Créez votre première équipe",
-        "createTitle": "Créer une équipe",
-        "nameLabel": "Nom de l'équipe",
+        "title": "Ã‰quipes",
+        "description": "Groupez les membres pour un partage ciblÃ©.",
+        "new": "Nouvelle Ã©quipe",
+        "empty": "Aucune Ã©quipe.",
+        "createFirst": "CrÃ©ez votre premiÃ¨re Ã©quipe",
+        "createTitle": "CrÃ©er une Ã©quipe",
+        "nameLabel": "Nom de l'Ã©quipe",
         "descriptionLabel": "Description",
         "memberCount": "{{count}} membres"
       },
       "billing": {
         "title": "Facturation",
-        "description": "Plan, sièges et paiement.",
+        "description": "Plan, siÃ¨ges et paiement.",
         "plan": "Plan",
-        "seats": "Sièges",
+        "seats": "SiÃ¨ges",
         "nextInvoice": "Prochaine facture",
-        "manageStripe": "Gérer dans Stripe",
-        "startSubscription": "Démarrer l'abonnement"
+        "manageStripe": "GÃ©rer dans Stripe",
+        "startSubscription": "DÃ©marrer l'abonnement"
       },
       "developer": {
-        "title": "Clés API",
-        "description": "Accès programmatique limité à cet espace.",
-        "empty": "Aucune clé API. Créez-en une pour vous intégrer.",
-        "new": "Nouvelle clé",
-        "create": "Créer la clé",
-        "createTitle": "Créer une clé API",
-        "createDescription": "Choisissez les permissions. Vous pouvez la révoquer à tout moment.",
-        "nameLabel": "Nom de la clé",
-        "namePlaceholder": "Intégration production",
-        "revoke": "Révoquer la clé",
-        "lastUsed": "Dernière utilisation {{date}}",
-        "neverUsed": "Jamais utilisée",
-        "keyCreatedTitle": "Clé API créée",
-        "keyCreatedDescription": "Copiez cette clé maintenant — vous ne pourrez plus la voir."
+        "title": "ClÃ©s API",
+        "description": "AccÃ¨s programmatique limitÃ© Ã  cet espace.",
+        "empty": "Aucune clÃ© API. CrÃ©ez-en une pour vous intÃ©grer.",
+        "new": "Nouvelle clÃ©",
+        "create": "CrÃ©er la clÃ©",
+        "createTitle": "CrÃ©er une clÃ© API",
+        "createDescription": "Choisissez les permissions. Vous pouvez la rÃ©voquer Ã  tout moment.",
+        "nameLabel": "Nom de la clÃ©",
+        "namePlaceholder": "IntÃ©gration production",
+        "revoke": "RÃ©voquer la clÃ©",
+        "lastUsed": "DerniÃ¨re utilisation {{date}}",
+        "neverUsed": "Jamais utilisÃ©e",
+        "keyCreatedTitle": "ClÃ© API crÃ©Ã©e",
+        "keyCreatedDescription": "Copiez cette clÃ© maintenant — vous ne pourrez plus la voir."
       }
     }
   },
   "models": {
-    "learnMore": "Scopri di più",
+    "learnMore": "Scopri di piÃ¹",
     "descriptions": {
       "parakeet": {
         "parakeet_tdt_0_6b_v3": "ASR multilingue veloce con rilevamento automatico della lingua (25 lingue)",
         "parakeet_unified_en_0_6b": "ASR solo inglese con precisione all'avanguardia (5,91% WER medio)"
       },
       "whisper": {
-        "tiny": "Il più veloce, qualità inferiore",
+        "tiny": "Il piÃ¹ veloce, qualitÃ  inferiore",
         "base": "Buon equilibrio",
-        "small": "Qualità migliore, più lento",
-        "medium": "Alta qualità",
-        "large": "Migliore qualità, il più lento",
-        "turbo": "Veloce con buona qualità"
+        "small": "QualitÃ  migliore, piÃ¹ lento",
+        "medium": "Alta qualitÃ ",
+        "large": "Migliore qualitÃ , il piÃ¹ lento",
+        "turbo": "Veloce con buona qualitÃ "
       },
       "transcription": {
         "openai_gpt_4o_mini_transcribe": "Trascrizione rapida e accurata",
-        "openai_gpt_4o_transcribe": "Trascrizione più accurata",
+        "openai_gpt_4o_transcribe": "Trascrizione piÃ¹ accurata",
         "openai_whisper_1": "Modello Whisper originale",
-        "groq_whisper_large_v3_turbo": "Velocità 216x in tempo reale",
+        "groq_whisper_large_v3_turbo": "VelocitÃ  216x in tempo reale",
         "groq_whisper_large_v3": "Modello Large v3, veloce e preciso",
         "mistral_voxtral_mini_latest": "Trascrizione multilingue veloce",
         "corti_transcribe": "Trascrizione medica di livello clinico",
@@ -1869,16 +1892,16 @@
         "openai_gpt_5_mini": "Veloce ed efficiente nei costi",
         "openai_gpt_5_nano": "Ultra-veloce, bassa latenza",
         "openai_gpt_4_1": "Base solida, contesto da 1M",
-        "openai_gpt_4_1_mini": "Modello GPT-4.1 più piccolo",
-        "openai_gpt_4_1_nano": "GPT-4.1 con la latenza più bassa",
+        "openai_gpt_4_1_mini": "Modello GPT-4.1 piÃ¹ piccolo",
+        "openai_gpt_4_1_nano": "GPT-4.1 con la latenza piÃ¹ bassa",
         "anthropic_claude_sonnet_4_6": "Prestazioni bilanciate",
         "anthropic_claude_sonnet_4_5": "Generazione Sonnet precedente",
         "anthropic_claude_haiku_4_5": "Veloce con intelligenza quasi da frontiera",
-        "gemini_gemini_3_5_flash": "Ultimo modello Gemini veloce e ad alta capacità",
+        "gemini_gemini_3_5_flash": "Ultimo modello Gemini veloce e ad alta capacitÃ ",
         "gemini_gemini_3_1_pro_preview": "Modello di punta di nuova generazione per ragionamento complesso",
-        "gemini_gemini_3_flash_preview": "Modello di nuova generazione ultra-veloce e ad alta capacità",
+        "gemini_gemini_3_flash_preview": "Modello di nuova generazione ultra-veloce e ad alta capacitÃ ",
         "gemini_gemini_2_5_flash_lite": "Latenza e costo minimi",
-        "gemini_gemma_4_31b_it": "Il più grande Gemma 4 di Google, 31B denso, contesto 256K",
+        "gemini_gemma_4_31b_it": "Il piÃ¹ grande Gemma 4 di Google, 31B denso, contesto 256K",
         "gemini_gemma_4_26b_a4b_it": "Gemma 4 MoE di Google, 4B parametri attivi, contesto 256K",
         "groq_qwen_qwen3_32b": "Potente modello di ragionamento, contesto 131K",
         "groq_openai_gpt_oss_120b": "Ammiraglia open source di OpenAI, 500 T/sec",
@@ -1890,41 +1913,41 @@
         "groq_compound_mini": "Sistema compound veloce, 3x latenza ridotta",
         "groq_kimi_k2_0905": "Moonshot AI 1T MoE, contesto 256K",
         "openai_gpt_5_5": "Modello frontier per ragionamento complesso",
-        "anthropic_claude_opus_4_8": "Modello Claude più capace",
+        "anthropic_claude_opus_4_8": "Modello Claude piÃ¹ capace",
         "anthropic_claude_opus_4_7": "Modello Opus potente",
         "anthropic_claude_opus_4_6": "Generazione Opus precedente, contesto da 1M",
         "anthropic_claude_opus_4_5": "Modello Opus meno recente"
       },
       "enterprise": {
         "bedrock_claude_haiku_4_5": "Veloce ed economico. Ideale per ripulire il testo.",
-        "bedrock_claude_sonnet_4_6": "Equilibrato. Scelta predefinita per la Modalità Agente.",
-        "bedrock_claude_opus_4_7": "Massima intelligenza. Per compiti complessi in Modalità Agente.",
-        "bedrock_nova_lite": "Opzione più economica. Nativo di AWS, ideale per grandi volumi.",
+        "bedrock_claude_sonnet_4_6": "Equilibrato. Scelta predefinita per la ModalitÃ  Agente.",
+        "bedrock_claude_opus_4_7": "Massima intelligenza. Per compiti complessi in ModalitÃ  Agente.",
+        "bedrock_nova_lite": "Opzione piÃ¹ economica. Nativo di AWS, ideale per grandi volumi.",
         "vertex_gemini_2_5_flash": "Fast multimodal model via Vertex",
         "vertex_gemini_2_5_pro": "Advanced reasoning via Vertex"
       },
       "local": {
         "qwen_qwen3_5_9b_q4_k_m": "Modello ibrido potente",
         "qwen_qwen3_5_4b_q4_k_m": "Qwen3.5 bilanciato per uso generale",
-        "qwen_qwen3_5_2b_q4_k_m": "Qwen3.5 compatto per attività rapide",
-        "qwen_qwen3_8b_q4_k_m": "Ultimo Qwen3 con supporto alla modalità pensiero",
-        "qwen_qwen3_8b_q5_k_m": "Qwen3 di qualità superiore con modalità pensiero",
-        "qwen_qwen3_4b_q4_k_m": "Qwen3 compatto con capacità di ragionamento",
+        "qwen_qwen3_5_2b_q4_k_m": "Qwen3.5 compatto per attivitÃ  rapide",
+        "qwen_qwen3_8b_q4_k_m": "Ultimo Qwen3 con supporto alla modalitÃ  pensiero",
+        "qwen_qwen3_8b_q5_k_m": "Qwen3 di qualitÃ  superiore con modalitÃ  pensiero",
+        "qwen_qwen3_4b_q4_k_m": "Qwen3 compatto con capacitÃ  di ragionamento",
         "qwen_qwen3_1_7b_q8_0": "Modello Qwen3 piccolo ma capace",
-        "qwen_qwen3_32b_q4_k_m": "Il Qwen3 locale più potente con ragionamento profondo",
-        "qwen_qwen2_5_1_5b_instruct_q5_k_m": "Modello piccolo, buono per attività di base",
+        "qwen_qwen3_32b_q4_k_m": "Il Qwen3 locale piÃ¹ potente con ragionamento profondo",
+        "qwen_qwen2_5_1_5b_instruct_q5_k_m": "Modello piccolo, buono per attivitÃ  di base",
         "qwen_qwen2_5_3b_instruct_q5_k_m": "Modello bilanciato per uso generale",
-        "qwen_qwen2_5_7b_instruct_q4_k_m": "Modello grande con alta qualità (Q4_K_M)",
-        "qwen_qwen2_5_7b_instruct_q5_k_m": "Modello grande, ragionamento di alta qualità (Q5_K_M)",
+        "qwen_qwen2_5_7b_instruct_q4_k_m": "Modello grande con alta qualitÃ  (Q4_K_M)",
+        "qwen_qwen2_5_7b_instruct_q5_k_m": "Modello grande, ragionamento di alta qualitÃ  (Q5_K_M)",
         "mistral_mistral_7b_instruct_v0_3_q4_k_m": "Modello instruction veloce ed efficiente",
-        "mistral_mistral_7b_instruct_v0_3_q5_k_m": "Modello instruction di qualità superiore",
+        "mistral_mistral_7b_instruct_v0_3_q5_k_m": "Modello instruction di qualitÃ  superiore",
         "mistral_nemo_12b_instruct_q4_k_m": "Modello 12B di Mistral, buone prestazioni multilingue",
         "llama_llama_3_2_1b_instruct_q4_k_m": "Modello minuscolo per dispositivi edge",
         "llama_llama_3_2_3b_instruct_q4_k_m": "Modello multilingue piccolo ma capace",
         "llama_llama_3_1_8b_instruct_q4_k_m": "Modello potente con ottime prestazioni",
         "openai_oss_gpt_oss_20b_mxfp4": "Modello open-weight di OpenAI per hardware consumer",
-        "gemma_gemma_3_4b_it_q4_k_m": "Modello open-weight di Google, ottimo equilibrio tra velocità e qualità",
-        "gemma_gemma_4_31b_it_q4_k_m": "Il più grande Gemma 4 di Google, migliore qualità",
+        "gemma_gemma_3_4b_it_q4_k_m": "Modello open-weight di Google, ottimo equilibrio tra velocitÃ  e qualitÃ ",
+        "gemma_gemma_4_31b_it_q4_k_m": "Il piÃ¹ grande Gemma 4 di Google, migliore qualitÃ ",
         "gemma_gemma_4_26b_a4b_it_q4_k_m": "Gemma 4 MoE di Google, veloce con 4B parametri attivi",
         "gemma_gemma_4_e4b_it_q4_k_m": "Ultimo multimodale di Google, ragionamento avanzato",
         "gemma_gemma_4_e2b_it_q4_k_m": "Gemma 4 compatto di Google, veloce ed efficiente",
@@ -1993,11 +2016,11 @@
     },
     "errors": {
       "unableToLoad": "Impossibile caricare i dati degli inviti",
-      "unableToLoadStats": "Impossibile caricare le statistiche degli inviti. Riprova più tardi."
+      "unableToLoadStats": "Impossibile caricare le statistiche degli inviti. Riprova piÃ¹ tardi."
     },
     "tryAgain": "Riprova",
     "card": {
-      "brand": "OpenWhispr",
+      "brand": "Dhwani",
       "signalId": "Signal ID",
       "audioSignature": "La tua firma audio",
       "stop": "Ferma",
@@ -2023,8 +2046,8 @@
       "couldNotRename": "Impossibile rinominare la cartella",
       "couldNotDelete": "Impossibile eliminare la cartella",
       "deleteTitle": "Eliminare la cartella?",
-      "deleteDescription": "Questa azione eliminerà definitivamente \"{{name}}\" e le sue {{count}} nota/e. Questa operazione non può essere annullata.",
-      "deleteDescriptionEmpty": "Questa azione eliminerà definitivamente \"{{name}}\". Questa operazione non può essere annullata.",
+      "deleteDescription": "Questa azione eliminerÃ  definitivamente \"{{name}}\" e le sue {{count}} nota/e. Questa operazione non puÃ² essere annullata.",
+      "deleteDescriptionEmpty": "Questa azione eliminerÃ  definitivamente \"{{name}}\". Questa operazione non puÃ² essere annullata.",
       "deleteConfirm": "Elimina cartella e note"
     },
     "list": {
@@ -2054,11 +2077,11 @@
       "enhanced": "Migliorato",
       "saving": "Salvataggio",
       "startWriting": "Inizia a scrivere...",
-      "staleIndicator": "Il contenuto è cambiato dall'ultimo miglioramento",
+      "staleIndicator": "Il contenuto Ã¨ cambiato dall'ultimo miglioramento",
       "live": "Dal vivo",
       "transcript": "Trascrizione",
       "notes": "Note",
-      "conversationWillAppear": "La conversazione apparirà qui...",
+      "conversationWillAppear": "La conversazione apparirÃ  qui...",
       "linkedEvent": "Evento collegato",
       "noFolder": "Nessuna cartella",
       "participants": "Partecipanti"
@@ -2091,11 +2114,11 @@
       "newFolder": "Nuova cartella",
       "folderName": "Nome cartella",
       "create": "Crea",
-      "openwhisprCloud": "OpenWhispr Cloud",
+      "DhwaniCloud": "Dhwani Cloud",
       "custom": "Personalizzato",
       "selectFolder": "Seleziona cartella",
       "transcriptionFailed": "Trascrizione non riuscita",
-      "errorOccurred": "Si è verificato un errore",
+      "errorOccurred": "Si Ã¨ verificato un errore",
       "noSpeechDetected": "Nessun parlato rilevato in questo audio.",
       "noProviderTitle": "Nessun provider di trascrizione configurato",
       "noProviderDescription": "Aggiungi una chiave API o scarica un modello locale per iniziare a trascrivere.",
@@ -2103,15 +2126,15 @@
       "fileTooLarge": "Questo file supera il limite di 500 MB.",
       "largeFileNote": "I file di grandi dimensioni vengono suddivisi e trascritti in parallelo.",
       "chunkProgress": "Trascrizione parte {{completed}} di {{total}}...",
-      "paidPlanRequired": "La trascrizione cloud per file superiori a 25 MB richiede un piano a pagamento. I file di grandi dimensioni vengono elaborati con OpenWhispr Cloud per risultati affidabili e di alta qualità.",
+      "paidPlanRequired": "La trascrizione cloud per file superiori a 25 MB richiede un piano a pagamento. I file di grandi dimensioni vengono elaborati con Dhwani Cloud per risultati affidabili e di alta qualitÃ .",
       "byokTooLarge": "Le chiavi API di terze parti supportano solo file fino a 25 MB.",
-      "byokTooLargeDetail": "Per file superiori a 25 MB, OpenWhispr Cloud gestisce la suddivisione, l'elaborazione parallela e il riassemblaggio — per risultati affidabili senza dipendere dai limiti dei provider di terze parti.",
-      "byokTooLargeNeedsAccount": "Crea un account e passa a un piano a pagamento per trascrivere file più grandi con OpenWhispr Cloud.",
-      "byokTooLargeNeedsUpgrade": "Passa a un piano a pagamento per trascrivere file più grandi con OpenWhispr Cloud.",
-      "switchToCloudForLargeFiles": "Passa a OpenWhispr Cloud per trascrivere questo file.",
+      "byokTooLargeDetail": "Per file superiori a 25 MB, Dhwani Cloud gestisce la suddivisione, l'elaborazione parallela e il riassemblaggio — per risultati affidabili senza dipendere dai limiti dei provider di terze parti.",
+      "byokTooLargeNeedsAccount": "Crea un account e passa a un piano a pagamento per trascrivere file piÃ¹ grandi con Dhwani Cloud.",
+      "byokTooLargeNeedsUpgrade": "Passa a un piano a pagamento per trascrivere file piÃ¹ grandi con Dhwani Cloud.",
+      "switchToCloudForLargeFiles": "Passa a Dhwani Cloud per trascrivere questo file.",
       "createAccount": "Crea account",
       "upgrade": "Aggiorna",
-      "switchToCloud": "OpenWhispr Cloud"
+      "switchToCloud": "Dhwani Cloud"
     },
     "meeting": {
       "title": "Note delle riunioni",
@@ -2211,15 +2234,15 @@
       "them": "Loro",
       "label": "Partecipante {{n}}",
       "identifyingSpeakers": "Identificazione dei partecipanti...",
-      "liveAccuracyHint": "Identificazione dei partecipanti in corso. La precisione delle etichette migliorerà al termine della chiamata.",
+      "liveAccuracyHint": "Identificazione dei partecipanti in corso. La precisione delle etichette migliorerÃ  al termine della chiamata.",
       "speakersIdentified": "Partecipanti identificati",
       "typeNamePlaceholder": "Digita un nome",
       "knownSpeakers": "Parlanti noti",
       "meetingAttendees": "Partecipanti alla riunione",
       "assignName": "Assegna nome",
-      "isThisPerson": "È {{name}}?",
+      "isThisPerson": "Ãˆ {{name}}?",
       "selected": "{{n}} selezionati",
-      "assignTo": "Assegna a…",
+      "assignTo": "Assegna aâ€¦",
       "deselectAll": "Deseleziona tutto",
       "confirmed": "Confermato",
       "nameAssigned": "Nome assegnato",
@@ -2238,7 +2261,7 @@
       "pill": {
         "identifying": "Identificazione dei partecipanti",
         "notLabeled": "Partecipanti non etichettati",
-        "finalizing": "Finalizzazione dei partecipanti…",
+        "finalizing": "Finalizzazione dei partecipantiâ€¦",
         "justYou": "solo tu",
         "defaultingHint": "predefinito 1 altra persona",
         "toggleAria": "Attiva/disattiva l'identificazione dei partecipanti per questa registrazione",
@@ -2254,8 +2277,8 @@
     "removeWord": "Rimuovi {{word}}",
     "clearAll": "Cancella tutto",
     "clearTitle": "Svuotare il dizionario?",
-    "clearDescription": "Verranno rimossi tutti i termini dal tuo dizionario personalizzato. Questa azione non può essere annullata.",
-    "addPlaceholder": "Aggiungi parole separate da virgole: OpenWhispr, Supabase, John Snow, ARR",
+    "clearDescription": "Verranno rimossi tutti i termini dal tuo dizionario personalizzato. Questa azione non puÃ² essere annullata.",
+    "addPlaceholder": "Aggiungi parole separate da virgole: Dhwani, Supabase, John Snow, ARR",
     "add": "Aggiungi",
     "importWords": "Importa parole",
     "importPlaceholder": "Incolla parole separate da virgole...",
@@ -2279,26 +2302,26 @@
       "triggerLabel": "Trigger",
       "triggerPlaceholder": "es. mio calendario",
       "replacementLabel": "Sostituzione",
-      "replacementPlaceholder": "Testo da inserire quando pronunci il trigger…",
+      "replacementPlaceholder": "Testo da inserire quando pronunci il triggerâ€¦",
       "create": "Crea snippet",
-      "duplicate": "Esiste già uno snippet con questo trigger",
+      "duplicate": "Esiste giÃ  uno snippet con questo trigger",
       "emptyTitle": "Quello che non dovresti dover dire",
       "emptyTitleAccent": "due volte",
-      "emptyDescription": "Pronuncia un trigger e OpenWhispr lo sostituisce con ciò che hai salvato: URL, presentazioni, firme, prompt.",
+      "emptyDescription": "Pronuncia un trigger e Dhwani lo sostituisce con ciÃ² che hai salvato: URL, presentazioni, firme, prompt.",
       "new": "Nuovo snippet",
       "examples": {
         "linkedinTrigger": "Il mio LinkedIn",
         "linkedinText": "linkedin.com/in/tu",
         "rewriteTrigger": "Prompt di riscrittura",
-        "rewriteText": "Riscrivi questo testo in modo più conciso e professionale",
+        "rewriteText": "Riscrivi questo testo in modo piÃ¹ conciso e professionale",
         "introTrigger": "Email di presentazione",
-        "introText": "Ciao, mi piacerebbe trovare un momento per parlare questa settimana…",
+        "introText": "Ciao, mi piacerebbe trovare un momento per parlare questa settimanaâ€¦",
         "signoffTrigger": "Firma",
-        "signoffText": "Saluti, Alex · alex@example.com"
+        "signoffText": "Saluti, Alex Â· alex@example.com"
       },
       "addPlaceholder": "Aggiungi una frase trigger: \"mio calendario\", \"il mio LinkedIn\""
     },
-    "emptyTitle": "Il tuo dizionario è vuoto",
+    "emptyTitle": "Il tuo dizionario Ã¨ vuoto",
     "emptyDescription": "Aggiungi le parole che {{agentName}} deve sempre riconoscere: nomi, strumenti, acronimi.",
     "addFirstWord": "Aggiungi la tua prima parola",
     "importList": "Importa un elenco",
@@ -2309,6 +2332,7 @@
     "notes": "Note",
     "upload": "Carica",
     "dictionary": "Dizionario",
+    "insights": "Statistiche",
     "referral": "Ottieni un mese gratis",
     "settings": "Impostazioni",
     "support": "Assistenza",
@@ -2316,14 +2340,14 @@
     "limitReachedDescription": "Passa a Pro per trascrizioni illimitate.",
     "viewPlans": "Vedi i piani",
     "upgradeTitle": "Passa a Pro",
-    "upgradeDescription": "Trascrizioni illimitate e funzionalità avanzate.",
-    "learnMore": "Scopri di più",
+    "upgradeDescription": "Trascrizioni illimitate e funzionalitÃ  avanzate.",
+    "learnMore": "Scopri di piÃ¹",
     "integrations": "Integrazioni",
     "defaultUser": "Utente",
     "notSignedIn": "Non hai effettuato l'accesso",
     "chat": "Chat",
-    "inviteTeammate": "Inviter un coéquipier",
-    "createWorkspace": "Créer un espace de travail"
+    "inviteTeammate": "Inviter un coÃ©quipier",
+    "createWorkspace": "CrÃ©er un espace de travail"
   },
   "chat": {
     "newChat": "Nuova chat",
@@ -2339,7 +2363,7 @@
     "archive": "Archivia",
     "unarchive": "Ripristina",
     "delete": "Elimina",
-    "deleteConfirm": "Questa conversazione verrà eliminata permanentemente. Non è possibile annullare.",
+    "deleteConfirm": "Questa conversazione verrÃ  eliminata permanentemente. Non Ã¨ possibile annullare.",
     "editTitle": "Doppio clic per modificare il titolo",
     "untitled": "Senza titolo",
     "searchChats": "Cerca chat",
@@ -2374,10 +2398,10 @@
     "submitBug": "Segnala un bug"
   },
   "postMigration": {
-    "title": "Bentornato su OpenWhispr",
-    "description": "Le tue note e le tue impostazioni sono state mantenute dalla versione precedente. macOS però la considera come una nuova app, quindi dovrai concedere di nuovo alcune autorizzazioni.",
+    "title": "Bentornato su Dhwani",
+    "description": "Le tue note e le tue impostazioni sono state mantenute dalla versione precedente. macOS perÃ² la considera come una nuova app, quindi dovrai concedere di nuovo alcune autorizzazioni.",
     "done": "Fatto",
-    "remindLater": "Ricordamelo più tardi"
+    "remindLater": "Ricordamelo piÃ¹ tardi"
   },
   "apiKeyInput": {
     "placeholder": "Incolla la tua chiave API",
@@ -2406,24 +2430,25 @@
     "toasts": {
       "hotkeyChanged": {
         "title": "Scorciatoia modificata",
-        "description": "\"{{original}}\" non era disponibile. Verrà usato \"{{fallback}}\" al suo posto. Puoi modificarlo nelle Impostazioni."
+        "description": "\"{{original}}\" non era disponibile. VerrÃ  usato \"{{fallback}}\" al suo posto. Puoi modificarlo nelle Impostazioni."
       },
       "hotkeyUnavailable": {
         "title": "Scorciatoia non disponibile",
-        "description": "Non è stato possibile registrare la scorciatoia selezionata. Scegline un’altra nelle impostazioni."
+        "description": "Non Ã¨ stato possibile registrare la scorciatoia selezionata. Scegline un’altra nelle impostazioni."
       },
       "addedToDict": "{{words}} aggiunto al tuo dizionario",
       "undo": "Annulla",
       "accessibilityMissing": {
-        "title": "Autorizzazioni di accessibilità richieste",
-        "description": "OpenWhispr necessita delle autorizzazioni di accessibilità per rilevare il tasto di scelta rapida e incollare il testo. Abilitale nel Pannello di controllo."
+        "title": "Autorizzazioni di accessibilitÃ  richieste",
+        "description": "Dhwani necessita delle autorizzazioni di accessibilitÃ  per rilevare il tasto di scelta rapida e incollare il testo. Abilitale nel Pannello di controllo."
       }
     },
     "mic": {
       "hotkeyToSpeak": "{{hotkey}} per parlare",
       "recording": "Registrazione...",
       "processing": "Elaborazione...",
-      "clickToSpeak": "Clicca per parlare"
+      "clickToSpeak": "Clicca per parlare",
+      "commandMode": "Modalità Comando"
     },
     "buttons": {
       "cancelRecording": "Annulla registrazione",
@@ -2439,8 +2464,8 @@
     "enabled": "Attiva agente vocale",
     "enabledDescription": "Detta istruzioni al tuo agente. Attivalo dicendo \"{{agentName}}\". Configurabile qui sotto.",
     "modes": {
-      "openwhispr": "OpenWhispr Cloud",
-      "openwhisprDesc": "Usa l'agente gestito da OpenWhispr, senza bisogno di chiave API.",
+      "Dhwani": "Dhwani Cloud",
+      "DhwaniDesc": "Usa l'agente gestito da Dhwani, senza bisogno di chiave API.",
       "providers": "Usa la tua chiave API",
       "providersDesc": "Connettiti a OpenAI, Anthropic, Gemini o Groq con la tua chiave API.",
       "local": "Locale",
@@ -2465,19 +2490,19 @@
       "systemPromptDescription": "Istruzioni personalizzate per l'agente",
       "systemPromptPlaceholder": "Inserisci un prompt di sistema personalizzato...",
       "modes": {
-        "openwhispr": "OpenWhispr Cloud",
+        "Dhwani": "Dhwani Cloud",
         "providers": "Provider Cloud",
         "local": "Locale",
         "selfHosted": "Self-Hosted",
-        "openwhisprDesc": "Risultati affidabili. Nessuna configurazione necessaria.",
+        "DhwaniDesc": "Risultati affidabili. Nessuna configurazione necessaria.",
         "providersDesc": "Porta la tua chiave API.",
         "localDesc": "Modelli sul dispositivo. Completamente privato.",
         "selfHostedDesc": "Il tuo server sulla tua rete.",
         "enterprise": "Enterprise",
         "enterpriseDesc": "Usa l'account cloud della tua organizzazione (AWS, Azure, GCP)."
       },
-      "openwhisprCloud": "OpenWhispr Cloud",
-      "openwhisprCloudDescription": "Risultati affidabili. Nessuna configurazione necessaria.",
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "Risultati affidabili. Nessuna configurazione necessaria.",
       "customSetup": "Configurazione personalizzata (BYOK)",
       "customSetupDescription": "Usa le tue chiavi API e scegli il modello che preferisci"
     },
@@ -2543,9 +2568,9 @@
       "primaryOnlyDescription": "Ignora gli eventi dei calendari condivisi con te.",
       "disconnect": "Disconnetti",
       "disconnectConfirm": "Disconnettere {{email}}?",
-      "disconnectDescription": "Le note delle riunioni non saranno più registrate da questo calendario.",
+      "disconnectDescription": "Le note delle riunioni non saranno piÃ¹ registrate da questo calendario.",
       "systemAudioRequired": "Autorizzazione Audio di Sistema richiesta",
-      "systemAudioDescription": "Per trascrivere le riunioni, OpenWhispr necessita dell'autorizzazione Audio di Sistema per catturare l'audio degli altri partecipanti. Non registriamo mai il tuo schermo. Verrai reindirizzato alle Impostazioni di Sistema per attivarla.",
+      "systemAudioDescription": "Per trascrivere le riunioni, Dhwani necessita dell'autorizzazione Audio di Sistema per catturare l'audio degli altri partecipanti. Non registriamo mai il tuo schermo. Verrai reindirizzato alle Impostazioni di Sistema per attivarla.",
       "openSettings": "Apri Impostazioni di Sistema"
     },
     "sections": {
@@ -2565,13 +2590,13 @@
     "mcp": {
       "title": "Porta le tue note nei tuoi strumenti di IA",
       "description": "Chatta, cerca e lavora con le tue note in Claude, ChatGPT e Cursor.",
-      "step1": "Nel tuo strumento di IA, aggiungi OpenWhispr MCP usando l'URL pubblico",
+      "step1": "Nel tuo strumento di IA, aggiungi Dhwani MCP usando l'URL pubblico",
       "step2": "Crea una chiave API sopra con gli scope necessari.",
       "step3": "Incolla la chiave come intestazione Authorization per connetterti.",
-      "learnMore": "Scopri di più",
+      "learnMore": "Scopri di piÃ¹",
       "viewPlans": "Visualizza i piani",
       "copyUrl": "Copia URL MCP",
-      "proRequired": "Passa a un piano a pagamento per collegare OpenWhispr a Claude, ChatGPT e Cursor.",
+      "proRequired": "Passa a un piano a pagamento per collegare Dhwani a Claude, ChatGPT e Cursor.",
       "copied": "Copiato"
     },
     "cli": {
@@ -2585,12 +2610,12 @@
       "local": {
         "label": "Locale",
         "freeBadge": "Gratis",
-        "description": "Leggi le tue note locali direttamente. Nessun login o chiave API — funziona mentre OpenWhispr è aperto."
+        "description": "Leggi le tue note locali direttamente. Nessun login o chiave API — funziona mentre Dhwani Ã¨ aperto."
       },
       "cloud": {
         "label": "Cloud",
         "description": "Sincronizza tra dispositivi usando la tua chiave API.",
-        "proRequired": "Passa a un piano a pagamento per usare la CLI in modalità cloud."
+        "proRequired": "Passa a un piano a pagamento per usare la CLI in modalitÃ  cloud."
       }
     },
     "plan": {
@@ -2605,8 +2630,8 @@
       "upgrade": "Aggiorna"
     },
     "notABot": {
-      "title": "OpenWhispr è un registratore di riunioni, non un bot",
-      "description": "OpenWhispr cattura l'audio direttamente dal tuo sistema — non entra mai nelle tue riunioni come partecipante. Basta collegare il calendario e prendere appunti normalmente."
+      "title": "Dhwani Ã¨ un registratore di riunioni, non un bot",
+      "description": "Dhwani cattura l'audio direttamente dal tuo sistema — non entra mai nelle tue riunioni come partecipante. Basta collegare il calendario e prendere appunti normalmente."
     }
   },
   "calendar": {
@@ -2640,17 +2665,17 @@
     "now": "In corso",
     "join": "Partecipa",
     "untitledEvent": "Evento senza titolo",
-    "systemAudioRequired": "L'autorizzazione Audio di Sistema è necessaria per catturare l'audio degli altri partecipanti.",
+    "systemAudioRequired": "L'autorizzazione Audio di Sistema Ã¨ necessaria per catturare l'audio degli altri partecipanti.",
     "openSettings": "Apri Impostazioni di Sistema",
     "signInRequired": "Accedi per utilizzare la registrazione delle riunioni",
     "signInDescription": "Crea un account o accedi per registrare e trascrivere le riunioni.",
     "connectCalendar": "Collega il tuo calendario",
     "connectCalendarDescription": "Collega il tuo Google Calendar per vedere le prossime riunioni e registrare note automaticamente.",
-    "notABot": "OpenWhispr registra usando l'audio del tuo sistema — non entra mai nelle riunioni come bot.",
+    "notABot": "Dhwani registra usando l'audio del tuo sistema — non entra mai nelle riunioni come bot.",
     "connectCalendarButton": "Collega calendario"
   },
   "notesView": {
-    "searchPlaceholder": "Cerca note…",
+    "searchPlaceholder": "Cerca noteâ€¦",
     "newNote": "Nuova nota",
     "empty": {
       "title": "Nessuna nota ancora",
@@ -2658,7 +2683,7 @@
     },
     "searchEmpty": {
       "title": "Nessun risultato",
-      "description": "Nessuna nota trovata per «{{query}}»."
+      "description": "Nessuna nota trovata per Â«{{query}}Â»."
     },
     "noteType": {
       "personal": "personale",
@@ -2670,7 +2695,7 @@
     "saved": "Salvato",
     "deleteNote": "Elimina nota",
     "deleteConfirmTitle": "Eliminare la nota?",
-    "deleteConfirmDescription": "Questa nota verrà eliminata definitivamente e non potrà essere recuperata.",
+    "deleteConfirmDescription": "Questa nota verrÃ  eliminata definitivamente e non potrÃ  essere recuperata.",
     "deleteConfirm": "Elimina",
     "share": {
       "button": "Condividi",
@@ -2687,16 +2712,16 @@
         "resend": "Reinvia invito",
         "revoke": "Rimuovi",
         "invitationActions": "Azioni invito",
-        "permissionRequired": "Solo il proprietario della nota può modificare la condivisione.",
+        "permissionRequired": "Solo il proprietario della nota puÃ² modificare la condivisione.",
         "visibility": {
-          "label": "Visibilità",
+          "label": "VisibilitÃ ",
           "link": "Chiunque con il link",
           "domain": "Tutti in {{domain}} con il link",
           "invited": "Solo le persone invitate"
         },
         "error": {
           "invalidEmail": "Inserisci un indirizzo email valido",
-          "alreadyInvited": "{{email}} è già stato invitato",
+          "alreadyInvited": "{{email}} Ã¨ giÃ  stato invitato",
           "inviteFailed": "Impossibile inviare l'invito. Riprova.",
           "linkUnavailable": "Genera o ruota il link per copiarlo"
         }
@@ -2707,7 +2732,7 @@
     "title": "Cerca",
     "description": "Cerca tra note e trascrizioni",
     "shortPlaceholder": "Cerca",
-    "placeholder": "Cerca note e trascrizioni…",
+    "placeholder": "Cerca note e trascrizioniâ€¦",
     "sections": {
       "notes": "Note",
       "transcripts": "Trascrizioni"
@@ -2721,18 +2746,18 @@
     }
   },
   "updateNotification": {
-    "title": "Aggiornamento OpenWhispr disponibile",
-    "body": "La versione {{version}} è pronta per il download",
+    "title": "Aggiornamento Dhwani disponibile",
+    "body": "La versione {{version}} Ã¨ pronta per il download",
     "cta": "Aggiorna ora"
   },
   "permissionsGate": {
     "title": "Autorizzazioni necessarie",
-    "description": "OpenWhispr ha bisogno di alcune autorizzazioni per funzionare su questo computer.",
+    "description": "Dhwani ha bisogno di alcune autorizzazioni per funzionare su questo computer.",
     "continue": "Continua"
   },
   "apiKeysSection": {
     "title": "Chiavi API",
-    "description": "Crea chiavi per accedere all'API di OpenWhispr in modo programmatico.",
+    "description": "Crea chiavi per accedere all'API di Dhwani in modo programmatico.",
     "docsLink": "Docs API",
     "empty": "Nessuna chiave API ancora",
     "createButton": "Crea chiave API",
@@ -2754,7 +2779,7 @@
     },
     "created": {
       "title": "Chiave API creata",
-      "warning": "Copia questa chiave ora. Non verrà più mostrata.",
+      "warning": "Copia questa chiave ora. Non verrÃ  piÃ¹ mostrata.",
       "copied": "Copiato!",
       "copyButton": "Copia negli appunti",
       "done": "Fatto"
@@ -2809,31 +2834,31 @@
       "personal": "Personnel",
       "workspaces": "Espaces de travail",
       "empty": "Aucun espace de travail",
-      "create": "Créer un espace de travail…"
+      "create": "CrÃ©er un espace de travailâ€¦"
     },
     "create": {
-      "title": "Créer un espace de travail",
-      "description": "Les espaces de travail vous permettent de collaborer, partager des notes et gérer la facturation.",
+      "title": "CrÃ©er un espace de travail",
+      "description": "Les espaces de travail vous permettent de collaborer, partager des notes et gÃ©rer la facturation.",
       "nameLabel": "Nom de l'espace de travail",
       "namePlaceholder": "Acme Corp",
-      "submit": "Créer l'espace",
-      "submitting": "Création…",
-      "errorTitle": "Impossible de créer l'espace"
+      "submit": "CrÃ©er l'espace",
+      "submitting": "CrÃ©ationâ€¦",
+      "errorTitle": "Impossible de crÃ©er l'espace"
     },
     "created": {
-      "title": "Espace de travail créé",
-      "description": "Vous êtes maintenant propriétaire de {{name}}."
+      "title": "Espace de travail crÃ©Ã©",
+      "description": "Vous Ãªtes maintenant propriÃ©taire de {{name}}."
     },
     "invite": {
       "title": "Inviter dans {{workspace}}",
-      "description": "Ajoutez des coéquipiers par e-mail. Ils recevront un lien pour rejoindre.",
+      "description": "Ajoutez des coÃ©quipiers par e-mail. Ils recevront un lien pour rejoindre.",
       "emailLabel": "E-mail",
-      "roleLabel": "Rôle",
-      "teamsLabel": "Ajouter aux équipes",
+      "roleLabel": "RÃ´le",
+      "teamsLabel": "Ajouter aux Ã©quipes",
       "submit": "Envoyer l'invitation",
-      "submitting": "Envoi…",
-      "sentTitle": "Invitation envoyée",
-      "sentDescription": "Nous avons envoyé une invitation à {{email}}.",
+      "submitting": "Envoiâ€¦",
+      "sentTitle": "Invitation envoyÃ©e",
+      "sentDescription": "Nous avons envoyÃ© une invitation Ã  {{email}}.",
       "errorTitle": "Impossible d'envoyer l'invitation",
       "role": {
         "admin": "Administrateur",
@@ -2842,14 +2867,58 @@
     },
     "accept": {
       "title": "Rejoindre l'espace",
-      "description": "{{inviter}} vous a invité à rejoindre {{workspace}} en tant que {{role}}.",
-      "loading": "Chargement…",
+      "description": "{{inviter}} vous a invitÃ© Ã  rejoindre {{workspace}} en tant que {{role}}.",
+      "loading": "Chargementâ€¦",
       "accept": "Accepter l'invitation",
-      "accepting": "Acceptation…",
+      "accepting": "Acceptationâ€¦",
       "signInToAccept": "Connectez-vous pour accepter",
-      "successTitle": "Vous êtes membre",
+      "successTitle": "Vous Ãªtes membre",
       "successDescription": "Bienvenue dans {{name}}.",
       "errorTitle": "Impossible d'accepter l'invitation"
+    }
+  },
+  "polish": {
+    "noSelection": "Seleziona prima del testo",
+    "failed": "Polish non riuscito"
+  },
+  "insights": {
+    "title": "Statistiche",
+    "totalWords": "Parole totali",
+    "totalDictations": "Dettati totali",
+    "averageWPM": "PPM medie",
+    "wordsToday": "Parole oggi",
+    "wordsThisWeek": "Parole questa settimana",
+    "dayStreak": "Serie di giorni",
+    "wpmGauge": {
+      "title": "Parole al minuto",
+      "best": "Record: {{value}}",
+      "pctOfBest": "{{pct}}% del tuo record"
+    },
+    "fixes": {
+      "title": "Correzioni effettuate",
+      "subtitle": "Corretto automaticamente da Dhwani"
+    },
+    "totalWordsCard": {
+      "subtitle": "{{today}} oggi · {{week}} questa settimana"
+    },
+    "streak": {
+      "title": "Serie di {{count}} giorni",
+      "longest": "Serie più lunga: {{count}} giorni",
+      "less": "Meno",
+      "more": "Più"
+    },
+    "appUsage": {
+      "title": "Utilizzo del desktop",
+      "totalApps": "{{count}} app utilizzate"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "Consigliato per il tuo sistema",
+    "reasons": {
+      "nvidiaGpu": "La tua GPU NVIDIA può eseguire il modello più veloce e accurato",
+      "highRamManyCores": "Il tuo sistema ha memoria e core CPU sufficienti per una maggiore precisione",
+      "moderateRam": "Una scelta equilibrata per la memoria disponibile del tuo sistema",
+      "lowRam": "L'opzione più veloce per la memoria disponibile del tuo sistema"
     }
   }
 }
