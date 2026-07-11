@@ -95,7 +95,7 @@ export default function TranscriptionItem({
   return (
     <div
       className={cn(
-        "group px-5 py-4 transition-colors duration-150 bg-transparent hover:bg-black/[0.03] dark:hover:bg-white/[0.03]",
+        "group px-5 py-4 transition-colors duration-150 bg-transparent hover:bg-muted/50 dark:hover:bg-white/5 hover:rounded-lg",
         isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : ""
       )}
       onMouseEnter={() => setIsHovered(true)}
