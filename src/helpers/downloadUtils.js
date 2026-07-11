@@ -422,7 +422,7 @@ function extractZipWindows(zipPath, destDir) {
           [
             "-NoProfile",
             "-Command",
-            `Expand-Archive -Force -Path '${zipPath}' -DestinationPath '${destDir}'`,
+            `Expand-Archive -Force -ErrorAction Stop -Path '${zipPath}' -DestinationPath '${destDir}'`,
           ],
           (psError) => {
             if (psError) reject(new Error(`Zip extraction failed: ${psError.message}`));
