@@ -4,15 +4,23 @@
 // in any file still get caught.
 const { execSync } = require("child_process");
 
+// Trimmed 2026-07-11 during the OpenWhispr→Dhwani purge: removed entries for
+// D-Bus/gsettings identifiers, cache/config directories, the CLI bridge path,
+// and OPENWHISPR_LOG_LEVEL — all renamed to Dhwani with migrations (see
+// CLAUDE.md "Kept OpenWhispr references"). What's left below is genuinely
+// still upstream: OpenWhispr's real hosted services and binary release repos
+// this fork doesn't own, plus the "OpenWhispr Cloud" feature's internal
+// identifiers (kept — it's a real, if currently unreachable, feature).
 const ALLOWED_PATTERNS = [
-  /openwhispr\.com/i, // upstream service URLs (auth, docs, API)
-  /com\.openwhispr/, // D-Bus / gsettings identifiers
-  /\.cache[\\/]+openwhispr/, // model/cache directories
-  /USERPROFILE.*openwhispr/, // cache dir shown in settings (real path on disk)
-  /\.openwhispr/, // config dir fragments (~/.openwhispr)
-  /OPENWHISPR_[A-Z_]+/, // env var names
-  /VITE_OPENWHISPR/, // env var names
-  /OpenWhispr\/openwhispr/i, // upstream GitHub repo references (binary downloads)
+  /openwhispr\.com/i, // upstream service URLs (auth, API) — real, unowned by this fork
+  /VITE_OPENWHISPR_API_URL|VITE_OPENWHISPR_OAUTH_CALLBACK_URL|OPENWHISPR_API_URL/, // upstream cloud env vars/const
+  /OPENWHISPR_(OPENAI|TRANSCRIPTION)_BASE_URL/, // legacy fallback env vars (see DHWANI_* primary)
+  /OPENWHISPR_LOG_LEVEL/, // legacy fallback env var (see DHWANI_LOG_LEVEL primary)
+  /OPENWHISPR_DEV_SERVER_PORT/, // legacy fallback env var (see DHWANI_DEV_SERVER_PORT primary)
+  /OPENWHISPR_(START|SUCCESS)/, // internal log event tags in the kept openwhispr.ts provider
+  /programs\.openwhispr|install OpenWhispr from the flake/, // upstream Nix flake's real module name
+  /One-time migration: carry over an existing/, // modelDirUtils.js migration comment
+  /OpenWhispr\/openwhispr/i, // upstream GitHub repo (prebuilt binary downloads)
   /open-whispr/, // legacy package identifier references
   /"schemes": \["openwhispr"\]/, // deep-link protocol (tied to upstream auth redirects)
   /CFBundleIconName/, // macOS icon asset name
@@ -33,9 +41,8 @@ const ALLOWED_PATTERNS = [
   /OpenWhispr API URL/, // error naming the upstream cloud env var's URL
   /openwhispr-api/, // upstream backend repo reference in sync comments
   /nixosModules/, // upstream Nix flake module instructions
-  /com\/openwhispr/, // D-Bus object paths (Linux)
-  /custom-keybindings\/openwhispr/, // gsettings paths (Linux)
-  /openwhispr-binds/, // hyprland conf filename (Linux)
+  /OpenWhispr\]\(https:\/\/github\.com\/OpenWhispr/, // CLAUDE.md fork-origin link
+  /"Kept OpenWhispr references"/, // CLAUDE.md section title/self-reference
 ];
 
 const out = execSync(

@@ -32,6 +32,26 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onStartDictation: registerListener("start-dictation", (callback) => () => callback()),
   onStopDictation: registerListener("stop-dictation", (callback) => () => callback()),
 
+  // Tray menu sync (Microphone / Languages submenus + settings deep link)
+  registerPasteLastTranscriptHotkey: (hotkey) =>
+    ipcRenderer.invoke("register-paste-last-transcript-hotkey", hotkey),
+  getPasteLastTranscriptKey: () => ipcRenderer.invoke("get-paste-last-transcript-key"),
+  syncTrayMicrophones: (devices, selectedId) =>
+    ipcRenderer.send("tray-sync-microphones", devices, selectedId),
+  syncTrayLanguage: (selectedCode) => ipcRenderer.send("tray-sync-language", selectedCode),
+  onTraySelectMicrophone: registerListener(
+    "tray-select-microphone",
+    (callback) => (_event, deviceId) => callback(deviceId)
+  ),
+  onTraySelectLanguage: registerListener(
+    "tray-select-language",
+    (callback) => (_event, code) => callback(code)
+  ),
+  onOpenSettingsSection: registerListener(
+    "open-settings-section",
+    (callback) => (_event, section) => callback(section)
+  ),
+
   // Database functions
   saveTranscription: (text, rawText, options) =>
     ipcRenderer.invoke("db-save-transcription", text, rawText, options),

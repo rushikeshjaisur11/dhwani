@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
-import { Loader2, Sparkles, X, Mic, Trash2, Archive, Type, Gauge, Flame } from "lucide-react";
+import { Loader2, Sparkles, X, Mic, Trash2, Archive } from "lucide-react";
 import TranscriptionItem from "./ui/TranscriptionItem";
 import { Kbd } from "./ui/Kbd";
 import type { TranscriptionItem as TranscriptionItemType } from "../types/electron";
@@ -9,7 +9,6 @@ import { formatHotkeyLabel } from "../utils/hotkeys";
 import { formatDateGroup } from "../utils/dateFormatting";
 import { cn } from "./lib/utils";
 import { useUpcomingEvents } from "../hooks/useUpcomingEvents";
-import UpcomingMeetings from "./UpcomingMeetings";
 import { useSettingsStore } from "../stores/settingsStore";
 
 interface HistoryViewProps {
@@ -47,7 +46,7 @@ export default function HistoryView({
 }: HistoryViewProps) {
   const { t } = useTranslation();
   const dataRetentionEnabled = useSettingsStore((s) => s.dataRetentionEnabled);
-  const { events, isLoading: eventsLoading, isConnected } = useUpcomingEvents();
+  const { isConnected } = useUpcomingEvents();
 
   const groupedHistory = useMemo(() => {
     if (history.length === 0) return [];
@@ -104,25 +103,6 @@ export default function HistoryView({
     }, 180);
   };
 
-  const [stats, setStats] = useState<{
-    totalWords: number;
-    averageWPM: number;
-    dayStreak: number;
-  } | null>(null);
-  useEffect(() => {
-    window.electronAPI.getInsightsStats().then(setStats);
-  }, []);
-
-  // ponytail: fixed milestone, not a real unlock feature — same placeholder
-  // framing as InsightsView.tsx until a real threshold exists.
-  const VOICE_PROFILE_MILESTONE_WORDS = 5000;
-  const voiceProfileProgress =
-    Math.min(stats?.totalWords ?? 0, VOICE_PROFILE_MILESTONE_WORDS) / VOICE_PROFILE_MILESTONE_WORDS;
-  const voiceProfileWordsRemaining = Math.max(
-    VOICE_PROFILE_MILESTONE_WORDS - (stats?.totalWords ?? 0),
-    0
-  );
-
   const hotkeyParts = formatHotkeyLabel(hotkey)
     .split("+")
     .map((part) => part.trim())
@@ -136,7 +116,7 @@ export default function HistoryView({
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-base font-bold text-foreground mb-4 flex items-center flex-nowrap gap-1.5 whitespace-nowrap overflow-hidden">
+        <h1 className="text-xl font-bold text-foreground mb-4 flex items-center flex-nowrap gap-1.5 whitespace-nowrap overflow-hidden">
           <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
@@ -145,7 +125,7 @@ export default function HistoryView({
           </span>
           {hotkeyParts.map((part, i) => (
             <span key={i} className="flex items-center gap-1.5">
-              <Kbd className="text-xs px-2 py-0.5">{part}</Kbd>
+              <Kbd className="text-sm px-2.5 py-1">{part}</Kbd>
               {i < hotkeyParts.length - 1 && <span className="text-muted-foreground">+</span>}
             </span>
           ))}
@@ -383,79 +363,6 @@ export default function HistoryView({
                 ))}
               </div>
             )}
-          </div>
-
-          <div className="w-72 shrink-0 hidden sm:block">
-            <div className="sticky top-4 space-y-3">
-              <div className="accent-bar rounded-2xl bg-muted dark:bg-surface-2 p-5 shadow-sm">
-                <div className="space-y-3.5">
-                  <div className="flex items-center gap-2.5">
-                    <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Type size={15} className="text-primary" />
-                    </div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
-                        {stats?.totalWords ?? "–"}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {t("controlPanel.stats.totalWords", { defaultValue: "total words" })}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Gauge size={15} className="text-primary" />
-                    </div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
-                        {stats?.averageWPM ?? "–"}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {t("controlPanel.stats.wpm", { defaultValue: "wpm" })}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Flame size={15} className="text-primary" />
-                    </div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
-                        {stats?.dayStreak ?? "–"}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {t("controlPanel.stats.dayStreak", { defaultValue: "day streak" })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-border">
-                  <p className="text-sm font-semibold text-foreground mb-0.5">
-                    {t("insights.voiceProfile.title", { defaultValue: "Your Voice Profile" })}
-                  </p>
-                  <p className="text-xs text-muted-foreground mb-2.5">
-                    {t("insights.voiceProfile.description", {
-                      defaultValue: "Discover how you use your voice.",
-                    })}
-                  </p>
-                  <div className="h-1.5 rounded-full bg-[var(--color-progress-track)] overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out"
-                      style={{ width: `${voiceProfileProgress * 100}%` }}
-                    />
-                  </div>
-                  <p className="text-[11px] text-muted-foreground mt-1.5">
-                    {voiceProfileWordsRemaining > 0
-                      ? t("insights.voiceProfile.unlocksIn", {
-                          defaultValue: "Unlocks in {{count}} words",
-                          count: voiceProfileWordsRemaining,
-                        })
-                      : t("insights.voiceProfile.unlocked", { defaultValue: "Unlocked" })}
-                  </p>
-                </div>
-              </div>
-              {isConnected && <UpcomingMeetings events={events} isLoading={eventsLoading} />}
-            </div>
           </div>
         </div>
       </div>

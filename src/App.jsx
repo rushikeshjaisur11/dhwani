@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import "./index.css";
 import { X } from "lucide-react";
 import { useToast } from "./components/ui/useToast";
-import { LoadingDots } from "./components/ui/LoadingDots";
 import { useHotkey } from "./hooks/useHotkey";
 import { formatHotkeyLabel } from "./utils/hotkeys";
 import { useWindowDrag } from "./hooks/useWindowDrag";
 import { useAudioRecording } from "./hooks/useAudioRecording";
+import { useMicLevel } from "./hooks/useMicLevel";
 import { usePolish } from "./hooks/usePolish";
 import { useSettingsStore } from "./stores/settingsStore";
 
@@ -42,6 +42,21 @@ const VoiceWaveIndicator = ({ isListening }) => {
             animationDelay: isListening ? `${i * 0.1}s` : "0s",
             animationDuration: isListening ? `${0.6 + i * 0.1}s` : "0s",
           }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Live waveform bars driven by real mic amplitude (recording state)
+const LiveWaveform = ({ levels }) => {
+  return (
+    <div className="flex items-center justify-center gap-[3px] h-full px-1">
+      {levels.map((level, i) => (
+        <div
+          key={i}
+          className="w-[3px] rounded-full bg-white/90 transition-[height] duration-75 ease-out"
+          style={{ height: `${8 + level * 20}px` }}
         />
       ))}
     </div>
@@ -173,21 +188,6 @@ export default function App() {
     }
   }, [isCommandMenuOpen, isHovered, toastCount, setWindowInteractivity]);
 
-  useEffect(() => {
-    const resizeWindow = () => {
-      if (isCommandMenuOpen && toastCount > 0) {
-        window.electronAPI?.resizeMainWindow?.("EXPANDED");
-      } else if (isCommandMenuOpen) {
-        window.electronAPI?.resizeMainWindow?.("WITH_MENU");
-      } else if (toastCount > 0) {
-        window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
-      } else {
-        window.electronAPI?.resizeMainWindow?.("BASE");
-      }
-    };
-    resizeWindow();
-  }, [isCommandMenuOpen, toastCount]);
-
   const handleDictationToggle = React.useCallback(() => {
     setIsCommandMenuOpen(false);
     setWindowInteractivity(false);
@@ -203,6 +203,25 @@ export default function App() {
   } = useAudioRecording(toast, {
     onToggle: handleDictationToggle,
   });
+
+  const micLevels = useMicLevel(isRecording);
+
+  useEffect(() => {
+    const resizeWindow = () => {
+      if (isCommandMenuOpen && toastCount > 0) {
+        window.electronAPI?.resizeMainWindow?.("EXPANDED");
+      } else if (isCommandMenuOpen) {
+        window.electronAPI?.resizeMainWindow?.("WITH_MENU");
+      } else if (toastCount > 0) {
+        window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
+      } else if (isRecording || isProcessing) {
+        window.electronAPI?.resizeMainWindow?.("RECORDING");
+      } else {
+        window.electronAPI?.resizeMainWindow?.("BASE");
+      }
+    };
+    resizeWindow();
+  }, [isCommandMenuOpen, toastCount, isRecording, isProcessing]);
 
   usePolish(toast, t);
 
@@ -297,6 +316,7 @@ export default function App() {
   const getMicButtonProps = () => {
     const baseClasses =
       "flow-bar-pill flex items-center justify-center relative overflow-hidden cursor-pointer";
+    const expandedClasses = `${baseClasses} flow-bar-pill--expanded`;
 
     switch (micState) {
       case "idle":
@@ -307,22 +327,22 @@ export default function App() {
         };
       case "recording":
         return {
-          className: `${baseClasses} flow-bar-pill--listening cursor-pointer`,
+          className: `${expandedClasses} flow-bar-pill--listening cursor-pointer`,
           tooltip: t("app.mic.recording"),
         };
       case "command":
         return {
-          className: `${baseClasses} flow-bar-pill--command cursor-pointer`,
+          className: `${expandedClasses} flow-bar-pill--command cursor-pointer`,
           tooltip: t("app.mic.commandMode", { defaultValue: "Command Mode" }),
         };
       case "processing":
         return {
-          className: `${baseClasses} flow-bar-pill--processing cursor-not-allowed`,
+          className: `${expandedClasses} flow-bar-pill--processing cursor-not-allowed`,
           tooltip: t("app.mic.processing"),
         };
       case "command-processing":
         return {
-          className: `${baseClasses} flow-bar-pill--command cursor-not-allowed`,
+          className: `${expandedClasses} flow-bar-pill--command cursor-not-allowed`,
           tooltip: t("app.mic.processing"),
         };
       default:
@@ -457,7 +477,7 @@ export default function App() {
               {micState === "idle" || micState === "hover" ? (
                 <SoundWaveIcon size={micState === "idle" ? 12 : 14} />
               ) : micState === "recording" || micState === "command" ? (
-                <LoadingDots />
+                <LiveWaveform levels={micLevels} />
               ) : micState === "processing" || micState === "command-processing" ? (
                 <VoiceWaveIndicator isListening={true} />
               ) : null}

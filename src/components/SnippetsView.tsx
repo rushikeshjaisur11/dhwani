@@ -16,6 +16,7 @@ import { Textarea } from "./ui/textarea";
 import { useSettings } from "../hooks/useSettings";
 import { getCachedPlatform } from "../utils/platform";
 import type { Snippet } from "../utils/snippets";
+import PromoBanner from "./ui/PromoBanner";
 
 const EXAMPLE_KEYS = ["linkedin", "rewrite", "intro", "signoff"] as const;
 
@@ -110,7 +111,15 @@ export default function SnippetsView() {
   const [expansion, setExpansion] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const [editing, setEditing] = useState<Snippet | null>(null);
+  const [bannerDismissed, setBannerDismissed] = useState(
+    () => localStorage.getItem("snippetsBannerDismissed") === "true"
+  );
   const triggerInputRef = useRef<HTMLInputElement>(null);
+
+  const dismissBanner = () => {
+    localStorage.setItem("snippetsBannerDismissed", "true");
+    setBannerDismissed(true);
+  };
 
   const triggerExists = (value: string, except?: string) => {
     const lower = value.toLowerCase();
@@ -172,6 +181,22 @@ export default function SnippetsView() {
         triggerExists={triggerExists}
         onSave={handleSaveEdit}
       />
+
+      <div className="flex items-center justify-between mb-1">
+        <h2 className="text-xl font-bold text-foreground">{t("dictionary.snippets.title")}</h2>
+        <Button size="sm" onClick={() => triggerInputRef.current?.focus()}>
+          {t("dictionary.snippets.new")}
+        </Button>
+      </div>
+
+      {!bannerDismissed && (
+        <PromoBanner
+          title={t("dictionary.snippets.bannerTitle")}
+          description={t("dictionary.snippets.bannerDescription")}
+          onDismiss={dismissBanner}
+          className="mb-1"
+        />
+      )}
 
       {/* ─── Add snippet ─── */}
       <div>

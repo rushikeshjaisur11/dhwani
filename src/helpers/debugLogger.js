@@ -102,7 +102,11 @@ class DebugLogger {
       return argLevel;
     }
 
-    const envLevel = normalizeLevel(process.env.OPENWHISPR_LOG_LEVEL || process.env.LOG_LEVEL);
+    // OPENWHISPR_LOG_LEVEL kept as a fallback for users with it saved to .env
+    // from before the DHWANI_LOG_LEVEL rename.
+    const envLevel = normalizeLevel(
+      process.env.DHWANI_LOG_LEVEL || process.env.OPENWHISPR_LOG_LEVEL || process.env.LOG_LEVEL
+    );
     if (envLevel) {
       return envLevel;
     }

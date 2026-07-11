@@ -6,6 +6,7 @@ import PostMigrationOnboarding from "./PostMigrationOnboarding";
 import { ConfirmDialog, AlertDialog } from "./ui/dialog";
 import { useDialogs } from "../hooks/useDialogs";
 import { useHotkey } from "../hooks/useHotkey";
+import { useTraySync } from "../hooks/useTraySync";
 import { useToast } from "./ui/useToast";
 import { useUpdater } from "../hooks/useUpdater";
 import { useSettings } from "../hooks/useSettings";
@@ -39,6 +40,7 @@ import {
 } from "../stores/noteStore";
 import { fetchProviders as fetchStreamingProviders } from "../stores/streamingProvidersStore";
 import HistoryView from "./HistoryView";
+import ContextPanel from "./ContextPanel";
 import BackgroundActionToastListener from "./notes/BackgroundActionToastListener";
 import { syncService } from "../services/SyncService.js";
 import AcceptInvitationModal from "./AcceptInvitationModal";
@@ -56,6 +58,10 @@ const DictionaryView = React.lazy(() => import("./DictionaryView"));
 const InsightsView = React.lazy(() => import("./InsightsView"));
 const UploadAudioView = React.lazy(() => import("./notes/UploadAudioView"));
 const IntegrationsView = React.lazy(() => import("./IntegrationsView"));
+const SnippetsView = React.lazy(() => import("./SnippetsView"));
+const StyleView = React.lazy(() => import("./StyleView"));
+const TransformsView = React.lazy(() => import("./TransformsView"));
+const ScratchpadView = React.lazy(() => import("./ScratchpadView"));
 const ChatView = React.lazy(() => import("./chat/ChatView"));
 const CommandSearch = React.lazy(() => import("./CommandSearch"));
 
@@ -103,6 +109,14 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   const updateErrorToastShown = useRef<Error | null>(null);
   const { hotkey } = useHotkey();
   const { toast } = useToast();
+  useTraySync();
+
+  useEffect(() => {
+    return window.electronAPI.onOpenSettingsSection?.((section) => {
+      setSettingsSection(section);
+      setShowSettings(true);
+    });
+  }, []);
   const {
     useLocalWhisper,
     localTranscriptionProvider,
@@ -840,8 +854,29 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                 <IntegrationsView />
               </Suspense>
             )}
+            {activeView === "snippets" && (
+              <Suspense fallback={null}>
+                <SnippetsView />
+              </Suspense>
+            )}
+            {activeView === "style" && (
+              <Suspense fallback={null}>
+                <StyleView />
+              </Suspense>
+            )}
+            {activeView === "transforms" && (
+              <Suspense fallback={null}>
+                <TransformsView />
+              </Suspense>
+            )}
+            {activeView === "scratchpad" && (
+              <Suspense fallback={null}>
+                <ScratchpadView />
+              </Suspense>
+            )}
           </div>
         </main>
+        <ContextPanel activeView={activeView} />
       </div>
       <BackgroundActionToastListener />
     </div>

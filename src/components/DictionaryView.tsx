@@ -14,9 +14,8 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { ConfirmDialog } from "./ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { useToast } from "./ui/useToast";
-import SnippetsView from "./SnippetsView";
+import PromoBanner from "./ui/PromoBanner";
 import { useSettings } from "../hooks/useSettings";
 import { getAgentName } from "../utils/agentName";
 
@@ -38,7 +37,15 @@ export default function DictionaryView() {
   const [editingWord, setEditingWord] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [confirmClear, setConfirmClear] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(
+    () => localStorage.getItem("dictionaryBannerDismissed") === "true"
+  );
   const addInputRef = useRef<HTMLInputElement>(null);
+
+  const dismissBanner = () => {
+    localStorage.setItem("dictionaryBannerDismissed", "true");
+    setBannerDismissed(true);
+  };
 
   const pendingImportCount = useMemo(() => parseWords(bulkText).length, [bulkText]);
 
@@ -139,7 +146,7 @@ export default function DictionaryView() {
   );
 
   return (
-    <Tabs defaultValue="dictionary" className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-y-auto">
       <ConfirmDialog
         open={confirmClear}
         onOpenChange={setConfirmClear}
@@ -149,194 +156,198 @@ export default function DictionaryView() {
         variant="destructive"
       />
 
-      <div className="px-5 pt-4">
-        <TabsList className="h-7 p-0.5 rounded-[7px]">
-          <TabsTrigger value="dictionary" className="h-6 px-2.5 text-xs rounded-[5px]">
-            {t("dictionary.tabDictionary")}
-          </TabsTrigger>
-          <TabsTrigger value="snippets" className="h-6 px-2.5 text-xs rounded-[5px]">
-            {t("dictionary.tabSnippets")}
-          </TabsTrigger>
-        </TabsList>
-      </div>
-
-      <TabsContent value="dictionary" className="flex-1 min-h-0 mt-0 overflow-y-auto">
-        <div className="px-5 py-4 flex flex-col gap-3">
-          {/* ─── Add word ─── */}
-          <div>
-            <div className="relative">
-              <Input
-                ref={addInputRef}
-                placeholder={t("dictionary.addPlaceholder")}
-                value={newWord}
-                onChange={(e) => setNewWord(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleAdd();
-                }}
-                className="w-full h-8 text-xs pr-24 placeholder:text-foreground/20"
-              />
-              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                <button
-                  onClick={handleAdd}
-                  disabled={!newWord.trim()}
-                  aria-label={t("dictionary.addWord")}
-                  className="flex items-center gap-1 text-xs text-foreground/30 enabled:hover:text-primary disabled:text-foreground/15 transition-colors"
-                >
-                  {t("dictionary.add")}
-                  <CornerDownLeft size={10} />
-                </button>
-                <div className="w-px h-3.5 bg-foreground/10 dark:bg-white/8" />
-                <button
-                  onClick={() => setShowBulkImport(true)}
-                  aria-label={t("dictionary.importWords")}
-                  className="text-foreground/30 hover:text-foreground/60 transition-colors"
-                >
-                  <Upload size={11} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* ─── Bulk import ─── */}
-          {showBulkImport && (
-            <div className="rounded-md border border-primary/30 dark:border-primary/40 px-3 pt-2.5 pb-2">
-              <Textarea
-                autoFocus
-                value={bulkText}
-                onChange={(e) => setBulkText(e.target.value)}
-                placeholder={t("dictionary.importPlaceholder")}
-                rows={4}
-                className="min-h-[72px] resize-none border-0 shadow-none rounded-none bg-transparent p-0 text-xs text-foreground placeholder:text-foreground/20 hover:border-0 focus:border-0 focus:ring-0"
-              />
-              <div className="flex items-center justify-between pt-1.5">
-                <p className="text-xs text-foreground/20">
-                  {t("dictionary.separateWithCommas")}
-                  {pendingImportCount > 0 && (
-                    <span className="text-success">
-                      {" • "}
-                      {t("dictionary.wordsReady", { count: pendingImportCount })}
-                    </span>
-                  )}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setBulkText("");
-                      setShowBulkImport(false);
-                    }}
-                  >
-                    {t("common.cancel")}
-                  </Button>
-                  <Button size="sm" onClick={handleImport} disabled={pendingImportCount === 0}>
-                    {t("dictionary.import")}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ─── Agent name (always recognized) ─── */}
-          <div className="rounded-md border border-primary/15 dark:border-primary/20 bg-primary/3 dark:bg-primary/6 px-4 py-2.5 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <Sparkles size={11} className="text-primary/70 shrink-0" />
-              <span className="text-xs font-medium text-primary truncate">{agentName}</span>
-            </div>
-            <span className="text-xs text-foreground/25 shrink-0">
-              {t("dictionary.agentDefault")}
-            </span>
-          </div>
-
-          {/* ─── Dictionary list ─── */}
-          <div className="rounded-md border border-foreground/8 dark:border-white/6 bg-foreground/[0.02] dark:bg-white/[0.03] px-4 py-3">
-            {userWords.length > 0 && (
-              <>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-semibold text-foreground/40">
-                    {t("dictionary.yourDictionary")}
-                  </h3>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setConfirmClear(true)}
-                      aria-label={t("dictionary.clearAll")}
-                      className="text-xs text-foreground/15 hover:text-destructive/70 transition-colors"
-                    >
-                      {t("dictionary.clearAll")}
-                    </button>
-                    <button
-                      onClick={handleExport}
-                      aria-label={t("dictionary.exportDictionary")}
-                      className="text-foreground/25 hover:text-foreground/60 transition-colors"
-                    >
-                      <Download size={12} />
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-2.5 border-t border-dashed border-foreground/10 dark:border-white/8" />
-              </>
-            )}
-
-            {userWords.length === 0 ? (
-              emptyState
-            ) : visibleWords.length === 0 ? (
-              <p className="py-6 text-xs text-foreground/20 text-center">
-                {t("dictionary.noMatches", { word: newWord.trim() })}
-              </p>
-            ) : (
-              <ul>
-                {visibleWords.map((word) => {
-                  const isEditing = editingWord === word;
-                  return (
-                    <li
-                      key={word}
-                      className="group flex items-center gap-2 h-9 border-b border-foreground/4 dark:border-white/3 last:border-b-0"
-                    >
-                      {isEditing ? (
-                        <Input
-                          autoFocus
-                          value={editValue}
-                          onChange={(e) => setEditValue(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") commitEdit();
-                            if (e.key === "Escape") setEditingWord(null);
-                          }}
-                          onBlur={commitEdit}
-                          className="h-7 text-xs flex-1"
-                        />
-                      ) : (
-                        <span className="flex-1 text-xs truncate text-foreground/60">{word}</span>
-                      )}
-                      {!isEditing && (
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-                          <button
-                            onClick={() => startEdit(word)}
-                            aria-label={t("dictionary.editWord", { word })}
-                            className="p-1 text-foreground/25 hover:text-foreground/60 transition-colors"
-                          >
-                            <Pencil size={11} />
-                          </button>
-                          <button
-                            onClick={() => handleRemove(word)}
-                            aria-label={t("dictionary.removeWord", { word })}
-                            className="p-1 text-foreground/25 hover:text-destructive/70 transition-colors"
-                          >
-                            <X size={11} strokeWidth={2} />
-                          </button>
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+      <div className="px-5 py-4 flex flex-col gap-3">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-xl font-bold text-foreground">{t("dictionary.tabDictionary")}</h2>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setShowBulkImport(true)}>
+              {t("dictionary.import")}
+            </Button>
+            <Button size="sm" onClick={() => addInputRef.current?.focus()}>
+              {t("dictionary.addFirstWord")}
+            </Button>
           </div>
         </div>
-      </TabsContent>
 
-      <TabsContent value="snippets" className="flex-1 min-h-0 mt-0 overflow-y-auto">
-        <SnippetsView />
-      </TabsContent>
-    </Tabs>
+        {!bannerDismissed && (
+          <PromoBanner
+            title={t("dictionary.bannerTitle")}
+            description={t("dictionary.bannerDescription")}
+            onDismiss={dismissBanner}
+            className="mb-1"
+          />
+        )}
+
+        {/* ─── Add word ─── */}
+        <div>
+          <div className="relative">
+            <Input
+              ref={addInputRef}
+              placeholder={t("dictionary.addPlaceholder")}
+              value={newWord}
+              onChange={(e) => setNewWord(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAdd();
+              }}
+              className="w-full h-8 text-xs pr-24 placeholder:text-foreground/20"
+            />
+            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              <button
+                onClick={handleAdd}
+                disabled={!newWord.trim()}
+                aria-label={t("dictionary.addWord")}
+                className="flex items-center gap-1 text-xs text-foreground/30 enabled:hover:text-primary disabled:text-foreground/15 transition-colors"
+              >
+                {t("dictionary.add")}
+                <CornerDownLeft size={10} />
+              </button>
+              <div className="w-px h-3.5 bg-foreground/10 dark:bg-white/8" />
+              <button
+                onClick={() => setShowBulkImport(true)}
+                aria-label={t("dictionary.importWords")}
+                className="text-foreground/30 hover:text-foreground/60 transition-colors"
+              >
+                <Upload size={11} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Bulk import ─── */}
+        {showBulkImport && (
+          <div className="rounded-md border border-primary/30 dark:border-primary/40 px-3 pt-2.5 pb-2">
+            <Textarea
+              autoFocus
+              value={bulkText}
+              onChange={(e) => setBulkText(e.target.value)}
+              placeholder={t("dictionary.importPlaceholder")}
+              rows={4}
+              className="min-h-[72px] resize-none border-0 shadow-none rounded-none bg-transparent p-0 text-xs text-foreground placeholder:text-foreground/20 hover:border-0 focus:border-0 focus:ring-0"
+            />
+            <div className="flex items-center justify-between pt-1.5">
+              <p className="text-xs text-foreground/20">
+                {t("dictionary.separateWithCommas")}
+                {pendingImportCount > 0 && (
+                  <span className="text-success">
+                    {" • "}
+                    {t("dictionary.wordsReady", { count: pendingImportCount })}
+                  </span>
+                )}
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setBulkText("");
+                    setShowBulkImport(false);
+                  }}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button size="sm" onClick={handleImport} disabled={pendingImportCount === 0}>
+                  {t("dictionary.import")}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── Agent name (always recognized) ─── */}
+        <div className="rounded-md border border-primary/15 dark:border-primary/20 bg-primary/3 dark:bg-primary/6 px-4 py-2.5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles size={11} className="text-primary/70 shrink-0" />
+            <span className="text-xs font-medium text-primary truncate">{agentName}</span>
+          </div>
+          <span className="text-xs text-foreground/25 shrink-0">
+            {t("dictionary.agentDefault")}
+          </span>
+        </div>
+
+        {/* ─── Dictionary list ─── */}
+        <div className="rounded-md border border-foreground/8 dark:border-white/6 bg-foreground/[0.02] dark:bg-white/[0.03] px-4 py-3">
+          {userWords.length > 0 && (
+            <>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-semibold text-foreground/40">
+                  {t("dictionary.yourDictionary")}
+                </h3>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setConfirmClear(true)}
+                    aria-label={t("dictionary.clearAll")}
+                    className="text-xs text-foreground/15 hover:text-destructive/70 transition-colors"
+                  >
+                    {t("dictionary.clearAll")}
+                  </button>
+                  <button
+                    onClick={handleExport}
+                    aria-label={t("dictionary.exportDictionary")}
+                    className="text-foreground/25 hover:text-foreground/60 transition-colors"
+                  >
+                    <Download size={12} />
+                  </button>
+                </div>
+              </div>
+              <div className="mt-2.5 border-t border-dashed border-foreground/10 dark:border-white/8" />
+            </>
+          )}
+
+          {userWords.length === 0 ? (
+            emptyState
+          ) : visibleWords.length === 0 ? (
+            <p className="py-6 text-xs text-foreground/20 text-center">
+              {t("dictionary.noMatches", { word: newWord.trim() })}
+            </p>
+          ) : (
+            <ul>
+              {visibleWords.map((word) => {
+                const isEditing = editingWord === word;
+                return (
+                  <li
+                    key={word}
+                    className="group flex items-center gap-2 h-9 border-b border-foreground/4 dark:border-white/3 last:border-b-0"
+                  >
+                    {isEditing ? (
+                      <Input
+                        autoFocus
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") commitEdit();
+                          if (e.key === "Escape") setEditingWord(null);
+                        }}
+                        onBlur={commitEdit}
+                        className="h-7 text-xs flex-1"
+                      />
+                    ) : (
+                      <span className="flex-1 text-xs truncate text-foreground/60">{word}</span>
+                    )}
+                    {!isEditing && (
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                        <button
+                          onClick={() => startEdit(word)}
+                          aria-label={t("dictionary.editWord", { word })}
+                          className="p-1 text-foreground/25 hover:text-foreground/60 transition-colors"
+                        >
+                          <Pencil size={11} />
+                        </button>
+                        <button
+                          onClick={() => handleRemove(word)}
+                          aria-label={t("dictionary.removeWord", { word })}
+                          className="p-1 text-foreground/25 hover:text-destructive/70 transition-colors"
+                        >
+                          <X size={11} strokeWidth={2} />
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

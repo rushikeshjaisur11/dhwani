@@ -36,8 +36,19 @@
       "show": "Show Dictation Panel",
       "hide": "Hide Dictation Panel"
     },
-    "openControlPanel": "Open Control Panel",
-    "quit": "Quit Dhwani",
+    "openControlPanel": "Open Dhwani",
+    "checkForUpdates": "Check for updates…",
+    "pasteLastTranscript": "Paste last transcript",
+    "shortcuts": "Shortcuts",
+    "microphone": {
+      "label": "Microphone",
+      "none": "No microphones found"
+    },
+    "languages": "Languages",
+    "helpCenter": "Help Center",
+    "talkToSupport": "Talk to support",
+    "shareFeedback": "Share feedback",
+    "quit": "Exit",
     "tooltip": "Dhwani - Voice Dictation"
   },
   "menu": {
@@ -1590,6 +1601,10 @@
         "instructionTone": "Preserve original tone",
         "instructionStructure": "Add structure where helpful"
       },
+      "pasteLastTranscriptHotkey": {
+        "title": "Paste Last Transcript",
+        "description": "Repaste your most recent dictation at the cursor"
+      },
       "personalizedStyles": {
         "title": "Personalized Styles",
         "description": "Set a writing tone for dictation cleanup based on the app you're using",
@@ -2068,6 +2083,10 @@
     "upgradeDescription": "Unlimited transcriptions and premium features.",
     "learnMore": "Learn more",
     "integrations": "Integrations",
+    "snippets": "Snippets",
+    "style": "Style",
+    "transforms": "Transforms",
+    "scratchpad": "Scratchpad",
     "defaultUser": "User",
     "notSignedIn": "Not signed in",
     "chat": "Chat",
@@ -2483,9 +2502,77 @@
     "averageWPM": "Average WPM",
     "wordsToday": "Words today",
     "wordsThisWeek": "Words this week",
-    "dayStreak": "Day streak"
+    "dayStreak": "Day streak",
+    "tabs": {
+      "usage": "Your Usage",
+      "voice": "Your Voice",
+      "voiceComingSoon": "Voice insights are coming soon."
+    }
+  },
+  "scratchpad": {
+    "title": "Scratchpad",
+    "placeholder": "Jot anything down…",
+    "wordCount_one": "{{count}} word",
+    "wordCount_other": "{{count}} words",
+    "addToFlowBar": "Add to Flow Bar",
+    "enableShortcut": "Click to enable shortcut",
+    "bannerTitle": "For quick thoughts you want to come back to",
+    "bannerDescription": "Drop a to-do list, polish a message before you send it, brain dump an idea. Scratchpad is your safe space to save, create, and explore.",
+    "startNewNote": "Start new note",
+    "recents": "Recents",
+    "noNotesFound": "No notes found"
+  },
+  "style": {
+    "title": "Style",
+    "description": "Choose the tone your dictation cleanup should aim for.",
+    "bannerTitle": "This style applies in personal messengers",
+    "bannerDescription": "Style formatting only applies in English. More languages coming soon.",
+    "contexts": {
+      "personal": "Personal messages",
+      "work": "Work messages",
+      "email": "Email",
+      "other": "Other"
+    },
+    "presets": {
+      "formal": {
+        "label": "Formal.",
+        "description": "Caps + Punctuation",
+        "example": "Hey, are you free for lunch tomorrow? Let's do 12 if that works for you."
+      },
+      "casual": {
+        "label": "Casual",
+        "description": "Caps + Less punctuation",
+        "example": "Hey are you free for lunch tomorrow? Let's do 12 if that works for you"
+      },
+      "veryCasual": {
+        "label": "very casual",
+        "description": "No Caps + Less punctuation",
+        "example": "hey are you free for lunch tomorrow? let's do 12 if that works for you"
+      }
+    }
+  },
+  "transforms": {
+    "title": "Transforms",
+    "description": "Save reusable rewrite prompts you can apply to text after you dictate.",
+    "namePlaceholder": "Transform name",
+    "promptPlaceholder": "Rewrite instructions…",
+    "create": "Add transform",
+    "remove": "Remove {{name}}",
+    "optIn": "Opt in",
+    "viewChanges": "to view changes",
+    "bannerTitle": "Transform works anywhere you write",
+    "bannerDescription": "Apply a Transform to rewrite, clean up, or restructure text after you dictate.",
+    "tryItOut": "Try it out",
+    "howItWorks": "How it works",
+    "myTransforms": "My Transforms",
+    "resetToDefaults": "Reset to defaults",
+    "createNew": "Create New",
+    "createYourOwn": "Create your own",
+    "uploadYourOwn": "Upload your own prompt"
   },
   "dictionary": {
+    "bannerTitle": "Dhwani spells the way you do.",
+    "bannerDescription": "Dhwani learns your unique words and names — automatically or manually. Add personal terms, jargon, client names, or industry-specific lingo.",
     "clearTitle": "Clear dictionary?",
     "clearDescription": "This will remove all words from your custom dictionary. This action cannot be undone.",
     "addWord": "Add word",
@@ -2508,6 +2595,8 @@
     "tabSnippets": "Snippets",
     "snippets": {
       "title": "Snippets",
+      "bannerTitle": "The stuff you shouldn't have to re-type.",
+      "bannerDescription": "Save text you type often — an email, intro, or prompt — then say a word to drop it in instantly.",
       "edit": "Edit {{trigger}}",
       "remove": "Remove {{trigger}}",
       "editTitle": "Edit snippet",

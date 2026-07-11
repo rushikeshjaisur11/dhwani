@@ -47,12 +47,17 @@ try {
 }
 
 const VALID_CHANNELS = new Set(["development", "staging", "production"]);
+// Kept as "openwhispr" (not renamed): the OAuth desktop-callback page is
+// hosted at openwhispr.com and hardcodes a redirect to this scheme. Renaming
+// it locally without controlling that page breaks Google Calendar OAuth (and
+// any future OpenWhispr Cloud sign-in) return flow. See googleCalendarOAuth.js
+// PROTOCOL_BY_CHANNEL, which must stay in sync with this.
 const DEFAULT_OAUTH_PROTOCOL_BY_CHANNEL = {
   development: "openwhispr-dev",
   staging: "openwhispr-staging",
   production: "openwhispr",
 };
-const BASE_WINDOWS_APP_ID = "com.gizmolabs.openwhispr";
+const BASE_WINDOWS_APP_ID = "com.rushikesh.dhwani";
 const DEFAULT_AUTH_BRIDGE_PORT = 5199;
 
 function isElectronBinaryExec() {
@@ -72,7 +77,7 @@ function inferDefaultChannel() {
 }
 
 function resolveAppChannel() {
-  const rawChannel = (process.env.OPENWHISPR_CHANNEL || process.env.VITE_OPENWHISPR_CHANNEL || "")
+  const rawChannel = (process.env.DHWANI_CHANNEL || process.env.VITE_DHWANI_CHANNEL || "")
     .trim()
     .toLowerCase();
 
@@ -84,14 +89,27 @@ function resolveAppChannel() {
 }
 
 const APP_CHANNEL = resolveAppChannel();
-process.env.OPENWHISPR_CHANNEL = APP_CHANNEL;
+process.env.DHWANI_CHANNEL = APP_CHANNEL;
 
 function configureChannelUserDataPath() {
   if (APP_CHANNEL === "production") {
     return;
   }
 
-  const isolatedPath = path.join(app.getPath("appData"), `OpenWhispr-${APP_CHANNEL}`);
+  const isolatedPath = path.join(app.getPath("appData"), `Dhwani-${APP_CHANNEL}`);
+
+  // One-time migration: carry over an existing OpenWhispr-<channel> dev/staging
+  // profile (API keys, database, cache) so renaming this folder doesn't wipe it.
+  const legacyPath = path.join(app.getPath("appData"), `OpenWhispr-${APP_CHANNEL}`);
+  try {
+    const fs = require("fs");
+    if (fs.existsSync(legacyPath) && !fs.existsSync(isolatedPath)) {
+      fs.renameSync(legacyPath, isolatedPath);
+    }
+  } catch {
+    // best-effort — falls through to a fresh profile at isolatedPath
+  }
+
   app.setPath("userData", isolatedPath);
 }
 
@@ -205,7 +223,7 @@ function isOAuthSchemeRegistered() {
 // Register custom protocol for OAuth callbacks.
 // In development, always include the app path argument so macOS/Windows/Linux
 // can launch the project app instead of opening bare Electron.
-function registerOpenWhisprProtocol() {
+function registerOAuthProtocol() {
   const protocol = OAUTH_PROTOCOL;
   const htmlHandler = process.platform === "linux" ? getDefaultHtmlHandler() : null;
 
@@ -228,7 +246,7 @@ function registerOpenWhisprProtocol() {
 // fall back to probing the system MIME database for an actual handler. This keeps
 // OAuth enabled where the callback can resolve (deb/rpm/flatpak/AUR) and correctly
 // gated where it can't (AppImage/tar.gz with no scheme registration).
-const protocolRegistered = registerOpenWhisprProtocol() || isOAuthSchemeRegistered();
+const protocolRegistered = registerOAuthProtocol() || isOAuthSchemeRegistered();
 if (!protocolRegistered) {
   console.warn(`[Auth] Failed to register ${OAUTH_PROTOCOL}:// protocol handler`);
 }
@@ -242,8 +260,8 @@ if (!gotSingleInstanceLock) {
 const isLiveWindow = (window) => window && !window.isDestroyed();
 
 // Ensure macOS menus use the proper casing for the app name
-if (process.platform === "darwin" && app.getName() !== "OpenWhispr") {
-  app.setName("OpenWhispr");
+if (process.platform === "darwin" && app.getName() !== "Dhwani") {
+  app.setName("Dhwani");
 }
 
 // Add global error handling for uncaught exceptions
@@ -738,7 +756,7 @@ function startAuthBridgeServer() {
 
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     res.end(
-      "<html><body><h3>OpenWhispr sign-in complete.</h3><p>You can close this tab.</p></body></html>"
+      "<html><body><h3>Dhwani sign-in complete.</h3><p>You can close this tab.</p></body></html>"
     );
   });
 
@@ -954,6 +972,69 @@ async function startApp() {
     }
   });
 
+  // Set up Paste Last Transcript hotkey (also triggered from the tray menu)
+  const pasteLastTranscriptCallback = async () => {
+    if (hotkeyManager.isInListeningMode()) return;
+    try {
+      const [last] = databaseManager.getTranscriptions(1);
+      if (!last || !last.text) return;
+      await clipboardManager.pasteText(last.text, { allowClipboardFallback: true });
+    } catch (error) {
+      debugLogger.error("Failed to paste last transcript", { error: error.message }, "tray");
+    }
+  };
+
+  const DEFAULT_PASTE_LAST_TRANSCRIPT_KEY = "Alt+Shift+Z";
+  const savedPasteLastTranscriptKey =
+    environmentManager.getPasteLastTranscriptKey?.() || DEFAULT_PASTE_LAST_TRANSCRIPT_KEY;
+  {
+    const result = await hotkeyManager.registerSlot(
+      "pasteLastTranscript",
+      savedPasteLastTranscriptKey,
+      pasteLastTranscriptCallback
+    );
+    if (!result.success) {
+      debugLogger.warn(
+        "Failed to register paste-last-transcript hotkey",
+        { hotkey: savedPasteLastTranscriptKey },
+        "hotkey"
+      );
+    }
+  }
+
+  ipcMain.handle("register-paste-last-transcript-hotkey", async (_event, hotkey) => {
+    if (hotkey) {
+      const result = await hotkeyManager.registerSlot(
+        "pasteLastTranscript",
+        hotkey,
+        pasteLastTranscriptCallback
+      );
+      if (result.success) {
+        environmentManager.savePasteLastTranscriptKey(hotkey);
+        return { success: true };
+      }
+      return { success: false, message: result.error };
+    } else {
+      hotkeyManager.unregisterSlot("pasteLastTranscript");
+      environmentManager.savePasteLastTranscriptKey("");
+      return { success: true };
+    }
+  });
+
+  ipcMain.handle("get-paste-last-transcript-key", async () => {
+    return environmentManager.getPasteLastTranscriptKey?.() || DEFAULT_PASTE_LAST_TRANSCRIPT_KEY;
+  });
+
+  // Tray Microphone/Languages submenus are populated from data the renderer
+  // pushes (device labels only exist in the renderer's WebRTC context, and
+  // settings live in the renderer's Zustand store, not in main).
+  ipcMain.on("tray-sync-microphones", (_event, devices, selectedId) => {
+    trayManager.setMicrophoneState(devices, selectedId);
+  });
+  ipcMain.on("tray-sync-language", (_event, selectedCode) => {
+    trayManager.setLanguageState(selectedCode);
+  });
+
   // Phase 2: Initialize remaining managers after windows are visible
   initializeDeferredManagers();
 
@@ -1056,6 +1137,8 @@ async function startApp() {
   trayManager.setWindows(windowManager.mainWindow, windowManager.controlPanelWindow);
   trayManager.setWindowManager(windowManager);
   trayManager.setCreateControlPanelCallback(() => windowManager.createControlPanelWindow());
+  trayManager.setUpdateManager(updateManager);
+  trayManager.setPasteLastTranscriptCallback(pasteLastTranscriptCallback);
   await trayManager.createTray();
 
   updateManager.setWindows(windowManager.mainWindow, windowManager.controlPanelWindow);

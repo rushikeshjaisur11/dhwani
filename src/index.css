@@ -572,6 +572,18 @@ a:hover {
   height: 40px;
   border-radius: var(--flow-bar-radius);
   border: 2px solid rgba(255, 255, 255, 0.7);
+  transition:
+    width 320ms var(--flow-spring-easing),
+    height 320ms var(--flow-spring-easing),
+    border-radius 320ms var(--flow-spring-easing);
+}
+
+/* Recording/processing pill â€” grows into a horizontal bar so the live
+   waveform has room, instead of staying a fixed 40px circle. */
+.flow-bar-pill--expanded {
+  width: 84px;
+  height: 40px;
+  border-radius: 20px;
 }
 
 .flow-bar-pill--idle {

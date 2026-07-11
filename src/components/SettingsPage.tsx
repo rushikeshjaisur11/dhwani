@@ -796,8 +796,8 @@ export default function SettingsPage({
   const [isRemovingModels, setIsRemovingModels] = useState(false);
   const cachePathHint =
     typeof navigator !== "undefined" && /Windows/i.test(navigator.userAgent)
-      ? "%USERPROFILE%\\.cache\\openwhispr"
-      : "~/.cache/openwhispr";
+      ? "%USERPROFILE%\\.cache\\dhwani"
+      : "~/.cache/dhwani";
 
   const {
     status: updateStatus,
@@ -938,6 +938,49 @@ export default function SettingsPage({
       showAlert: showAlertDialog,
       registerFn: polishRegisterFn,
     });
+
+  const [pasteLastTranscriptKey, setPasteLastTranscriptKey] = useState("");
+  useEffect(() => {
+    window.electronAPI?.getPasteLastTranscriptKey?.().then((key) => {
+      if (key) setPasteLastTranscriptKey(key);
+    });
+  }, []);
+
+  const pasteLastTranscriptRegisterFn = useCallback(async (hotkey: string) => {
+    const result = await window.electronAPI?.registerPasteLastTranscriptHotkey?.(hotkey);
+    return result ?? { success: false, message: "Electron API unavailable" };
+  }, []);
+
+  const {
+    registerHotkey: registerPasteLastTranscriptHotkey,
+    isRegistering: isPasteLastTranscriptHotkeyRegistering,
+  } = useHotkeyRegistration({
+    onSuccess: (registeredHotkey) => setPasteLastTranscriptKey(registeredHotkey),
+    showSuccessToast: false,
+    showErrorToast: true,
+    showAlert: showAlertDialog,
+    registerFn: pasteLastTranscriptRegisterFn,
+  });
+
+  // ponytail: only checks against the slots below, not the reverse — the
+  // other validators aren't updated to also flag this slot. Not a
+  // correctness gap: hotkeyManager.registerSlot's server-side conflict
+  // check covers every slot regardless, this is just eager UI feedback.
+  const validatePasteLastTranscriptHotkey = useCallback(
+    (hotkey: string) =>
+      validateHotkeyForSlot(
+        hotkey,
+        {
+          "settingsPage.general.hotkey.title": dictationKey,
+          "settingsPage.general.meetingHotkey.title": meetingKey,
+          "agentMode.settings.hotkey": chatAgentKey,
+          "settingsPage.general.voiceAgentHotkey.title": voiceAgentKey,
+          "settingsPage.general.polishHotkey.title": polishKey,
+        },
+        t
+      ),
+    [dictationKey, meetingKey, chatAgentKey, voiceAgentKey, polishKey, t]
+  );
 
   const validateDictationHotkey = useCallback(
     (hotkey: string) =>
@@ -2436,6 +2479,30 @@ EOF`,
                       onChange={setPolishInstructionStructure}
                     />
                   </div>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
+
+            {/* Paste Last Transcript Hotkey */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.pasteLastTranscriptHotkey.title")}
+                description={t("settingsPage.general.pasteLastTranscriptHotkey.description")}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <HotkeyInput
+                    value={pasteLastTranscriptKey}
+                    onChange={async (newHotkey) => {
+                      await registerPasteLastTranscriptHotkey(newHotkey);
+                    }}
+                    onClear={async () => {
+                      await window.electronAPI?.registerPasteLastTranscriptHotkey?.("");
+                      setPasteLastTranscriptKey("");
+                    }}
+                    disabled={isPasteLastTranscriptHotkeyRegistering}
+                    validate={validatePasteLastTranscriptHotkey}
+                  />
                 </SettingsPanelRow>
               </SettingsPanel>
             </div>

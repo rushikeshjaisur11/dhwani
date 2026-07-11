@@ -492,6 +492,20 @@ declare global {
       onStartDictation?: (callback: () => void) => () => void;
       onStopDictation?: (callback: () => void) => () => void;
 
+      // Tray menu sync (Microphone / Languages submenus + settings deep link)
+      registerPasteLastTranscriptHotkey?: (
+        hotkey: string
+      ) => Promise<{ success: boolean; message?: string }>;
+      getPasteLastTranscriptKey?: () => Promise<string>;
+      syncTrayMicrophones?: (
+        devices: { deviceId: string; label: string }[],
+        selectedId: string
+      ) => void;
+      syncTrayLanguage?: (selectedCode: string) => void;
+      onTraySelectMicrophone?: (callback: (deviceId: string) => void) => () => void;
+      onTraySelectLanguage?: (callback: (code: string) => void) => () => void;
+      onOpenSettingsSection?: (callback: (section: string) => void) => () => void;
+
       // STT config
       getSttConfig?: () => Promise<{
         success: boolean;
