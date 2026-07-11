@@ -333,6 +333,16 @@
       "installButton": "å®‰è£æ›´æ–°",
       "availableButton": "æœ‰å¯ç”¨æ›´æ–°"
     },
+    "notifications": {
+      "title": "通知",
+      "empty": "暫無新通知",
+      "updateAvailableTitle": "有可用更新",
+      "updateAvailableDescription": "Dhwani 新版本已可供下載。",
+      "updateDownloadedTitle": "更新已就緒，可以安裝",
+      "updateDownloadedDescription": "重新啟動 Dhwani 以完成更新。",
+      "downloadAction": "下載",
+      "installAction": "安裝"
+    },
     "limit": {
       "weeklyTitle": "å·²é”æ¯é€±ä½¿ç”¨ä¸Šé™",
       "weeklyDescription": "ä½ çš„é¡åº¦ç‚ºæ»¾å‹•å¼é‡ç½®ã€‚å‡ç´šè‡³ Pro æˆ–ä½¿ç”¨è‡ªå·±çš„ API Key å³å¯ç„¡é™ä½¿ç”¨ã€‚"
