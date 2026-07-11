@@ -730,7 +730,7 @@
     "sso": {
       "continueWithSSO": "Se connecter avec le SSO",
       "emailRequired": "Saisissez votre e-mail professionnel pour utiliser le SSO.",
-      "failed": "Ã‰chec de l'authentification unique. Veuillez rÃ©essayer."
+      "failed": "Ã‰chec de l’authentification unique. Veuillez rÃ©essayer."
     },
     "social": {
       "completeInBrowser": "Terminez la connexion dans votre navigateur",
@@ -2482,7 +2482,7 @@
       },
       "hotkeyUnavailable": {
         "title": "Raccourci indisponible",
-        "description": "Le raccourci sÃ©lectionnÃ© n'a pas pu Ãªtre enregistrÃ©. Veuillez en choisir un autre dans les paramÃ¨tres."
+        "description": "Le raccourci sÃ©lectionnÃ© n’a pas pu Ãªtre enregistrÃ©. Veuillez en choisir un autre dans les paramÃ¨tres."
       },
       "addedToDict": "{{words}} ajoutÃ© Ã  votre dictionnaire",
       "undo": "Annuler",
@@ -2499,13 +2499,13 @@
       "commandMode": "Mode Commande"
     },
     "buttons": {
-      "cancelRecording": "Annuler l'enregistrement",
+      "cancelRecording": "Annuler l’enregistrement",
       "cancelProcessing": "Annuler le traitement"
     },
     "commandMenu": {
-      "stopListening": "ArrÃªter l'Ã©coute",
-      "startListening": "Commencer l'Ã©coute",
-      "hideForNow": "Masquer pour l'instant"
+      "stopListening": "ArrÃªter l’Ã©coute",
+      "startListening": "Commencer l’Ã©coute",
+      "hideForNow": "Masquer pour l’instant"
     }
   },
   "dictationAgent": {

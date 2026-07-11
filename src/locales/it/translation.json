@@ -220,7 +220,7 @@
       "title": "Configurazione dell'agente vocale",
       "description": "Parla con il tuo agente IA con un solo tasto",
       "hotkey": "Scorciatoia",
-      "howItWorks": "Premi il tasto e di' cosa vuoi — ad esempio "scrivi un breve messaggio di ringraziamentoâ€. {{agentName}} scrive il risultato dove si trova il cursore. Non serve dire prima "Hey {{agentName}}â€.",
+      "howItWorks": "Premi il tasto e di' cosa vuoi — ad esempio “scrivi un breve messaggio di ringraziamento”. {{agentName}} scrive il risultato dove si trova il cursore. Non serve dire prima “Hey {{agentName}}”.",
       "test": "Provalo",
       "testInstruction": "Fai clic qui sotto, premi {{hotkey}} e pronuncia un comando",
       "testSetHotkey": "Imposta una scorciatoia sopra per provarlo",
@@ -730,7 +730,7 @@
     },
     "sso": {
       "continueWithSSO": "Accedi con SSO",
-      "emailRequired": "Inserisci la tua email di lavoro per usare l'SSO.",
+      "emailRequired": "Inserisci la tua email di lavoro per usare l’SSO.",
       "failed": "Accesso SSO non riuscito. Riprova."
     },
     "social": {
@@ -2434,7 +2434,7 @@
       },
       "hotkeyUnavailable": {
         "title": "Scorciatoia non disponibile",
-        "description": "Non Ã¨ stato possibile registrare la scorciatoia selezionata. Scegline un'altra nelle impostazioni."
+        "description": "Non Ã¨ stato possibile registrare la scorciatoia selezionata. Scegline un’altra nelle impostazioni."
       },
       "addedToDict": "{{words}} aggiunto al tuo dizionario",
       "undo": "Annulla",

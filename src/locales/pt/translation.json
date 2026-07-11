@@ -199,7 +199,7 @@
       "title": "ConfiguraÃ§Ã£o do agente de voz",
       "description": "Fale com seu agente de IA com um Ãºnico atalho",
       "hotkey": "Atalho",
-      "howItWorks": "Pressione a tecla e diga o que quer — por exemplo, "escreva uma breve nota de agradecimentoâ€. {{agentName}} escreve o resultado onde estiver o cursor. NÃ£o precisa dizer "Hey {{agentName}}â€ antes.",
+      "howItWorks": "Pressione a tecla e diga o que quer — por exemplo, “escreva uma breve nota de agradecimento”. {{agentName}} escreve o resultado onde estiver o cursor. NÃ£o precisa dizer “Hey {{agentName}}” antes.",
       "test": "Experimente",
       "testInstruction": "Clique abaixo, pressione {{hotkey}} e diga um comando",
       "testSetHotkey": "Defina um atalho acima para experimentar",

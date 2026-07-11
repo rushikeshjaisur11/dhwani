@@ -23,7 +23,7 @@
     "meeting": {
       "speakerDetection": {
         "title": "Sprecher erkennen und beschriften",
-        "description": "Wenn deaktiviert, zeigen Transkripte "Du" und "Andere""
+        "description": "Wenn deaktiviert, zeigen Transkripte â€žDu“ und â€žAndere“"
       }
     }
   },
@@ -220,13 +220,13 @@
       "title": "Sprachagent-Einrichtung",
       "description": "Sprechen Sie mit Ihrem KI-Agenten per Tastendruck",
       "hotkey": "Hotkey",
-      "howItWorks": "DrÃ¼cken Sie die Taste und sagen Sie, was Sie mÃ¶chten — zum Beispiel "schreibe eine kurze Dankesnachricht". {{agentName}} schreibt das Ergebnis direkt an Ihren Cursor. Sie mÃ¼ssen nicht zuerst "Hey {{agentName}}" sagen.",
+      "howItWorks": "DrÃ¼cken Sie die Taste und sagen Sie, was Sie mÃ¶chten — zum Beispiel â€žschreibe eine kurze Dankesnachricht“. {{agentName}} schreibt das Ergebnis direkt an Ihren Cursor. Sie mÃ¼ssen nicht zuerst â€žHey {{agentName}}“ sagen.",
       "test": "Ausprobieren",
       "testInstruction": "Klicke unten, drÃ¼cke {{hotkey}} und sprich einen Befehl",
       "testSetHotkey": "Lege oben einen Hotkey fest, um es auszuprobieren",
       "testPlaceholder": "Klicke hier, drÃ¼cke deinen Hotkey und sprich eines der Beispiele...",
       "examples": [
-        "Ãœbersetze ins Italienische: "Ich spreche schneller, als ich tippe"",
+        "Ãœbersetze ins Italienische: â€žIch spreche schneller, als ich tippe“",
         "Schreibe eine kurze E-Mail an meinen Chef, dass ich eine BefÃ¶rderung mÃ¶chte, sein Name ist Mark",
         "Was ist 5 Ã— 5?"
       ],
@@ -512,7 +512,7 @@
     "apiKeyOptional": "API-SchlÃ¼ssel (optional)",
     "getKey": "SchlÃ¼ssel holen ->",
     "endpointUrl": "Endpoint-URL",
-    "azureHint": "Azure AI Foundry: Geben Sie Ihren Ressourcen-Endpunkt ein (z. B. https://your-resource.cognitiveservices.azure.com) und setzen Sie "Model" auf den exakten Namen Ihrer Bereitstellung.",
+    "azureHint": "Azure AI Foundry: Geben Sie Ihren Ressourcen-Endpunkt ein (z. B. https://your-resource.cognitiveservices.azure.com) und setzen Sie â€žModel“ auf den exakten Namen Ihrer Bereitstellung.",
     "customProvider": "Benutzerdefiniert",
     "fallback": {
       "whisperModelDescription": "Modell",
@@ -580,7 +580,7 @@
         "rateLimited": "Download-Server begrenzt Anfragen. Bitte warten Sie einige Minuten und versuchen Sie es erneut.",
         "server": "Serverfehler ({{error}}). Bitte versuchen Sie es spÃ¤ter erneut.",
         "generic": "Download fehlgeschlagen: {{error}}",
-        "extractionFailed": "Modell heruntergeladen, aber Installation fehlgeschlagen. Klicken Sie auf "Herunterladen", um die Installation ohne erneuten Download zu wiederholen.",
+        "extractionFailed": "Modell heruntergeladen, aber Installation fehlgeschlagen. Klicken Sie auf â€žHerunterladen“, um die Installation ohne erneuten Download zu wiederholen.",
         "tlsError": "Zertifikatsfehler — Ihr Netzwerk verwendet mÃ¶glicherweise SSL-Inspektion, die Downloads blockiert. Versuchen Sie es Ã¼ber ein anderes Netzwerk.",
         "unknown": "Unbekannter Fehler"
       },
@@ -2319,7 +2319,7 @@
         "signoffTrigger": "GruÃŸformel",
         "signoffText": "Viele GrÃ¼ÃŸe, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "AuslÃ¶ser-Phrase hinzufÃ¼gen â€“ "mein Kalender", "mein LinkedIn""
+      "addPlaceholder": "AuslÃ¶ser-Phrase hinzufÃ¼gen â€“ â€žmein Kalender“, â€žmein LinkedIn“"
     },
     "emptyTitle": "Dein WÃ¶rterbuch ist leer",
     "emptyDescription": "FÃ¼ge WÃ¶rter hinzu, die {{agentName}} immer richtig erkennen soll: Namen, Tools, AbkÃ¼rzungen.",
@@ -2683,7 +2683,7 @@
     },
     "searchEmpty": {
       "title": "Keine Ergebnisse",
-      "description": "Keine Notizen fÃ¼r "{{query}}" gefunden."
+      "description": "Keine Notizen fÃ¼r â€ž{{query}}“ gefunden."
     },
     "noteType": {
       "personal": "persÃ¶nlich",
