@@ -918,10 +918,17 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       ? window.electronAPI.getPlatform()
       : "darwin";
 
+  // ponytail: applies Flow Bar tokens (font, card radius, CTA gradient) to the
+  // onboarding shell only, not a per-step re-theme — the 8 step bodies still use
+  // the app's default --color-primary/foreground tokens. Upgrade to full per-step
+  // styling if the shell-only pass looks inconsistent against Wispr's reference.
   return (
     <div
       className="h-screen flex flex-col bg-background"
-      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      style={{
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        fontFamily: "var(--font-family-flow-sans)",
+      }}
     >
       <ConfirmDialog
         open={confirmDialog.open}
@@ -993,7 +1000,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         className={`flex-1 px-6 md:px-12 overflow-y-auto ${currentStep === 0 ? "flex items-center" : "py-6"}`}
       >
         <div className={`w-full ${currentStep === 0 ? "max-w-sm" : "max-w-3xl"} mx-auto`}>
-          <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-xl overflow-hidden">
+          <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-2xl overflow-hidden">
             <CardContent className={currentStep === 0 ? "p-6" : "p-6 md:p-8"}>
               {renderStep()}
             </CardContent>
@@ -1036,7 +1043,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   <Button
                     onClick={nextStep}
                     disabled={!canProceed()}
-                    className="h-8 px-6 rounded-full text-xs"
+                    className="h-8 px-6 rounded-full text-xs border-0 text-white disabled:opacity-40"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, var(--color-flow-accent), var(--color-flow-accent-strong))",
+                    }}
                   >
                     {t("common.next")}
                     <ChevronRight className="w-3.5 h-3.5" />

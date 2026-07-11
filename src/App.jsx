@@ -8,6 +8,7 @@ import { useHotkey } from "./hooks/useHotkey";
 import { formatHotkeyLabel } from "./utils/hotkeys";
 import { useWindowDrag } from "./hooks/useWindowDrag";
 import { useAudioRecording } from "./hooks/useAudioRecording";
+import { usePolish } from "./hooks/usePolish";
 import { useSettingsStore } from "./stores/settingsStore";
 
 // Sound Wave Icon Component (for idle/hover states)
@@ -192,10 +193,18 @@ export default function App() {
     setWindowInteractivity(false);
   }, [setWindowInteractivity]);
 
-  const { isRecording, isProcessing, toggleListening, cancelRecording, cancelProcessing } =
-    useAudioRecording(toast, {
-      onToggle: handleDictationToggle,
-    });
+  const {
+    isRecording,
+    isProcessing,
+    isCommandMode,
+    toggleListening,
+    cancelRecording,
+    cancelProcessing,
+  } = useAudioRecording(toast, {
+    onToggle: handleDictationToggle,
+  });
+
+  usePolish(toast, t);
 
   // Sync auto-hide from main process — setState directly to avoid IPC echo
   useEffect(() => {
@@ -277,8 +286,8 @@ export default function App() {
 
   // Determine current mic state
   const getMicState = () => {
-    if (isRecording) return "recording";
-    if (isProcessing) return "processing";
+    if (isRecording) return isCommandMode ? "command" : "recording";
+    if (isProcessing) return isCommandMode ? "command-processing" : "processing";
     if (isHovered && !isRecording && !isProcessing) return "hover";
     return "idle";
   };
@@ -287,28 +296,38 @@ export default function App() {
 
   const getMicButtonProps = () => {
     const baseClasses =
-      "rounded-full w-10 h-10 flex items-center justify-center relative overflow-hidden border-2 border-white/70 cursor-pointer";
+      "flow-bar-pill flex items-center justify-center relative overflow-hidden cursor-pointer";
 
     switch (micState) {
       case "idle":
       case "hover":
         return {
-          className: `${baseClasses} bg-black/50 cursor-pointer`,
+          className: `${baseClasses} flow-bar-pill--idle cursor-pointer`,
           tooltip: formatHotkeyLabel(hotkey),
         };
       case "recording":
         return {
-          className: `${baseClasses} bg-primary cursor-pointer`,
+          className: `${baseClasses} flow-bar-pill--listening cursor-pointer`,
           tooltip: t("app.mic.recording"),
+        };
+      case "command":
+        return {
+          className: `${baseClasses} flow-bar-pill--command cursor-pointer`,
+          tooltip: t("app.mic.commandMode", { defaultValue: "Command Mode" }),
         };
       case "processing":
         return {
-          className: `${baseClasses} bg-accent cursor-not-allowed`,
+          className: `${baseClasses} flow-bar-pill--processing cursor-not-allowed`,
+          tooltip: t("app.mic.processing"),
+        };
+      case "command-processing":
+        return {
+          className: `${baseClasses} flow-bar-pill--command cursor-not-allowed`,
           tooltip: t("app.mic.processing"),
         };
       default:
         return {
-          className: `${baseClasses} bg-black/50 cursor-pointer`,
+          className: `${baseClasses} flow-bar-pill--idle cursor-pointer`,
           style: { transform: "scale(0.8)" },
           tooltip: t("app.mic.clickToSpeak"),
         };
@@ -414,13 +433,12 @@ export default function App() {
               style={{
                 ...micProps.style,
                 cursor:
-                  micState === "processing"
+                  micState === "processing" || micState === "command-processing"
                     ? "not-allowed !important"
                     : isDragging
                       ? "grabbing !important"
                       : "pointer !important",
-                transition:
-                  "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease-out",
+                transition: `transform 320ms var(--flow-spring-easing), background 280ms ease-out`,
               }}
             >
               {/* Background effects */}
@@ -438,20 +456,20 @@ export default function App() {
               {/* Dynamic content based on state */}
               {micState === "idle" || micState === "hover" ? (
                 <SoundWaveIcon size={micState === "idle" ? 12 : 14} />
-              ) : micState === "recording" ? (
+              ) : micState === "recording" || micState === "command" ? (
                 <LoadingDots />
-              ) : micState === "processing" ? (
+              ) : micState === "processing" || micState === "command-processing" ? (
                 <VoiceWaveIndicator isListening={true} />
               ) : null}
 
-              {/* State indicator ring for recording */}
-              {micState === "recording" && (
-                <div className="absolute inset-0 rounded-full border-2 border-primary/50 animate-pulse"></div>
+              {/* Listening ring â€” animated gradient sweep + slow rotation, Flow Bar style */}
+              {(micState === "recording" || micState === "command") && (
+                <span className="flow-bar-ring flow-bar-ring--listening" aria-hidden="true" />
               )}
 
-              {/* State indicator ring for processing */}
-              {micState === "processing" && (
-                <div className="absolute inset-0 rounded-full border-2 border-primary/30 opacity-50"></div>
+              {/* Processing ring â€” shimmer sweep across the pill */}
+              {(micState === "processing" || micState === "command-processing") && (
+                <span className="flow-bar-ring flow-bar-ring--processing" aria-hidden="true" />
               )}
             </button>
           </Tooltip>

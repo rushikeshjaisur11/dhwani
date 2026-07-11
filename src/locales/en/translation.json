@@ -1,4 +1,8 @@
 {
+  "polish": {
+    "noSelection": "Select some text first",
+    "failed": "Polish failed"
+  },
   "settings": {
     "language": {
       "sectionTitle": "Language",
@@ -1576,6 +1580,29 @@
         "title": "Voice Agent Hotkey",
         "description": "Speak a request â€” your AI agent types the result, not your words"
       },
+      "polishHotkey": {
+        "title": "Polish Hotkey",
+        "description": "Select text in any app and rewrite it in place with AI",
+        "enabledLabel": "Enable Polish",
+        "instructionsLabel": "Edits to apply",
+        "instructionConcise": "Make more concise",
+        "instructionClarity": "Improve clarity and flow",
+        "instructionTone": "Preserve original tone",
+        "instructionStructure": "Add structure where helpful"
+      },
+      "personalizedStyles": {
+        "title": "Personalized Styles",
+        "description": "Set a writing tone for dictation cleanup based on the app you're using",
+        "off": "Off",
+        "casual": "Casual",
+        "formal": "Formal",
+        "contexts": {
+          "work": "Work apps",
+          "email": "Email apps",
+          "personal": "Personal/messaging apps",
+          "other": "Everything else"
+        }
+      },
       "microphone": {
         "description": "Select which input device to use for dictation",
         "title": "Microphone"
@@ -1870,8 +1897,6 @@
       },
       "transcriptionPreview": "Live Transcription Preview",
       "transcriptionPreviewDescription": "Show transcription in a floating window before cleanup",
-      "liveTyping": "Live Typing",
-      "liveTypingDescription": "Type text at the cursor while you speak, committed at natural pauses (local transcription, Windows only)",
       "vad": {
         "title": "Voice Activity Detection",
         "description": "Configure how Silero VAD detects and segments speech for local Whisper transcription",
@@ -2032,6 +2057,7 @@
     "notes": "Notes",
     "upload": "Upload",
     "dictionary": "Dictionary",
+    "insights": "Insights",
     "referral": "Get a free month",
     "settings": "Settings",
     "support": "Support",
@@ -2450,6 +2476,15 @@
       }
     }
   },
+  "insights": {
+    "title": "Insights",
+    "totalWords": "Total words",
+    "totalDictations": "Total dictations",
+    "averageWPM": "Average WPM",
+    "wordsToday": "Words today",
+    "wordsThisWeek": "Words this week",
+    "dayStreak": "Day streak"
+  },
   "dictionary": {
     "clearTitle": "Clear dictionary?",
     "clearDescription": "This will remove all words from your custom dictionary. This action cannot be undone.",
@@ -2561,7 +2596,8 @@
       "hotkeyToSpeak": "{{hotkey}} to talk",
       "recording": "Recording...",
       "processing": "Processing...",
-      "clickToSpeak": "Click to speak"
+      "clickToSpeak": "Click to speak",
+      "commandMode": "Command Mode"
     },
     "buttons": {
       "cancelRecording": "Cancel recording",

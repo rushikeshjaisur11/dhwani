@@ -132,8 +132,12 @@ const BOOLEAN_SETTINGS = new Set([
   "saveDiscardedTranscriptions",
   "noteFilesEnabled",
   "showTranscriptionPreview",
-  "liveTypingEnabled",
   "cleanupDisableThinking",
+  "polishEnabled",
+  "polishInstructionConcise",
+  "polishInstructionClarity",
+  "polishInstructionTone",
+  "polishInstructionStructure",
   "dictationAgentDisableThinking",
   "noteFormattingDisableThinking",
   "chatAgentDisableThinking",
@@ -430,7 +434,6 @@ export interface SettingsState
   whisperVadSamplesOverlap: number;
   panelStartPosition: "bottom-right" | "center" | "bottom-left";
   showTranscriptionPreview: boolean;
-  liveTypingEnabled: boolean;
   autoPasteEnabled: boolean;
   keepTranscriptionInClipboard: boolean;
   noteFilesEnabled: boolean;
@@ -482,6 +485,17 @@ export interface SettingsState
 
   cleanupDisableThinking: boolean;
   dictationAgentDisableThinking: boolean;
+
+  polishEnabled: boolean;
+  polishInstructionConcise: boolean;
+  polishInstructionClarity: boolean;
+  polishInstructionTone: boolean;
+  polishInstructionStructure: boolean;
+  polishKey: string;
+  styleToneWork: string;
+  styleToneEmail: string;
+  styleTonePersonal: string;
+  styleToneOther: string;
   noteFormattingDisableThinking: boolean;
   chatAgentDisableThinking: boolean;
 
@@ -536,6 +550,17 @@ export interface SettingsState
   setDictationAgentDisableThinking: (value: boolean) => void;
   setNoteFormattingDisableThinking: (value: boolean) => void;
   setChatAgentDisableThinking: (value: boolean) => void;
+
+  setPolishEnabled: (value: boolean) => void;
+  setPolishInstructionConcise: (value: boolean) => void;
+  setPolishInstructionClarity: (value: boolean) => void;
+  setPolishInstructionTone: (value: boolean) => void;
+  setPolishInstructionStructure: (value: boolean) => void;
+  setPolishKey: (key: string) => void;
+  setStyleToneWork: (value: string) => void;
+  setStyleToneEmail: (value: string) => void;
+  setStyleTonePersonal: (value: string) => void;
+  setStyleToneOther: (value: string) => void;
 
   setUseLocalWhisper: (value: boolean) => void;
   setWhisperModel: (value: string) => void;
@@ -649,7 +674,6 @@ export interface SettingsState
   setWhisperVadSamplesOverlap: (value: number) => void;
   setPanelStartPosition: (position: "bottom-right" | "center" | "bottom-left") => void;
   setShowTranscriptionPreview: (value: boolean) => void;
-  setLiveTypingEnabled: (value: boolean) => void;
   setAutoPasteEnabled: (value: boolean) => void;
   setKeepTranscriptionInClipboard: (value: boolean) => void;
   setNoteFilesEnabled: (value: boolean) => void;
@@ -984,7 +1008,6 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     return "bottom-right" as const;
   })(),
   showTranscriptionPreview: readBoolean("showTranscriptionPreview", false),
-  liveTypingEnabled: readBoolean("liveTypingEnabled", false),
   autoPasteEnabled: readBoolean("autoPasteEnabled", true),
   keepTranscriptionInClipboard: readBoolean("keepTranscriptionInClipboard", false),
   noteFilesEnabled: readBoolean("noteFilesEnabled", false),
@@ -1164,6 +1187,17 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
 
   cleanupDisableThinking: readBoolean("cleanupDisableThinking", true),
   dictationAgentDisableThinking: readBoolean("dictationAgentDisableThinking", true),
+
+  polishEnabled: readBoolean("polishEnabled", true),
+  polishInstructionConcise: readBoolean("polishInstructionConcise", true),
+  polishInstructionClarity: readBoolean("polishInstructionClarity", true),
+  polishInstructionTone: readBoolean("polishInstructionTone", true),
+  polishInstructionStructure: readBoolean("polishInstructionStructure", false),
+  polishKey: readString("polishKey", ""),
+  styleToneWork: readString("styleToneWork", "off"),
+  styleToneEmail: readString("styleToneEmail", "off"),
+  styleTonePersonal: readString("styleTonePersonal", "off"),
+  styleToneOther: readString("styleToneOther", "off"),
   noteFormattingDisableThinking: readBoolean("noteFormattingDisableThinking", true),
   chatAgentDisableThinking: readBoolean("chatAgentDisableThinking", true),
 
@@ -1187,6 +1221,11 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setDictationAgentCustomApiKey: createStringSetter("dictationAgentCustomApiKey"),
 
   setCleanupDisableThinking: createBooleanSetter("cleanupDisableThinking"),
+  setPolishEnabled: createBooleanSetter("polishEnabled"),
+  setPolishInstructionConcise: createBooleanSetter("polishInstructionConcise"),
+  setPolishInstructionClarity: createBooleanSetter("polishInstructionClarity"),
+  setPolishInstructionTone: createBooleanSetter("polishInstructionTone"),
+  setPolishInstructionStructure: createBooleanSetter("polishInstructionStructure"),
   setDictationAgentDisableThinking: createBooleanSetter("dictationAgentDisableThinking"),
   setNoteFormattingDisableThinking: createBooleanSetter("noteFormattingDisableThinking"),
   setChatAgentDisableThinking: createBooleanSetter("chatAgentDisableThinking"),
@@ -1403,6 +1442,14 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (isBrowser) localStorage.setItem("meetingKey", key);
     set({ meetingKey: key });
   },
+  setPolishKey: (key: string) => {
+    if (isBrowser) localStorage.setItem("polishKey", key);
+    set({ polishKey: key });
+  },
+  setStyleToneWork: createStringSetter("styleToneWork"),
+  setStyleToneEmail: createStringSetter("styleToneEmail"),
+  setStyleTonePersonal: createStringSetter("styleTonePersonal"),
+  setStyleToneOther: createStringSetter("styleToneOther"),
   setVoiceAgentKey: createRegisteredHotkeySetter(
     "voiceAgentKey",
     "voice agent hotkey",
@@ -1580,7 +1627,6 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   },
 
   setShowTranscriptionPreview: createBooleanSetter("showTranscriptionPreview"),
-  setLiveTypingEnabled: createBooleanSetter("liveTypingEnabled"),
   setAutoPasteEnabled: createBooleanSetter("autoPasteEnabled"),
   setKeepTranscriptionInClipboard: createBooleanSetter("keepTranscriptionInClipboard"),
   setNoteFilesEnabled: createBooleanSetter("noteFilesEnabled"),

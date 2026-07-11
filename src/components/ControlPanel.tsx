@@ -53,6 +53,7 @@ const platform = getCachedPlatform();
 const SettingsModal = React.lazy(() => import("./SettingsModal"));
 const PersonalNotesView = React.lazy(() => import("./notes/PersonalNotesView"));
 const DictionaryView = React.lazy(() => import("./DictionaryView"));
+const InsightsView = React.lazy(() => import("./InsightsView"));
 const UploadAudioView = React.lazy(() => import("./notes/UploadAudioView"));
 const IntegrationsView = React.lazy(() => import("./IntegrationsView"));
 const ChatView = React.lazy(() => import("./chat/ChatView"));
@@ -812,6 +813,11 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             {activeView === "dictionary" && (
               <Suspense fallback={null}>
                 <DictionaryView />
+              </Suspense>
+            )}
+            {activeView === "insights" && (
+              <Suspense fallback={null}>
+                <InsightsView />
               </Suspense>
             )}
             {activeView === "upload" && (

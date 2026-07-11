@@ -701,44 +701,6 @@ class ClipboardManager {
     }
   }
 
-  /**
-   * Type text at the cursor as unicode keystrokes (Windows only) — used by
-   * live dictation typing. Serialized on the paste queue so chunks and the
-   * occasional paste never interleave. Returns false off-Windows or if the
-   * helper binary is missing so callers can fall back.
-   */
-  async typeText(text) {
-    if (process.platform !== "win32" || !text) return false;
-    const binaryPath = this.resolveWindowsFastPasteBinary();
-    if (!binaryPath) return false;
-
-    const previous = this.pasteQueue.catch(() => {});
-    const run = previous.then(
-      () =>
-        new Promise((resolve) => {
-          const child = spawn(binaryPath, ["--type"], { windowsHide: true });
-          const timer = setTimeout(() => {
-            try {
-              child.kill();
-            } catch {}
-            resolve(false);
-          }, 10000);
-          child.on("error", () => {
-            clearTimeout(timer);
-            resolve(false);
-          });
-          child.on("close", (code) => {
-            clearTimeout(timer);
-            resolve(code === 0);
-          });
-          child.stdin.on("error", () => {});
-          child.stdin.end(Buffer.from(text, "utf8"));
-        })
-    );
-    this.pasteQueue = run.then(() => {}).catch(() => {});
-    return run;
-  }
-
   async pasteText(text, options = {}) {
     const previousPaste = this.pasteQueue.catch(() => {});
     let markRestoreComplete;
@@ -2092,6 +2054,48 @@ Would you like to open System Settings now?`;
       clipboard.writeText(text);
     }
     return { success: true };
+  }
+
+  // ponytail: Windows-only via PowerShell SendKeys ^c (same fallback mechanism
+  // already used by pasteWithPowerShell), not the native fast-paste binary —
+  // avoids a native recompile for the Polish MVP. Upgrade to a windows-fast-paste
+  // --copy mode (or macOS CGEvent / Linux xdotool key) if this proves unreliable.
+  async captureSelectedText() {
+    if (process.platform !== "win32") {
+      return { success: false, text: "", error: "capture-selected-text-unsupported-platform" };
+    }
+
+    const originalClipboard = clipboard.readText();
+    // Clear the clipboard first so we can tell "nothing selected" (clipboard
+    // stays empty) apart from "selection matches previous clipboard contents".
+    clipboard.writeText("");
+
+    await new Promise((resolve) => {
+      const copyProcess = spawn("powershell.exe", [
+        "-NoProfile",
+        "-NonInteractive",
+        "-WindowStyle",
+        "Hidden",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('^c')",
+      ]);
+      copyProcess.on("close", () => resolve());
+      copyProcess.on("error", () => resolve());
+    });
+
+    // Give the target app time to populate the clipboard after Ctrl+C.
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    const capturedText = clipboard.readText();
+    clipboard.writeText(originalClipboard);
+
+    if (!capturedText) {
+      return { success: false, text: "", error: "no-selection" };
+    }
+
+    return { success: true, text: capturedText };
   }
 
   checkPasteTools() {

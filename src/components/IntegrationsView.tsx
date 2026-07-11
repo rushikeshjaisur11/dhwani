@@ -9,7 +9,6 @@ import { ConfirmDialog } from "./ui/dialog";
 import { useSettingsStore } from "../stores/settingsStore";
 import { useSystemAudioPermission } from "../hooks/useSystemAudioPermission";
 import { canManageSystemAudioInApp } from "../utils/systemAudioAccess";
-import CliIntegrationCard from "./CliIntegrationCard";
 import googleCalendarIcon from "../assets/icons/google-calendar.svg";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -196,11 +195,6 @@ export default function IntegrationsView() {
             </SettingsPanelRow>
           )}
         </SettingsPanel>
-      </div>
-
-      <div>
-        <SectionLabel>{t("integrations.sections.cli")}</SectionLabel>
-        <CliIntegrationCard />
       </div>
 
       {!hasAccounts && (

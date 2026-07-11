@@ -61,11 +61,18 @@ export function MeetingNotificationCard({
       <div className="flex items-center gap-2.5">
         <div className="shrink-0 bg-primary/10 rounded-md p-1">
           <svg viewBox="0 0 1024 1024" className="w-4.5 h-4.5">
-            <rect width="1024" height="1024" rx="241" fill="#2056DF" />
-            <circle cx="512" cy="512" r="314" fill="#2056DF" stroke="white" strokeWidth="74" />
-            <path d="M512 383V641" stroke="white" strokeWidth="74" strokeLinecap="round" />
-            <path d="M627 457V568" stroke="white" strokeWidth="74" strokeLinecap="round" />
-            <path d="M397 457V568" stroke="white" strokeWidth="74" strokeLinecap="round" />
+            <defs>
+              <linearGradient id="dhwaniMeetingCardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#8B6EF0" />
+                <stop offset="100%" stopColor="#4A34A8" />
+              </linearGradient>
+            </defs>
+            <rect width="1024" height="1024" rx="224" fill="url(#dhwaniMeetingCardGradient)" />
+            <rect x="284" y="592" width="72" height="260" rx="36" fill="white" />
+            <rect x="412" y="452" width="72" height="400" rx="36" fill="white" />
+            <rect x="540" y="312" width="72" height="540" rx="36" fill="white" />
+            <rect x="668" y="172" width="72" height="680" rx="36" fill="white" />
+            <circle cx="704" cy="158" r="42" fill="#F5A94A" />
           </svg>
         </div>
 

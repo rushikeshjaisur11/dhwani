@@ -296,7 +296,9 @@ class WhisperManager {
     }
 
     await this.serverManager.start(modelPath, {
-      useCuda: this.serverManager.useCuda,
+      // Lazy start must resolve CUDA from the user's setting — a stopped
+      // server's useCuda is always false (see #cuda-fallback for the retry).
+      useCuda: this.serverManager.useCuda || process.env.WHISPER_CUDA_ENABLED === "true",
       vadEnabled,
       vadModelPath,
       vadConfig: options.vadConfig || null,

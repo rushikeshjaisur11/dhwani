@@ -1,48 +1,60 @@
 @import "tailwindcss";
 
+/* Flow Bar typography â€” self-hosted, weights used across the bar/onboarding/insights */
+@import "@fontsource/figtree/400.css";
+@import "@fontsource/figtree/500.css";
+@import "@fontsource/figtree/600.css";
+@import "@fontsource/figtree/700.css";
+@import "@fontsource/manrope/600.css";
+@import "@fontsource/manrope/700.css";
+@import "@fontsource/eb-garamond/400.css";
+@import "@fontsource/eb-garamond/400-italic.css";
+@import "@fontsource/jetbrains-mono/400.css";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* Dhwani Theme â€” registers color tokens with Tailwind v4.
-     These are the light-mode defaults; .dark overrides them below. */
-  --color-primary: #2563eb;
+     These are the light-mode defaults; .dark overrides them below.
+     Cream/purple/amber identity, read from the Wispr Flow reference screenshot. */
+  --color-primary: #6d4fe0;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #f5f5f5;
-  --color-secondary-foreground: #171717;
-  --color-muted: #f5f5f5;
-  --color-muted-foreground: #525252;
-  --color-accent: oklch(0.55 0.22 285);
-  --color-accent-foreground: #ffffff;
+  --color-secondary: #f1ece2;
+  --color-secondary-foreground: #1c1a17;
+  --color-muted: #f1ece2;
+  --color-muted-foreground: #8c877d;
+  --color-accent: oklch(0.72 0.14 300);
+  --color-accent-foreground: #1c1a17;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
-  --color-border: #e5e5e5;
-  --color-input: #f9f6f1;
-  --color-ring: #2563eb;
-  --color-background: #ffffff;
-  --color-foreground: #171717;
+  --color-border: #e8e3d8;
+  --color-input: #ffffff;
+  --color-ring: #6d4fe0;
+  --color-background: #faf7f1;
+  --color-foreground: #1c1a17;
   --color-card: #ffffff;
-  --color-card-foreground: #171717;
+  --color-card-foreground: #1c1a17;
   --color-popover: #ffffff;
-  --color-popover-foreground: #171717;
-  --color-link: #2563eb;
+  --color-popover-foreground: #1c1a17;
+  --color-link: #6d4fe0;
   --color-success: #16a34a;
   --color-success-foreground: #ffffff;
   --color-warning: #d97706;
   --color-warning-foreground: #ffffff;
-  --color-info: #2563eb;
+  --color-info: #6d4fe0;
   --color-info-foreground: #ffffff;
 
   /* Surface hierarchy â€” light mode equivalents */
-  --color-surface-0: #ffffff;
-  --color-surface-1: #fafafa;
+  --color-surface-0: #faf7f1;
+  --color-surface-1: #f6f2ea;
   --color-surface-2: #ffffff;
-  --color-surface-3: #f5f5f5;
-  --color-surface-raised: #f0f0f0;
+  --color-surface-3: #f1ece2;
+  --color-surface-raised: #efe9dc;
 
   /* Border states â€” light mode equivalents */
-  --color-border-subtle: #e5e5e5;
-  --color-border-hover: #d4d4d4;
-  --color-border-active: #2563eb;
+  --color-border-subtle: #efe9dc;
+  --color-border-hover: #dcd5c4;
+  --color-border-active: #6d4fe0;
 }
 
 :root {
@@ -51,28 +63,84 @@
     "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
 
+  /* Flow Bar typography â€” dictation bar, onboarding, insights */
+  --font-family-flow-sans: "Figtree", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-flow-display: "Manrope", "Figtree", sans-serif;
+  --font-family-flow-serif: "EB Garamond", Georgia, serif;
+  --font-family-flow-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Flow Bar shape */
+  --flow-bar-height: 48px;
+  --flow-bar-height-expanded: 52px;
+  --flow-bar-radius: 999px; /* full pill */
+  --flow-ring-width: 1px;
+
+  /* Flow Bar brand ramp â€” cream/purple identity */
+  --color-flow-ink: #1c1a17;
+  --color-flow-surface-dark: #2b2822;
+  --color-flow-accent-light: #ede4fb;
+  --color-flow-accent-soft: #c4b0f7;
+  --color-flow-accent: #8b6ef0;
+  --color-flow-accent-strong: #6d4fe0;
+  --color-flow-accent-deep: #4a34a8;
+  --color-flow-warm: #f5a94a;
+
+  /* Glass surface tokens (kept for compat; pill/cards use solid surfaces now) */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(28, 26, 23, 0.08);
+  --glass-blur: 0px;
+
+  /* New Wispr-derived semantic tokens */
+  --color-badge-purple-bg: #ede4fb;
+  --color-badge-purple-text: #2b1a47;
+  --color-keycap-bg: #f5a94a;
+  --color-keycap-text: #1c1a17;
+  --color-keycap-border: #1c1a17;
+  --color-cta-bg: #1a1817;
+  --color-cta-text: #ffffff;
+  --color-progress-track: #e8e3d8;
+
+  /* Spring easing for pill pop-in/out and state transitions */
+  --flow-spring-easing: linear(
+    0,
+    0.006,
+    0.023 2%,
+    0.089 4%,
+    0.5 14%,
+    0.68 18%,
+    0.82 22%,
+    0.94 28%,
+    1.02 34%,
+    1.05 40%,
+    1.02 50%,
+    1 60%,
+    1 100%
+  );
+
   /* Opacities */
   --opacity-subtle: 0.1;
   --opacity-medium: 0.5;
   --opacity-high: 0.9;
 
-  /* Border Radius â€” ultra-tight, premium macOS-style rounding */
-  --radius: 0.375rem; /* 6px - default for buttons, inputs */
-  --radius-sm: 0.25rem; /* 4px - minimal rounding */
-  --radius-md: 0.375rem; /* 6px - standard */
-  --radius-lg: 0.5rem; /* 8px - cards, panels */
-  --radius-xl: 0.625rem; /* 10px - large cards */
+  /* Border Radius â€” generously rounded, Wispr-style warm/soft look */
+  --radius: 0.625rem; /* 10px - default for buttons, inputs */
+  --radius-sm: 0.375rem; /* 6px - minimal rounding */
+  --radius-md: 0.625rem; /* 10px - standard */
+  --radius-lg: 0.875rem; /* 14px - cards, panels */
+  --radius-xl: 1.25rem; /* 20px - large cards, banners */
+  --radius-pill: 999px; /* pill buttons, badges, chips */
 
-  /* Custom Light Mode Brand Colors (Parchment Theme) */
-  --color-parchment-bg: #f9f6f1;
-  --color-parchment-border: #ddd4c7;
-  --color-parchment-text: #2b1f14;
-  --color-parchment-accent: #c0a77d;
-  --color-brand-primary: #2b1f14;
-  --color-brand-accent: #4b2e2b;
-  --color-brand-highlight: #c0a77d;
-  --color-brand-link: #2e3659;
-  --color-pattern: #e7e5e4;
+  /* Custom Light Mode Brand Colors (Parchment Theme) â€” promoted into core
+     --color-* tokens above; kept here for existing .text-brand-* consumers. */
+  --color-parchment-bg: #faf7f1;
+  --color-parchment-border: #e8e3d8;
+  --color-parchment-text: #1c1a17;
+  --color-parchment-accent: #6d4fe0;
+  --color-brand-primary: #1c1a17;
+  --color-brand-accent: #6d4fe0;
+  --color-brand-highlight: #f5a94a;
+  --color-brand-link: #6d4fe0;
+  --color-pattern: #e8e3d8;
 
   /* Model picker premium effects (light mode) */
   --shadow-metallic-light: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -80,47 +148,48 @@
 }
 
 .dark {
-  /* Dark mode â€” charcoal surfaces with clear elevation hierarchy
-     Base L=0.22 (charcoal) with 0.05 steps between layers.
-     Hue 260 (neutral blue) with minimal chroma for sophistication. */
-  --color-background: oklch(0.22 0.006 260);
-  --color-foreground: oklch(0.93 0 0);
-  --color-card: oklch(0.27 0.008 260);
-  --color-card-foreground: oklch(0.93 0 0);
-  --color-popover: oklch(0.29 0.009 260);
-  --color-popover-foreground: oklch(0.93 0 0);
-  --color-primary: oklch(0.65 0.2 260);
+  /* Dark mode â€” warm charcoal surfaces with clear elevation hierarchy
+     Base L=0.18 (warm charcoal) with 0.05 steps between layers.
+     Hue 60 (warm/amber-leaning neutral) with low chroma, echoing the
+     light mode's cream warmth instead of a cool navy tint. */
+  --color-background: oklch(0.18 0.012 60);
+  --color-foreground: oklch(0.93 0.01 80);
+  --color-card: oklch(0.22 0.014 60);
+  --color-card-foreground: oklch(0.93 0.01 80);
+  --color-popover: oklch(0.24 0.014 60);
+  --color-popover-foreground: oklch(0.93 0.01 80);
+  --color-primary: oklch(0.68 0.18 300);
   --color-primary-foreground: oklch(0.99 0 0);
-  --color-secondary: oklch(0.28 0.007 260);
-  --color-secondary-foreground: oklch(0.9 0 0);
-  --color-muted: oklch(0.24 0.006 260);
-  --color-muted-foreground: oklch(0.65 0 0);
-  --color-accent: oklch(0.68 0.18 285);
-  --color-accent-foreground: oklch(0.99 0 0);
+  --color-secondary: oklch(0.24 0.012 60);
+  --color-secondary-foreground: oklch(0.9 0.01 80);
+  --color-muted: oklch(0.21 0.011 60);
+  --color-muted-foreground: oklch(0.65 0.01 70);
+  --color-accent: oklch(0.72 0.14 300);
+  --color-accent-foreground: oklch(0.15 0 0);
   --color-destructive: oklch(0.62 0.22 25);
   --color-destructive-foreground: oklch(0.99 0 0);
-  --color-border: oklch(0.35 0.007 260);
-  --color-input: oklch(0.19 0.005 260);
-  --color-ring: oklch(0.65 0.2 260);
+  --color-border: oklch(0.32 0.012 60);
+  --color-input: oklch(0.16 0.01 60);
+  --color-ring: oklch(0.68 0.18 300);
   --color-success: oklch(0.7 0.18 145);
   --color-success-foreground: oklch(0.99 0 0);
   --color-warning: oklch(0.75 0.15 70);
   --color-warning-foreground: oklch(0.15 0 0);
-  --color-info: oklch(0.68 0.18 240);
+  --color-info: oklch(0.68 0.18 300);
   --color-info-foreground: oklch(0.99 0 0);
 
-  /* Surface hierarchy â€” charcoal depth system (0.22 â†’ 0.33) */
-  --color-surface-0: oklch(0.22 0.006 260);
-  --color-surface-1: oklch(0.25 0.007 260);
-  --color-surface-2: oklch(0.27 0.008 260);
-  --color-surface-3: oklch(0.3 0.009 260);
-  --color-surface-raised: oklch(0.33 0.01 260);
+  /* Surface hierarchy â€” warm charcoal depth system (0.18 â†’ 0.3) */
+  --color-surface-0: oklch(0.18 0.012 60);
+  --color-surface-1: oklch(0.21 0.013 60);
+  --color-surface-2: oklch(0.22 0.014 60);
+  --color-surface-3: oklch(0.25 0.014 60);
+  --color-surface-raised: oklch(0.3 0.015 60);
 
   /* Border states */
-  --color-border-subtle: oklch(0.33 0.006 260);
-  --color-border-hover: oklch(0.42 0.01 260);
-  --color-border-active: oklch(0.5 0.15 260);
-  --color-link: oklch(0.67 0.1 250);
+  --color-border-subtle: oklch(0.29 0.012 60);
+  --color-border-hover: oklch(0.38 0.015 60);
+  --color-border-active: oklch(0.55 0.15 300);
+  --color-link: oklch(0.7 0.1 300);
 
   /* Card depth shadows â€” softer for charcoal, with top highlight for premium depth */
   --shadow-card: 0 1px 3px oklch(0 0 0 / 0.2), inset 0 1px 0 oklch(1 0 0 / 0.03);
@@ -131,8 +200,13 @@
   /* Premium effects */
   --shadow-metallic-dark: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-selected-glow:
-    inset 0 0 0 1px oklch(0.65 0.2 260 / 0.2), 0 0 16px -4px oklch(0.65 0.2 260 / 0.2);
+    inset 0 0 0 1px oklch(0.68 0.18 300 / 0.2), 0 0 16px -4px oklch(0.68 0.18 300 / 0.2);
   --shadow-card-hover-subtle: 0 2px 8px -2px rgba(0, 0, 0, 0.12);
+
+  /* Glass tokens â€” warm charcoal surfaces for dark mode (no navy, no blur) */
+  --glass-bg: rgba(34, 30, 26, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 0px;
 }
 
 @layer base {
@@ -361,21 +435,32 @@ a:hover {
   position: relative;
 }
 
-.dark .accent-bar::before {
+.accent-bar::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
+  border-radius: inherit;
   background: linear-gradient(
     90deg,
-    oklch(0.65 0.2 260 / 0.5),
-    oklch(0.7 0.18 280 / 0.3),
+    oklch(0.68 0.18 300 / 0.7),
+    oklch(0.72 0.16 40 / 0.5),
     transparent 80%
   );
   pointer-events: none;
   z-index: 1;
+}
+
+.dark .accent-bar::before {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    oklch(0.68 0.18 300 / 0.5),
+    oklch(0.72 0.16 40 / 0.3),
+    transparent 80%
+  );
 }
 
 /* Monochrome icon theming - explicit light/dark handling */
@@ -388,10 +473,10 @@ a:hover {
   filter: invert(1);
 }
 
-/* Toast â€” opaque dark HUD surface, same in light & dark mode */
+/* Toast â€” opaque warm-ink HUD surface, same in light & dark mode */
 .toast-surface {
-  background: oklch(0.15 0.006 260);
-  border: 1px solid oklch(0.25 0.006 260);
+  background: oklch(0.16 0.012 60);
+  border: 1px solid oklch(0.26 0.012 60);
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.04),
     0 8px 24px -4px oklch(0 0 0 / 0.5),
@@ -411,11 +496,11 @@ a:hover {
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 0 6px oklch(0.65 0.2 260 / 0.4);
+    box-shadow: 0 0 6px oklch(0.68 0.18 300 / 0.4);
     opacity: 0.8;
   }
   50% {
-    box-shadow: 0 0 8px oklch(0.65 0.2 260 / 0.6);
+    box-shadow: 0 0 8px oklch(0.68 0.18 300 / 0.6);
     opacity: 1;
   }
 }
@@ -440,6 +525,109 @@ a:hover {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Flow Bar listening ring â€” animated gradient sweep + slow rotation */
+@keyframes flow-ring-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes flow-ring-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Flow Bar processing state â€” shimmer sweep across the pill */
+@keyframes flow-shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Glass surface â€” warm solid panel, for overlays/cards/modals (no blur;
+   Wispr's reference UI is flat, not translucent) */
+.glass-surface {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+/* Flow Bar dictation pill (App.jsx SoundWaveIcon button) */
+.flow-bar-pill {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--flow-bar-radius);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.flow-bar-pill--idle {
+  background: var(--color-flow-ink);
+}
+
+.flow-bar-pill--listening {
+  background: linear-gradient(135deg, var(--color-flow-accent), var(--color-flow-accent-strong));
+}
+
+.flow-bar-pill--processing {
+  background: linear-gradient(
+    135deg,
+    var(--color-flow-accent-strong),
+    var(--color-flow-accent-deep)
+  );
+}
+
+/* Command Mode â€” amber accent distinguishes "speech as instruction" from
+   plain dictation (flow-bar-pill--listening) at a glance. */
+.flow-bar-pill--command {
+  background: linear-gradient(135deg, var(--color-flow-warm), var(--color-flow-accent-strong));
+}
+
+.flow-bar-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.flow-bar-ring--listening {
+  background: conic-gradient(
+    from 0deg,
+    var(--color-flow-accent),
+    var(--color-flow-warm),
+    var(--color-flow-accent-soft),
+    var(--color-flow-accent)
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--flow-ring-width) - 2px),
+    #000 calc(100% - var(--flow-ring-width) - 1px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--flow-ring-width) - 2px),
+    #000 calc(100% - var(--flow-ring-width) - 1px)
+  );
+  animation: flow-ring-spin 6s linear infinite;
+}
+
+.flow-bar-ring--processing {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  mix-blend-mode: overlay;
+  animation: flow-shimmer-sweep 4s ease-in-out infinite;
 }
 
 @keyframes waveform-bar {
@@ -602,8 +790,8 @@ a:hover {
 .referral-mesh-bg::before {
   width: 300px;
   height: 300px;
-  background: oklch(0.65 0.2 260);
-  opacity: 0.04;
+  background: oklch(0.68 0.18 300);
+  opacity: 0.06;
   top: -80px;
   right: -60px;
 }
@@ -611,8 +799,8 @@ a:hover {
 .referral-mesh-bg::after {
   width: 250px;
   height: 250px;
-  background: oklch(0.6 0.18 180);
-  opacity: 0.04;
+  background: oklch(0.75 0.15 70);
+  opacity: 0.06;
   bottom: -60px;
   left: -40px;
   animation-delay: -12s;
@@ -700,7 +888,7 @@ a:hover {
   left: 0;
   right: 0;
   height: 2px;
-  background: oklch(0.65 0.2 260 / 0.4);
+  background: oklch(0.68 0.18 300 / 0.4);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
@@ -830,7 +1018,7 @@ body:has(.agent-overlay-window) #root {
     background: linear-gradient(
       90deg,
       transparent 0%,
-      oklch(0.65 0.2 260 / 0.04) 50%,
+      oklch(0.68 0.18 300 / 0.04) 50%,
       transparent 100%
     );
     background-position: -100% 0;
@@ -1008,7 +1196,7 @@ body:has(.agent-overlay-window) #root {
 }
 
 .rich-text-editor-content ::selection {
-  background: oklch(0.62 0.22 260 / 0.15);
+  background: oklch(0.68 0.18 300 / 0.15);
 }
 
 /* Task list (checkboxes) */

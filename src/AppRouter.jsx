@@ -114,14 +114,21 @@ function LoadingFallback({ message }) {
       <div className="flex flex-col items-center gap-4 animate-[scale-in_300ms_ease-out]">
         <svg
           viewBox="0 0 1024 1024"
-          className="w-12 h-12 drop-shadow-[0_2px_8px_rgba(37,99,235,0.18)] dark:drop-shadow-[0_2px_12px_rgba(100,149,237,0.25)]"
+          className="w-12 h-12 drop-shadow-[0_2px_8px_rgba(109,79,224,0.18)] dark:drop-shadow-[0_2px_12px_rgba(139,110,240,0.25)]"
           aria-label="Dhwani"
         >
-          <rect width="1024" height="1024" rx="241" fill="#2056DF" />
-          <circle cx="512" cy="512" r="314" fill="#2056DF" stroke="white" strokeWidth="74" />
-          <path d="M512 383V641" stroke="white" strokeWidth="74" strokeLinecap="round" />
-          <path d="M627 457V568" stroke="white" strokeWidth="74" strokeLinecap="round" />
-          <path d="M397 457V568" stroke="white" strokeWidth="74" strokeLinecap="round" />
+          <defs>
+            <linearGradient id="dhwaniLoadingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#8B6EF0" />
+              <stop offset="100%" stopColor="#4A34A8" />
+            </linearGradient>
+          </defs>
+          <rect width="1024" height="1024" rx="224" fill="url(#dhwaniLoadingGradient)" />
+          <rect x="284" y="592" width="72" height="260" rx="36" fill="white" />
+          <rect x="412" y="452" width="72" height="400" rx="36" fill="white" />
+          <rect x="540" y="312" width="72" height="540" rx="36" fill="white" />
+          <rect x="668" y="172" width="72" height="680" rx="36" fill="white" />
+          <circle cx="704" cy="158" r="42" fill="#F5A94A" />
         </svg>
         <div className="w-7 h-7 rounded-full border-[2.5px] border-transparent border-t-primary animate-[spinner-rotate_0.8s_cubic-bezier(0.4,0,0.2,1)_infinite] motion-reduce:animate-none motion-reduce:border-t-muted-foreground motion-reduce:opacity-50" />
         {fallbackMessage && (

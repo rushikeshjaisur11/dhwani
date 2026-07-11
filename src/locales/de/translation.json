@@ -1566,6 +1566,29 @@
         "title": "Updates",
         "versionPlaceholder": "â€”",
         "whatsNew": "Neu in v{{version}}"
+      },
+      "polishHotkey": {
+        "title": "Polish-Hotkey",
+        "description": "Text in einer beliebigen App auswählen und mit KI direkt überarbeiten",
+        "enabledLabel": "Polish aktivieren",
+        "instructionsLabel": "Anzuwendende Änderungen",
+        "instructionConcise": "Kürzer fassen",
+        "instructionClarity": "Klarheit und Lesefluss verbessern",
+        "instructionTone": "Ursprünglichen Ton beibehalten",
+        "instructionStructure": "Struktur hinzufügen, wo hilfreich"
+      },
+      "personalizedStyles": {
+        "title": "Persönliche Stile",
+        "description": "Legen Sie einen Schreibton für die Diktatbereinigung je nach verwendeter App fest",
+        "off": "Aus",
+        "casual": "Locker",
+        "formal": "Formell",
+        "contexts": {
+          "work": "Arbeits-Apps",
+          "email": "E-Mail-Apps",
+          "personal": "Persönliche/Messaging-Apps",
+          "other": "Alles andere"
+        }
       }
     },
     "permissions": {
@@ -1697,8 +1720,6 @@
       },
       "transcriptionPreview": "Live-Transkriptionsvorschau",
       "transcriptionPreviewDescription": "Transkription vor der Bereinigung in einem Fenster anzeigen",
-      "liveTyping": "Live-Eingabe",
-      "liveTypingDescription": "Tippt den Text während des Sprechens an der Cursorposition, bestätigt bei natürlichen Pausen (lokale Transkription, nur Windows)",
       "vad": {
         "title": "SprachaktivitÃ¤tserkennung",
         "description": "Konfiguriere, wie Silero VAD Sprache fÃ¼r die lokale Whisper-Transkription erkennt und segmentiert",
@@ -2311,6 +2332,7 @@
     "notes": "Notizen",
     "upload": "Hochladen",
     "dictionary": "WÃ¶rterbuch",
+    "insights": "Einblicke",
     "referral": "Gratis-Monat erhalten",
     "settings": "Einstellungen",
     "support": "Support",
@@ -2425,7 +2447,8 @@
       "hotkeyToSpeak": "{{hotkey}} zum Sprechen",
       "recording": "Aufnahme...",
       "processing": "Verarbeitung...",
-      "clickToSpeak": "Klicken zum Sprechen"
+      "clickToSpeak": "Klicken zum Sprechen",
+      "commandMode": "Command-Modus"
     },
     "buttons": {
       "cancelRecording": "Aufnahme abbrechen",
@@ -2853,5 +2876,18 @@
       "successDescription": "Willkommen bei {{name}}.",
       "errorTitle": "Einladung konnte nicht angenommen werden"
     }
+  },
+  "polish": {
+    "noSelection": "Zuerst Text auswählen",
+    "failed": "Polish fehlgeschlagen"
+  },
+  "insights": {
+    "title": "Einblicke",
+    "totalWords": "Wörter insgesamt",
+    "totalDictations": "Diktate insgesamt",
+    "averageWPM": "Durchschnittliche WPM",
+    "wordsToday": "Wörter heute",
+    "wordsThisWeek": "Wörter diese Woche",
+    "dayStreak": "Tage-Serie"
   }
 }

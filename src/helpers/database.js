@@ -640,6 +640,70 @@ class DatabaseManager {
     }
   }
 
+  // ponytail: aggregates in JS rather than SQL date functions so streak/week
+  // math uses the same local-timezone calendar as the UI. Fine at local-history
+  // scale; move to SQL aggregates if the transcriptions table gets huge.
+  getInsightsStats() {
+    try {
+      if (!this.db) {
+        throw new Error("Database not initialized");
+      }
+
+      const rows = this.db
+        .prepare(
+          `SELECT text, timestamp, audio_duration_ms FROM transcriptions
+           WHERE deleted_at IS NULL AND status = 'completed' AND text != ''`
+        )
+        .all();
+
+      const countWords = (text) => (text?.trim() ? text.trim().split(/\s+/).length : 0);
+
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startOfWeek = new Date(startOfToday);
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+      let totalWords = 0;
+      let totalDurationMs = 0;
+      let wordsToday = 0;
+      let wordsThisWeek = 0;
+      const activeDayKeys = new Set();
+
+      for (const row of rows) {
+        const words = countWords(row.text);
+        totalWords += words;
+        if (row.audio_duration_ms) totalDurationMs += row.audio_duration_ms;
+
+        const ts = new Date(row.timestamp);
+        activeDayKeys.add(ts.toDateString());
+        if (ts >= startOfToday) wordsToday += words;
+        if (ts >= startOfWeek) wordsThisWeek += words;
+      }
+
+      let dayStreak = 0;
+      const cursor = new Date(startOfToday);
+      while (activeDayKeys.has(cursor.toDateString())) {
+        dayStreak += 1;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+
+      const totalMinutes = totalDurationMs / 60000;
+      const averageWPM = totalMinutes > 0 ? Math.round(totalWords / totalMinutes) : 0;
+
+      return {
+        totalWords,
+        totalDictations: rows.length,
+        averageWPM,
+        wordsToday,
+        wordsThisWeek,
+        dayStreak,
+      };
+    } catch (error) {
+      debugLogger.error("Error computing insights stats", { error: error.message }, "database");
+      throw error;
+    }
+  }
+
   getTranscriptions(limit = 50, { includeDiscarded = false } = {}) {
     try {
       if (!this.db) {

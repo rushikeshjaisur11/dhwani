@@ -110,14 +110,28 @@ static const WORD MODIFIER_VKS[] = {
    the caller must pass the same arrays back to RestoreModifiers(). */
 static int ReleaseModifiers(INPUT* released, WORD* releasedVKs) {
     int count = 0;
+    BOOL winHeld = FALSE;
     for (int i = 0; i < (int)NUM_MODIFIERS; i++) {
         if (GetAsyncKeyState(MODIFIER_VKS[i]) & 0x8000) {
+            if (MODIFIER_VKS[i] == VK_LWIN || MODIFIER_VKS[i] == VK_RWIN) {
+                winHeld = TRUE;
+            }
             releasedVKs[count] = MODIFIER_VKS[i];
             SetKey(&released[count], MODIFIER_VKS[i], KEYEVENTF_KEYUP);
             count++;
         }
     }
     if (count > 0) {
+        /* A synthetic Win-up with no key press since the Win-down reads as a
+           Start-menu tap. Inject an unassigned dummy key (0xFF) first so the
+           shell never treats the release as Win alone. */
+        if (winHeld) {
+            INPUT dummy[2];
+            ZeroMemory(dummy, sizeof(dummy));
+            SetKey(&dummy[0], 0xFF, 0);
+            SetKey(&dummy[1], 0xFF, KEYEVENTF_KEYUP);
+            SendInput(2, dummy, sizeof(INPUT));
+        }
         SendInput((UINT)count, released, sizeof(INPUT));
     }
     return count;
@@ -195,10 +209,16 @@ static int TypeUnicodeFromStdin(void) {
     MultiByteToWideChar(CP_UTF8, 0, utf8, (int)len, wbuf, wlen);
     free(utf8);
 
+    /* Release held PTT modifiers so they don't chord the injected chars.
+       Unlike paste mode we deliberately do NOT restore them: typing races
+       the user's physical key release, and a synthetic re-press after the
+       fingers left the keys leaves Win/Ctrl logically stuck down, turning
+       every later keystroke into a shortcut chord. The PTT key listener
+       tracks physical events via its hook, so it never needs the restore. */
     INPUT releasedInputs[NUM_MODIFIERS];
     WORD  releasedVKs[NUM_MODIFIERS];
     ZeroMemory(releasedInputs, sizeof(releasedInputs));
-    int releasedCount = ReleaseModifiers(releasedInputs, releasedVKs);
+    ReleaseModifiers(releasedInputs, releasedVKs);
 
     INPUT batch[TYPE_BATCH_EVENTS];
     UINT batchLen = 0;
@@ -232,7 +252,6 @@ static int TypeUnicodeFromStdin(void) {
         if (SendInput(batchLen, batch, sizeof(INPUT)) != batchLen) failed = 1;
     }
 
-    RestoreModifiers(releasedVKs, releasedCount);
     free(wbuf);
 
     if (failed) {

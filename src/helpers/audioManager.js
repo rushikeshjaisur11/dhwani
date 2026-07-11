@@ -31,6 +31,8 @@ import { syncService } from "../services/SyncService.js";
 import { evaluateFinishedRecording } from "./recordingValidation";
 import { matchesDictionaryPrompt } from "../utils/dictionaryEchoFilter.js";
 import { getDictionaryHintWords } from "../utils/snippets";
+import { resolveStyleInstruction } from "../utils/appCategory";
+import { playPasteCue } from "../utils/dictationCues";
 
 const REASONING_CACHE_TTL = 30000; // 30 seconds
 const RECORDING_TIMESLICE_MS = 250; // flush chunks periodically so short recordings still carry audio frames. See #871.
@@ -48,9 +50,7 @@ function dictationAgentReachable(settings) {
 
 function formatActiveApp(foregroundApp) {
   if (!foregroundApp?.app) return undefined;
-  return foregroundApp.title
-    ? `${foregroundApp.app} — ${foregroundApp.title}`
-    : foregroundApp.app;
+  return foregroundApp.title ? `${foregroundApp.app} — ${foregroundApp.title}` : foregroundApp.app;
 }
 
 function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, activeApp) {
@@ -113,6 +113,7 @@ function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, a
           customDictionary: getDictionaryHintWords(settings),
           uiLanguage: settings.uiLanguage,
           activeApp,
+          styleInstruction: resolveStyleInstruction(activeApp, settings),
         }),
       },
     };
@@ -583,18 +584,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         localTranscriptionProvider,
         whisperModel,
         parakeetModel,
-        liveTypingEnabled,
       } = getSettings();
-      // Live typing: local dictation only (voice-agent output goes to the
-      // agent, not the cursor); injection helper is Windows-only.
-      const liveTyping =
-        liveTypingEnabled &&
-        useLocalWhisper &&
-        this.context === "dictation" &&
-        !this.voiceAgentRequested &&
-        window.electronAPI?.getPlatform?.() === "win32";
-      this._liveTypedSession = false;
-      if ((showTranscriptionPreview || liveTyping) && useLocalWhisper) {
+      if (showTranscriptionPreview && useLocalWhisper) {
         try {
           this._previewAudioContext = new AudioContext({ sampleRate: 16000 });
           this._previewSource = this._previewAudioContext.createMediaStreamSource(micStream);
@@ -616,10 +607,9 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
             provider,
             model,
             language,
-            liveTyping,
             overlay: showTranscriptionPreview,
+            initialPrompt: this.getCustomDictionaryPrompt() || undefined,
           });
-          this._liveTypedSession = liveTyping;
         } catch (e) {
           logger.warn("Preview worklet setup failed", { error: e.message }, "audio");
         }
@@ -808,9 +798,6 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         model: activeModel || null,
       };
 
-      if (result && this._liveTypedSession) {
-        result.liveTyped = true;
-      }
       this.onTranscriptionComplete?.(result);
 
       const roundTripDurationMs = Math.round(performance.now() - pipelineStart);
@@ -2292,6 +2279,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
   async safePaste(text, options = {}) {
     try {
       await window.electronAPI.pasteText(text, options);
+      void playPasteCue();
       return true;
     } catch (error) {
       const message =
@@ -2807,7 +2795,11 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       if (isStaleDeviceError(error) && !forceDefaultMic && !stopRequested) {
         // Pinned mic is gone (Chromium rotates IDs / device unplugged). Retry once on the default mic. See #900.
-        logger.warn("Pinned microphone unavailable, retrying streaming on default mic", {}, "streaming");
+        logger.warn(
+          "Pinned microphone unavailable, retrying streaming on default mic",
+          {},
+          "streaming"
+        );
         this.cachedMicDeviceId = null;
         await this.cleanupStreaming();
         this.isRecording = false;

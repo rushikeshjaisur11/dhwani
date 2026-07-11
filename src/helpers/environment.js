@@ -42,6 +42,7 @@ const PERSISTED_KEYS = [
   "DICTATION_KEY",
   "CHAT_AGENT_KEY",
   "VOICE_AGENT_KEY",
+  "POLISH_KEY",
   "MEETING_KEY",
   "ACTIVATION_MODE",
   "FLOATING_ICON_AUTO_HIDE",
@@ -469,6 +470,16 @@ class EnvironmentManager {
 
   saveVoiceAgentKey(key) {
     const result = this._saveKey("VOICE_AGENT_KEY", key);
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
+  getPolishKey() {
+    return this._getKey("POLISH_KEY");
+  }
+
+  savePolishKey(key) {
+    const result = this._saveKey("POLISH_KEY", key);
     this.saveAllKeysToEnvFile().catch(() => {});
     return result;
   }

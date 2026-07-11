@@ -882,6 +882,40 @@ async function startApp() {
     }
   }
 
+  // Set up Polish hotkey (rewrite the currently selected text in the target app)
+  const polishHotkeyCallback = () => {
+    if (hotkeyManager.isInListeningMode()) return;
+    windowManager.sendTriggerPolish();
+  };
+  windowManager._polishHotkeyCallback = polishHotkeyCallback;
+
+  const savedPolishKey = environmentManager.getPolishKey?.() || "";
+  if (savedPolishKey) {
+    const result = await hotkeyManager.registerSlot("polish", savedPolishKey, polishHotkeyCallback);
+    if (!result.success) {
+      debugLogger.warn("Failed to restore polish hotkey", { hotkey: savedPolishKey }, "hotkey");
+    }
+  }
+
+  ipcMain.handle("register-polish-hotkey", async (_event, hotkey) => {
+    if (hotkey) {
+      const result = await hotkeyManager.registerSlot("polish", hotkey, polishHotkeyCallback);
+      if (result.success) {
+        environmentManager.savePolishKey(hotkey);
+        return { success: true };
+      }
+      return { success: false, message: result.error };
+    } else {
+      hotkeyManager.unregisterSlot("polish");
+      environmentManager.savePolishKey("");
+      return { success: true };
+    }
+  });
+
+  ipcMain.handle("get-polish-key", async () => {
+    return environmentManager.getPolishKey?.() || "";
+  });
+
   // Set up meeting mode hotkey
   const meetingHotkeyCallback = () => {
     if (hotkeyManager.isInListeningMode()) return;

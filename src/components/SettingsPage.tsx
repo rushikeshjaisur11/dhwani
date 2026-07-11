@@ -241,8 +241,6 @@ function TranscriptionSection({
   toast,
 }: TranscriptionSectionProps) {
   const { t } = useTranslation();
-  const liveTypingEnabled = useSettingsStore((s) => s.liveTypingEnabled);
-  const setLiveTypingEnabled = useSettingsStore((s) => s.setLiveTypingEnabled);
 
   const transcriptionModes: InferenceModeOption[] = [
     {
@@ -307,16 +305,6 @@ function TranscriptionSection({
           <Toggle checked={showTranscriptionPreview} onChange={setShowTranscriptionPreview} />
         </SettingsRow>
       </SettingsPanelRow>
-      {getCachedPlatform() === "win32" && (
-        <SettingsPanelRow>
-          <SettingsRow
-            label={t("settingsPage.transcription.liveTyping")}
-            description={t("settingsPage.transcription.liveTypingDescription")}
-          >
-            <Toggle checked={liveTypingEnabled} onChange={setLiveTypingEnabled} />
-          </SettingsRow>
-        </SettingsPanelRow>
-      )}
     </SettingsPanel>
   );
 
@@ -726,6 +714,26 @@ export default function SettingsPage({
     setNotifyUpdates,
     audioCuesEnabled,
     setAudioCuesEnabled,
+    polishEnabled,
+    setPolishEnabled,
+    polishInstructionConcise,
+    setPolishInstructionConcise,
+    polishInstructionClarity,
+    setPolishInstructionClarity,
+    polishInstructionTone,
+    setPolishInstructionTone,
+    polishInstructionStructure,
+    setPolishInstructionStructure,
+    polishKey,
+    setPolishKey,
+    styleToneWork,
+    setStyleToneWork,
+    styleToneEmail,
+    setStyleToneEmail,
+    styleTonePersonal,
+    setStyleTonePersonal,
+    styleToneOther,
+    setStyleToneOther,
     pauseMediaOnDictation,
     setPauseMediaOnDictation,
     showTranscriptionPreview,
@@ -915,6 +923,22 @@ export default function SettingsPage({
       registerFn: meetingRegisterFn,
     });
 
+  const polishRegisterFn = useCallback(async (hotkey: string) => {
+    const result = await window.electronAPI?.registerPolishHotkey?.(hotkey);
+    return result ?? { success: false, message: "Electron API unavailable" };
+  }, []);
+
+  const { registerHotkey: registerPolishHotkey, isRegistering: isPolishHotkeyRegistering } =
+    useHotkeyRegistration({
+      onSuccess: (registeredHotkey) => {
+        setPolishKey(registeredHotkey);
+      },
+      showSuccessToast: false,
+      showErrorToast: true,
+      showAlert: showAlertDialog,
+      registerFn: polishRegisterFn,
+    });
+
   const validateDictationHotkey = useCallback(
     (hotkey: string) =>
       validateHotkeyForSlot(
@@ -923,10 +947,26 @@ export default function SettingsPage({
           "settingsPage.general.meetingHotkey.title": meetingKey,
           "agentMode.settings.hotkey": chatAgentKey,
           "settingsPage.general.voiceAgentHotkey.title": voiceAgentKey,
+          "settingsPage.general.polishHotkey.title": polishKey,
         },
         t
       ),
-    [meetingKey, chatAgentKey, voiceAgentKey, t]
+    [meetingKey, chatAgentKey, voiceAgentKey, polishKey, t]
+  );
+
+  const validatePolishHotkey = useCallback(
+    (hotkey: string) =>
+      validateHotkeyForSlot(
+        hotkey,
+        {
+          "settingsPage.general.hotkey.title": dictationKey,
+          "settingsPage.general.meetingHotkey.title": meetingKey,
+          "agentMode.settings.hotkey": chatAgentKey,
+          "settingsPage.general.voiceAgentHotkey.title": voiceAgentKey,
+        },
+        t
+      ),
+    [dictationKey, meetingKey, chatAgentKey, voiceAgentKey, t]
   );
 
   const validateMeetingHotkey = useCallback(
@@ -2329,6 +2369,119 @@ EOF`,
                     </SelectContent>
                   </Select>
                 </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
+
+            {/* Polish Hotkey */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.polishHotkey.title")}
+                description={t("settingsPage.general.polishHotkey.description")}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <HotkeyInput
+                    value={polishKey}
+                    onChange={async (newHotkey) => {
+                      await registerPolishHotkey(newHotkey);
+                    }}
+                    onClear={async () => {
+                      await window.electronAPI?.registerPolishHotkey?.("");
+                      setPolishKey("");
+                    }}
+                    disabled={isPolishHotkeyRegistering}
+                    validate={validatePolishHotkey}
+                  />
+                </SettingsPanelRow>
+                <SettingsPanelRow className="flex items-center justify-between gap-3 border-t border-border/40 dark:border-white/5">
+                  <span className="text-xs text-muted-foreground/80">
+                    {t("settingsPage.general.polishHotkey.enabledLabel")}
+                  </span>
+                  <Toggle checked={polishEnabled} onChange={setPolishEnabled} />
+                </SettingsPanelRow>
+                <SettingsPanelRow className="flex flex-col gap-2.5 border-t border-border/40 dark:border-white/5">
+                  <span className="text-xs text-muted-foreground/80">
+                    {t("settingsPage.general.polishHotkey.instructionsLabel")}
+                  </span>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs">
+                      {t("settingsPage.general.polishHotkey.instructionConcise")}
+                    </span>
+                    <Toggle
+                      checked={polishInstructionConcise}
+                      onChange={setPolishInstructionConcise}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs">
+                      {t("settingsPage.general.polishHotkey.instructionClarity")}
+                    </span>
+                    <Toggle
+                      checked={polishInstructionClarity}
+                      onChange={setPolishInstructionClarity}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs">
+                      {t("settingsPage.general.polishHotkey.instructionTone")}
+                    </span>
+                    <Toggle checked={polishInstructionTone} onChange={setPolishInstructionTone} />
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs">
+                      {t("settingsPage.general.polishHotkey.instructionStructure")}
+                    </span>
+                    <Toggle
+                      checked={polishInstructionStructure}
+                      onChange={setPolishInstructionStructure}
+                    />
+                  </div>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
+
+            {/* Personalized Styles */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.personalizedStyles.title")}
+                description={t("settingsPage.general.personalizedStyles.description")}
+              />
+              <SettingsPanel>
+                {(
+                  [
+                    ["work", styleToneWork, setStyleToneWork],
+                    ["email", styleToneEmail, setStyleToneEmail],
+                    ["personal", styleTonePersonal, setStyleTonePersonal],
+                    ["other", styleToneOther, setStyleToneOther],
+                  ] as const
+                ).map(([contextKey, value, setValue], index) => (
+                  <SettingsPanelRow
+                    key={contextKey}
+                    className={
+                      index > 0 ? "border-t border-border/40 dark:border-white/5" : undefined
+                    }
+                  >
+                    <SettingsRow
+                      label={t(`settingsPage.general.personalizedStyles.contexts.${contextKey}`)}
+                    >
+                      <select
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        className="h-7 rounded border border-border/70 bg-surface-1/80 px-2.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm hover:border-border-hover hover:bg-surface-2/70 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
+                      >
+                        <option value="off">
+                          {t("settingsPage.general.personalizedStyles.off")}
+                        </option>
+                        <option value="casual">
+                          {t("settingsPage.general.personalizedStyles.casual")}
+                        </option>
+                        <option value="formal">
+                          {t("settingsPage.general.personalizedStyles.formal")}
+                        </option>
+                      </select>
+                    </SettingsRow>
+                  </SettingsPanelRow>
+                ))}
               </SettingsPanel>
             </div>
 

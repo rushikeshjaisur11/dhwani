@@ -1561,6 +1561,29 @@
         "title": "æ›´æ–°",
         "versionPlaceholder": "â€”",
         "whatsNew": "v{{version}} çš„æ–°åŠŸèƒ½"
+      },
+      "polishHotkey": {
+        "title": "Polish 快捷鍵",
+        "description": "在任何應用程式中選取文字，AI 會就地重寫",
+        "enabledLabel": "啟用 Polish",
+        "instructionsLabel": "套用的修改",
+        "instructionConcise": "更簡潔",
+        "instructionClarity": "提升清晰度與流暢度",
+        "instructionTone": "保留原有語氣",
+        "instructionStructure": "在有幫助時增加結構"
+      },
+      "personalizedStyles": {
+        "title": "個人化風格",
+        "description": "根據您使用的應用程式設定聽寫清理的寫作語氣",
+        "off": "關閉",
+        "casual": "隨性",
+        "formal": "正式",
+        "contexts": {
+          "work": "工作應用程式",
+          "email": "郵件應用程式",
+          "personal": "個人/訊息應用程式",
+          "other": "其他所有"
+        }
       }
     },
     "permissions": {
@@ -1692,8 +1715,6 @@
       },
       "transcriptionPreview": "å³æ™‚è½‰éŒ„é è¦½",
       "transcriptionPreviewDescription": "åœ¨æµ®å‹•è¦–çª—ä¸­é¡¯ç¤ºè½‰éŒ„çµæžœï¼Œå†é€²è¡Œæ–‡å­—æ•´ç†",
-      "liveTyping": "即時輸入",
-      "liveTypingDescription": "說話時在游標處即時輸入文字，在自然停頓處確認（本機轉錄，僅限 Windows）",
       "vad": {
         "title": "èªžéŸ³æ´»å‹•åµæ¸¬",
         "description": "è¨­å®š Silero VAD å¦‚ä½•ç‚ºæœ¬æ©Ÿ Whisper è½‰éŒ„åµæ¸¬ä¸¦åˆ‡åˆ†èªžéŸ³",
@@ -2306,6 +2327,7 @@
     "notes": "ç­†è¨˜",
     "upload": "ä¸Šå‚³",
     "dictionary": "å­—å…¸",
+    "insights": "洞察",
     "referral": "ç²å¾—ä¸€å€‹æœˆå…è²»",
     "settings": "è¨­å®š",
     "support": "æ”¯æ´",
@@ -2420,7 +2442,8 @@
       "hotkeyToSpeak": "{{hotkey}} èªªè©±",
       "recording": "éŒ„éŸ³ä¸­...",
       "processing": "è™•ç†ä¸­...",
-      "clickToSpeak": "é»žæ“Šé–‹å§‹èªªè©±"
+      "clickToSpeak": "é»žæ“Šé–‹å§‹èªªè©±",
+      "commandMode": "指令模式"
     },
     "buttons": {
       "cancelRecording": "å–æ¶ˆéŒ„éŸ³",
@@ -2848,5 +2871,18 @@
       "successDescription": "Bienvenido a {{name}}.",
       "errorTitle": "No se pudo aceptar la invitaciÃ³n"
     }
+  },
+  "polish": {
+    "noSelection": "請先選取文字",
+    "failed": "Polish 失敗"
+  },
+  "insights": {
+    "title": "洞察",
+    "totalWords": "總字數",
+    "totalDictations": "總聽寫次數",
+    "averageWPM": "平均每分鐘字數",
+    "wordsToday": "今日字數",
+    "wordsThisWeek": "本週字數",
+    "dayStreak": "連續天數"
   }
 }

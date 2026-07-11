@@ -488,6 +488,7 @@ declare global {
       showDictationPanel: () => Promise<void>;
       onToggleDictation: (callback: () => void) => () => void;
       onToggleVoiceAgent?: (callback: () => void) => () => void;
+      onTriggerPolish?: (callback: () => void) => () => void;
       onStartDictation?: (callback: () => void) => () => void;
       onStopDictation?: (callback: () => void) => () => void;
 
@@ -525,6 +526,14 @@ declare global {
       ) => Promise<TranscriptionItem[]>;
       clearTranscriptions: () => Promise<{ cleared: number; success: boolean }>;
       deleteTranscription: (id: number) => Promise<{ success: boolean }>;
+      getInsightsStats: () => Promise<{
+        totalWords: number;
+        totalDictations: number;
+        averageWPM: number;
+        wordsToday: number;
+        wordsThisWeek: number;
+        dayStreak: number;
+      }>;
       getTranscriptionById: (id: number) => Promise<TranscriptionItem | null>;
 
       // Audio retention operations
@@ -722,6 +731,7 @@ declare global {
       promptAccessibilityPermission: () => Promise<boolean>;
       readClipboard: () => Promise<string>;
       writeClipboard: (text: string) => Promise<{ success: boolean }>;
+      captureSelectedText: () => Promise<{ success: boolean; text: string; error?: string }>;
       checkPasteTools: () => Promise<PasteToolsResult>;
 
       // Audio
@@ -1101,6 +1111,8 @@ declare global {
       notifyActivationModeChanged?: (mode: "tap" | "push") => void;
       notifyHotkeyChanged?: (hotkey: string) => void;
       registerMeetingHotkey?: (hotkey: string) => Promise<{ success: boolean; message?: string }>;
+      registerPolishHotkey?: (hotkey: string) => Promise<{ success: boolean; message?: string }>;
+      getPolishKey?: () => Promise<string>;
       notifyFloatingIconAutoHideChanged?: (enabled: boolean) => void;
       onFloatingIconAutoHideChanged?: (callback: (enabled: boolean) => void) => () => void;
       notifyStartMinimizedChanged?: (enabled: boolean) => void;
@@ -1842,7 +1854,6 @@ declare global {
         provider: string;
         model: string;
         language?: string;
-        liveTyping?: boolean;
         overlay?: boolean;
       }) => Promise<{ success: boolean }>;
       stopDictationPreview?: (opts?: { showCleanup?: boolean }) => Promise<{ success: boolean }>;

@@ -28,6 +28,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   showDictationPanel: () => ipcRenderer.invoke("show-dictation-panel"),
   onToggleDictation: registerListener("toggle-dictation", (callback) => () => callback()),
   onToggleVoiceAgent: registerListener("toggle-voice-agent", (callback) => () => callback()),
+  onTriggerPolish: registerListener("trigger-polish", (callback) => () => callback()),
   onStartDictation: registerListener("start-dictation", (callback) => () => callback()),
   onStopDictation: registerListener("stop-dictation", (callback) => () => callback()),
 
@@ -38,6 +39,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke("db-get-transcriptions", limit, options),
   clearTranscriptions: () => ipcRenderer.invoke("db-clear-transcriptions"),
   deleteTranscription: (id) => ipcRenderer.invoke("db-delete-transcription", id),
+  getInsightsStats: () => ipcRenderer.invoke("db-get-insights-stats"),
 
   // Audio storage functions
   saveTranscriptionAudio: (id, audioBuffer, metadata) =>
@@ -197,6 +199,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   promptAccessibilityPermission: () => ipcRenderer.invoke("prompt-accessibility-permission"),
   readClipboard: () => ipcRenderer.invoke("read-clipboard"),
   writeClipboard: (text) => ipcRenderer.invoke("write-clipboard", text),
+  captureSelectedText: () => ipcRenderer.invoke("capture-selected-text"),
   checkPasteTools: () => ipcRenderer.invoke("check-paste-tools"),
 
   // Local Whisper functions (whisper.cpp)
@@ -699,6 +702,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   notifyActivationModeChanged: (mode) => ipcRenderer.send("activation-mode-changed", mode),
   notifyHotkeyChanged: (hotkey) => ipcRenderer.send("hotkey-changed", hotkey),
   registerMeetingHotkey: (hotkey) => ipcRenderer.invoke("register-meeting-hotkey", hotkey),
+  registerPolishHotkey: (hotkey) => ipcRenderer.invoke("register-polish-hotkey", hotkey),
+  getPolishKey: () => ipcRenderer.invoke("get-polish-key"),
 
   // Floating icon auto-hide
   notifyFloatingIconAutoHideChanged: (enabled) =>

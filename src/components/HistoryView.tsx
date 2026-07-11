@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
-import { Loader2, Sparkles, X, Mic, Trash2, Archive } from "lucide-react";
+import { Loader2, Sparkles, X, Mic, Trash2, Archive, Type, Gauge, Flame } from "lucide-react";
 import TranscriptionItem from "./ui/TranscriptionItem";
+import { Kbd } from "./ui/Kbd";
 import type { TranscriptionItem as TranscriptionItemType } from "../types/electron";
 import { formatHotkeyLabel } from "../utils/hotkeys";
 import { formatDateGroup } from "../utils/dateFormatting";
@@ -82,17 +83,115 @@ export default function HistoryView({
     </button>
   );
 
+  const [promoDismissed, setPromoDismissed] = useState(
+    () => localStorage.getItem("promoBannerDismissed") === "true"
+  );
+  const [promoClosing, setPromoClosing] = useState(false);
+  const dismissPromo = () => {
+    setPromoClosing(true);
+    setTimeout(() => {
+      localStorage.setItem("promoBannerDismissed", "true");
+      setPromoDismissed(true);
+    }, 180);
+  };
+
+  const [aiCtaClosing, setAiCtaClosing] = useState(false);
+  const dismissAiCta = () => {
+    setAiCtaClosing(true);
+    setTimeout(() => {
+      localStorage.setItem("aiCTADismissed", "true");
+      setAiCTADismissed(true);
+    }, 180);
+  };
+
+  const [stats, setStats] = useState<{
+    totalWords: number;
+    averageWPM: number;
+    dayStreak: number;
+  } | null>(null);
+  useEffect(() => {
+    window.electronAPI.getInsightsStats().then(setStats);
+  }, []);
+
+  // ponytail: fixed milestone, not a real unlock feature — same placeholder
+  // framing as InsightsView.tsx until a real threshold exists.
+  const VOICE_PROFILE_MILESTONE_WORDS = 5000;
+  const voiceProfileProgress =
+    Math.min(stats?.totalWords ?? 0, VOICE_PROFILE_MILESTONE_WORDS) / VOICE_PROFILE_MILESTONE_WORDS;
+  const voiceProfileWordsRemaining = Math.max(
+    VOICE_PROFILE_MILESTONE_WORDS - (stats?.totalWords ?? 0),
+    0
+  );
+
+  const hotkeyParts = formatHotkeyLabel(hotkey)
+    .split("+")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  // ponytail: no user-profile/name setting exists yet — persisted locally,
+  // seeded with the real name, editable by changing localStorage.userName
+  // until a proper Settings field exists.
+  const userName = localStorage.getItem("userName") ?? "Rushikesh";
+
   return (
     <div className="px-4 pt-4 pb-6">
-      <div className={cn("mx-auto", isConnected ? "max-w-5xl" : "max-w-3xl")}>
+      <div className="mx-auto max-w-5xl">
+        <h1 className="text-base font-bold text-foreground mb-4 flex items-center flex-nowrap gap-1.5 whitespace-nowrap overflow-hidden">
+          <span>
+            {t("controlPanel.greeting", {
+              defaultValue: "Hey {{name}}, get back into the flow with",
+              name: userName,
+            })}
+          </span>
+          {hotkeyParts.map((part, i) => (
+            <span key={i} className="flex items-center gap-1.5">
+              <Kbd className="text-xs px-2 py-0.5">{part}</Kbd>
+              {i < hotkeyParts.length - 1 && <span className="text-muted-foreground">+</span>}
+            </span>
+          ))}
+        </h1>
+        {!promoDismissed && (
+          <div
+            className={cn(
+              "tilt-card accent-bar mb-4 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-br from-[var(--color-flow-ink)] to-[#3a2f5c]",
+              "transition-[opacity,transform] duration-200 ease-in",
+              promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
+            )}
+          >
+            <div className="referral-mesh-bg" />
+            <button
+              onClick={dismissPromo}
+              aria-label={t("common.close")}
+              className="absolute top-3.5 right-3.5 z-10 p-1.5 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+            >
+              <X size={14} />
+            </button>
+            <div className="relative z-[1] max-w-sm">
+              <h3 className="text-white font-semibold text-xl mb-1.5">
+                {t("controlPanel.promo.title", { defaultValue: "Dictate anywhere, distraction-free" })}
+              </h3>
+              <p className="text-white/70 text-sm mb-4 leading-relaxed">
+                {t("controlPanel.promo.description", {
+                  defaultValue: "Press your hotkey and start talking — Dhwani cleans it up for you.",
+                })}
+              </p>
+              <Button variant="cta" onClick={() => onOpenSettings("general")}>
+                {t("controlPanel.promo.cta", { defaultValue: "Show me how" })}
+              </Button>
+            </div>
+          </div>
+        )}
         {history.length === 0 && <div className="mb-2 flex justify-end">{discardedToggle}</div>}
         {!useCleanupModel && !aiCTADismissed && (
-          <div className="mb-3 relative rounded-lg border border-primary/20 bg-primary/5 dark:bg-primary/10 p-3">
+          <div
+            className={cn(
+              "mb-4 relative rounded-2xl border border-primary/20 bg-primary/5 dark:bg-primary/10 p-4",
+              "transition-[opacity,transform] duration-200 ease-in",
+              aiCtaClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
+            )}
+          >
             <button
-              onClick={() => {
-                localStorage.setItem("aiCTADismissed", "true");
-                setAiCTADismissed(true);
-              }}
+              onClick={dismissAiCta}
               aria-label={t("common.close")}
               className="absolute top-2 right-2 p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
@@ -122,8 +221,8 @@ export default function HistoryView({
           </div>
         )}
 
-        <div className={cn(isConnected ? "flex gap-6" : "")}>
-          <div className={cn("min-w-0", isConnected ? "flex-1" : "w-full")}>
+        <div className="flex gap-6">
+          <div className="min-w-0 flex-1">
             {isConnected && (
               <div className="flex items-center gap-1.5 pb-2.5">
                 <Mic size={12} className="text-muted-foreground" />
@@ -133,7 +232,7 @@ export default function HistoryView({
               </div>
             )}
             {!dataRetentionEnabled && (
-              <div className="mb-3 rounded-lg border border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 px-3.5 py-2.5 flex items-center gap-2.5">
+              <div className="mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 px-4 py-3 flex items-center gap-2.5">
                 <span className="text-amber-600 dark:text-amber-400 shrink-0 text-sm">⊘</span>
                 <p className="text-xs text-amber-700 dark:text-amber-300/90 leading-relaxed">
                   {t("controlPanel.history.dataRetentionDisabled")}
@@ -141,14 +240,14 @@ export default function HistoryView({
               </div>
             )}
             {isLoading && history.length === 0 ? (
-              <div className="rounded-lg border border-border bg-card/50 dark:bg-card/60 backdrop-blur-sm">
+              <div className="rounded-2xl border border-border bg-card/50 dark:bg-card/60 backdrop-blur-sm shadow-sm">
                 <div className="flex items-center justify-center gap-2 py-8">
                   <Loader2 size={14} className="animate-spin text-primary" />
                   <span className="text-sm text-muted-foreground">{t("controlPanel.loading")}</span>
                 </div>
               </div>
             ) : history.length === 0 ? (
-              <div className="rounded-lg border border-border bg-card/50 dark:bg-card/60 backdrop-blur-sm">
+              <div className="rounded-2xl border border-border bg-card/50 dark:bg-card/60 backdrop-blur-sm shadow-sm">
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   <svg
                     className="text-foreground dark:text-white mb-5"
@@ -286,13 +385,78 @@ export default function HistoryView({
             )}
           </div>
 
-          {isConnected && (
-            <div className="w-64 shrink-0 hidden sm:block">
-              <div className="sticky top-4">
-                <UpcomingMeetings events={events} isLoading={eventsLoading} />
+          <div className="w-72 shrink-0 hidden sm:block">
+            <div className="sticky top-4 space-y-3">
+              <div className="accent-bar rounded-2xl bg-muted dark:bg-surface-2 p-5 shadow-sm">
+                <div className="space-y-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Type size={15} className="text-primary" />
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
+                        {stats?.totalWords ?? "–"}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {t("controlPanel.stats.totalWords", { defaultValue: "total words" })}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Gauge size={15} className="text-primary" />
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
+                        {stats?.averageWPM ?? "–"}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {t("controlPanel.stats.wpm", { defaultValue: "wpm" })}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Flame size={15} className="text-primary" />
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
+                        {stats?.dayStreak ?? "–"}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {t("controlPanel.stats.dayStreak", { defaultValue: "day streak" })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-sm font-semibold text-foreground mb-0.5">
+                    {t("insights.voiceProfile.title", { defaultValue: "Your Voice Profile" })}
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-2.5">
+                    {t("insights.voiceProfile.description", {
+                      defaultValue: "Discover how you use your voice.",
+                    })}
+                  </p>
+                  <div className="h-1.5 rounded-full bg-[var(--color-progress-track)] overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out"
+                      style={{ width: `${voiceProfileProgress * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                    {voiceProfileWordsRemaining > 0
+                      ? t("insights.voiceProfile.unlocksIn", {
+                          defaultValue: "Unlocks in {{count}} words",
+                          count: voiceProfileWordsRemaining,
+                        })
+                      : t("insights.voiceProfile.unlocked", { defaultValue: "Unlocked" })}
+                  </p>
+                </div>
               </div>
+              {isConnected && <UpcomingMeetings events={events} isLoading={eventsLoading} />}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

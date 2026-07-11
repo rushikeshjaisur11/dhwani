@@ -18,7 +18,6 @@ const AudioStorageManager = require("./audioStorage");
 const liveSpeakerIdentifier = require("./liveSpeakerIdentifier");
 const MeetingEchoLeakDetector = require("./meetingEchoLeakDetector");
 const { applySmartSpacing } = require("./smartSpacing");
-const { findSilenceCut } = require("./liveTypingCut");
 const {
   transcriptsOverlap,
   transcriptsLooselyOverlap,
@@ -796,6 +795,10 @@ class IPCHandlers {
 
     ipcMain.handle("save-openai-key", async (event, key) => {
       return this.environmentManager.saveOpenAIKey(key);
+    });
+
+    ipcMain.handle("db-get-insights-stats", async () => {
+      return this.databaseManager.getInsightsStats();
     });
 
     ipcMain.handle("db-save-transcription", async (event, text, rawText, options) => {
@@ -1633,6 +1636,10 @@ class IPCHandlers {
 
     ipcMain.handle("write-clipboard", async (event, text) => {
       return this.clipboardManager.writeClipboard(text, event.sender);
+    });
+
+    ipcMain.handle("capture-selected-text", async () => {
+      return this.clipboardManager.captureSelectedText();
     });
 
     ipcMain.handle("check-paste-tools", async () => {
@@ -5111,11 +5118,8 @@ class IPCHandlers {
     let dictationPreviewLanguage = null;
     let dictationPreviewSessionActive = false;
     let dictationPreviewChunkCount = 0;
-    let dictationPreviewLiveTyping = false;
     let dictationPreviewOverlay = true;
-    let dictationPreviewTypedText = "";
-    // ponytail: 12s without a pause forces a cut (accepts a possible word split)
-    const LIVE_TYPING_MAX_BUFFER_BYTES = 12 * 16000 * 2;
+    let dictationPreviewPrompt = null;
 
     const resetDictationPreviewState = ({ preserveSession = false } = {}) => {
       if (dictationPreviewTimer) {
@@ -5131,36 +5135,18 @@ class IPCHandlers {
       dictationPreviewProvider = null;
       dictationPreviewModel = null;
       dictationPreviewLanguage = null;
-      dictationPreviewLiveTyping = false;
       dictationPreviewOverlay = true;
-      dictationPreviewTypedText = "";
+      dictationPreviewPrompt = null;
     };
 
-    const transcribeDictationPreviewChunk = async ({ force = false } = {}) => {
+    const transcribeDictationPreviewChunk = async () => {
       if (dictationPreviewTranscribing) return;
       if (!dictationPreviewBuffer.length) return;
 
       dictationPreviewTranscribing = true;
       try {
-        let pcm = Buffer.concat(dictationPreviewBuffer);
+        const pcm = Buffer.concat(dictationPreviewBuffer);
         dictationPreviewBuffer = [];
-
-        // Live typing is append-only in the target app, so chunks may only be
-        // cut at a pause — a mid-word cut would type a garbled word forever.
-        if (dictationPreviewLiveTyping && !force) {
-          const allSamples = new Int16Array(pcm.buffer, pcm.byteOffset, pcm.length / 2);
-          const cut = findSilenceCut(allSamples);
-          if (cut === null) {
-            if (pcm.length < LIVE_TYPING_MAX_BUFFER_BYTES) {
-              dictationPreviewBuffer = [pcm]; // keep waiting for a pause
-              return;
-            }
-          } else {
-            const cutBytes = cut * 2;
-            dictationPreviewBuffer = [pcm.subarray(cutBytes)];
-            pcm = pcm.subarray(0, cutBytes);
-          }
-        }
 
         const samples = new Int16Array(pcm.buffer, pcm.byteOffset, pcm.length / 2);
         let sumSq = 0;
@@ -5185,9 +5171,11 @@ class IPCHandlers {
           });
         } else {
           const vadOptions = this._resolveWhisperVadOptions("dictation");
+          const initialPrompt = dictationPreviewPrompt || null;
           result = await this.whisperManager.transcribeLocalWhisper(wav, {
             model: dictationPreviewModel,
             language: dictationPreviewLanguage,
+            initialPrompt,
             ...vadOptions,
           });
         }
@@ -5196,15 +5184,6 @@ class IPCHandlers {
           const chunkText = result.text.trim();
           if (dictationPreviewOverlay) {
             this.windowManager.appendTranscriptionPreview(chunkText);
-          }
-          if (dictationPreviewLiveTyping) {
-            const toType = applySmartSpacing({
-              text: chunkText,
-              mode: "prepend",
-              precedingChar: dictationPreviewTypedText.slice(-1),
-            });
-            dictationPreviewTypedText += toType;
-            this.clipboardManager.typeText(toType).catch(() => {});
           }
         } else if (result && !result.success) {
           debugLogger.warn("Dictation preview chunk returned failure", {
@@ -5779,15 +5758,15 @@ class IPCHandlers {
 
     ipcMain.handle(
       "start-dictation-preview",
-      async (_event, { provider, model, language, liveTyping = false, overlay = true }) => {
+      async (_event, { provider, model, language, overlay = true, initialPrompt = null }) => {
         resetDictationPreviewState();
         dictationPreviewMode = true;
         dictationPreviewSessionActive = true;
         dictationPreviewProvider = provider;
         dictationPreviewModel = model;
         dictationPreviewLanguage = language || null;
+        dictationPreviewPrompt = initialPrompt || null;
         dictationPreviewChunkCount = 0;
-        dictationPreviewLiveTyping = liveTyping && process.platform === "win32";
         dictationPreviewOverlay = overlay;
         if (overlay) this.windowManager.showTranscriptionPreview("");
         dictationPreviewTimer = setInterval(() => transcribeDictationPreviewChunk(), 1500);
@@ -5848,7 +5827,7 @@ class IPCHandlers {
       }
       clearInterval(dictationPreviewTimer);
       dictationPreviewTimer = null;
-      await transcribeDictationPreviewChunk({ force: true });
+      await transcribeDictationPreviewChunk();
       const hadOverlay = dictationPreviewOverlay;
       resetDictationPreviewState({ preserveSession: true });
       if (!dictationPreviewSessionActive || !hadOverlay) {

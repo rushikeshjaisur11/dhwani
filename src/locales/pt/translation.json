@@ -1545,6 +1545,29 @@
         "title": "AtualizaÃ§Ãµes",
         "versionPlaceholder": "â€”",
         "whatsNew": "Novidades na v{{version}}"
+      },
+      "polishHotkey": {
+        "title": "Atalho do Polish",
+        "description": "Selecione texto em qualquer app e reescreva-o na hora com IA",
+        "enabledLabel": "Ativar Polish",
+        "instructionsLabel": "Edições a aplicar",
+        "instructionConcise": "Tornar mais conciso",
+        "instructionClarity": "Melhorar clareza e fluidez",
+        "instructionTone": "Preservar o tom original",
+        "instructionStructure": "Adicionar estrutura quando útil"
+      },
+      "personalizedStyles": {
+        "title": "Estilos personalizados",
+        "description": "Defina um tom de escrita para a limpeza do ditado com base no app que você está usando",
+        "off": "Desativado",
+        "casual": "Casual",
+        "formal": "Formal",
+        "contexts": {
+          "work": "Apps de trabalho",
+          "email": "Apps de e-mail",
+          "personal": "Apps pessoais/mensagens",
+          "other": "Todo o resto"
+        }
       }
     },
     "permissions": {
@@ -1676,8 +1699,6 @@
       },
       "transcriptionPreview": "PrÃ©-visualizaÃ§Ã£o ao vivo",
       "transcriptionPreviewDescription": "Mostrar transcriÃ§Ã£o em janela flutuante antes da limpeza",
-      "liveTyping": "Digitação ao vivo",
-      "liveTypingDescription": "Digita o texto no cursor enquanto você fala, confirmado nas pausas naturais (transcrição local, somente Windows)",
       "vad": {
         "title": "DetecÃ§Ã£o de atividade de voz",
         "description": "Configure como o Silero VAD detecta e segmenta a fala na transcriÃ§Ã£o local do Whisper",
@@ -2311,6 +2332,7 @@
     "notes": "Notas",
     "upload": "Enviar",
     "dictionary": "DicionÃ¡rio",
+    "insights": "Estatísticas",
     "referral": "Ganhe um mÃªs grÃ¡tis",
     "settings": "ConfiguraÃ§Ãµes",
     "support": "Suporte",
@@ -2425,7 +2447,8 @@
       "hotkeyToSpeak": "{{hotkey}} para falar",
       "recording": "Gravando...",
       "processing": "Processando...",
-      "clickToSpeak": "Clique para falar"
+      "clickToSpeak": "Clique para falar",
+      "commandMode": "Modo Comando"
     },
     "buttons": {
       "cancelRecording": "Cancelar gravaÃ§Ã£o",
@@ -2853,5 +2876,18 @@
       "successDescription": "Bienvenido a {{name}}.",
       "errorTitle": "No se pudo aceptar la invitaciÃ³n"
     }
+  },
+  "polish": {
+    "noSelection": "Selecione um texto primeiro",
+    "failed": "Falha no Polish"
+  },
+  "insights": {
+    "title": "Estatísticas",
+    "totalWords": "Total de palavras",
+    "totalDictations": "Total de ditados",
+    "averageWPM": "PPM médio",
+    "wordsToday": "Palavras hoje",
+    "wordsThisWeek": "Palavras esta semana",
+    "dayStreak": "Sequência de dias"
   }
 }
