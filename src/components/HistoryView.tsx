@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
-import { Loader2, Sparkles, X, Mic, Trash2, Archive } from "lucide-react";
+import { Loader2, Sparkles, X, Mic, Trash2, Archive, Search } from "lucide-react";
 import TranscriptionItem from "./ui/TranscriptionItem";
 import { Kbd } from "./ui/Kbd";
 import type { TranscriptionItem as TranscriptionItemType } from "../types/electron";
@@ -128,60 +128,44 @@ export default function HistoryView({
             })}
           </span>
           {hotkeyParts.map((part, i) => (
-            <span key={i} className="flex items-center gap-1.5">
-              <Kbd className="text-sm px-2.5 py-1">{part}</Kbd>
-              {i < hotkeyParts.length - 1 && <span className="text-muted-foreground">+</span>}
+            <span key={i} className="flex items-center gap-1">
+              <Kbd className="text-xs font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-[6px] select-none h-6 flex items-center justify-center font-sans">
+                {part}
+              </Kbd>
+              {i < hotkeyParts.length - 1 && (
+                <span className="text-muted-foreground font-semibold px-0.5">+</span>
+              )}
             </span>
           ))}
         </h1>
         {!promoDismissed && (
           <div
             className={cn(
-              "tilt-card accent-bar mb-4 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-br from-[var(--color-flow-ink)] to-[#3a2f5c]",
+              "mb-6 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-r from-[#1c1917] via-[#26211e] to-[#2e2926]",
               "transition-[opacity,transform] duration-200 ease-in",
               promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
             )}
           >
-            <div className="referral-mesh-bg" />
             <button
               onClick={dismissPromo}
               aria-label={t("common.close")}
-              className="absolute top-3.5 right-3.5 z-10 p-1.5 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+              className="absolute top-4 right-4 z-10 p-1 rounded-full bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-colors"
             >
-              <X size={14} />
+              <X size={12} />
             </button>
-            <div className="relative z-[1] max-w-sm">
-              <h3 className="text-white font-semibold text-xl mb-1.5 font-serif italic">
-                Transform works anywhere you write
+            <div className="relative z-[1] max-w-md">
+              <h3 className="text-white text-2xl mb-1.5 font-serif font-normal">
+                Working around other people?
               </h3>
-              <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                Apply a Transform to rewrite, clean up, or restructure text after you dictate.
+              <p className="text-white/75 text-xs mb-4 max-w-sm leading-relaxed">
+                With the right setup, you can Flow without disrupting your neighbors
               </p>
-              <div className="flex items-center gap-3">
-                <Button variant="cta" onClick={() => onOpenSettings("intelligence")}>
-                  Try it out
-                </Button>
-                <button
-                  onClick={() => {}}
-                  className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-                >
-                  How it works
-                </button>
-              </div>
-            </div>
-            {/* Floating App Icons bubbles */}
-            <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
-              <div className="relative w-40 h-24">
-                <div className="absolute top-0 left-6 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">#</span>
-                </div>
-                <div className="absolute bottom-0 left-12 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">M</span>
-                </div>
-                <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
-                  <span className="text-[10px] text-white font-bold">in</span>
-                </div>
-              </div>
+              <button
+                onClick={() => onOpenSettings("general")}
+                className="h-8 px-4 rounded-lg bg-white hover:bg-white/90 text-black text-xs font-semibold transition-colors cursor-pointer"
+              >
+                Show me how
+              </button>
             </div>
           </div>
         )}
@@ -353,21 +337,17 @@ export default function HistoryView({
               <div className="group">
                 {groupedHistory.map((group, index) => (
                   <div key={group.label} className={index > 0 ? "mt-4" : ""}>
-                    <div className="sticky -top-1 z-10 -mx-4 px-5 pt-2 pb-2 bg-white dark:bg-[oklch(0.22_0.014_60)] flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wide">
+                    <div className="sticky -top-1 z-10 -mx-4 px-5 pt-3 pb-2 bg-white dark:bg-[oklch(0.22_0.014_60)] flex items-center justify-between border-b border-border/10">
+                      <span className="text-[10px] font-bold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                         {group.label}
                       </span>
                       {index === 0 && (
-                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
-                          {discardedToggle}
-                          <button
-                            onClick={clearAllTranscriptions}
-                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] text-muted-foreground/60 hover:!text-destructive hover:!bg-destructive/8 dark:hover:!bg-destructive/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/30 transition-all duration-200"
-                          >
-                            <Trash2 size={11} />
-                            <span>{t("controlPanel.history.clearAll")}</span>
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => onOpenSettings("general")}
+                          className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/50 hover:text-foreground transition-colors cursor-pointer"
+                        >
+                          <Search size={14} strokeWidth={2.5} />
+                        </button>
                       )}
                     </div>
                     <div className="divide-y divide-border/30 dark:divide-white/5 relative z-0">
