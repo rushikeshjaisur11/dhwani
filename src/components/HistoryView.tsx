@@ -120,7 +120,7 @@ export default function HistoryView({
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-xl font-bold text-foreground mb-4 flex flex-wrap items-center gap-1.5 leading-tight">
+        <h1 className="text-base font-semibold text-foreground mb-6 flex flex-wrap items-center gap-1.5 leading-tight">
           <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
