@@ -97,26 +97,29 @@ jobs:
           echo "GOOGLE_CALENDAR_CLIENT_ID=${{ secrets.GOOGLE_CALENDAR_CLIENT_ID }}" >> .env
           echo "GOOGLE_CALENDAR_CLIENT_SECRET=${{ secrets.GOOGLE_CALENDAR_CLIENT_SECRET }}" >> .env
 
-      - name: Build and Sign Application
+      - name: Decode Code Signing Cert
+        if: github.event_name != 'pull_request'
+        shell: pwsh
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            npm run build:win -- --publish never --config electron-builder.unsigned-win.json
-          else
-            npm run build:win -- --publish never
-          fi
+          $pfxBytes = [System.Convert]::FromBase64String("${{ secrets.WINDOWS_CERTS_PFX_BASE64 }}")
+          [System.IO.File]::WriteAllBytes("local-cert.pfx", $pfxBytes)
+
+      - name: Build and Sign Application
+        run: npm run build:win -- --publish never --config electron-builder.unsigned-win.json
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
           VITE_NEON_AUTH_URL: ${{ vars.VITE_NEON_AUTH_URL }}
           VITE_OPENWHISPR_API_URL: ${{ vars.VITE_OPENWHISPR_API_URL }}
           VITE_OPENWHISPR_OAUTH_CALLBACK_URL: ${{ vars.VITE_OPENWHISPR_OAUTH_CALLBACK_URL }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          WIN_CSC_LINK: ${{ github.event_name != 'pull_request' && 'local-cert.pfx' || '' }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CERTS_PASSWORD }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: dist/
+          path: |
+            dist/*.exe
+            dist/latest.yml
           retention-days: 7
