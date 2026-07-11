@@ -120,7 +120,7 @@ export default function HistoryView({
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-[5px] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap overflow-hidden shrink-0">
+        <div className="text-[clamp(10px,1.5vw,14px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-hidden">
           <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
@@ -137,7 +137,7 @@ export default function HistoryView({
               )}
             </span>
           ))}
-        </h1>
+        </div>
         {!promoDismissed && (
           <div
             className={cn(
