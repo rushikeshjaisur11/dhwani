@@ -56,7 +56,7 @@ since only Windows ships:
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `build-and-notarize.yml` | push to main/develop, PR, manual | CI build check — `build-windows` job only (NSIS + portable, `--publish never`) |
+| `build-and-notarize.yml` | push to main/develop, PR, manual | CI build check — `build-windows` job only (NSIS + zip, `--publish never`) |
 | `release.yml` | push tag `v*.*.*`, manual | Publishes the Windows release artifact + `latest.yml` auto-update metadata |
 | `build-windows-key-listener.yml` | push touching the `.c` source | Compiles + publishes the push-to-talk binary |
 | `build-windows-mic-listener.yml` | push touching the `.c` source | Compiles + publishes the meeting mic-detection binary |
@@ -72,7 +72,7 @@ nothing else referenced them and there was no more automation keeping them curre
 ## Packaging
 
 - `npm run pack` — unsigned build (`CSC_IDENTITY_AUTO_DISCOVERY=false`)
-- `npm run build:win` — signed Windows build (NSIS installer + portable exe), Azure code-signing in CI
+- `npm run build:win` — signed Windows build (NSIS installer + zip), self-signed code-signing cert in CI
 - `afterSign.js` skips signing automatically when `CSC_IDENTITY_AUTO_DISCOVERY=false`
 - **Lockfile**: always run `npm install` with Node 24 (matches CI) — `nvm exec 24 npm install` if your
   local Node differs. A mismatched major version produces an incompatible `package-lock.json` that breaks

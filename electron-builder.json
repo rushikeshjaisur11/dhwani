@@ -153,7 +153,7 @@
     }
   },
   "win": {
-    "target": ["nsis", "portable"],
+    "target": ["nsis", "zip"],
     "icon": "src/assets/icon.ico",
     "extraResources": [
       {

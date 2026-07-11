@@ -123,5 +123,6 @@ jobs:
           name: windows-build
           path: |
             dist/*.exe
+            dist/*.zip
             dist/latest.yml
           retention-days: 7
