@@ -141,7 +141,7 @@ export default function HistoryView({
         {!promoDismissed && (
           <div
             className={cn(
-              "mb-6 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-r from-[#1c1917] via-[#26211e] to-[#2e2926]",
+              "mb-6 relative rounded-2xl overflow-hidden p-6 shadow-md bg-gradient-to-r from-[#1c2226] via-[#2f2824] to-[#1c201a]",
               "transition-[opacity,transform] duration-200 ease-in",
               promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
             )}
@@ -155,17 +155,46 @@ export default function HistoryView({
             </button>
             <div className="relative z-[1] max-w-md">
               <h3 className="text-white text-2xl mb-1.5 font-serif font-normal">
-                Working around other people?
+                Transform works anywhere you write
               </h3>
               <p className="text-white/75 text-xs mb-4 max-w-sm leading-relaxed">
-                With the right setup, you can Flow without disrupting your neighbors
+                Apply a Transform to rewrite, clean up, or restructure text after you dictate.
               </p>
-              <button
-                onClick={() => onOpenSettings("general")}
-                className="h-8 px-4 rounded-lg bg-white hover:bg-white/90 text-black text-xs font-semibold transition-colors cursor-pointer"
-              >
-                Show me how
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => onOpenSettings("intelligence")}
+                  className="h-8 px-4 rounded-full bg-white hover:bg-white/90 text-black text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  Try it out
+                </button>
+                <button
+                  onClick={() => {}}
+                  className="text-xs font-semibold text-white/80 hover:text-white transition-colors cursor-pointer"
+                >
+                  How it works
+                </button>
+              </div>
+            </div>
+            {/* Visual floating app bubbles representing integrations */}
+            <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
+              <div className="relative w-44 h-24">
+                {/* Notion Bubble */}
+                <div className="absolute top-0 right-10 w-7 h-7 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">N</span>
+                </div>
+                {/* Slack Bubble */}
+                <div className="absolute bottom-2 left-6 w-8 h-8 rounded-full bg-[#3F0F3F]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">#</span>
+                </div>
+                {/* Gmail Bubble */}
+                <div className="absolute bottom-0 right-12 w-8 h-8 rounded-full bg-[#EA4335]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">M</span>
+                </div>
+                {/* LinkedIn Bubble */}
+                <div className="absolute top-6 left-20 w-8 h-8 rounded-full bg-[#0077B5]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">in</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
