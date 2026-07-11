@@ -120,8 +120,8 @@ export default function HistoryView({
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-[9px] font-semibold text-foreground mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap overflow-hidden shrink-0">
-          <span className="truncate">
+        <h1 className="text-[15px] font-bold text-foreground mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap overflow-hidden shrink-0">
+          <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
               name: userName,
@@ -129,11 +129,11 @@ export default function HistoryView({
           </span>
           {hotkeyParts.map((part, i) => (
             <span key={i} className="flex items-center gap-1 shrink-0">
-              <Kbd className="text-[8px] font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-[4px] select-none h-4 flex items-center justify-center font-sans">
+              <Kbd className="text-[10px] font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-[5px] select-none h-5 flex items-center justify-center font-sans">
                 {part}
               </Kbd>
               {i < hotkeyParts.length - 1 && (
-                <span className="text-muted-foreground font-semibold px-0.5">+</span>
+                <span className="text-muted-foreground font-bold px-0.5">+</span>
               )}
             </span>
           ))}
