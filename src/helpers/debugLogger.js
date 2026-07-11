@@ -203,9 +203,9 @@ class DebugLogger {
           : console.log;
 
     if (meta !== undefined) {
-      consoleFn(`${levelTag}${scopeTag}${sourceTag} ${message}`, meta);
+      consoleFn("%s", `${levelTag}${scopeTag}${sourceTag} ${message}`, meta);
     } else {
-      consoleFn(`${levelTag}${scopeTag}${sourceTag} ${message}`);
+      consoleFn("%s", `${levelTag}${scopeTag}${sourceTag} ${message}`);
     }
 
     if (this.logStream) {

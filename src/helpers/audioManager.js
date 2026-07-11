@@ -134,6 +134,15 @@ const isValidApiKey = (key, provider = "openai") => {
   return key !== placeholder;
 };
 
+// Exact hostname match (not substring) so e.g. "api.groq.com.attacker.net" doesn't match "api.groq.com".
+const isEndpointHost = (endpoint, hostname) => {
+  try {
+    return new URL(endpoint).hostname === hostname;
+  } catch {
+    return false;
+  }
+};
+
 const STREAMING_PROVIDERS = {
   deepgram: {
     warmup: (opts) => window.electronAPI.deepgramStreamingWarmup(opts),
@@ -1709,7 +1718,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       // Groq rejects prompts > 896 chars (incl. when reached via "custom" provider).
       // 890 leaves margin for UTF-16 vs codepoint counting drift.
-      const isGroqEndpoint = provider === "groq" || endpoint.includes("api.groq.com");
+      const isGroqEndpoint = provider === "groq" || isEndpointHost(endpoint, "api.groq.com");
       const MAX_PROMPT_CHARS = isGroqEndpoint ? 890 : 900;
       let dictionaryPrompt = this.getCustomDictionaryPrompt();
       if (dictionaryPrompt) {
@@ -1738,10 +1747,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       const isCustomEndpoint =
         provider === "custom" ||
-        (!endpoint.includes("api.openai.com") &&
-          !endpoint.includes("api.groq.com") &&
-          !endpoint.includes("api.x.ai") &&
-          !endpoint.includes("api.mistral.ai"));
+        (!isEndpointHost(endpoint, "api.openai.com") &&
+          !isEndpointHost(endpoint, "api.groq.com") &&
+          !isEndpointHost(endpoint, "api.x.ai") &&
+          !isEndpointHost(endpoint, "api.mistral.ai"));
 
       const apiCallStart = performance.now();
 
