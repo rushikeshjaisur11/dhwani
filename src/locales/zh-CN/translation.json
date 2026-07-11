@@ -1,0 +1,2919 @@
+{
+  "settings": {
+    "language": {
+      "sectionTitle": "è¯­è¨€",
+      "sectionDescription": "åˆ†åˆ«è®¾ç½®ç•Œé¢è¯­è¨€å’Œè½¬å½•è¯­è¨€",
+      "uiLabel": "ç•Œé¢è¯­è¨€",
+      "uiDescription": "é€‰æ‹© Dhwani ç•Œé¢ä½¿ç”¨çš„è¯­è¨€",
+      "transcriptionLabel": "è½¬å½•è¯­è¨€",
+      "transcriptionDescription": "é€‰æ‹©ä½ è¯´è¯çš„è¯­è¨€ï¼Œä»¥æé«˜è½¬å½•å‡†ç¡®çŽ‡"
+    },
+    "noteFiles": {
+      "title": "å°†ç¬”è®°ä¿å­˜ä¸ºæ–‡ä»¶",
+      "description": "è‡ªåŠ¨å°†ç¬”è®°å’Œè½¬å½•ä¿å­˜ä¸ºç£ç›˜ä¸Šçš„æ–‡ä»¶ï¼ŒæŒ‰æ–‡ä»¶å¤¹åˆ†ç±»",
+      "path": "ä¿å­˜ä½ç½®",
+      "changePath": "æ›´æ”¹ä½ç½®",
+      "rebuild": "é‡å»ºæ‰€æœ‰æ–‡ä»¶",
+      "rebuildDescription": "å°†æ‰€æœ‰ç¬”è®°å’Œè½¬å½•é‡æ–°åŒæ­¥åˆ°ç£ç›˜",
+      "rebuildError": {
+        "title": "é‡å»ºå¤±è´¥",
+        "description": "æ— æ³•é‡å»ºç¬”è®°æ–‡ä»¶ã€‚è¯·ç¡®ä¿å·²å¯ç”¨è¯¥åŠŸèƒ½ï¼Œå¹¶ä¸”æ–‡ä»¶å¤¹å¯å†™ã€‚"
+      }
+    },
+    "meeting": {
+      "speakerDetection": {
+        "title": "è¯†åˆ«å¹¶æ ‡è®°å‘è¨€è€…",
+        "description": "å…³é—­åŽï¼Œè½¬å†™ä¼šæ˜¾ç¤º\"ä½ \"å’Œ\"å…¶ä»–äºº\""
+      }
+    }
+  },
+  "tray": {
+    "toggleDictation": {
+      "show": "æ˜¾ç¤ºå¬å†™é¢æ¿",
+      "hide": "éšè—å¬å†™é¢æ¿"
+    },
+    "openControlPanel": "æ‰“å¼€æŽ§åˆ¶é¢æ¿",
+    "quit": "é€€å‡º Dhwani",
+    "tooltip": "Dhwani - è¯­éŸ³å¬å†™"
+  },
+  "menu": {
+    "appLabel": "Dhwani",
+    "quit": "é€€å‡º Dhwani",
+    "speech": "è¯­éŸ³",
+    "settings": "è®¾ç½®...",
+    "help": "å¸®åŠ©",
+    "learnMore": "äº†è§£æ›´å¤š",
+    "file": "æ–‡ä»¶",
+    "closeWindow": "å…³é—­çª—å£"
+  },
+  "window": {
+    "voiceRecorderTitle": "å½•éŸ³å™¨",
+    "controlPanelTitle": "æŽ§åˆ¶é¢æ¿",
+    "agentChatTitle": "æ™ºèƒ½åŠ©æ‰‹èŠå¤©"
+  },
+  "dialog": {
+    "openLink": {
+      "title": "æ— æ³•æ‰“å¼€é“¾æŽ¥",
+      "message": "æ— æ³•åœ¨æµè§ˆå™¨ä¸­æ‰“å¼€è¯¥é“¾æŽ¥ï¼š\n{{url}}\n\né”™è¯¯ï¼š{{error}}"
+    },
+    "loadFailure": {
+      "title": "Dhwani åŠ è½½å¤±è´¥",
+      "message": "Dhwani æ— æ³•åŠ è½½å…¶ç•Œé¢ã€‚",
+      "detail": {
+        "window": "çª—å£ï¼š{{windowName}}",
+        "error": "é”™è¯¯ {{errorCode}}ï¼š{{errorDescription}}",
+        "url": "URLï¼š{{url}}",
+        "hint": "è¯·å°è¯•é‡æ–°å®‰è£…åº”ç”¨æˆ–ä½¿ç”¨ --log-level=debug å‚æ•°å¯åŠ¨ã€‚"
+      }
+    }
+  },
+  "startup": {
+    "error": {
+      "title": "Dhwani å¯åŠ¨é”™è¯¯",
+      "message": "åº”ç”¨å¯åŠ¨å¤±è´¥ï¼š\n\n{{error}}\n\nè¯·åé¦ˆæ­¤é—®é¢˜ã€‚"
+    },
+    "globeHotkey": {
+      "title": "Globe å¿«æ·é”®ä¸å¯ç”¨",
+      "message": "Dhwani æ— æ³•æ¿€æ´» Globe é”®å¿«æ·é”®ã€‚",
+      "details": {
+        "unknown": "å¯åŠ¨ Globe ç›‘å¬å™¨æ—¶å‘ç”ŸæœªçŸ¥é”™è¯¯ã€‚",
+        "fallback": "Globe é”®å¿«æ·é”®å°†ä¿æŒç¦ç”¨çŠ¶æ€ï¼›çŽ°æœ‰çš„é”®ç›˜å¿«æ·é”®ä»å¯æ­£å¸¸ä½¿ç”¨ã€‚",
+        "devHint": "è¿è¡Œ `npm run compile:globe` å¹¶é‡æ–°æž„å»ºåº”ç”¨ä»¥é‡æ–°ç”Ÿæˆç›‘å¬å™¨ã€‚",
+        "reinstallHint": "è¯·å°è¯•é‡æ–°å®‰è£… Dhwaniï¼Œå¦‚æžœé—®é¢˜ä»ç„¶å­˜åœ¨è¯·è”ç³»æŠ€æœ¯æ”¯æŒã€‚"
+      }
+    }
+  },
+  "hotkey": {
+    "errors": {
+      "callbackRequired": "è®¾ç½®å¿«æ·é”®éœ€è¦å›žè°ƒå‡½æ•°",
+      "globeOnlyMac": "Globe é”®ä»…åœ¨ macOS ä¸Šå¯ç”¨ã€‚",
+      "mouseButtonOnlyMac": "é¼ æ ‡æŒ‰é”®å¿«æ·é”®ç›®å‰ä»…åœ¨ macOS ä¸Šå—æ”¯æŒã€‚",
+      "alreadyRegistered": "\"{{hotkey}}\" å·²è¢«å…¶ä»–åº”ç”¨æ³¨å†Œã€‚",
+      "osReserved": "\"{{hotkey}}\" å¯èƒ½è¢«ç³»ç»Ÿä¿ç•™ã€‚",
+      "registrationFailed": "æ— æ³•æ³¨å†Œ \"{{hotkey}}\"ï¼Œè¯¥å¿«æ·é”®å¯èƒ½å·²è¢«å…¶ä»–åº”ç”¨å ç”¨ã€‚",
+      "trySuggestions": "å»ºè®®å°è¯•ï¼š{{suggestions}}",
+      "slotConflict": "æ­¤å¿«æ·é”®å·²ç”¨äºŽ{{slot}}ã€‚"
+    }
+  },
+  "systemSettings": {
+    "microphone": "è¯·æ‰“å¼€ç³»ç»Ÿè®¾ç½®ä»¥é…ç½®éº¦å…‹é£Žæƒé™ã€‚",
+    "sound": "è¯·æ‰“å¼€ç³»ç»Ÿå£°éŸ³è®¾ç½®ï¼ˆä¾‹å¦‚ pavucontrolï¼‰ã€‚",
+    "accessibility": "æ­¤å¹³å°ä¸æ”¯æŒè¾…åŠ©åŠŸèƒ½è®¾ç½®ã€‚",
+    "systemAudio": "ç³»ç»ŸéŸ³é¢‘è®¾ç½®åœ¨æ­¤å¹³å°ä¸Šä¸å¯ç”¨ã€‚"
+  },
+  "upgradePrompt": {
+    "paymentFailed": "æˆ‘ä»¬æ— æ³•å¤„ç†ä½ çš„ä»˜æ¬¾",
+    "weeklyLimit": "ä½ å·²è¾¾åˆ°æœ¬å‘¨çš„ä½¿ç”¨ä¸Šé™",
+    "pastDueDescription": "ä½ ç›®å‰ä½¿ç”¨çš„æ˜¯å…è´¹ç‰ˆ——åˆ«æ‹…å¿ƒï¼Œæ¯å‘¨ä»æœ‰ {{limit}} ä¸ªè¯çš„é¢åº¦ã€‚\næ›´æ–°æ”¯ä»˜æ–¹å¼å³å¯æ¢å¤æ— é™åˆ¶çš„ Pro ç‰ˆã€‚",
+    "limitDescription": "å·²ä½¿ç”¨ {{used}} / {{limit}} ä¸ªè¯ã€‚\nä½ çš„è½¬å½•å·²ä¿å­˜å¹¶ç²˜è´´ã€‚",
+    "updatePayment": "æ›´æ–°æ”¯ä»˜æ–¹å¼",
+    "updatePaymentDescription": "æ¢å¤æ— é™åˆ¶çš„ Pro ç‰ˆè½¬å½•ã€‚",
+    "upgradeToPro": "å‡çº§åˆ° Pro",
+    "upgradeDescription": "æ— é™è½¬å½•ï¼Œæ¯æœˆæœ€ä½Ž $8 èµ·ã€‚",
+    "useApiKey": "ä½¿ç”¨è‡ªå·±çš„ API Key",
+    "useApiKeyDescription": "ä½¿ç”¨ä½ è‡ªå·±çš„å¯†é’¥ï¼Œæ— é™åˆ¶ä½¿ç”¨ã€‚",
+    "switchToLocal": "åˆ‡æ¢åˆ°æœ¬åœ°æ¨¡å¼",
+    "switchToLocalDescription": "ç¦»çº¿è½¬å½•ï¼Œæ— ä½¿ç”¨é™åˆ¶ã€‚",
+    "rollingWeeklyLimit": "æ»šåŠ¨å‘¨é™é¢"
+  },
+  "windowControls": {
+    "minimize": "æœ€å°åŒ–",
+    "maximize": "æœ€å¤§åŒ–",
+    "restore": "è¿˜åŽŸ",
+    "close": "å…³é—­"
+  },
+  "windows": {
+    "pttUnavailable": "æŒ‰ä½è¯´è¯åŽŸç”Ÿç›‘å¬å™¨ä¸å¯ç”¨"
+  },
+  "common": {
+    "back": "è¿”å›ž",
+    "next": "ä¸‹ä¸€æ­¥",
+    "complete": "å®Œæˆ",
+    "reset": "é‡ç½®",
+    "refresh": "åˆ·æ–°",
+    "download": "ä¸‹è½½",
+    "cancel": "å–æ¶ˆ",
+    "recommended": "æŽ¨è",
+    "active": "å·²æ¿€æ´»",
+    "freeAccountRequired": "éœ€è¦å…è´¹è´¦æˆ·",
+    "cloud": "äº‘ç«¯",
+    "local": "æœ¬åœ°",
+    "apiKey": "API Key",
+    "model": "æ¨¡åž‹",
+    "loading": "åŠ è½½ä¸­...",
+    "unknown": "æœªçŸ¥",
+    "availableModels": "å¯ç”¨æ¨¡åž‹",
+    "fast": "å¿«é€Ÿ",
+    "hold": "æŒ‰ä½",
+    "private": "éšç§",
+    "tap": "ç‚¹æŒ‰",
+    "close": "å…³é—­",
+    "dismiss": "å¿½ç•¥",
+    "save": "Guardar",
+    "saving": "Guardandoâ€¦",
+    "create": "Crear",
+    "delete": "Eliminar",
+    "actions": "Acciones",
+    "error": "Algo saliÃ³ mal",
+    "unknownError": "OcurriÃ³ un error desconocido",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "done": "Listo",
+    "skip": "è·³è¿‡"
+  },
+  "onboarding": {
+    "steps": {
+      "welcome": "æ¬¢è¿Ž",
+      "setup": "è®¾ç½®",
+      "permissions": "æƒé™",
+      "activation": "å¬å†™",
+      "useCase": "å…³äºŽä½ ",
+      "meeting": "ä¼šè®®",
+      "finish": "å®Œæˆ",
+      "voiceAgent": "è¯­éŸ³åŠ©æ‰‹"
+    },
+    "hotkey": {
+      "couldNotRegisterTitle": "æ— æ³•æ³¨å†Œè¯¥å¿«æ·é”®",
+      "couldNotRegisterDescription": "è¯¥ç»„åˆé”®å¯èƒ½å·²è¢«å ç”¨ï¼Œè¯·å°è¯•å…¶ä»–ç»„åˆã€‚"
+    },
+    "setup": {
+      "title": "è®¾ç½®",
+      "description": "é€‰æ‹©è¯­è¨€å¹¶æŽˆäºˆæƒé™",
+      "language": "è¯­è¨€"
+    },
+    "permissions": {
+      "title": "æƒé™",
+      "microphoneTitle": "éº¦å…‹é£Ž",
+      "microphoneDescription": "å°†ä½ çš„è¯­éŸ³è½¬ä¸ºæ–‡å­—ã€‚æŒ‰ä¸‹å¿«æ·é”®ä¹‹å‰ä¸ä¼šå½•åˆ¶ä»»ä½•å†…å®¹ã€‚",
+      "grant": "æŽˆæƒ",
+      "grantAccess": "æŽˆäºˆè®¿é—®æƒé™",
+      "accessibilityTitle": "è¾…åŠ©åŠŸèƒ½",
+      "accessibilityDescription": "å°†å®Œæˆçš„æ–‡å­—ç›´æŽ¥è¾“å…¥åˆ°ä½ æ­£åœ¨ä½¿ç”¨çš„åº”ç”¨ä¸­ — æ–‡æ¡£ã€é‚®ä»¶ã€èŠå¤©ã€‚",
+      "testAndGrant": "æµ‹è¯•å¹¶æŽˆæƒ",
+      "requiredForApp": "Dhwani è¿è¡Œæ‰€å¿…éœ€çš„æƒé™",
+      "microphoneRequired": "éœ€è¦éº¦å…‹é£Žè®¿é—®æƒé™",
+      "openSystemSettings": "æ‰“å¼€ç³»ç»Ÿè®¾ç½®",
+      "systemAudioTitle": "ç³»ç»ŸéŸ³é¢‘",
+      "systemAudioDescription": "è®©ä¼šè®®å½•éŸ³æœºå¬åˆ°é€šè¯å¦ä¸€æ–¹çš„å£°éŸ³ — ä¼šè®®ã€è®²åº§ã€æ’­å®¢ã€‚ä½ å¯ä»¥ç¨åŽåœ¨“è®¾ç½®”ä¸­å¼€å¯ã€‚",
+      "optional": "å¯é€‰",
+      "recommended": "æŽ¨è",
+      "accessibilityTroubleshooting": "åœ¨ç³»ç»Ÿè®¾ç½® → è¾…åŠ©åŠŸèƒ½ä¸­ï¼Œå°† Dhwani çš„å¼€å…³å…³é—­å†é‡æ–°æ‰“å¼€ã€‚å¦‚æžœæ— æ•ˆï¼Œè¯·å°† Dhwani ä»Žåˆ—è¡¨ä¸­ç§»é™¤åŽé‡æ–°æ·»åŠ ã€‚è¿˜æ˜¯ä¸è¡Œï¼Ÿè¯·å‘é‚®ä»¶è‡³ support@Dhwani.comã€‚"
+    },
+    "transcription": {
+      "title": "è½¬å½•è®¾ç½®",
+      "description": "é€‰æ‹©æ¨¡å¼å’ŒæœåŠ¡å•†",
+      "preferredLanguage": "é¦–é€‰è¯­è¨€"
+    },
+    "activation": {
+      "title": "å¬å†™è®¾ç½®",
+      "description": "é…ç½®è§¦å‘å¬å†™çš„æ–¹å¼",
+      "hotkey": "å¿«æ·é”®",
+      "mode": "æ¨¡å¼",
+      "tapDescription": "æŒ‰ä¸‹å¼€å§‹/åœæ­¢",
+      "holdDescription": "æŒ‰ä½è¯´è¯",
+      "test": "æµ‹è¯•",
+      "hotkeyToStartStop": "{{hotkey}} å¼€å§‹/åœæ­¢",
+      "holdHotkey": "æŒ‰ä½ {{hotkey}}",
+      "textareaPlaceholder": "ç‚¹å‡»æ­¤å¤„ï¼Œç„¶åŽä½¿ç”¨å¿«æ·é”®è¿›è¡Œå¬å†™..."
+    },
+    "voiceAgent": {
+      "title": "è¯­éŸ³åŠ©æ‰‹è®¾ç½®",
+      "description": "ä¸€é”®å”¤èµ·ä½ çš„ AI åŠ©æ‰‹",
+      "hotkey": "å¿«æ·é”®",
+      "howItWorks": "æŒ‰ä¸‹å¿«æ·é”®ï¼Œè¯´å‡ºä½ æƒ³è¦çš„å†…å®¹ï¼Œä¾‹å¦‚“å†™ä¸€æ®µç®€çŸ­çš„æ„Ÿè°¢è¯­”ã€‚{{agentName}} ä¼šæŠŠç»“æžœè¾“å…¥åˆ°å…‰æ ‡æ‰€åœ¨çš„ä½ç½®ã€‚æ— éœ€å…ˆè¯´“Hey {{agentName}}”ã€‚",
+      "test": "è¯•ä¸€è¯•",
+      "testInstruction": "ç‚¹å‡»ä¸‹æ–¹ï¼ŒæŒ‰ä¸‹ {{hotkey}} å¹¶è¯´å‡ºæŒ‡ä»¤",
+      "testSetHotkey": "åœ¨ä¸Šæ–¹è®¾ç½®å¿«æ·é”®å³å¯è¯•ç”¨",
+      "testPlaceholder": "ç‚¹å‡»è¿™é‡Œï¼ŒæŒ‰ä¸‹å¿«æ·é”®å¹¶è¯´å‡ºå…¶ä¸­ä¸€ä¸ªç¤ºä¾‹...",
+      "examples": [
+        "ç¿»è¯‘æˆæ„å¤§åˆ©è¯­:“æˆ‘è¯´è¯æ¯”æ‰“å­—å¿«”",
+        "ç»™æˆ‘çš„è€æ¿å†™ä¸€å°ç®€çŸ­çš„é‚®ä»¶,å‘Šè¯‰ä»–æˆ‘æƒ³è¦å‡èŒ,ä»–å« Mark",
+        "5 Ã— 5 ç­‰äºŽå¤šå°‘?"
+      ],
+      "optionalNote": "å¯é€‰——ä½ å¯ä»¥éšæ—¶åœ¨è®¾ç½®ä¸­æ·»åŠ æˆ–ä¿®æ”¹ã€‚"
+    },
+    "connectivity": {
+      "title": "æ— æ³•ä»Žè¯¥ç½‘ç»œè¿žæŽ¥åˆ° Dhwani Cloud",
+      "body": "{{cause}} ä½ å¯ä»¥åˆ‡æ¢åˆ°æœ¬åœ°å¼•æ“Žï¼Œæˆ–ç»§ç»­å¹¶ç¨åŽé‡è¯•ã€‚",
+      "useLocal": "ä½¿ç”¨æœ¬åœ°å¼•æ“Ž",
+      "continue": "ä»ç„¶ç»§ç»­"
+    },
+    "useCase": {
+      "title": "ä½ ä¸ºä»€ä¹ˆæ¥åˆ°è¿™é‡Œï¼Ÿ",
+      "description": "æˆ‘ä»¬æ˜¯ä¸€ä¸ªå°å›¢é˜Ÿï¼Œæ¯å‘¨å‘å¸ƒæ›´æ–°ã€‚ä½ çš„é€‰æ‹©ä¼šä¸ºä½ é…ç½®åº”ç”¨ï¼Œä¹Ÿå‘Šè¯‰æˆ‘ä»¬æŽ¥ä¸‹æ¥è¯¥åšä»€ä¹ˆã€‚",
+      "noteLabel": "è¿˜æœ‰ä»€ä¹ˆæƒ³å‘Šè¯‰æˆ‘ä»¬çš„å—ï¼Ÿ",
+      "notePlaceholder": "å¯é€‰",
+      "options": {
+        "dictation": {
+          "title": "æ›´å¿«åœ°å†™ä½œ",
+          "description": "åœ¨ä»»ä½•åº”ç”¨ä¸­å£è¿°ï¼Œè€Œä¸æ˜¯æ‰“å­—"
+        },
+        "meetings": {
+          "title": "ä¼šè®®ç¬”è®°ä¸Žæ‘˜è¦",
+          "description": "å½•åˆ¶ã€è½¬å†™å¹¶æ€»ç»“ä¼šè®®"
+        },
+        "healthcare": {
+          "title": "åŒ»ç–—ã€ä¸´åºŠä¸Žæ²»ç–—è½¬å†™",
+          "description": "å£è¿°ç—…åŽ†ã€å’¨è¯¢è®°å½•å’ŒæŠ¥å‘Š"
+        },
+        "translation": {
+          "title": "è¯­è¨€ç¿»è¯‘",
+          "description": "è¯´ä¸€ç§è¯­è¨€ï¼Œè¾“å‡ºå¦ä¸€ç§"
+        },
+        "ai": {
+          "title": "ä¸Žæˆ‘çš„ AI å¯¹è¯",
+          "description": "ç”¨è¯­éŸ³é©±åŠ¨ ChatGPTã€Claude ç­‰æ™ºèƒ½ä½“"
+        },
+        "upload": {
+          "title": "ä¸Šä¼ éŸ³é¢‘æ–‡ä»¶",
+          "description": "ä¸Šä¼ å¹¶è½¬å†™ MP3ã€OGG ç­‰"
+        }
+      },
+      "selectHint": "å¯å¤šé€‰"
+    },
+    "meeting": {
+      "title": "ä¼šè®®ç¬”è®°",
+      "description": "æ•æ‰å¹¶æ€»ç»“ä½ çš„ä¼šè®®",
+      "autoDetect": "Dhwani ä¼šè‡ªåŠ¨æ£€æµ‹ä½ æ˜¯å¦åœ¨å¼€ä¼šï¼Œå¹¶æè®®å¼€å§‹è®°å½• — æœªç»ä½ ç¡®è®¤ä¸ä¼šå½•åˆ¶ä»»ä½•å†…å®¹ã€‚",
+      "notification": {
+        "title": "æ£€æµ‹åˆ°ä¼šè®®",
+        "body": "ä½ ä¼¼ä¹Žæ­£åœ¨å¼€ä¼šã€‚è¦å¼€å§‹è®°å½•å—ï¼Ÿ",
+        "cta": "å¼€å§‹å½•åˆ¶"
+      },
+      "hotkeyLabel": "ä¼šè®®å¿«æ·é”®",
+      "hotkeyHint": "å¯é€‰ — åœ¨ä»»ä½•ä¼šè®®ä¸­æŒ‰ä¸‹å³å¯ç«‹å³å¼€å§‹è®°å½•ã€‚"
+    },
+    "finish": {
+      "title": "ä¸€åˆ‡å°±ç»ª",
+      "cloudDescription": "ä½ æ­£åœ¨ä½¿ç”¨ Dhwani Cloud — å¿«é€Ÿã€å‡†ç¡®ã€é›¶æ•°æ®ä¿ç•™ï¼Œæ¯å‘¨å…è´¹ 2,000 è¯ã€‚å¸Œæœ›ä¸€åˆ‡éƒ½åœ¨æœ¬åœ°ï¼Ÿå¯åœ¨“è®¾ç½®”ä¸­åˆ‡æ¢åˆ°æœ¬åœ°å¤„ç†ã€‚",
+      "localDescription": "ä½ å·²é…ç½®æœ¬åœ°å¤„ç†æˆ–è‡ªå¸¦å¯†é’¥ã€‚å¯éšæ—¶åœ¨“è®¾ç½®”ä¸­è°ƒæ•´éŸ³é¢‘å¤„ç†æ–¹å¼ã€‚",
+      "cleanupNote": "AI æ–‡æœ¬æ¸…ç†ä½¿ç”¨åˆç†çš„é»˜è®¤è®¾ç½®ï¼Œå¯éšæ—¶åœ¨“è®¾ç½®”ä¸­è°ƒæ•´ã€‚",
+      "openSettings": "æ‰“å¼€è®¾ç½®",
+      "skipForNow": "æš‚æ—¶è·³è¿‡",
+      "corti": {
+        "title": "ä½ å‘Šè¯‰æˆ‘ä»¬ä½ æ˜¯ä¸ºä¸´åºŠè½¬å†™è€Œæ¥",
+        "description": "æˆ‘ä»¬ä¸Ž Corti åˆä½œ — ä¸´åºŠçº§è¯­éŸ³è½¬æ–‡å­—ï¼Œå‡†ç¡®çŽ‡æœ€é«˜ï¼Œå¹¶ç¬¦åˆ HIPAAã€‚",
+        "createAccount": "åˆ›å»ºä½ çš„ Corti è´¦æˆ·",
+        "creditBadge": "50 ç¾Žå…ƒå…è´¹é¢åº¦",
+        "regionHint": "é€‰æ‹©éŸ³é¢‘å¤„ç†åœ°åŒº — ç¾Žå›½æˆ–æ¬§ç›Ÿã€‚",
+        "useCorti": "ä½¿ç”¨ Corti",
+        "skip": "æš‚ä¸éœ€è¦",
+        "step1": "åœ¨ corti.ai æ³¨å†Œ",
+        "step2": "æ‰“å¼€ Corti æŽ§åˆ¶å°å¹¶åˆ›å»º API å‡­æ®",
+        "step3": "åœ¨ä¸‹æ–¹ç²˜è´´ Client ID å’Œ Secret"
+      }
+    }
+  },
+  "streaming": {
+    "errors": {
+      "cloudUnreachable": {
+        "title": "æ— æ³•è¿žæŽ¥åˆ° Dhwani Cloud",
+        "generic": "ç½‘ç»œè¯·æ±‚å¤±è´¥ï¼Œè¯·æ£€æŸ¥ä½ çš„è¿žæŽ¥ã€‚",
+        "dnsBlocked": "DNS æ— æ³•è§£æž Dhwani.com — å¹¿å‘Šæ‹¦æˆªå™¨æˆ–è¿‡æ»¤å™¨å¯èƒ½é˜»æ­¢äº†å®ƒã€‚",
+        "refused": "è¿žæŽ¥è¢«æ‹’ç» — å¯èƒ½æ˜¯é˜²ç«å¢™æˆ– VPNã€‚",
+        "timeout": "ç½‘ç»œè¶…æ—¶ — VPNã€å¼ºåˆ¶é—¨æˆ·æˆ–ç½‘ç»œä¸ç¨³å®šã€‚",
+        "tls": "TLS æ¡æ‰‹å¤±è´¥ — è¯·æ£€æŸ¥ç³»ç»Ÿæ—¶é’Ÿæˆ–ä¼ä¸šä»£ç†ã€‚",
+        "fallback": "Cloud ä¸å¯ç”¨ — æœ¬æ¬¡å½•éŸ³å°†ä½¿ç”¨æœ¬åœ°å¼•æ“Žã€‚"
+      }
+    }
+  },
+  "controlPanel": {
+    "update": {
+      "readyTitle": "æ›´æ–°å·²å‡†å¤‡å°±ç»ª",
+      "readyDescription": "ç‚¹å‡»“å®‰è£…æ›´æ–°”ä»¥é‡å¯å¹¶å®‰è£…æœ€æ–°ç‰ˆæœ¬ã€‚",
+      "problemTitle": "æ›´æ–°é‡åˆ°é—®é¢˜",
+      "problemDescription": "æ— æ³•å®Œæˆæ›´æ–°ï¼Œè¯·ç¨åŽå†è¯•ã€‚",
+      "installTitle": "å®‰è£…æ›´æ–°",
+      "installDescription": "Dhwani å°†é‡å¯ä»¥åº”ç”¨æ›´æ–°ã€‚å½“å‰è¿›è¡Œä¸­çš„å·¥ä½œå°†è¢«ä¿å­˜ã€‚",
+      "couldNotInstallTitle": "æ— æ³•å®‰è£…æ›´æ–°",
+      "couldNotInstallDescription": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·é‡è¯•ã€‚",
+      "couldNotDownloadTitle": "æ— æ³•ä¸‹è½½æ›´æ–°",
+      "couldNotDownloadDescription": "è¯·æ£€æŸ¥ç½‘ç»œè¿žæŽ¥åŽé‡è¯•ã€‚",
+      "installing": "æ­£åœ¨å®‰è£…...",
+      "installButton": "å®‰è£…æ›´æ–°",
+      "availableButton": "æœ‰å¯ç”¨æ›´æ–°"
+    },
+    "limit": {
+      "weeklyTitle": "å·²è¾¾åˆ°å‘¨é™é¢",
+      "weeklyDescription": "ä½ çš„é¢åº¦æŒ‰æ»šåŠ¨æ–¹å¼é‡ç½®ã€‚å‡çº§åˆ° Pro æˆ–ä½¿ç”¨è‡ªå·±çš„ API Key å¯ä¸å—é™åˆ¶ã€‚"
+    },
+    "accessibilityMissing": {
+      "title": "éœ€è¦è¾…åŠ©åŠŸèƒ½æƒé™",
+      "description": "æˆ‘ä»¬æ£€æµ‹åˆ° Dhwani éœ€è¦è¾…åŠ©åŠŸèƒ½æƒé™æ‰èƒ½æ­£å¸¸å·¥ä½œã€‚è¯·åœ¨ä¸‹æ–¹å¯ç”¨ã€‚"
+    },
+    "billing": {
+      "pastDueTitle": "æˆ‘ä»¬æ— æ³•å¤„ç†ä½ çš„ä»˜æ¬¾",
+      "pastDueDescription": "åˆ«æ‹…å¿ƒ——ä½ ç›®å‰ä½¿ç”¨çš„æ˜¯å…è´¹ç‰ˆã€‚åœ¨è®¾ç½®ä¸­æ›´æ–°æ”¯ä»˜æ–¹å¼å³å¯æ¢å¤ Pro ç‰ˆã€‚",
+      "bannerDescription": "ä½ ç›®å‰ä½¿ç”¨çš„æ˜¯å…è´¹ç‰ˆ——æ¯å‘¨ä»æœ‰ {{limit}} ä¸ªè¯çš„é¢åº¦ã€‚æ›´æ–°æ”¯ä»˜æ–¹å¼å³å¯æ¢å¤ Pro ç‰ˆã€‚",
+      "updatePayment": "æ›´æ–°æ”¯ä»˜æ–¹å¼"
+    },
+    "history": {
+      "couldNotLoadTitle": "æ— æ³•åŠ è½½åŽ†å²è®°å½•",
+      "couldNotLoadDescription": "åŠ è½½è½¬å½•è®°å½•æ—¶å‡ºé”™ï¼Œè¯·å°è¯•å…³é—­å¹¶é‡æ–°æ‰“å¼€åº”ç”¨ã€‚",
+      "copiedTitle": "å·²å¤åˆ¶ï¼",
+      "copiedDescription": "æ–‡æœ¬å·²å¤åˆ¶åˆ°å‰ªè´´æ¿",
+      "couldNotCopyTitle": "æ— æ³•å¤åˆ¶",
+      "couldNotCopyDescription": "å¤åˆ¶åˆ°å‰ªè´´æ¿æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+      "deleteTitle": "åˆ é™¤è½¬å½•è®°å½•",
+      "deleteDescription": "æ­¤è½¬å½•è®°å½•å°†è¢«æ°¸ä¹…åˆ é™¤ã€‚",
+      "couldNotDeleteTitle": "æ— æ³•åˆ é™¤",
+      "couldNotDeleteDescription": "æ­¤è½¬å½•è®°å½•å¯èƒ½å·²è¢«åˆ é™¤ã€‚",
+      "couldNotDeleteDescriptionGeneric": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·é‡è¯•ã€‚",
+      "empty": "æš‚æ— è½¬å½•è®°å½•",
+      "dataRetentionDisabled": "æ•°æ®ä¿ç•™å·²å…³é—­ã€‚è½¬å½•å’ŒéŸ³é¢‘ä¸ä¼šä¿å­˜åˆ°åŽ†å²è®°å½•ã€‚",
+      "press": "æŒ‰ä¸‹",
+      "toStart": "å¼€å§‹",
+      "dateGroups": {
+        "today": "ä»Šå¤©",
+        "yesterday": "æ˜¨å¤©"
+      },
+      "transcriptionFailed": "è½¬å½•å¤±è´¥",
+      "failedCtaSettings": "è®¾ç½®æ‚¨çš„è½¬å½•æœåŠ¡å•†",
+      "failedCtaAndRetry": "ç„¶åŽç‚¹å‡»é‡è¯•",
+      "failedCtaSettingsOnly": "åœ¨è®¾ç½®ä¸­é…ç½®æ‚¨çš„è½¬å½•æœåŠ¡å•†",
+      "failedLimitReached": "å·²è¾¾æ¯æ—¥é™é¢",
+      "failedOffline": "ç¦»çº¿",
+      "clearAll": "å…¨éƒ¨æ¸…é™¤",
+      "clearAllTitle": "æ¸…é™¤æ‰€æœ‰è½¬å½•",
+      "clearAllDescription": "æ‰€æœ‰è½¬å½•å’ŒéŸ³é¢‘æ–‡ä»¶å°†è¢«æ°¸ä¹…åˆ é™¤ã€‚",
+      "clearAllSuccess": "åŽ†å²è®°å½•å·²æ¸…é™¤",
+      "clearAllErrorTitle": "æ— æ³•æ¸…é™¤åŽ†å²è®°å½•",
+      "clearAllErrorDescription": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·é‡è¯•ã€‚",
+      "copyText": "å¤åˆ¶æ–‡æœ¬",
+      "deleteItem": "åˆ é™¤",
+      "viewRawTranscript": "æŸ¥çœ‹åŽŸå§‹è½¬å½•",
+      "showInFolder": "åœ¨è®¿è¾¾ä¸­æ˜¾ç¤º",
+      "showInFolderWindows": "åœ¨èµ„æºç®¡ç†å™¨ä¸­æ˜¾ç¤º",
+      "showInFolderLinux": "åœ¨æ–‡ä»¶ç®¡ç†å™¨ä¸­æ˜¾ç¤º",
+      "retryTranscription": "é‡æ–°è½¬å½•",
+      "retrying": "æ­£åœ¨é‡æ–°è½¬å½•â€¦",
+      "retrySuccess": "è½¬å½•å·²æ›´æ–°",
+      "retryError": "é‡æ–°è½¬å½•å¤±è´¥",
+      "audioNotFound": "éŸ³é¢‘æ–‡ä»¶æœªæ‰¾åˆ°æˆ–å·²è¿‡æœŸ",
+      "noAiProcessing": "æ­¤è½¬å½•æœªåº”ç”¨ AI å¤„ç†",
+      "rawTranscript": "åŽŸå§‹è½¬å½•",
+      "discarded": {
+        "show": "æ˜¾ç¤ºå·²æ”¾å¼ƒ",
+        "hide": "éšè—å·²æ”¾å¼ƒ",
+        "badge": "å·²æ”¾å¼ƒ",
+        "recording": "å·²æ”¾å¼ƒçš„å½•éŸ³",
+        "recordingWithDuration": "å·²æ”¾å¼ƒçš„å½•éŸ³ Â· {{duration}}",
+        "recover": "æ¢å¤",
+        "recovered": "å·²æ¢å¤"
+      }
+    },
+    "cloudMigration": {
+      "title": "æ¬¢è¿Žä½¿ç”¨ Dhwani äº‘ç«¯",
+      "description": "æˆ‘ä»¬å·²å°†è½¬å½•åˆ‡æ¢åˆ° Dhwani äº‘ç«¯ï¼Œä»¥èŽ·å¾—æ›´å¿«ã€æ›´å‡†ç¡®çš„ç»“æžœã€‚ä½ ä¹‹å‰çš„è®¾ç½®å·²ä¿å­˜——éšæ—¶å¯ä»¥åœ¨è®¾ç½®ä¸­åˆ‡æ¢å›žåŽ»ã€‚",
+      "viewSettings": "æŸ¥çœ‹è®¾ç½®"
+    },
+    "aiCta": {
+      "title": "ç”¨ AI æå‡ä½ çš„è½¬å½•è´¨é‡",
+      "description": "åœ¨ä½ è¯´è¯çš„åŒæ—¶ï¼Œè‡ªåŠ¨ä¿®æ­£è¯­æ³•ã€æ ‡ç‚¹å’Œæ ¼å¼ã€‚",
+      "enable": "å¯ç”¨ AI å¢žå¼º"
+    },
+    "loading": "åŠ è½½ä¸­...",
+    "gpu": {
+      "bannerTitle": "GPU åŠ é€Ÿå¯ç”¨",
+      "bannerDescription": "å¯ç”¨ GPU åŠ é€Ÿä»¥èŽ·å¾—æ›´å¿«çš„æ€§èƒ½ã€‚",
+      "enableButton": "å¯ç”¨ GPU",
+      "dismissButton": "æš‚ä¸å¯ç”¨"
+    },
+    "backToNotes": "è¿”å›žç¬”è®°"
+  },
+  "reasoning": {
+    "mode": {
+      "cloud": "äº‘ç«¯",
+      "local": "æœ¬åœ°",
+      "enterprise": "ä¼ä¸š",
+      "localDescription": "åœ¨ä½ çš„è®¾å¤‡ä¸Šè¿è¡Œï¼Œå®Œå…¨éšç§ï¼Œç¦»çº¿å¯ç”¨ã€‚",
+      "cloudDescription": "é€šè¿‡ API ä½¿ç”¨é«˜çº§æ¨¡åž‹ï¼Œå¿«é€Ÿä¸”å¼ºå¤§ï¼Œéœ€è¦è”ç½‘ã€‚",
+      "enterpriseDescription": "ä½¿ç”¨ä½ ç»„ç»‡çš„äº‘æœåŠ¡å•†å‡­æ®ã€‚"
+    },
+    "custom": {
+      "endpointWithProtocol": "è¯·è¾“å…¥åŒ…å«åè®®çš„å®Œæ•´ URLï¼ˆä¾‹å¦‚ https://server/v1ï¼‰ã€‚",
+      "httpsRequired": "éœ€è¦ HTTPSï¼ˆä»…æœ¬åœ°ç½‘ç»œå…è®¸ HTTPï¼‰ã€‚",
+      "endpointUnauthorized": "ç«¯ç‚¹æ‹’ç»äº†è¯·æ±‚ï¼ˆ401/403ï¼‰ã€‚è¯·æ·»åŠ  API Key æˆ–è°ƒæ•´æœåŠ¡å™¨è®¤è¯è®¾ç½®ã€‚",
+      "endpointTitle": "ç«¯ç‚¹ URL",
+      "endpointExamples": "ç¤ºä¾‹ï¼š",
+      "ollama": "ï¼ˆOllamaï¼‰",
+      "localAi": "ï¼ˆLocalAIï¼‰",
+      "apiKeyOptional": "API Keyï¼ˆå¯é€‰ï¼‰",
+      "apiKeyHelp": "å¯é€‰ã€‚ä½œä¸º Bearer token ç”¨äºŽèº«ä»½éªŒè¯ï¼Œä¸Ž OpenAI API Key æ— å…³ã€‚",
+      "applyAndRefresh": "åº”ç”¨å¹¶åˆ·æ–°",
+      "queryPrefix": "æˆ‘ä»¬å°†æŸ¥è¯¢",
+      "querySuffix": "èŽ·å–å¯ç”¨æ¨¡åž‹ã€‚",
+      "modelsReloadHint": "å½“ä½ ç¦»å¼€ URL è¾“å…¥æ¡†æˆ–ç‚¹å‡»“åº”ç”¨å¹¶åˆ·æ–°”æ—¶ï¼Œæ¨¡åž‹åˆ—è¡¨å°†é‡æ–°åŠ è½½ã€‚",
+      "enterEndpoint": "è¯·åœ¨ä¸Šæ–¹è¾“å…¥ç«¯ç‚¹ URL ä»¥åŠ è½½æ¨¡åž‹ã€‚",
+      "fetchingModels": "æ­£åœ¨ä»Žç«¯ç‚¹èŽ·å–æ¨¡åž‹åˆ—è¡¨...",
+      "noModels": "æœªè¿”å›žä»»ä½•æ¨¡åž‹ï¼Œè¯·æ£€æŸ¥ç«¯ç‚¹ URLã€‚",
+      "providerName": "è‡ªå®šä¹‰",
+      "ownerLabel": "æ‰€æœ‰è€…ï¼š{{owner}}",
+      "unableToLoadModels": "æ— æ³•ä»Žç«¯ç‚¹åŠ è½½æ¨¡åž‹ã€‚"
+    },
+    "getApiKey": "èŽ·å–ä½ çš„ API Key ->",
+    "selectModel": "é€‰æ‹©æ¨¡åž‹",
+    "availableModels": "å¯ç”¨æ¨¡åž‹",
+    "disableThinking": {
+      "label": "ç¦ç”¨æ€è€ƒè¾“å‡º",
+      "help": "è·³è¿‡æŽ¨ç†ä»¤ç‰Œä»¥èŽ·å¾—æ›´æ¸…æ™°çš„è¾“å‡ºã€‚æŽ¨èç”¨äºŽæ¸…ç†ã€‚æŸäº›æœåŠ¡å™¨ä¼šå¿½ç•¥æ­¤æç¤ºã€‚"
+    },
+    "selfHosted": {
+      "endpointHelp": "æŒ‡å‘æœ¬åœ°ç½‘ç»œä¸­å…¼å®¹ OpenAI çš„æœåŠ¡å™¨ï¼ˆä¾‹å¦‚ Ollamaã€LM Studioã€vLLM æˆ– llama-serverï¼‰ã€‚"
+    },
+    "enterprise": {
+      "title": "ä¼ä¸šçº§æä¾›å•†",
+      "description": "ä½¿ç”¨ä½ ç»„ç»‡çš„å‡­æ®è¿žæŽ¥äº‘ç«¯æä¾›å•†ã€‚",
+      "testConnection": "æµ‹è¯•è¿žæŽ¥",
+      "testing": "æµ‹è¯•ä¸­â€¦",
+      "testSuccess": "å·²è¿žæŽ¥",
+      "testFailed": "è¿žæŽ¥å¤±è´¥",
+      "authMode": "è®¤è¯æ–¹å¼",
+      "ssoProfile": "SSO é…ç½®æ–‡ä»¶",
+      "accessKeys": "è®¿é—®å¯†é’¥",
+      "adc": "Application Default Credentials",
+      "apiKeyMode": "API å¯†é’¥",
+      "region": "åŒºåŸŸ",
+      "profile": "é…ç½®æ–‡ä»¶åç§°",
+      "accessKeyId": "Access Key ID",
+      "secretAccessKey": "Secret Access Key",
+      "sessionToken": "Session Tokenï¼ˆå¯é€‰ï¼‰",
+      "endpoint": "ç«¯ç‚¹ URL",
+      "deploymentName": "éƒ¨ç½²åç§°",
+      "apiVersion": "API ç‰ˆæœ¬",
+      "projectId": "é¡¹ç›® ID",
+      "location": "ä½ç½®",
+      "customModelId": "è‡ªå®šä¹‰æ¨¡åž‹ ID",
+      "customModelPlaceholder": "è¾“å…¥æ¨¡åž‹ ID æˆ–éƒ¨ç½²åç§°",
+      "suggestedModels": "æŽ¨èæ¨¡åž‹",
+      "bedrock": {
+        "ssoHelp": "ä½¿ç”¨ä½ çš„ AWS CLI SSO é…ç½®ã€‚è¯·ç¡®ä¿å·²è¿è¡Œ 'aws sso login'ã€‚",
+        "keysHelp": "è¾“å…¥ä½ çš„ AWS IAM è®¿é—®å¯†é’¥ã€‚"
+      },
+      "azure": {
+        "endpointHelp": "ä½ çš„ Azure OpenAI èµ„æºç«¯ç‚¹ï¼ˆä¾‹å¦‚ https://myresource.openai.azure.comï¼‰ã€‚",
+        "deploymentHelp": "Azure OpenAI ä¸­çš„æ¨¡åž‹éƒ¨ç½²åç§°ã€‚"
+      },
+      "vertex": {
+        "adcHelp": "ä½¿ç”¨ Application Default Credentialsã€‚è¯·æ‰§è¡Œï¼šgcloud auth application-default login",
+        "apikeyHelp": "ä»Ž Google AI Studio èŽ·å–çš„ Vertex AI Express Mode API å¯†é’¥ã€‚"
+      }
+    }
+  },
+  "transcription": {
+    "deleteModel": {
+      "title": "åˆ é™¤æ¨¡åž‹",
+      "description": "ç¡®å®šè¦åˆ é™¤æ­¤æ¨¡åž‹å—ï¼Ÿå¦‚æžœéœ€è¦å†æ¬¡ä½¿ç”¨ï¼Œä½ éœ€è¦é‡æ–°ä¸‹è½½ã€‚"
+    },
+    "parakeet": {
+      "multilingual": "25 ç§è¯­è¨€",
+      "english": "è‹±è¯­"
+    },
+    "apiKeyOptional": "API Keyï¼ˆå¯é€‰ï¼‰",
+    "getKey": "èŽ·å–å¯†é’¥ ->",
+    "endpointUrl": "ç«¯ç‚¹ URL",
+    "azureHint": "Azure AI Foundryï¼šè¾“å…¥ä½ çš„èµ„æºç»ˆç»“ç‚¹ï¼ˆä¾‹å¦‚ https://your-resource.cognitiveservices.azure.comï¼‰ï¼Œå¹¶å°†“æ¨¡åž‹”è®¾ç½®ä¸ºä½ çš„ç¡®åˆ‡éƒ¨ç½²åç§°ã€‚",
+    "customProvider": "è‡ªå®šä¹‰",
+    "fallback": {
+      "whisperModelDescription": "æ¨¡åž‹",
+      "parakeetModelDescription": "NVIDIA Parakeet æ¨¡åž‹"
+    },
+    "whisperModels": "Whisper æ¨¡åž‹",
+    "corti": {
+      "clientId": "å®¢æˆ·ç«¯ ID",
+      "clientSecret": "å®¢æˆ·ç«¯å¯†é’¥",
+      "environment": "æ•°æ®åŒºåŸŸ",
+      "tenant": "ç§Ÿæˆ·"
+    }
+  },
+  "hooks": {
+    "audioRecording": {
+      "errorTitles": {
+        "sessionExpired": "ä¼šè¯å·²è¿‡æœŸ",
+        "offline": "ä½ å·²ç¦»çº¿",
+        "dailyLimitReached": "å·²è¾¾åˆ°æ¯æ—¥ä¸Šé™",
+        "providerRateLimited": "æœåŠ¡å•†é€ŸçŽ‡é™åˆ¶"
+      },
+      "fallback": {
+        "title": "å›žé€€æ¨¡å¼",
+        "description": "æœ¬åœ° Whisper å¤±è´¥ï¼Œå·²æ”¹ç”¨ OpenAI APIã€‚"
+      },
+      "noAudio": {
+        "title": "æœªæ£€æµ‹åˆ°éŸ³é¢‘",
+        "description": "å½•éŸ³ä¸­æœªæ£€æµ‹åˆ°éŸ³é¢‘ï¼Œè¯·é‡è¯•ã€‚"
+      },
+      "errorDescriptions": {
+        "sessionExpired": "Dhwani Cloud ä¼šè¯ä¸å¯ç”¨ã€‚è¯·åˆ°ã€Œè®¾ç½®ã€ä¸­é‡æ–°ç™»å½•ã€‚",
+        "offline": "ä½ ç›®å‰ç¦»çº¿ã€‚äº‘ç«¯è½¬å½•éœ€è¦äº’è”ç½‘è¿žæŽ¥ã€‚",
+        "dailyLimitReached": "å·²è¾¾ä»Šæ—¥è½¬å½•ä¸Šé™ã€‚è¯·æ˜Žå¤©å†è¯•æˆ–å‡çº§ä½ çš„å¥—é¤ã€‚",
+        "providerRateLimited": "ä½ çš„è½¬å½•æœåŠ¡å•†é™åˆ¶äº†è¯·æ±‚é¢‘çŽ‡ã€‚è¯·ç¨å€™å†è¯•ã€‚"
+      }
+    },
+    "clipboard": {
+      "pasteFailed": {
+        "title": "å‰ªè´´æ¿ç²˜è´´å¤±è´¥",
+        "description": "æ— æ³•ä»Žå‰ªè´´æ¿ç²˜è´´ï¼Œè¯·å°è¯•æ‰‹åŠ¨è¾“å…¥æˆ–ä½¿ç”¨ Cmd+V / Ctrl+Vã€‚"
+      }
+    },
+    "hotkeyRegistration": {
+      "titles": {
+        "invalidHotkey": "æ— æ•ˆçš„å¿«æ·é”®",
+        "notRegistered": "å¿«æ·é”®æœªæ³¨å†Œ",
+        "saved": "å¿«æ·é”®å·²ä¿å­˜",
+        "error": "å¿«æ·é”®é”™è¯¯"
+      },
+      "errors": {
+        "enterValidHotkey": "è¯·è¾“å…¥æœ‰æ•ˆçš„å¿«æ·é”®",
+        "unsupportedShortcut": "ä¸æ”¯æŒè¯¥å¿«æ·æ–¹å¼ã€‚",
+        "couldNotRegister": "æ— æ³•æ³¨å†Œæ­¤æŒ‰é”®ï¼Œè¯·é€‰æ‹©å…¶ä»–æŒ‰é”®ã€‚",
+        "failedToRegister": "æ³¨å†Œå¿«æ·é”®å¤±è´¥ï¼Œè¯·é‡è¯•ã€‚"
+      },
+      "messages": {
+        "nowUsing": "çŽ°åœ¨ä½¿ç”¨ {{hotkey}} è¿›è¡Œå¬å†™"
+      }
+    },
+    "modelDownload": {
+      "errors": {
+        "timeout": "ä¸‹è½½è¶…æ—¶ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè¿žæŽ¥åŽé‡è¯•ã€‚",
+        "notFound": "æ— æ³•è¿žæŽ¥åˆ°ä¸‹è½½æœåŠ¡å™¨ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè¿žæŽ¥ã€‚",
+        "corrupted": "ä¸‹è½½ä¸å®Œæ•´æˆ–å·²æŸåï¼Œè¯·é‡è¯•ã€‚",
+        "rateLimited": "ä¸‹è½½æœåŠ¡å™¨æ­£åœ¨é™æµï¼Œè¯·ç­‰å¾…å‡ åˆ†é’ŸåŽé‡è¯•ã€‚",
+        "server": "æœåŠ¡å™¨é”™è¯¯ï¼ˆ{{error}}ï¼‰ï¼Œè¯·ç¨åŽé‡è¯•ã€‚",
+        "generic": "ä¸‹è½½å¤±è´¥ï¼š{{error}}",
+        "extractionFailed": "æ¨¡åž‹å·²ä¸‹è½½ä½†å®‰è£…å¤±è´¥ã€‚ç‚¹å‡»ä¸‹è½½ä»¥é‡æ–°å®‰è£…ï¼Œæ— éœ€é‡æ–°ä¸‹è½½ã€‚",
+        "tlsError": "è¯ä¹¦é”™è¯¯ — æ‚¨çš„ç½‘ç»œå¯èƒ½ä½¿ç”¨äº†é˜»æ­¢ä¸‹è½½çš„SSLæ£€æŸ¥ã€‚è¯·å°è¯•ä»Žå…¶ä»–ç½‘ç»œä¸‹è½½ã€‚",
+        "unknown": "æœªçŸ¥é”™è¯¯"
+      },
+      "downloadFailed": {
+        "title": "ä¸‹è½½å¤±è´¥"
+      },
+      "installationFailed": {
+        "title": "å®‰è£…å¤±è´¥"
+      },
+      "downloadInProgress": {
+        "title": "ä¸‹è½½è¿›è¡Œä¸­",
+        "description": "è¯·ç­‰å¾…å½“å‰ä¸‹è½½å®Œæˆæˆ–å…ˆå–æ¶ˆå®ƒã€‚"
+      },
+      "modelDeleted": {
+        "title": "æ¨¡åž‹å·²åˆ é™¤",
+        "descriptionWithSpace": "æ¨¡åž‹åˆ é™¤æˆåŠŸï¼é‡Šæ”¾äº† {{sizeMb}}MB ç£ç›˜ç©ºé—´ã€‚",
+        "description": "æ¨¡åž‹åˆ é™¤æˆåŠŸï¼"
+      },
+      "deleteFailed": {
+        "title": "åˆ é™¤å¤±è´¥",
+        "description": "åˆ é™¤æ¨¡åž‹å¤±è´¥ï¼š{{error}}"
+      },
+      "downloadCancelled": {
+        "title": "ä¸‹è½½å·²å–æ¶ˆ",
+        "description": "ä¸‹è½½å·²è¢«å–æ¶ˆã€‚"
+      }
+    },
+    "permissions": {
+      "paths": {
+        "windowsMicrophone": "è®¾ç½® -> éšç§ -> éº¦å…‹é£Ž",
+        "linuxSound": "ç³»ç»Ÿå£°éŸ³è®¾ç½®",
+        "defaultSound": "ç³»ç»Ÿè®¾ç½® -> å£°éŸ³ -> è¾“å…¥",
+        "linuxPrivacy": "ç³»ç»Ÿéšç§è®¾ç½®",
+        "defaultPrivacy": "ç³»ç»Ÿè®¾ç½® -> éšç§ä¸Žå®‰å…¨ -> éº¦å…‹é£Ž"
+      },
+      "micErrors": {
+        "accessFailed": "éº¦å…‹é£Žè®¿é—®å¤±è´¥ï¼Œè¯·é‡è¯•ã€‚",
+        "noMicrophones": "æœªæ£€æµ‹åˆ°éº¦å…‹é£Žã€‚è¯·åœ¨ {{settingsPath}} ä¸­è¿žæŽ¥æˆ–é€‰æ‹©éº¦å…‹é£Žã€‚",
+        "permissionDenied": "æƒé™è¢«æ‹’ç»ã€‚è¯·æ‰“å¼€ {{privacyPath}} å¹¶å…è®¸ Dhwaniã€‚",
+        "couldNotStart": "æ— æ³•å¯åŠ¨æ‰€é€‰éº¦å…‹é£Žã€‚è¯·åœ¨ {{settingsPath}} ä¸­é€‰æ‹©è¾“å…¥è®¾å¤‡ï¼Œç„¶åŽé‡æ–°æµ‹è¯•ã€‚",
+        "noActiveInput": "æœªæ‰¾åˆ°æ´»è·ƒçš„éŸ³é¢‘è¾“å…¥ã€‚è¯·åœ¨ {{settingsPath}} ä¸­é€‰æ‹©éº¦å…‹é£Žã€‚",
+        "unknown": "éº¦å…‹é£Žè®¿é—®å¤±è´¥ï¼š{{error}}ã€‚è¯·é€‰æ‹©å…¶ä»–è¾“å…¥è®¾å¤‡åŽé‡è¯•ã€‚",
+        "unknownFallback": "æœªçŸ¥é”™è¯¯"
+      },
+      "settingsTitles": {
+        "microphone": "éº¦å…‹é£Žè®¾ç½®",
+        "sound": "å£°éŸ³è®¾ç½®",
+        "accessibility": "è¾…åŠ©åŠŸèƒ½è®¾ç½®"
+      },
+      "settingsErrors": {
+        "unableToOpenMicrophone": "æ— æ³•æ‰“å¼€éº¦å…‹é£Žè®¾ç½®ï¼Œè¯·æ‰‹åŠ¨æ‰“å¼€ç³»ç»Ÿè®¾ç½®ã€‚",
+        "unableToOpenSound": "æ— æ³•æ‰“å¼€å£°éŸ³è®¾ç½®ï¼Œè¯·æ‰‹åŠ¨æ‰“å¼€ç³»ç»Ÿè®¾ç½®ã€‚",
+        "unableToOpenAccessibility": "æ— æ³•æ‰“å¼€è¾…åŠ©åŠŸèƒ½è®¾ç½®ï¼Œè¯·æ‰‹åŠ¨æ‰“å¼€ç³»ç»Ÿè®¾ç½®ã€‚"
+      },
+      "micUnavailable": "æ­¤çŽ¯å¢ƒä¸­éº¦å…‹é£Ž API ä¸å¯ç”¨ï¼Œè¯·é‡å¯åº”ç”¨ã€‚",
+      "titles": {
+        "microphoneUnavailable": "éº¦å…‹é£Žä¸å¯ç”¨",
+        "microphonePermissionRequired": "éœ€è¦éº¦å…‹é£Žæƒé™",
+        "accessibilityNeeded": "éœ€è¦è¾…åŠ©åŠŸèƒ½æƒé™",
+        "readyToGo": "å‡†å¤‡å°±ç»ªï¼",
+        "waylandClipboardMode": "Wayland ä¸Šçš„å‰ªè´´æ¿æ¨¡å¼",
+        "optionalPasteTool": "å¯é€‰ï¼šå®‰è£…ç²˜è´´å·¥å…·"
+      },
+      "descriptions": {
+        "accessibilityNeeded": "è¯·åœ¨ç³»ç»Ÿè®¾ç½®ä¸­æŽˆäºˆè¾…åŠ©åŠŸèƒ½æƒé™ï¼Œä»¥å¯ç”¨è‡ªåŠ¨ç²˜è´´ã€‚",
+        "windowsReady": "Windows æ— éœ€ç‰¹æ®Šæƒé™å³å¯è‡ªåŠ¨ç²˜è´´ï¼Œä¸€åˆ‡å°±ç»ªï¼",
+        "linuxReadyWithMethod": "å¯ä½¿ç”¨ {{method}} è¿›è¡Œè‡ªåŠ¨ç²˜è´´ï¼Œä¸€åˆ‡å°±ç»ªï¼",
+        "waylandClipboardMode": "æ­¤ Wayland ä¼šè¯ä¸æ”¯æŒè‡ªåŠ¨ç²˜è´´ã€‚Dhwani ä¼šå°†æ–‡æœ¬å¤åˆ¶åˆ°å‰ªè´´æ¿ï¼Œä½ å¯ä»¥ä½¿ç”¨ Ctrl+V ç²˜è´´ã€‚",
+        "optionalPasteTool": "å¦‚éœ€è‡ªåŠ¨ç²˜è´´åŠŸèƒ½ï¼Œè¯·å®‰è£… {{tool}}ï¼š\n\n{{installCmd}}{{waylandNote}}\n\nå³ä½¿ä¸å®‰è£…ï¼Œä½ ä»ç„¶å¯ä»¥ä½¿ç”¨ Dhwani——æ–‡æœ¬ä¼šè¢«å¤åˆ¶åˆ°å‰ªè´´æ¿ï¼Œä½ å¯ä»¥ä½¿ç”¨ Ctrl+V ç²˜è´´ã€‚"
+      },
+      "alerts": {
+        "accessibilityNeeded": "éœ€è¦è¾…åŠ©åŠŸèƒ½æƒé™ï¼è¯·åœ¨ç³»ç»Ÿè®¾ç½®ä¸­æŽˆæƒã€‚"
+      },
+      "notes": {
+        "waylandWtype": "\n\næ³¨æ„ï¼šå¯¹äºŽ XWayland åº”ç”¨ï¼Œxdotool ä¹Ÿé€‚ç”¨ã€‚",
+        "waylandXwaylandOnly": "\n\næ³¨æ„ï¼šè‡ªåŠ¨ç²˜è´´ä»…é€‚ç”¨äºŽ XWayland åº”ç”¨ã€‚"
+      },
+      "labels": {
+        "defaultPasteTool": "xdotool",
+        "xdotoolXwayland": "xdotoolï¼ˆXWayland åº”ç”¨ï¼‰"
+      },
+      "accessibilityTestText": "Dhwani è¾…åŠ©åŠŸèƒ½æµ‹è¯•",
+      "warning": {
+        "messages": {
+          "macos": "è¯·æ£€æŸ¥å£°éŸ³è®¾ç½®ä»¥é€‰æ‹©è¾“å…¥è®¾å¤‡",
+          "windows": "è¯·æ£€æŸ¥ Windows è®¾ç½®ä»¥é€‰æ‹©è¾“å…¥è®¾å¤‡",
+          "linux": "è¯·æ£€æŸ¥ç³»ç»Ÿå£°éŸ³è®¾ç½®ä»¥é€‰æ‹©è¾“å…¥è®¾å¤‡"
+        },
+        "soundLabel": "å£°éŸ³",
+        "privacyLabel": "éšç§"
+      }
+    }
+  },
+  "auth": {
+    "cloudNotConfigured": "äº‘ç«¯æœªé…ç½®",
+    "common": {
+      "back": "è¿”å›ž",
+      "continue": "ç»§ç»­",
+      "or": "æˆ–"
+    },
+    "emailStep": {
+      "continueWithEmail": "ä½¿ç”¨é‚®ç®±ç»§ç»­",
+      "continueWithoutAccount": "ä¸ç™»å½•ç»§ç»­",
+      "emailPlaceholder": "you@example.com"
+    },
+    "errors": {
+      "accountExistsSignIn": "æ­¤é‚®ç®±å·²æ³¨å†Œè´¦æˆ·ï¼Œè¯·ç›´æŽ¥ç™»å½•ã€‚",
+      "accountNotFoundCreate": "æœªæ‰¾åˆ°æ­¤é‚®ç®±çš„è´¦æˆ·ï¼Œè¯·å…ˆæ³¨å†Œã€‚",
+      "authNotConfigured": "èº«ä»½éªŒè¯æœªé…ç½®",
+      "createAccountFailed": "åˆ›å»ºè´¦æˆ·å¤±è´¥",
+      "failedProviderSignIn": "ä½¿ç”¨ {{provider}} ç™»å½•å¤±è´¥",
+      "failedUserCheck": "æ£€æŸ¥ç”¨æˆ·è´¦æˆ·å¤±è´¥",
+      "generic": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·é‡è¯•ã€‚",
+      "invalidCredentials": "é‚®ç®±æˆ–å¯†ç æ— æ•ˆ",
+      "plusAliasUnsupported": "ä¸æ”¯æŒåŒ…å«“+”çš„é‚®ç®±åˆ«å"
+    },
+    "getStarted": "å¼€å§‹ä½¿ç”¨",
+    "legal": {
+      "and": "å’Œ",
+      "prefix": "ç»§ç»­å³è¡¨ç¤ºä½ åŒæ„æˆ‘ä»¬çš„",
+      "privacy": "éšç§æ”¿ç­–",
+      "suffix": "",
+      "terms": "æœåŠ¡æ¡æ¬¾"
+    },
+    "passwordForm": {
+      "createAccount": "åˆ›å»ºè´¦æˆ·",
+      "createAccountButton": "åˆ›å»ºè´¦æˆ·",
+      "createAccountLink": "åˆ›å»ºè´¦æˆ·",
+      "createPasswordPlaceholder": "åˆ›å»ºå¯†ç ",
+      "creatingAccount": "æ­£åœ¨åˆ›å»ºè´¦æˆ·...",
+      "enterPasswordPlaceholder": "è¾“å…¥å¯†ç ",
+      "forgotPassword": "å¿˜è®°å¯†ç ï¼Ÿ",
+      "fullNamePlaceholder": "å§“å",
+      "haveAccount": "å·²æœ‰è´¦æˆ·ï¼Ÿ",
+      "newHere": "æ–°ç”¨æˆ·ï¼Ÿ",
+      "passwordMinLength": "å¯†ç è‡³å°‘éœ€è¦ 8 ä¸ªå­—ç¬¦",
+      "signIn": "ç™»å½•",
+      "signInLink": "ç™»å½•",
+      "signingIn": "æ­£åœ¨ç™»å½•...",
+      "welcomeBack": "æ¬¢è¿Žå›žæ¥"
+    },
+    "signedIn": {
+      "ready": "å°±ç»ª",
+      "welcomeBack": "æ¬¢è¿Žå›žæ¥",
+      "welcomeBackName": "æ¬¢è¿Žå›žæ¥ï¼Œ{{name}}"
+    },
+    "sso": {
+      "continueWithSSO": "ä½¿ç”¨ SSO ç™»å½•",
+      "emailRequired": "è¾“å…¥æ‚¨çš„å·¥ä½œé‚®ç®±ä»¥ä½¿ç”¨ SSOã€‚",
+      "failed": "å•ç‚¹ç™»å½•å¤±è´¥ï¼Œè¯·é‡è¯•ã€‚"
+    },
+    "social": {
+      "completeInBrowser": "åœ¨æµè§ˆå™¨ä¸­å®Œæˆç™»å½•",
+      "continueWithApple": "ä½¿ç”¨ Apple ç»§ç»­",
+      "continueWithGoogle": "ä½¿ç”¨ Google ç»§ç»­",
+      "continueWithMicrosoft": "ä½¿ç”¨ Microsoft ç»§ç»­",
+      "protocolUnavailable": "æ— æ³•é€šè¿‡æµè§ˆå™¨ç™»å½• — è¯·åœ¨ç³»ç»Ÿçš„“é»˜è®¤åº”ç”¨”è®¾ç½®ä¸­é‡æ–°æ³¨å†Œ Dhwani:// åè®®ã€‚"
+    },
+    "welcomeSubtitle": "éšæ—¶éšåœ°ç”¨è¯­éŸ³è¾“å…¥",
+    "welcomeTitle": "æ¬¢è¿Žä½¿ç”¨ Dhwani",
+    "sessionExpired": "ä¼šè¯å·²è¿‡æœŸï¼Œè¯·é‡æ–°ç™»å½•ã€‚"
+  },
+  "cleanupPrompt": "æ–‡æœ¬æ•´ç†",
+  "developerSection": {
+    "currentLogFile": "å½“å‰æ—¥å¿—æ–‡ä»¶",
+    "debugMode": {
+      "disabledDescription": "å¯ç”¨ä»¥æ•èŽ·è¯¦ç»†çš„è¯Šæ–­ä¿¡æ¯",
+      "enabledDescription": "æ­£åœ¨è®°å½•éŸ³é¢‘å¤„ç†ã€API è¯·æ±‚å’Œç³»ç»Ÿæ“ä½œ",
+      "label": "Debug æ¨¡å¼"
+    },
+    "description": "æ•èŽ·è¯¦ç»†æ—¥å¿—ä»¥å¸®åŠ©è¯Šæ–­é—®é¢˜",
+    "openLogsFolder": "æ‰“å¼€æ—¥å¿—æ–‡ä»¶å¤¹",
+    "performanceNote": {
+      "description": "Debug æ—¥å¿—ä¼šæŒç»­å†™å…¥ç£ç›˜ï¼Œå¯èƒ½ç•¥å¾®å½±å“æ€§èƒ½ã€‚ä¸æŽ’æŸ¥é—®é¢˜æ—¶è¯·å…³é—­ã€‚",
+      "label": "æ³¨æ„"
+    },
+    "sharing": {
+      "footer": "æ—¥å¿—ä¸åŒ…å« API Key æˆ–æ•æ„Ÿæ•°æ®",
+      "steps": {
+        "0": "åœ¨å¯ç”¨ Debug æ¨¡å¼çš„æƒ…å†µä¸‹é‡çŽ°é—®é¢˜",
+        "1": "ç‚¹å‡»ä¸Šæ–¹çš„“æ‰“å¼€æ—¥å¿—æ–‡ä»¶å¤¹”",
+        "2": "å°†æœ€æ–°çš„æ—¥å¿—æ–‡ä»¶é™„åŠ åˆ°ä½ çš„ Bug æŠ¥å‘Šä¸­"
+      },
+      "title": "ä¸ºæŠ€æœ¯æ”¯æŒåˆ†äº«æ—¥å¿—"
+    },
+    "title": "Debug æ—¥å¿—",
+    "toasts": {
+      "copied": {
+        "description": "æ—¥å¿—æ–‡ä»¶è·¯å¾„å·²å¤åˆ¶åˆ°å‰ªè´´æ¿",
+        "title": "å·²å¤åˆ¶"
+      },
+      "copyFailed": {
+        "description": "å¤åˆ¶åˆ°å‰ªè´´æ¿æ—¶å‡ºé”™ã€‚",
+        "title": "æ— æ³•å¤åˆ¶"
+      },
+      "debugDisabled": {
+        "description": "Debug æ—¥å¿—å·²å…³é—­",
+        "title": "Debug æ—¥å¿—å·²ç¦ç”¨"
+      },
+      "debugEnabled": {
+        "description": "è¯¦ç»†æ—¥å¿—æ­£åœ¨å†™å…¥ç£ç›˜",
+        "title": "Debug æ—¥å¿—å·²å¯ç”¨"
+      },
+      "loadFailed": {
+        "description": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·å°è¯•é‡æ–°æ‰“å¼€è®¾ç½®ã€‚",
+        "title": "æ— æ³•åŠ è½½ Debug è®¾ç½®"
+      },
+      "openLogsFailed": {
+        "description": "æ‰“å¼€æ—¥å¿—ç›®å½•æ—¶å‡ºé”™ã€‚",
+        "title": "æ— æ³•æ‰“å¼€æ—¥å¿—æ–‡ä»¶å¤¹"
+      },
+      "updateFailed": {
+        "description": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·é‡è¯•ã€‚",
+        "title": "æ— æ³•æ›´æ–° Debug æ—¥å¿—è®¾ç½®"
+      }
+    },
+    "whatGetsLogged": {
+      "items": {
+        "apiRequests": "API è¯·æ±‚",
+        "audioProcessing": "éŸ³é¢‘å¤„ç†",
+        "errorDetails": "é”™è¯¯è¯¦æƒ…",
+        "ffmpegOperations": "FFmpeg æ“ä½œ",
+        "systemDiagnostics": "ç³»ç»Ÿè¯Šæ–­",
+        "transcriptionPipeline": "è½¬å½•ç®¡é“"
+      },
+      "title": "è®°å½•çš„å†…å®¹"
+    }
+  },
+  "dictionarySuffix": "è¯å…¸åŽç¼€",
+  "emailVerification": {
+    "checkEmailDescription": "æˆ‘ä»¬å·²å‘ä»¥ä¸‹é‚®ç®±å‘é€äº†éªŒè¯é“¾æŽ¥",
+    "checkEmailTitle": "æŸ¥çœ‹ä½ çš„é‚®ç®±",
+    "errors": {
+      "resendFailed": "æ— æ³•é‡æ–°å‘é€é‚®ä»¶ï¼Œè¯·é‡è¯•ã€‚",
+      "serverUnreachable": "æ— æ³•è¿žæŽ¥åˆ°æœåŠ¡å™¨ï¼Œè¯·æ£€æŸ¥ç½‘ç»œè¿žæŽ¥åŽé‡è¯•ã€‚"
+    },
+    "resendButton": "é‡æ–°å‘é€éªŒè¯é‚®ä»¶",
+    "resendIn": "{{seconds}} ç§’åŽå¯é‡æ–°å‘é€",
+    "verifiedDescription": "ä½ çš„è´¦æˆ·å·²å‡†å¤‡å°±ç»ªã€‚",
+    "verifiedTitle": "é‚®ç®±å·²éªŒè¯",
+    "waiting": "æ­£åœ¨ç­‰å¾…éªŒè¯...",
+    "backToSignIn": "è¿”å›žç™»å½•"
+  },
+  "errorBoundary": {
+    "description": "å‘ç”Ÿäº†æ„å¤–é”™è¯¯ï¼Œè¯·é‡æ–°åŠ è½½åŽé‡è¯•ã€‚",
+    "reload": "é‡æ–°åŠ è½½",
+    "title": "å‡ºäº†ç‚¹é—®é¢˜"
+  },
+  "forgotPassword": {
+    "back": "è¿”å›ž",
+    "backToSignIn": "è¿”å›žç™»å½•",
+    "emailPlaceholder": "è¾“å…¥ä½ çš„é‚®ç®±",
+    "goBack": "è¿”å›ž",
+    "notConfigured": "èº«ä»½éªŒè¯å°šæœªé…ç½®ã€‚",
+    "sendResetLink": "å‘é€é‡ç½®é“¾æŽ¥",
+    "sending": "æ­£åœ¨å‘é€...",
+    "subtitle": "è¾“å…¥ä½ çš„é‚®ç®±ï¼Œæˆ‘ä»¬å°†å‘é€é‡ç½®é“¾æŽ¥",
+    "success": {
+      "description": "æˆ‘ä»¬å·²å°†å¯†ç é‡ç½®é“¾æŽ¥å‘é€è‡³",
+      "help": "æ²¡æœ‰æ”¶åˆ°é‚®ä»¶ï¼Ÿè¯·æ£€æŸ¥åžƒåœ¾é‚®ä»¶æ–‡ä»¶å¤¹æˆ–é‡è¯•ã€‚",
+      "title": "æŸ¥çœ‹ä½ çš„é‚®ç®±",
+      "tryAnother": "å°è¯•å…¶ä»–é‚®ç®±"
+    },
+    "title": "é‡ç½®å¯†ç "
+  },
+  "actionPrompt": "åŠ¨ä½œæç¤ºè¯",
+  "hotkeyGuidance": {
+    "blockedDescription": "ä»¥ä¸‹å¿«æ·æ–¹å¼å·²è¢«å±è”½ï¼Œå› ä¸ºå®ƒä»¬æ˜¯å¸¸ç”¨çš„ç³»ç»Ÿå¿«æ·é”®ã€‚",
+    "blockedTitle": "è¢«å±è”½çš„å¿«æ·æ–¹å¼",
+    "description": "ä½¿ç”¨ä»¥ä¸‹å¹³å°è§„åˆ™æ¥é€‰æ‹©ä¸ä¼šä¸Žç³»ç»Ÿå†²çªçš„å¿«æ·é”®ã€‚",
+    "examplesTitle": "æœ‰æ•ˆç¤ºä¾‹",
+    "platforms": {
+      "linux": "Linux",
+      "macos": "macOS",
+      "windows": "Windows"
+    },
+    "recommended": {
+      "linux": {
+        "0": "Ctrl+Alt+Space",
+        "1": "Super+S",
+        "2": "Ctrl+Alt+D",
+        "3": "Ctrl+Shift+J",
+        "4": "Alt+Space"
+      },
+      "macos": {
+        "0": "âŒ¥Space",
+        "1": "âŒƒâŒ¥S",
+        "2": "âŒƒâŒ¥D",
+        "3": "Fn",
+        "4": "âŒ˜â‡§J"
+      },
+      "windows": {
+        "0": "Ctrl+Alt+Space",
+        "1": "Ctrl+Shift+S",
+        "2": "Ctrl+Alt+D",
+        "3": "Win+Alt+K"
+      }
+    },
+    "recommendedTitle": "æŽ¨èå¿«æ·é”®",
+    "rulesTitle": "å¿«æ·é”®è§„åˆ™",
+    "showAll": "æ˜¾ç¤ºå…¨éƒ¨",
+    "showFewer": "æ”¶èµ·",
+    "title": "å¿«æ·é”®æŒ‡å—",
+    "validationRules": {
+      "0": "å¿…é¡»ä½¿ç”¨è‡³å°‘ä¸€ä¸ªä¿®é¥°é”®ï¼ˆCtrlã€Altã€Shift ç­‰ï¼‰",
+      "1": "ä¸èƒ½ä½¿ç”¨ç³»ç»Ÿä¿ç•™çš„å¿«æ·é”®",
+      "2": "ä¸å…è®¸å•ç‹¬ä½¿ç”¨å•ä¸ªæŒ‰é”®",
+      "3": "æŸäº›ç»„åˆå¯èƒ½ä¸Žå…¶ä»–åº”ç”¨å†²çª"
+    }
+  },
+  "hotkeyInput": {
+    "ariaLabel": "æŒ‰ä¸‹ç»„åˆé”®ä»¥è®¾ç½®å¿«æ·é”®",
+    "clickToChange": "ç‚¹å‡»æ›´æ”¹",
+    "clickToChangeLower": "ç‚¹å‡»æ›´æ”¹",
+    "clickToSet": "ç‚¹å‡»è®¾ç½®å¿«æ·é”®",
+    "fnCaptureHint": "æŒ‰ä¸‹ä¸€ä¸ªé”®è¿›è¡Œç»„åˆï¼Œæˆ–æ¾å¼€ä»¥ä½¿ç”¨ Globe",
+    "fnHeldHint": "+ æŒ‰é”®ï¼Œæˆ–æ¾å¼€ä»¥ä½¿ç”¨ Globe",
+    "globe": "Globe",
+    "hotkeyLabel": "å¿«æ·é”®",
+    "keyHint": "+ æŒ‰é”®",
+    "listening": "æ­£åœ¨ç›‘å¬...",
+    "pressAnyKey": "æŒ‰ä»»æ„é”®æˆ– Ctrl+Shift+K",
+    "pressAnyKeyMac": "æŒ‰ä»»æ„é”®æˆ– âŒ˜â‡§K",
+    "recording": "å½•åˆ¶ä¸­",
+    "tryShortcut": "è¯•è¯• Ctrl+Shift+K",
+    "tryShortcutMac": "è¯•è¯• âŒ˜â‡§K",
+    "remove": "ç§»é™¤å¿«æ·é”®"
+  },
+  "languageSelector": {
+    "noLanguagesFound": "æœªæ‰¾åˆ°åŒ¹é…çš„è¯­è¨€",
+    "searchPlaceholder": "æœç´¢..."
+  },
+  "microphoneSettings": {
+    "builtIn": "ï¼ˆå†…ç½®ï¼‰",
+    "errors": {
+      "unableToAccess": "æ— æ³•è®¿é—®éº¦å…‹é£Žï¼Œè¯·æ£€æŸ¥æƒé™è®¾ç½®ã€‚"
+    },
+    "helpText": "é€‰æ‹©ç‰¹å®šçš„éº¦å…‹é£Žæˆ–ä½¿ç”¨ç³»ç»Ÿé»˜è®¤è®¾ç½®ã€‚",
+    "inputDevice": "è¾“å…¥è®¾å¤‡",
+    "noBuiltInDetected": "æœªæ£€æµ‹åˆ°å†…ç½®éº¦å…‹é£Žï¼Œæ­£åœ¨ä½¿ç”¨ç³»ç»Ÿé»˜è®¤è®¾å¤‡ã€‚",
+    "preferBuiltIn": {
+      "description": "å¤–æŽ¥éº¦å…‹é£Žå¯èƒ½å¯¼è‡´å»¶è¿Ÿæˆ–é™ä½Žè½¬å½•è´¨é‡",
+      "label": "ä¼˜å…ˆä½¿ç”¨å†…ç½®éº¦å…‹é£Ž"
+    },
+    "selectPlaceholder": "é€‰æ‹©éº¦å…‹é£Ž",
+    "systemDefault": "ç³»ç»Ÿé»˜è®¤",
+    "unknownDevice": "æœªçŸ¥è®¾å¤‡",
+    "using": "å½“å‰ä½¿ç”¨ï¼š{{device}}"
+  },
+  "pasteToolsInfo": {
+    "checking": "æ­£åœ¨æ£€æŸ¥ç³»ç»ŸåŠŸèƒ½...",
+    "installCommands": {
+      "archLinux": "# Arch Linux",
+      "debianUbuntu": "# Debian / Ubuntu",
+      "debianUbuntuMint": "# Debian / Ubuntu / Mint",
+      "fedoraRhel": "# Fedora / RHEL"
+    },
+    "installPrefix": "å¦‚éœ€è‡ªåŠ¨ç²˜è´´æ–‡æœ¬ï¼Œè¯·å®‰è£…",
+    "methodReady": "ç”¨äºŽè‡ªåŠ¨ç²˜è´´æ–‡æœ¬",
+    "noteXwaylandAlso": "æ³¨æ„ï¼šå¯¹äºŽ XWayland åº”ç”¨ï¼Œxdotool ä¹Ÿé€‚ç”¨ã€‚",
+    "noteXwaylandOnly": "æ³¨æ„ï¼šè‡ªåŠ¨ç²˜è´´ä»…é€‚ç”¨äºŽ XWayland åº”ç”¨ã€‚",
+    "optionalEnableTitle": "å¯é€‰ï¼šå¯ç”¨è‡ªåŠ¨ç²˜è´´",
+    "readyTitle": "è‡ªåŠ¨ç²˜è´´å·²å°±ç»ª",
+    "recheck": "é‡æ–°æ£€æŸ¥",
+    "recheckChecking": "æ£€æŸ¥ä¸­...",
+    "title": "è‡ªåŠ¨ç²˜è´´",
+    "usingMethodPrefix": "ä½¿ç”¨",
+    "waylandClipboardDescription": "æ­¤ Wayland ä¼šè¯ä¸æ”¯æŒè‡ªåŠ¨ç²˜è´´ã€‚Dhwani ä¼šå°†æ–‡æœ¬å¤åˆ¶åˆ°å‰ªè´´æ¿ï¼Œä½ å¯ä»¥ä½¿ç”¨ Ctrl+V æ‰‹åŠ¨ç²˜è´´ã€‚",
+    "waylandClipboardTitle": "Wayland ä¸Šçš„å‰ªè´´æ¿æ¨¡å¼",
+    "windowsReady": "Windows åŽŸç”Ÿæ”¯æŒè‡ªåŠ¨ç²˜è´´ï¼Œæ— éœ€é¢å¤–è®¾ç½®ï¼",
+    "withoutToolPrefix": "å¦‚æžœä¸å®‰è£…æ­¤å·¥å…·ï¼ŒDhwani ä¼šå°†æ–‡æœ¬å¤åˆ¶åˆ°å‰ªè´´æ¿ï¼Œä½ å¯ä»¥ä½¿ç”¨ Ctrl+V æ‰‹åŠ¨ç²˜è´´ã€‚",
+    "xwaylandAppsOnly": "è‡ªåŠ¨ç²˜è´´ä»…é€‚ç”¨äºŽ XWayland åº”ç”¨"
+  },
+  "promptStudio": {
+    "common": {
+      "copied": "å·²å¤åˆ¶",
+      "copy": "å¤åˆ¶",
+      "reset": "é‡ç½®",
+      "save": "ä¿å­˜"
+    },
+    "defaultTestInput": "ä½ å¥½ Whisprï¼Œä»Šå¤©å¤©æ°”æ€Žä¹ˆæ ·ï¼Ÿ",
+    "dialogs": {
+      "reset": {
+        "description": "æç¤ºè¯å·²é‡ç½®ä¸ºé»˜è®¤å€¼ã€‚",
+        "title": "é‡ç½®å®Œæˆ"
+      },
+      "saved": {
+        "description": "ä½ çš„è‡ªå®šä¹‰æç¤ºè¯å°†ç”¨äºŽæ‰€æœ‰åŽç»­çš„ AI å¤„ç†ã€‚",
+        "title": "æç¤ºè¯å·²ä¿å­˜"
+      }
+    },
+    "edit": {
+      "agentNameLabel": "åŠ©æ‰‹åç§°ï¼š",
+      "cautionLabel": "æ³¨æ„",
+      "cautionTextPrefix": "ä¿®æ”¹æ­¤æç¤ºè¯å¯èƒ½å½±å“è½¬å½•è´¨é‡ã€‚",
+      "cautionTextSuffix": "ä¿ç•™ {{agentName}} å ä½ç¬¦ä»¥ç¡®ä¿åŠ©æ‰‹è¯†åˆ«åŠŸèƒ½æ­£å¸¸ã€‚",
+      "placeholder": "è¾“å…¥ä½ çš„è‡ªå®šä¹‰ç³»ç»Ÿæç¤ºè¯..."
+    },
+    "tabs": {
+      "customize": "è‡ªå®šä¹‰",
+      "test": "æµ‹è¯•",
+      "view": "æŸ¥çœ‹"
+    },
+    "test": {
+      "addressHint": "è¯•è¯•è¯´“{{agentName}}”æ¥æµ‹è¯•æŒ‡ä»¤æ¨¡å¼",
+      "aiModels": "AI æ¨¡åž‹",
+      "baseUrlMissing": "{{provider}} çš„ URL ç¼ºå¤±ï¼Œè¯·åœ¨ AI æ¨¡åž‹è®¾ç½®ä¸­æ·»åŠ ã€‚",
+      "cleanup": "æ–‡æœ¬æ•´ç†",
+      "disabledInSettingsPrefix": "AI æ–‡æœ¬å¢žå¼ºå·²ç¦ç”¨ã€‚",
+      "disabledInSettingsSuffix": "è¯·åœ¨ AI æ¨¡åž‹ä¸­å¯ç”¨ä»¥æµ‹è¯•æç¤ºè¯ã€‚",
+      "disabledReasoning": "AI æ–‡æœ¬å¢žå¼ºå·²ç¦ç”¨ï¼Œè¯·åœ¨ AI æ¨¡åž‹ä¸­å¯ç”¨ä»¥æµ‹è¯•æç¤ºè¯ã€‚",
+      "failed": "æµ‹è¯•å¤±è´¥ï¼š{{error}}",
+      "inputLabel": "è¾“å…¥",
+      "inputPlaceholder": "è¾“å…¥è¦æµ‹è¯•çš„æ–‡æœ¬...",
+      "instruction": "æŒ‡ä»¤",
+      "modelLabel": "æ¨¡åž‹",
+      "noModelSelected": "æœªé€‰æ‹©æ¨¡åž‹",
+      "none": "æ— ",
+      "outputLabel": "è¾“å‡º",
+      "processing": "å¤„ç†ä¸­...",
+      "DhwaniCloud": "Dhwani Cloud",
+      "providerLabel": "æœåŠ¡å•†",
+      "run": "è¿è¡Œæµ‹è¯•",
+      "customEndpoint": "è‡ªå®šä¹‰ç«¯ç‚¹"
+    },
+    "view": {
+      "customPrompt": "è‡ªå®šä¹‰æç¤ºè¯",
+      "defaultPrompt": "é»˜è®¤æç¤ºè¯",
+      "modified": "å·²ä¿®æ”¹"
+    }
+  },
+  "settingsModal": {
+    "groups": {
+      "account": "è´¦æˆ·",
+      "app": "åº”ç”¨",
+      "aiModels": "AI æ¨¡åž‹",
+      "system": "ç³»ç»Ÿ"
+    },
+    "sections": {
+      "account": {
+        "description": "ä¸ªäººèµ„æ–™ä¸Žç™»å½•",
+        "label": "è´¦æˆ·"
+      },
+      "plansBilling": {
+        "description": "å¥—é¤ã€ç”¨é‡ä¸Žè´¦å•",
+        "label": "å¥—é¤ä¸Žè´¦å•"
+      },
+      "general": {
+        "description": "å¤–è§‚ã€å£°éŸ³ä¸Žå¯åŠ¨",
+        "label": "åå¥½è®¾ç½®"
+      },
+      "hotkeys": {
+        "description": "å¬å†™å¿«æ·é”®ä¸Žæ¿€æ´»æ¨¡å¼",
+        "label": "å¿«æ·é”®"
+      },
+      "speechToText": {
+        "description": "å¬å†™ä¸Žç¬”è®°å½•éŸ³å¼•æ“Ž",
+        "label": "è¯­éŸ³è½¬æ–‡å­—"
+      },
+      "llms": {
+        "description": "ç”¨äºŽæ¸…ç†ã€ç¬”è®°æ ¼å¼åŒ–å’ŒèŠå¤©çš„æ¨¡åž‹",
+        "label": "è¯­è¨€æ¨¡åž‹"
+      },
+      "privacyData": {
+        "description": "éšç§ã€æƒé™ä¸Žæ•°æ®åˆ†æž",
+        "label": "éšç§ä¸Žæ•°æ®"
+      },
+      "system": {
+        "description": "æ›´æ–°ã€å­˜å‚¨ä¸Žå¼€å‘è€…å·¥å…·",
+        "label": "ç³»ç»Ÿ"
+      },
+      "workspace": {
+        "label": "Espacio de trabajo",
+        "description": "Miembros, equipos, facturaciÃ³n y claves API"
+      }
+    },
+    "title": "è®¾ç½®"
+  },
+  "settingsPage": {
+    "account": {
+      "badges": {
+        "free": "å…è´¹ç‰ˆ",
+        "limitReached": "å·²è¾¾ä¸Šé™",
+        "pastDue": "é€¾æœŸæœªä»˜",
+        "pro": "Pro",
+        "business": "Business",
+        "trial": "è¯•ç”¨"
+      },
+      "billing": {
+        "couldNotOpenDescription": "æ‰“å¼€è´¦å•é¡µé¢æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+        "couldNotOpenTitle": "æ— æ³•æ‰“å¼€è´¦å•",
+        "manageBilling": "ç®¡ç†è´¦å•",
+        "opening": "æ­£åœ¨æ‰“å¼€...",
+        "updatePaymentMethod": "æ›´æ–°æ”¯ä»˜æ–¹å¼"
+      },
+      "checkout": {
+        "couldNotOpenDescription": "æ‰“å¼€ç»“è´¦é¡µé¢æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+        "couldNotOpenTitle": "æ— æ³•æ‰“å¼€ç»“è´¦é¡µ",
+        "opening": "æ­£åœ¨æ‰“å¼€...",
+        "upgradeToPro": "å‡çº§åˆ° Pro"
+      },
+      "disabled": "å·²ç¦ç”¨",
+      "featuresDisabled": "è´¦æˆ·åŠŸèƒ½å·²ç¦ç”¨",
+      "featuresDisabledDescription": "åœ¨ .env æ–‡ä»¶ä¸­è®¾ç½® VITE_AUTH_URL ä»¥å¯ç”¨è´¦æˆ·åŠŸèƒ½ã€‚",
+      "notConfigured": "èº«ä»½éªŒè¯æœªé…ç½®",
+      "notSignedIn": "æœªç™»å½•",
+      "notSignedInDescription": "åˆ›å»ºè´¦æˆ·ä»¥è§£é”é«˜çº§åŠŸèƒ½ã€‚",
+      "offline": "ç¦»çº¿",
+      "pastDue": {
+        "description": "ä½ ç›®å‰ä½¿ç”¨çš„æ˜¯å…è´¹ç‰ˆã€‚æ›´æ–°æ”¯ä»˜æ–¹å¼å³å¯æ¢å¤ Pro ç‰ˆã€‚",
+        "title": "æˆ‘ä»¬æ— æ³•å¤„ç†ä½ çš„ä»˜æ¬¾"
+      },
+      "planDescriptions": {
+        "freeUsage": "æœ¬å‘¨å·²ä½¿ç”¨ {{used}} / {{limit}} ä¸ªè¯",
+        "nextBilling": "ä¸‹æ¬¡æ‰£è´¹ï¼š{{date}}",
+        "pastDue": "æœ¬å‘¨ {{used}} / {{limit}} å…è´¹è¯æ•°——æ›´æ–°æ”¯ä»˜æ–¹å¼ä»¥æ¢å¤ Pro",
+        "trial": "å‰©ä½™ {{days}} å¤©——æ— é™è½¬å½•",
+        "unlimited": "æ— é™åˆ¶"
+      },
+      "planLabels": {
+        "free": "å…è´¹ç‰ˆ",
+        "pro": "Pro",
+        "business": "Business",
+        "trial": "è¯•ç”¨"
+      },
+      "planTitle": "å¥—é¤",
+      "rollingWeeklyLimit": "æ»šåŠ¨å‘¨é™é¢",
+      "signOut": {
+        "failedDescription": "é€€å‡ºç™»å½•æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+        "failedTitle": "æ— æ³•é€€å‡ºç™»å½•",
+        "signOut": "é€€å‡ºç™»å½•",
+        "signingOut": "æ­£åœ¨é€€å‡º..."
+      },
+      "signedIn": "å·²ç™»å½•",
+      "title": "è´¦æˆ·",
+      "toasts": {
+        "approachingLimit": {
+          "description": "æœ¬å‘¨å·²ä½¿ç”¨ {{used}} / {{limit}} ä¸ªå…è´¹è¯æ•°ã€‚å‡çº§åˆ° Pro å¯äº«å—æ— é™ä½¿ç”¨ã€‚",
+          "title": "å³å°†è¾¾åˆ°å‘¨é™é¢"
+        }
+      },
+      "trialCta": {
+        "button": "å…è´¹åˆ›å»ºè´¦æˆ·",
+        "description": "æ— é™è½¬å½•ã€ä¼˜å…ˆå¤„ç†ç­‰æ›´å¤šåŠŸèƒ½ã€‚",
+        "title": "å…è´¹è¯•ç”¨ Pro ç‰ˆ 7 å¤©"
+      },
+      "pricing": {
+        "title": "å¥—é¤",
+        "billedYearly": "æŒ‰å¹´è®¡è´¹",
+        "free": {
+          "name": "Free",
+          "price": "$0",
+          "period": "æ°¸ä¹…",
+          "features": [
+            "## Dhwani Cloud",
+            "æ¯å‘¨ 2,000 å­—è½¬å½•",
+            "æ¯æœˆ 5 å°æ—¶ä¼šè®®å½•åˆ¶",
+            "## æ°¸ä¹…å…è´¹",
+            "æ— é™æœ¬åœ° AI æ¨¡åž‹",
+            "ä½¿ç”¨è‡ªå·±çš„ API å¯†é’¥æ— é™äº‘ç«¯è½¬å½•",
+            "æ”¯æŒ 100+ ç§è¯­è¨€",
+            "è‡ªå®šä¹‰è¯å…¸",
+            "é›¶æ•°æ®ç•™å­˜",
+            "ç¤¾åŒºæ”¯æŒ"
+          ]
+        },
+        "pro": {
+          "name": "Pro",
+          "monthlyPrice": "$8",
+          "monthlyPeriod": "/æœˆ",
+          "annualPrice": "$80",
+          "annualPeriod": "/å¹´",
+          "annualEquivalent": "$6.67",
+          "includesPrefix": "æ‰€æœ‰ Free åŠŸèƒ½ +",
+          "features": [
+            "æ— é™äº‘ç«¯è½¬å½•",
+            "æ¯æœˆ 20 å°æ—¶ä¼šè®®å½•åˆ¶",
+            "è·¨è®¾å¤‡åŒæ­¥",
+            "ä¸ªäºº API è®¿é—®",
+            "åœ¨æ‰€æœ‰åº”ç”¨ä¸­é›†æˆ MCP",
+            "ç§»åŠ¨åº”ç”¨ï¼ˆiOS å³å°†æŽ¨å‡ºï¼‰",
+            "é‚®ä»¶æ”¯æŒ"
+          ],
+          "cta": "å¼€å§‹ä½¿ç”¨",
+          "switchToAnnual": "åˆ‡æ¢ä¸ºå¹´ä»˜"
+        },
+        "business": {
+          "name": "Business",
+          "monthlyPrice": "$20",
+          "monthlyPeriod": "/æœˆ",
+          "annualPrice": "$200",
+          "annualPeriod": "/å¹´",
+          "annualEquivalent": "$16.67",
+          "includesPrefix": "æ‰€æœ‰ Pro åŠŸèƒ½ +",
+          "badge": "æœ€å—æ¬¢è¿Ž",
+          "features": ["æ— é™ä¼šè®®å½•åˆ¶", "ä»£ç†æ¨¡å¼", "ä¸Žæ‚¨çš„æ•°æ®å¯¹è¯", "ä¼˜å…ˆæ”¯æŒ"],
+          "cta": "å¼€å§‹ä½¿ç”¨",
+          "switchToAnnual": "åˆ‡æ¢ä¸ºå¹´ä»˜"
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "price": "è‡ªå®šä¹‰",
+          "subtitle": "æä¾›é«˜çº§å®‰å…¨ä¿éšœä¸Žæ”¯æŒ",
+          "includesPrefix": "æ‰€æœ‰ Business åŠŸèƒ½ +",
+          "features": [
+            "æ‰˜ç®¡ API é¢åº¦",
+            "è·¨è®¾å¤‡äº‘ç«¯åŒæ­¥",
+            "å›¢é˜ŸåŠŸèƒ½ä¸Žç®¡ç†",
+            "SSO ä¸Žåˆè§„",
+            "ä¸“å±žæ”¯æŒ"
+          ],
+          "cta": "è”ç³»é”€å”®"
+        },
+        "currentPlan": "å½“å‰å¥—é¤",
+        "upgrade": "å‡çº§",
+        "downgrade": "é™çº§",
+        "planSwitched": "å¥—é¤å·²æˆåŠŸæ›´æ–°",
+        "confirmSwitch": {
+          "title": "ç¡®è®¤æ›´æ¢å¥—é¤",
+          "description": "åˆ‡æ¢è‡³ {{plan}}ï¼ˆ{{interval}}ï¼‰",
+          "monthly": "æœˆä»˜",
+          "yearly": "å¹´ä»˜",
+          "chargeToday": "ä»Šæ—¥æ”¶è´¹",
+          "accountCredit": "è´¦æˆ·ä½™é¢",
+          "newPrice": "æ–°ä»·æ ¼",
+          "nextBilling": "ä¸‹æ¬¡è®¡è´¹",
+          "mo": "mo",
+          "yr": "yr",
+          "cancel": "å–æ¶ˆ",
+          "confirm": "ç¡®è®¤"
+        }
+      },
+      "signedOutPlans": {
+        "button": "å…è´¹åˆ›å»ºè´¦æˆ·"
+      },
+      "user": "ç”¨æˆ·",
+      "wordsRemaining": "å‰©ä½™ {{remaining}} ä¸ªè¯",
+      "deleteAccount": {
+        "label": "åˆ é™¤è´¦æˆ·",
+        "labelDescription": "æ°¸ä¹…åˆ é™¤æ‚¨çš„è´¦æˆ·ã€æ‰€æœ‰äº‘ç«¯æ•°æ®å’Œæœ¬åœ°æ•°æ®ã€‚æ­¤æ“ä½œæ— æ³•æ’¤é”€ã€‚",
+        "button": "åˆ é™¤æˆ‘çš„è´¦æˆ·",
+        "deleting": "æ­£åœ¨åˆ é™¤...",
+        "title": "åˆ é™¤æ‚¨çš„è´¦æˆ·ï¼Ÿ",
+        "description": "è¿™å°†æ°¸ä¹…åˆ é™¤æ‚¨çš„ Dhwani è´¦æˆ·ã€æ‰€æœ‰äº‘ç«¯åŒæ­¥ç¬”è®°å’Œæ‰€æœ‰æœ¬åœ°æ•°æ®ï¼ŒåŒ…æ‹¬è½¬å½•ã€éŸ³é¢‘å½•åˆ¶ã€ä¸‹è½½çš„æ¨¡åž‹ã€æ—¥åŽ†è¿žæŽ¥å’Œè®¾ç½®ã€‚æ­¤æ“ä½œæ— æ³•æ’¤é”€ã€‚",
+        "confirmText": "åˆ é™¤æ‰€æœ‰å†…å®¹",
+        "successTitle": "è´¦æˆ·å·²åˆ é™¤",
+        "successDescription": "æ‚¨çš„è´¦æˆ·å’Œæ‰€æœ‰æ•°æ®å·²è¢«åˆ é™¤ã€‚åº”ç”¨å°†ç«‹å³é‡æ–°åŠ è½½ã€‚",
+        "failedTitle": "åˆ é™¤å¤±è´¥",
+        "failedDescription": "åˆ é™¤æ‚¨çš„è´¦æˆ·æ—¶å‡ºé”™ã€‚æ‚¨çš„æœ¬åœ°æ•°æ®å¯èƒ½å·²è¢«éƒ¨åˆ†åˆ é™¤ã€‚è¯·é‡è¯•ã€‚"
+      }
+    },
+    "agentConfig": {
+      "agentName": "åŠ©æ‰‹åç§°",
+      "description": "ä¸ºä½ çš„ AI åŠ©æ‰‹å–ä¸ªåå­—ï¼Œè¿™æ ·ä½ å°±èƒ½åœ¨å¬å†™æ—¶ç›´æŽ¥å‘¼å”¤å®ƒ",
+      "dialogs": {
+        "updatedDescription": "ä½ çš„åŠ©æ‰‹å·²å‘½åä¸º“{{name}}”ã€‚è¯´“Hey {{name}}”ç„¶åŽè¯´å‡ºæŒ‡ä»¤å³å¯ä½¿ç”¨ã€‚",
+        "updatedTitle": "åŠ©æ‰‹åç§°å·²æ›´æ–°"
+      },
+      "examplesTitle": "ç¤ºä¾‹",
+      "helper": "é€‰ä¸€ä¸ªç®€çŸ­ã€è¯´èµ·æ¥è‡ªç„¶çš„åå­—",
+      "howItWorksDescription": "å½“ä½ è¯´“Hey {{agentName}}”å¹¶è·Ÿä¸ŠæŒ‡ä»¤æ—¶ï¼ŒAI ä¼šæ‰§è¡Œä½ çš„å‘½ä»¤——æ’°å†™å†…å®¹ã€æ ¼å¼åŒ–æ–‡æœ¬æˆ–å›žç­”é—®é¢˜——è€Œä¸æ˜¯é€å­—è½¬å†™ã€‚",
+      "howItWorksTitle": "å·¥ä½œåŽŸç†",
+      "instructionMode": "æŒ‡ä»¤",
+      "placeholder": "ä¾‹å¦‚ Jarvisã€Novaã€Atlas...",
+      "save": "ä¿å­˜",
+      "title": "è¯­éŸ³åŠ©æ‰‹",
+      "examples": {
+        "formalEmail": "Hey {{agentName}}ï¼Œå†™ä¸€å°å…³äºŽé¢„ç®—çš„æ­£å¼é‚®ä»¶",
+        "professional": "Hey {{agentName}}ï¼Œè®©è¿™ä¸ªæ›´ä¸“ä¸š",
+        "bulletPoints": "Hey {{agentName}}ï¼ŒæŠŠè¿™ä¸ªè½¬æ¢æˆè¦ç‚¹åˆ—è¡¨"
+      }
+    },
+    "aiModels": {
+      "customSetup": "è‡ªå®šä¹‰è®¾ç½®",
+      "customSetupDescription": "ä½¿ç”¨ä½ è‡ªå·±çš„æœåŠ¡å•†å’Œ API Keyã€‚",
+      "description": "æ•´ç†è½¬å½•æ–‡æœ¬ã€å¤„ç†æŒ‡ä»¤ã€ä¿®æ­£é”™è¯¯ï¼ŒåŒæ—¶ä¿ç•™ä½ çš„è¯­æ°”é£Žæ ¼ã€‚",
+      "enableTextCleanup": "å¯ç”¨æ–‡æœ¬æ•´ç†",
+      "enableTextCleanupDescription": "AI åŽ»é™¤è¯­æ°”è¯ï¼Œä¿®æ­£è¯­æ³•å’Œæ ‡ç‚¹",
+      "modes": {
+        "Dhwani": "Dhwani Cloud",
+        "providers": "äº‘æœåŠ¡å•†",
+        "local": "æœ¬åœ°",
+        "selfHosted": "è‡ªæ‰˜ç®¡",
+        "DhwaniDesc": "å‡†ç¡®å¯é ï¼Œæ— éœ€è®¾ç½®ã€‚",
+        "providersDesc": "ä½¿ç”¨ä½ è‡ªå·±çš„ API Keyã€‚",
+        "localDesc": "è®¾å¤‡ç«¯æ¨¡åž‹ï¼Œå®Œå…¨ç§å¯†ã€‚",
+        "selfHostedDesc": "ä½ çš„æœåŠ¡å™¨ï¼Œåœ¨ä½ çš„ç½‘ç»œä¸Šã€‚",
+        "enterprise": "ä¼ä¸šçº§",
+        "enterpriseDesc": "ä½¿ç”¨ä½ ç»„ç»‡çš„äº‘è´¦å·ï¼ˆAWSã€Azureã€GCPï¼‰ã€‚"
+      },
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "å‡†ç¡®å¯é ï¼Œæ— éœ€è®¾ç½®ã€‚",
+      "title": "AI æ–‡æœ¬å¢žå¼º",
+      "toasts": {
+        "switchedCloud": {
+          "description": "æ–‡æœ¬å¢žå¼ºå°†ä½¿ç”¨ Dhwani äº‘ç«¯æœåŠ¡ã€‚",
+          "title": "å·²åˆ‡æ¢åˆ° Dhwani äº‘ç«¯"
+        },
+        "switchedCustom": {
+          "description": "è¯·é…ç½®ä½ çš„æœåŠ¡å•†å’Œ API Keyã€‚",
+          "title": "å·²åˆ‡æ¢åˆ°è‡ªå®šä¹‰è®¾ç½®"
+        },
+        "switchedProviders": {
+          "title": "äº‘æœåŠ¡å•†",
+          "description": "ä½¿ç”¨ä½ è‡ªå·±çš„ API Keyã€‚"
+        },
+        "switchedLocal": {
+          "title": "æœ¬åœ°è¿è¡Œ",
+          "description": "AI åœ¨ä½ çš„è®¾å¤‡ä¸Šæœ¬åœ°è¿è¡Œã€‚"
+        },
+        "switchedSelfHosted": {
+          "title": "è‡ªæ‰˜ç®¡",
+          "description": "ä½¿ç”¨ä½ è‡ªå·±çš„æœåŠ¡å™¨ã€‚"
+        },
+        "switchedEnterprise": {
+          "title": "ä¼ä¸šçº§",
+          "description": "æ­£åœ¨ä½¿ç”¨ä½ ç»„ç»‡çš„äº‘è´¦å·ã€‚"
+        }
+      }
+    },
+    "developer": {
+      "clearCache": "æ¸…é™¤ç¼“å­˜",
+      "dataManagementDescription": "ç®¡ç†ç¼“å­˜æ¨¡åž‹å’Œåº”ç”¨æ•°æ®",
+      "dataManagementTitle": "æ•°æ®ç®¡ç†",
+      "modelCache": "æ¨¡åž‹ç¼“å­˜",
+      "open": "æ‰“å¼€",
+      "removeModels": {
+        "confirmText": "åˆ é™¤æ¨¡åž‹",
+        "description": "è¿™å°†åˆ é™¤æ‰€æœ‰æœ¬åœ°ç¼“å­˜çš„ Whisper æ¨¡åž‹ï¼ˆ{{path}}ï¼‰å¹¶é‡Šæ”¾ç£ç›˜ç©ºé—´ã€‚ä½ å¯ä»¥ä»Žæ¨¡åž‹é€‰æ‹©å™¨ä¸­é‡æ–°ä¸‹è½½ã€‚",
+        "failedDescription": "åˆ é™¤æ¨¡åž‹æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+        "failedDescriptionShort": "æ— æ³•åˆ é™¤ç¼“å­˜çš„æ¨¡åž‹ã€‚",
+        "failedTitle": "æ— æ³•åˆ é™¤æ¨¡åž‹",
+        "successDescription": "æ‰€æœ‰ç¼“å­˜çš„æ¨¡åž‹å·²åˆ é™¤ã€‚",
+        "successTitle": "æ¨¡åž‹å·²åˆ é™¤",
+        "title": "åˆ é™¤å·²ä¸‹è½½çš„æ¨¡åž‹ï¼Ÿ"
+      },
+      "removing": "æ­£åœ¨åˆ é™¤...",
+      "resetAll": {
+        "confirmText": "åˆ é™¤æ‰€æœ‰æ•°æ®",
+        "description": "è¿™å°†æ°¸ä¹…åˆ é™¤æ‰€æœ‰æœ¬åœ°è®¾ç½®ã€è½¬å½•ã€éŸ³é¢‘å½•åˆ¶ã€ä¸‹è½½çš„ AI æ¨¡åž‹ã€æ—¥åŽ†è¿žæŽ¥å’Œç¼“å­˜æ•°æ®ã€‚äº‘ç«¯æ•°æ®å’Œæ‚¨çš„è´¦æˆ·ä¸ä¼šå—åˆ°å½±å“ã€‚åº”ç”¨å°†åœ¨é‡ç½®åŽé‡æ–°åŠ è½½ã€‚",
+        "failedDescription": "å‡ºäº†ç‚¹é—®é¢˜ï¼Œè¯·é‡è¯•æˆ–é‡æ–°å®‰è£…åº”ç”¨ã€‚",
+        "failedTitle": "æ— æ³•é‡ç½®",
+        "successDescription": "æ‰€æœ‰æ•°æ®å·²é‡ç½®ï¼Œåº”ç”¨å°†ç«‹å³é‡æ–°åŠ è½½ã€‚",
+        "successTitle": "å…¨éƒ¨å®Œæˆ",
+        "title": "é‡ç½®æ‰€æœ‰åº”ç”¨æ•°æ®"
+      },
+      "resetAppData": "é‡ç½®åº”ç”¨æ•°æ®",
+      "resetAppDataDescription": "æ°¸ä¹…åˆ é™¤æ‰€æœ‰æœ¬åœ°è®¾ç½®ã€è½¬å½•ã€éŸ³é¢‘å½•åˆ¶ã€ä¸‹è½½çš„æ¨¡åž‹å’Œç¼“å­˜æ•°æ®"
+    },
+    "dictionary": {
+      "title": "è‡ªå®šä¹‰è¯å…¸",
+      "description": "æ•™ AI ä½ çš„è¯æ±‡ — åå­—ã€æœ¯è¯­å’Œå®ƒå¯èƒ½é—æ¼çš„è¯è¯­",
+      "addWordOrPhrase": "æ·»åŠ å•è¯æˆ–çŸ­è¯­",
+      "placeholder": "æ·»åŠ ä¸€ä¸ªå•è¯æˆ–çŸ­è¯­...",
+      "add": "æ·»åŠ ",
+      "pressEnterToAdd": "æŒ‰ Enter æ·»åŠ ",
+      "autoLearnTitle": "ä»Žçº æ­£ä¸­è‡ªåŠ¨å­¦ä¹ ",
+      "autoLearnDescription": "å½“ä½ åœ¨ç›®æ ‡åº”ç”¨ä¸­çº æ­£è½¬å½•æ—¶ï¼Œçº æ­£åŽçš„è¯è¯­ä¼šè‡ªåŠ¨æ·»åŠ åˆ°ä½ çš„è¯å…¸ä¸­ã€‚",
+      "yourWords": "ä½ çš„è¯è¯­",
+      "clearDictionaryTitle": "æ¸…é™¤è¯å…¸ï¼Ÿ",
+      "clearDictionaryDescription": "è¿™å°†åˆ é™¤è‡ªå®šä¹‰è¯å…¸ä¸­çš„æ‰€æœ‰è¯è¯­ã€‚æ­¤æ“ä½œæ— æ³•æ’¤æ¶ˆã€‚",
+      "clearAll": "å…¨éƒ¨æ¸…é™¤",
+      "agentNameAutoManaged": "è‡ªåŠ¨ç®¡ç† — ä¸ŽåŠ©æ‰‹åç§°åŒæ­¥",
+      "removeWord": "ç§»é™¤è¯è¯­",
+      "noWords": "æš‚æ— è¯è¯­",
+      "wordsAppearHere": "ä½ æ·»åŠ çš„è¯è¯­å°†æ˜¾ç¤ºåœ¨è¿™é‡Œ",
+      "howItWorksTitle": "å·¥ä½œåŽŸç†",
+      "howItWorksDescription": "è¯è¯­ä½œä¸ºä¸Šä¸‹æ–‡æç¤ºæä¾›ç»™è¯­éŸ³æ¨¡åž‹ï¼Œå¸®åŠ©å®ƒè¯†åˆ«ä¸å¸¸è§çš„æœ¯è¯­ã€‚å¯¹äºŽéš¾ä»¥è¯†åˆ«çš„è¯è¯­ï¼Œå¯ä»¥å°è¯•æ·»åŠ ä¸Šä¸‹æ–‡ï¼Œä¾‹å¦‚åœ¨è¯è¯­æ—æ·»åŠ  \"The word is Synty\"ã€‚",
+      "tipLabel": "æç¤º",
+      "tipDescription": "ç”¨é€—å·åˆ†éš”å¤šä¸ªè¯è¯­ã€‚æ·»åŠ ä¸Šä¸‹æ–‡çŸ­è¯­å¦‚ \"The word is Synty\" ä»¥èŽ·å¾—æ›´å¥½çš„è¯†åˆ«æ•ˆæžœã€‚"
+    },
+    "general": {
+      "appearance": {
+        "auto": "è‡ªåŠ¨",
+        "dark": "æ·±è‰²",
+        "description": "æŽ§åˆ¶ Dhwani çš„å¤–è§‚",
+        "light": "æµ…è‰²",
+        "theme": "ä¸»é¢˜",
+        "themeDescription": "é€‰æ‹©æµ…è‰²ã€æ·±è‰²æˆ–è·Ÿéšç³»ç»Ÿ",
+        "title": "å¤–è§‚"
+      },
+      "floatingIcon": {
+        "autoHide": "ç©ºé—²æ—¶è‡ªåŠ¨éšè—",
+        "autoHideDescription": "åœ¨å¼€å§‹å¬å†™å‰ä¿æŒå›¾æ ‡éšè—",
+        "description": "æŽ§åˆ¶å¬å†™å›¾æ ‡åœ¨å±å¹•ä¸Šçš„æ˜¾ç¤º",
+        "title": "æ‚¬æµ®å›¾æ ‡",
+        "startPosition": "èµ·å§‹ä½ç½®",
+        "startPositionDescription": "è¯­éŸ³å½•åˆ¶é¢æ¿åœ¨å±å¹•ä¸Šçš„æ˜¾ç¤ºä½ç½®",
+        "bottomRight": "å³ä¸‹è§’",
+        "center": "åº•éƒ¨å±…ä¸­",
+        "bottomLeft": "å·¦ä¸‹è§’"
+      },
+      "hotkey": {
+        "activationMode": "æ¿€æ´»æ¨¡å¼",
+        "description": "ç”¨äºŽå¼€å§‹å’Œåœæ­¢è¯­éŸ³å¬å†™çš„ç»„åˆé”®",
+        "resetToDefault": "é‡ç½®ä¸º {{hotkey}}",
+        "title": "å¬å†™å¿«æ·é”®",
+        "linuxPttPermissionTitle": "æŒ‰ä½è¯´è¯éœ€è¦é¢å¤–è®¾ç½®",
+        "linuxPttPermissionDescription": "è¿è¡Œæ­¤å‘½ä»¤å¹¶é‡æ–°ç™»å½•ï¼šsudo usermod -aG input $USER",
+        "linuxPttSetupTitle": "æŒ‰ä½è¯´è¯éœ€è¦è®¾ç½®",
+        "linuxPttSetupDescription": "æ‚¨çš„ç”¨æˆ·éœ€è¦è®¿é—®é”®ç›˜è¾“å…¥è®¾å¤‡çš„æƒé™ã€‚",
+        "linuxPttSetupNote": "è¿è¡Œå‘½ä»¤åŽï¼Œè¯·æ³¨é”€å¹¶é‡æ–°ç™»å½•ã€‚",
+        "hyprlandConfigWriteWarningTitle": "Hyprland é”®ç»‘å®šä¸ä¼šæŒä¹…ä¿å­˜",
+        "hyprlandConfigWriteWarningDescription": "Dhwani æ— æ³•å†™å…¥ {{path}}ï¼Œå› æ­¤é”®ç»‘å®šä¸ä¼šåœ¨ Hyprland é…ç½®é‡æ–°åŠ è½½åŽä¿ç•™ã€‚è¯·ç¡®ä¿è¯¥æ–‡ä»¶å­˜åœ¨ä¸”å¯å†™ã€‚",
+        "hyprlandUnbindDescription": "åœ¨ Hyprland ä¸Šï¼ŒDhwani ä¼šå ç”¨æ‰€é€‰å¿«æ·é”®ã€‚Dhwani æ³¨å†Œå¿«æ·é”®æ—¶ï¼Œä»»ä½•ä½¿ç”¨ç›¸åŒç»„åˆé”®çš„çŽ°æœ‰ Hyprland ç»‘å®šéƒ½ä¼šè¢«è§£é™¤ã€‚"
+      },
+      "meetingHotkey": {
+        "title": "ä¼šè®®æ¨¡å¼å¿«æ·é”®",
+        "description": "å¯åŠ¨ä¼šè®®æ¨¡å¼å¹¶å°†é¢æ¿å›ºå®šåˆ°å±å¹•ä¾§è¾¹",
+        "layoutLabel": "é€šè¿‡å¿«æ·é”®è§¦å‘æ—¶,æ‰“å¼€æ–¹å¼:",
+        "layoutFullWidth": "å…¨å®½",
+        "layoutSidePanel": "ä¾§è¾¹æ "
+      },
+      "voiceAgentHotkey": {
+        "title": "è¯­éŸ³åŠ©æ‰‹å¿«æ·é”®",
+        "description": "è¯´å‡ºä½ çš„éœ€æ±‚ï¼ŒAI åŠ©æ‰‹ä¼šè¾“å…¥ç»“æžœï¼Œè€Œä¸æ˜¯ä½ è¯´çš„åŽŸè¯"
+      },
+      "microphone": {
+        "description": "é€‰æ‹©ç”¨äºŽå¬å†™çš„è¾“å…¥è®¾å¤‡",
+        "title": "éº¦å…‹é£Ž"
+      },
+      "soundEffects": {
+        "dictationSounds": "å¬å†™éŸ³æ•ˆ",
+        "dictationSoundsDescription": "åœ¨å½•éŸ³å¼€å§‹å’Œåœæ­¢æ—¶æ’­æ”¾æç¤ºéŸ³",
+        "pauseMedia": "æš‚åœåª’ä½“",
+        "pauseMediaDescription": "å¼€å§‹å¬å†™æ—¶è‡ªåŠ¨æš‚åœéŸ³ä¹",
+        "title": "éŸ³æ•ˆ"
+      },
+      "notifications": {
+        "title": "é€šçŸ¥",
+        "description": "è®¾ç½® Dhwani å¯ä»¥æ˜¾ç¤ºå“ªäº›é€šçŸ¥",
+        "disableAll": "ç¦ç”¨æ‰€æœ‰é€šçŸ¥",
+        "disableAllDescription": "é™éŸ³é™¤é”™è¯¯æ¶ˆæ¯å¤–çš„æ‰€æœ‰å†…å®¹",
+        "meetingDetection": "ä¼šè®®æ£€æµ‹",
+        "meetingDetectionDescription": "æ£€æµ‹åˆ°ä¼šè®®æ—¶é€šçŸ¥æ‚¨ä»¥ä¾¿å¼€å§‹å½•éŸ³",
+        "calendarReminders": "æ—¥åŽ†æé†’",
+        "calendarRemindersDescription": "é¢„å®šä¼šè®®å³å°†å¼€å§‹æ—¶é€šçŸ¥æ‚¨",
+        "updates": "åº”ç”¨æ›´æ–°",
+        "updatesDescription": "æœ‰æ–°ç‰ˆæœ¬å¯ç”¨æ—¶é€šçŸ¥æ‚¨"
+      },
+      "clipboard": {
+        "title": "å‰ªè´´æ¿",
+        "autoPaste": "è‡ªåŠ¨ç²˜è´´",
+        "autoPasteDescription": "å¬å†™ç»“æŸåŽè‡ªåŠ¨å°†è½¬å½•æ–‡æœ¬ç²˜è´´åˆ°å½“å‰æ´»åŠ¨çš„åº”ç”¨ä¸­",
+        "keepInClipboard": "å°†è½¬å½•å†…å®¹ä¿ç•™åœ¨å‰ªè´´æ¿",
+        "keepInClipboardDescription": "å°†å¬å†™æ–‡æœ¬ä¿ç•™åœ¨å‰ªè´´æ¿ä¸­ï¼Œä»¥ä¾¿åœ¨éœ€è¦æ—¶æ‰‹åŠ¨ç²˜è´´"
+      },
+      "startup": {
+        "launchAtLogin": "ç™»å½•æ—¶å¯åŠ¨",
+        "launchAtLoginDescription": "ç™»å½•æ—¶è‡ªåŠ¨å¯åŠ¨ Dhwani",
+        "title": "å¯åŠ¨",
+        "description": "æŽ§åˆ¶ Dhwani å¯åŠ¨æ—¶çš„è¡Œä¸º",
+        "startMinimized": "å¯åŠ¨æ—¶æœ€å°åŒ–",
+        "startMinimizedDescription": "å¯åŠ¨æ—¶ä¸æ˜¾ç¤ºæŽ§åˆ¶é¢æ¿çª—å£"
+      },
+      "waylandPaste": {
+        "title": "Wayland ç²˜è´´è®¾ç½®",
+        "description": "Wayland ä¸‹çš„è‡ªåŠ¨ç²˜è´´éœ€è¦ ydotoolã€‚è¯·æ£€æŸ¥ä»¥ä¸‹å„ç»„ä»¶çš„çŠ¶æ€ã€‚",
+        "allGoodDesc": "è‡ªåŠ¨ç²˜è´´å·²å°±ç»ªã€‚",
+        "recheck": "é‡æ–°æ£€æŸ¥",
+        "copy": "å¤åˆ¶",
+        "ydotoolDesc": "Wayland è¾“å…¥è‡ªåŠ¨åŒ–å·¥å…·",
+        "ydotooldDesc": "ydotool å®ˆæŠ¤è¿›ç¨‹ï¼ˆUbuntu/Pop!_OS ä¸Šä¸ºç‹¬ç«‹åŒ…ï¼‰",
+        "uinputDesc": "å†…æ ¸è¾“å…¥è®¾å¤‡è®¿é—®",
+        "uinputRuleFound": "è§„åˆ™å·²å­˜åœ¨ä½†æœªç”Ÿæ•ˆï¼Œé‡å¯åº”å¯è§£å†³ã€‚",
+        "uinputRuleMissing": "æœªæ‰¾åˆ° udev è§„åˆ™",
+        "inputGroup": "input ç”¨æˆ·ç»„",
+        "inputGroupDesc": "ç”¨æˆ·å¿…é¡»å±žäºŽ input ç»„ï¼ˆéœ€é‡æ–°ç™»å½•ï¼‰",
+        "service": "systemd æœåŠ¡",
+        "serviceDesc": "ç”¨äºŽè‡ªåŠ¨å¯åŠ¨ ydotoold çš„ç”¨æˆ·æœåŠ¡æ–‡ä»¶",
+        "daemon": "ydotoold å®ˆæŠ¤è¿›ç¨‹",
+        "daemonDesc": "åŽå°æœåŠ¡å¿…é¡»æ­£åœ¨è¿è¡Œ",
+        "guide": {
+          "open": "æŒ‡å—",
+          "ydotool": {
+            "step1Title": "å®‰è£… ydotool",
+            "step1Desc": "ä½¿ç”¨ä½ çš„å‘è¡Œç‰ˆåŒ…ç®¡ç†å™¨å®‰è£… ydotoolã€‚",
+            "step2Title": "éªŒè¯å®‰è£…",
+            "step2Desc": "æ£€æŸ¥ ydotool æ˜¯å¦åœ¨ä½ çš„ PATH ä¸­å¯ç”¨ã€‚"
+          },
+          "ydotoold": {
+            "step1Title": "å®‰è£… ydotoold",
+            "step1Desc": "åœ¨ Ubuntu å’Œ Pop!_OS ä¸Šï¼Œydotoold æ˜¯ç‹¬ç«‹çš„åŒ…ã€‚åœ¨ Fedora ä¸Šå®ƒåŒ…å«åœ¨ ydotool ä¸­ã€‚"
+          },
+          "uinput": {
+            "ruleFoundTitle": "udev è§„åˆ™å·²é…ç½®",
+            "ruleFoundDesc": "/dev/uinput çš„ udev è§„åˆ™å·²åœ¨ç³»ç»Ÿä¸­ï¼Œä½†å°šæœªç”Ÿæ•ˆã€‚å°è¯•é‡æ–°åŠ è½½ï¼š",
+            "rebootTitle": "å¦‚æžœé‡æ–°åŠ è½½æ— æ•ˆï¼Œè¯·é‡å¯",
+            "rebootDesc": "åœ¨æŸäº›å‘è¡Œç‰ˆä¸Šï¼Œudev çš„æ›´æ”¹åªæœ‰åœ¨å®Œå…¨é‡å¯åŽæ‰ä¼šç”Ÿæ•ˆã€‚é‡å¯è®¡ç®—æœºåŽå›žæ¥é‡æ–°æ£€æŸ¥ã€‚",
+            "step1Title": "åˆ›å»º udev è§„åˆ™",
+            "step1Desc": "æ­¤è§„åˆ™ä¸º input ç»„ç”¨æˆ·æŽˆäºˆ /dev/uinput çš„è®¿é—®æƒé™ã€‚",
+            "step2Title": "é‡æ–°åŠ è½½ udev è§„åˆ™",
+            "step2Desc": "æ— éœ€é‡å¯å³å¯åº”ç”¨æ–°è§„åˆ™ã€‚"
+          },
+          "group": {
+            "step1Title": "å°†ä½ çš„ç”¨æˆ·æ·»åŠ åˆ° input ç»„",
+            "step2Title": "æ³¨é”€å¹¶é‡æ–°ç™»å½•",
+            "step2Desc": "ç»„æ›´æ”¹ä»…åœ¨æ–°ä¼šè¯åŽç”Ÿæ•ˆã€‚ä»Žæ¡Œé¢æ³¨é”€ï¼Œé‡æ–°ç™»å½•ï¼Œç„¶åŽé‡æ–°æ‰“å¼€ Dhwaniã€‚"
+          },
+          "service": {
+            "step1Title": "åˆ›å»ºæœåŠ¡ç›®å½•",
+            "step2Title": "åˆ›å»ºæœåŠ¡æ–‡ä»¶",
+            "step2Desc": "åˆ›å»ºä¸€ä¸ªç”¨æˆ·çº§ systemd æœåŠ¡ï¼Œåœ¨ç™»å½•æ—¶è‡ªåŠ¨å¯åŠ¨ ydotooldã€‚",
+            "step3Title": "é‡æ–°åŠ è½½å¹¶å¯ç”¨"
+          },
+          "daemon": {
+            "step1Title": "å¯åŠ¨å®ˆæŠ¤è¿›ç¨‹",
+            "step1Desc": "å¯åŠ¨ ydotoold å¹¶è®¾ç½®ä¸ºæ¯æ¬¡ç™»å½•æ—¶è‡ªåŠ¨è¿è¡Œã€‚",
+            "step2Title": "éªŒè¯æ˜¯å¦æ­£åœ¨è¿è¡Œ"
+          },
+          "xclip": {
+            "step1Title": "å®‰è£… xclip"
+          }
+        },
+        "xclipDesc": "KDE Wayland ç²˜è´´ç”¨çš„å‰ªè´´æ¿å·¥å…·ï¼ˆxclip æˆ– xselï¼‰",
+        "nixos": {
+          "intro": "æ‚¨æ­£åœ¨ä½¿ç”¨ NixOSã€‚è‡ªåŠ¨ç²˜è´´éœ€è¦ ydotool å’Œ /dev/uinput è®¿é—®æƒé™ï¼ŒNixOS é€šè¿‡å£°æ˜Žå¼é…ç½®æ¥æŽˆäºˆè¿™äº›æƒé™ã€‚",
+          "detected": "å·²æ£€æµ‹åˆ°",
+          "manualTitle": "å°†ä»¥ä¸‹å†…å®¹æ·»åŠ åˆ°æ‚¨çš„é…ç½®ä¸­",
+          "manualDesc": "è‡ªè¡Œé…ç½®åŽé‡æ–°æž„å»ºã€‚",
+          "flakeTitle": "é€šè¿‡æˆ‘ä»¬çš„ flake å®‰è£…ï¼Ÿ",
+          "flakeDesc": "å¦‚æžœæ‚¨é€šè¿‡ flake å®‰è£… Dhwaniï¼Œprograms.Dhwani.enable ä¼šè‡ªåŠ¨ä¸ºæ‚¨å¯ç”¨ ydotoolã€uinput æ¨¡å—ä»¥åŠç›¸åº”çš„ç”¨æˆ·ç»„æƒé™ã€‚",
+          "rebuildNote": "è¿è¡Œ sudo nixos-rebuild switchï¼Œç„¶åŽæ³¨é”€å¹¶é‡æ–°ç™»å½•ï¼Œä½¿ç»„å˜æ›´å’Œ /dev/uinput è§„åˆ™ç”Ÿæ•ˆã€‚å°† <you> æ›¿æ¢ä¸ºæ‚¨çš„ç”¨æˆ·åã€‚"
+        }
+      },
+      "updates": {
+        "badges": {
+          "dev": "å¼€å‘ç‰ˆ",
+          "latest": "æœ€æ–°",
+          "update": "æ›´æ–°"
+        },
+        "checkForUpdates": "æ£€æŸ¥æ›´æ–°",
+        "checking": "æ£€æŸ¥ä¸­...",
+        "currentVersion": "å½“å‰ç‰ˆæœ¬",
+        "devMode": "æ­£åœ¨å¼€å‘æ¨¡å¼ä¸‹è¿è¡Œ",
+        "dialogs": {
+          "almostThere": {
+            "description": "æ›´æ–°å³å°†å°±ç»ªï¼Œè¯·ç¨å€™ã€‚",
+            "title": "å³å°†å®Œæˆ"
+          },
+          "checkFailed": {
+            "description": "æ£€æŸ¥æ›´æ–°æ—¶å‡ºé”™ï¼Œè¯·ç¨åŽé‡è¯•ã€‚",
+            "title": "æ— æ³•æ£€æŸ¥æ›´æ–°"
+          },
+          "downloadFailed": {
+            "description": "ä¸‹è½½æ›´æ–°æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+            "title": "æ— æ³•ä¸‹è½½æ›´æ–°"
+          },
+          "installFailed": {
+            "description": "å®‰è£…æ›´æ–°æ—¶å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+            "title": "æ— æ³•å®‰è£…æ›´æ–°"
+          },
+          "installUpdate": {
+            "confirmText": "å®‰è£…å¹¶é‡å¯",
+            "description": "Dhwani å°†é‡å¯ä»¥åº”ç”¨æ›´æ–°ã€‚",
+            "title": "å®‰è£…æ›´æ–°"
+          },
+          "noUpdates": {
+            "description": "ä½ å·²ç»æ˜¯æœ€æ–°ç‰ˆæœ¬ã€‚",
+            "title": "æ— å¯ç”¨æ›´æ–°"
+          },
+          "updateAvailable": {
+            "description": "æœ‰å¯ç”¨æ›´æ–°ï¼šv{{version}}",
+            "title": "æœ‰å¯ç”¨æ›´æ–°"
+          },
+          "updateError": {
+            "description": "æ›´æ–°å‡ºé”™ï¼Œè¯·é‡è¯•ã€‚",
+            "title": "æ›´æ–°é”™è¯¯"
+          }
+        },
+        "downloadUpdate": "ä¸‹è½½æ›´æ–° {{version}}",
+        "downloading": "ä¸‹è½½ä¸­... {{progress}}%",
+        "installAndRestart": "å®‰è£…å¹¶é‡å¯",
+        "latestVersion": "ä½ å·²ç»æ˜¯æœ€æ–°ç‰ˆæœ¬",
+        "newVersion": "æœ‰æ›´æ–°çš„ç‰ˆæœ¬å¯ç”¨",
+        "newVersionAvailable": "æœ‰æ–°ç‰ˆæœ¬å¯ç”¨",
+        "restarting": "æ­£åœ¨é‡å¯...",
+        "title": "æ›´æ–°",
+        "versionPlaceholder": "—",
+        "whatsNew": "v{{version}} æ›´æ–°å†…å®¹"
+      },
+      "polishHotkey": {
+        "title": "Polish 快捷键",
+        "description": "在任意应用中选中文字，AI 会就地重写",
+        "enabledLabel": "启用 Polish",
+        "instructionsLabel": "应用的修改",
+        "instructionConcise": "更简洁",
+        "instructionClarity": "提升清晰度和流畅度",
+        "instructionTone": "保留原有语气",
+        "instructionStructure": "在有帮助时增加结构"
+      },
+      "personalizedStyles": {
+        "title": "个性化风格",
+        "description": "根据您使用的应用设置听写清理的写作语气",
+        "off": "关闭",
+        "casual": "随意",
+        "formal": "正式",
+        "contexts": {
+          "work": "工作应用",
+          "email": "邮件应用",
+          "personal": "个人/聊天应用",
+          "other": "其他所有"
+        }
+      }
+    },
+    "permissions": {
+      "accessibilityDescription": "è½¬å½•åŽè‡ªåŠ¨ç²˜è´´éœ€è¦æ­¤æƒé™",
+      "accessibilityTitle": "è¾…åŠ©åŠŸèƒ½",
+      "description": "æµ‹è¯•å’Œç®¡ç† Dhwani æ­£å¸¸è¿è¡Œæ‰€éœ€çš„ç³»ç»Ÿæƒé™",
+      "microphoneDescription": "å½•åˆ¶æ‚¨çš„å£°éŸ³ç”¨äºŽå¬å†™å’Œè½¬å½•",
+      "microphoneTitle": "éº¦å…‹é£Ž",
+      "resetAccessibility": {
+        "description": "è¿™å°†ä»Žè¾…åŠ©åŠŸèƒ½æƒé™ä¸­ç§»é™¤ Dhwaniã€‚ä½ éœ€è¦åœ¨ç³»ç»Ÿè®¾ç½® > éšç§ä¸Žå®‰å…¨ > è¾…åŠ©åŠŸèƒ½ä¸­é‡æ–°æŽˆæƒã€‚",
+        "label": "é‡ç½®è¾…åŠ©åŠŸèƒ½æƒé™",
+        "rowDescription": "é‡æ–°å®‰è£…æˆ–é‡æ–°æž„å»ºåº”ç”¨åŽï¼Œé€šè¿‡åœ¨ç³»ç»Ÿè®¾ç½®ä¸­ç§»é™¤å¹¶é‡æ–°æ·»åŠ  Dhwani æ¥è§£å†³é—®é¢˜",
+        "title": "é‡ç½®è¾…åŠ©åŠŸèƒ½æƒé™"
+      },
+      "optional": "å¯é€‰",
+      "systemAudioTitle": "ç³»ç»ŸéŸ³é¢‘",
+      "systemAudioDescription": "è½¬å½•ä¼šè®®ã€é€šè¯ã€è®²åº§ã€æ’­å®¢å’Œå…¶ä»–ç³»ç»ŸéŸ³é¢‘ã€‚",
+      "grantAccess": "æŽˆäºˆè®¿é—®æƒé™",
+      "test": "æµ‹è¯•",
+      "testAndGrant": "æµ‹è¯•å¹¶æŽˆæƒ",
+      "title": "æƒé™",
+      "troubleshoot": "æŽ’æŸ¥é—®é¢˜",
+      "troubleshootingTitle": "é—®é¢˜æŽ’æŸ¥"
+    },
+    "privacy": {
+      "cloudBackup": "äº‘ç«¯å¤‡ä»½",
+      "cloudBackupDescription": "å°†è½¬å½•è®°å½•å’Œç¬”è®°å¤‡ä»½åˆ°äº‘ç«¯ï¼Œå®žçŽ°è·¨è®¾å¤‡æ— ç¼è®¿é—®ã€‚",
+      "cloudNotesMigration": "æ­£åœ¨å¤‡ä»½ç¬”è®°â€¦ {{done}} / {{total}}",
+      "cloudNotesMigrationDone": "æ‰€æœ‰ç¬”è®°å·²å¤‡ä»½",
+      "description": "æŽ§åˆ¶å“ªäº›æ•°æ®ä¼šç¦»å¼€ä½ çš„è®¾å¤‡ã€‚é»˜è®¤å…¨éƒ¨å…³é—­ã€‚",
+      "title": "éšç§",
+      "usageAnalytics": "ä½¿ç”¨åˆ†æž",
+      "usageAnalyticsDescription": "é€šè¿‡åˆ†äº«åŒ¿åæ€§èƒ½æ•°æ®å¸®åŠ©æˆ‘ä»¬æ”¹è¿› Dhwaniã€‚æˆ‘ä»¬ç»ä¸å‘é€è½¬å½•å†…å®¹——ä»…å‘é€è®¡æ—¶å’Œé”™è¯¯æ•°æ®ã€‚",
+      "dataRetention": "æ•°æ®ä¿ç•™",
+      "dataRetentionDescription": "å°†è½¬å½•å’ŒéŸ³é¢‘æœ¬åœ°ä¿å­˜åˆ°åŽ†å²è®°å½•ä¸­ã€‚ç¦ç”¨åŽï¼Œè½¬å½•å†…å®¹ä¼šè¢«ç²˜è´´ä½†ä¸ä¼šè¢«ä¿å­˜ã€‚",
+      "hoursAgo": "{{count}}å°æ—¶å‰",
+      "justNow": "åˆšåˆš",
+      "lastSynced": "ä¸Šæ¬¡åŒæ­¥ {{time}}",
+      "minutesAgo": "{{count}}åˆ†é’Ÿå‰",
+      "audioRetention": "éŸ³é¢‘ä¿ç•™",
+      "audioRetentionDescription": "åœ¨æœ¬åœ°å­˜å‚¨éŸ³é¢‘å½•åˆ¶æ–‡ä»¶ä»¥ä¾¿é‡æ–°è½¬å½•å’Œä¸‹è½½ã€‚æ–‡ä»¶ä¼šåœ¨ä¿ç•™æœŸè¿‡åŽè‡ªåŠ¨åˆ é™¤ã€‚",
+      "audioRetentionDisabled": "å·²ç¦ç”¨",
+      "audioRetentionDays": "{{count}} å¤©",
+      "audioStorageUsage": "å­˜å‚¨ç”¨é‡",
+      "audioStorageUsageDescription": "å­˜å‚¨åœ¨æ­¤è®¾å¤‡ä¸Šçš„éŸ³é¢‘æ–‡ä»¶",
+      "audioStorageFiles": "{{count}} ä¸ªæ–‡ä»¶ï¼Œ{{size}}",
+      "audioStorageEmpty": "æ²¡æœ‰å­˜å‚¨çš„éŸ³é¢‘æ–‡ä»¶",
+      "clearAllAudio": "æ¸…é™¤æ‰€æœ‰éŸ³é¢‘",
+      "clearAllAudioConfirm": "åˆ é™¤æ‰€æœ‰å·²å­˜å‚¨çš„éŸ³é¢‘æ–‡ä»¶ï¼Ÿæ­¤æ“ä½œæ— æ³•æ’¤é”€ã€‚",
+      "saveDiscarded": "ä¿å­˜å·²æ”¾å¼ƒçš„å¬å†™",
+      "saveDiscardedDescription": "ç”¨ Escape å–æ¶ˆå¬å†™æ—¶ï¼Œå°†å…¶éŸ³é¢‘ä¿ç•™åœ¨åŽ†å²è®°å½•ä¸­ä»¥ä¾¿æ¢å¤ã€‚éœ€å¼€å¯æ•°æ®å’ŒéŸ³é¢‘ä¿ç•™ã€‚"
+    },
+    "prompts": {
+      "description": "æŸ¥çœ‹ã€è‡ªå®šä¹‰å’Œæµ‹è¯•ç”¨äºŽæ–‡æœ¬æ•´ç†å’ŒæŒ‡ä»¤è¯†åˆ«çš„ç»Ÿä¸€ç³»ç»Ÿæç¤ºè¯",
+      "title": "æç¤ºè¯å·¥ä½œå®¤"
+    },
+    "speechToText": {
+      "title": "è¯­éŸ³è½¬æ–‡å­—",
+      "description": "ä¸ºå¬å†™å’Œç¬”è®°å½•éŸ³é€‰æ‹©ä¸€ä¸ªå¼•æ“Ž",
+      "tabs": {
+        "dictation": "å¬å†™",
+        "noteRecording": "ç¬”è®°å½•éŸ³",
+        "upload": "ä¸Šä¼ éŸ³é¢‘"
+      },
+      "selfHostedStreamingNote": "éœ€è¦æ”¯æŒæµå¼è½¬å½•çš„æœåŠ¡å™¨ã€‚"
+    },
+    "llms": {
+      "title": "è¯­è¨€æ¨¡åž‹",
+      "description": "é…ç½®ç”¨äºŽå¬å†™æ¸…ç†ã€ç¬”è®°æ ¼å¼åŒ–å’ŒèŠå¤©çš„æ¨¡åž‹",
+      "tabs": {
+        "dictationCleanup": "å¬å†™æ¸…ç†",
+        "dictationAgent": "Voice Agent",
+        "noteFormatting": "ç¬”è®°æ ¼å¼åŒ–",
+        "chatIntelligence": "èŠå¤©"
+      }
+    },
+    "noteFormatting": {
+      "autoGenerateTitle": "è‡ªåŠ¨ç”Ÿæˆç¬”è®°æ ‡é¢˜",
+      "autoGenerateTitleDescription": "ä½¿ç”¨ AI åœ¨è½¬å½•æˆ–å¢žå¼ºåŽä¸ºç¬”è®°ç”Ÿæˆç®€çŸ­æ ‡é¢˜"
+    },
+    "transcription": {
+      "customSetup": "è‡ªå®šä¹‰è®¾ç½®",
+      "customSetupDescription": "ä½¿ç”¨ä½ è‡ªå·±çš„æœåŠ¡å•†å’Œ API Keyã€‚",
+      "description": "é€‰æ‹© Dhwani è½¬å½•è¯­éŸ³çš„æ–¹å¼",
+      "modes": {
+        "Dhwani": "Dhwani Cloud",
+        "providers": "äº‘æœåŠ¡å•†",
+        "local": "æœ¬åœ°",
+        "selfHosted": "è‡ªæ‰˜ç®¡",
+        "DhwaniDesc": "å‡†ç¡®å¯é ï¼Œæ— éœ€è®¾ç½®ã€‚",
+        "providersDesc": "ä½¿ç”¨ä½ è‡ªå·±çš„ API Keyã€‚",
+        "localDesc": "è®¾å¤‡ç«¯æ¨¡åž‹ï¼Œå®Œå…¨ç§å¯†ã€‚",
+        "selfHostedDesc": "ä½ çš„æœåŠ¡å™¨ï¼Œåœ¨ä½ çš„ç½‘ç»œä¸Šã€‚"
+      },
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "å‡†ç¡®å¯é ï¼Œæ— éœ€è®¾ç½®ã€‚",
+      "title": "è¯­éŸ³è½¬æ–‡å­—",
+      "toasts": {
+        "switchedCloud": {
+          "description": "è½¬å½•å°†ä½¿ç”¨ Dhwani äº‘ç«¯æœåŠ¡ã€‚",
+          "title": "å·²åˆ‡æ¢åˆ° Dhwani äº‘ç«¯"
+        },
+        "switchedCustom": {
+          "description": "è¯·é…ç½®ä½ çš„æœåŠ¡å•†å’Œ API Keyã€‚",
+          "title": "å·²åˆ‡æ¢åˆ°è‡ªå®šä¹‰è®¾ç½®"
+        },
+        "switchedProviders": {
+          "title": "äº‘æœåŠ¡å•†",
+          "description": "ä½¿ç”¨ä½ è‡ªå·±çš„ API Keyã€‚"
+        },
+        "switchedLocal": {
+          "title": "æœ¬åœ°è¿è¡Œ",
+          "description": "è½¬å½•åœ¨ä½ çš„è®¾å¤‡ä¸Šæœ¬åœ°è¿è¡Œã€‚"
+        },
+        "switchedSelfHosted": {
+          "title": "è‡ªæ‰˜ç®¡",
+          "description": "ä½¿ç”¨ä½ è‡ªå·±çš„æœåŠ¡å™¨ã€‚"
+        }
+      },
+      "gpuDevice": {
+        "title": "è½¬å½• GPU",
+        "description": "ç”¨äºŽæœ¬åœ°è¯­éŸ³è¯†åˆ«çš„ GPU"
+      },
+      "diarization": {
+        "title": "è¯´è¯äººè¯†åˆ«",
+        "description": "è¯†åˆ«ä¼šè®®å½•éŸ³ä¸­çš„å„ä¸ªè¯´è¯äºº",
+        "modelsReady": "æ¨¡åž‹å·²å°±ç»ª",
+        "deleteModels": "åˆ é™¤æ¨¡åž‹"
+      },
+      "transcriptionPreview": "å®žæ—¶è½¬å½•é¢„è§ˆ",
+      "transcriptionPreviewDescription": "åœ¨æµ®åŠ¨çª—å£ä¸­æ˜¾ç¤ºè½¬å½•ç»“æžœï¼Œç„¶åŽå†è¿›è¡Œæ–‡æœ¬æ•´ç†",
+      "vad": {
+        "title": "è¯­éŸ³æ´»åŠ¨æ£€æµ‹",
+        "description": "é…ç½® Silero VAD å¦‚ä½•ä¸ºæœ¬åœ° Whisper è½¬å½•æ£€æµ‹å¹¶åˆ‡åˆ†è¯­éŸ³",
+        "toggles": {
+          "dictation": {
+            "title": "å¬å†™ä½¿ç”¨ Silero VAD",
+            "description": "ä¸ºæœ¬åœ°å¬å†™å¯ç”¨è¯­éŸ³æ´»åŠ¨æ£€æµ‹"
+          },
+          "noteRecording": {
+            "title": "ç¬”è®°å½•éŸ³ä½¿ç”¨ Silero VAD",
+            "description": "ä¸ºæœ¬åœ°ç¬”è®°å½•éŸ³å¯ç”¨è¯­éŸ³æ´»åŠ¨æ£€æµ‹"
+          },
+          "meeting": {
+            "title": "ä¼šè®®ä½¿ç”¨ Silero VAD",
+            "description": "ä¸ºæœ¬åœ°ä¼šè®®è½¬å½•å¯ç”¨è¯­éŸ³æ´»åŠ¨æ£€æµ‹"
+          }
+        },
+        "fields": {
+          "threshold": {
+            "label": "VAD é˜ˆå€¼",
+            "info": "é«˜äºŽè¯¥æ¦‚çŽ‡çš„å¸§ä¼šè¢«åˆ¤å®šä¸ºè¯­éŸ³ã€‚"
+          },
+          "minSpeechDurationMs": {
+            "label": "æœ€å°è¯­éŸ³æ—¶é•¿ (æ¯«ç§’)",
+            "info": "çŸ­äºŽæ­¤æ—¶é•¿çš„è¯­éŸ³ç‰‡æ®µä¼šä½œä¸ºå™ªå£°æˆ–è¯¯åˆ¤è¢«ä¸¢å¼ƒã€‚"
+          },
+          "minSilenceDurationMs": {
+            "label": "æœ€å°é™éŸ³æ—¶é•¿ (æ¯«ç§’)",
+            "info": "é™éŸ³å¿…é¡»è¾¾åˆ°è¯¥æ—¶é•¿æ‰ä¼šç»“æŸä¸€ä¸ªè¯­éŸ³ç‰‡æ®µã€‚æ›´çŸ­çš„åœé¡¿ä¼šä¿ç•™åœ¨ç‰‡æ®µå†…ã€‚"
+          },
+          "maxSpeechDurationS": {
+            "label": "æœ€å¤§è¯­éŸ³æ—¶é•¿ (ç§’)",
+            "info": "æ›´é•¿çš„ç‰‡æ®µä¼šåœ¨é™éŸ³å¤„è‡ªåŠ¨æ‹†åˆ†ï¼Œä»¥ä¾¿ä¿æŒå¯æŽ§å¤§å°ã€‚"
+          },
+          "speechPadMs": {
+            "label": "è¯­éŸ³å¡«å…… (æ¯«ç§’)",
+            "info": "åœ¨æ¯ä¸ªè¯­éŸ³ç‰‡æ®µå‰åŽæ·»åŠ çš„å¡«å……ï¼Œé¿å…åˆ‡æ–­è¯è¯­è¾¹ç¼˜ã€‚"
+          },
+          "samplesOverlap": {
+            "label": "æ ·æœ¬é‡å  (ç§’)",
+            "info": "å°†æ¯ä¸ªç‰‡æ®µå»¶ä¼¸åˆ°ä¸‹ä¸€ä¸ªç‰‡æ®µçš„éŸ³é¢‘é‡ï¼Œé¿å…æ‹¼æŽ¥æ—¶å‡ºçŽ°çªå…€çš„æˆªæ–­ã€‚"
+          }
+        }
+      }
+    },
+    "intelligence": {
+      "gpuDevice": {
+        "title": "æ™ºèƒ½å¤„ç† GPU",
+        "description": "ç”¨äºŽæœ¬åœ° AI å¤„ç†çš„ GPU"
+      }
+    },
+    "selfHosted": {
+      "endpointUrl": "ç«¯ç‚¹ URL",
+      "serverUrl": "æœåŠ¡å™¨ URL",
+      "apiKeyOptional": "API Keyï¼ˆå¯é€‰ï¼‰"
+    },
+    "workspace": {
+      "title": "Espacio de trabajo",
+      "description": "Colabora con compaÃ±eros, comparte notas y administra la facturaciÃ³n en un solo lugar.",
+      "empty": {
+        "title": "Crea tu primer espacio de trabajo",
+        "description": "Los espacios de trabajo te permiten colaborar con compaÃ±eros y compartir notas.",
+        "create": "Crear espacio de trabajo"
+      },
+      "tab": {
+        "general": "General",
+        "members": "Miembros",
+        "teams": "Equipos",
+        "billing": "FacturaciÃ³n",
+        "developer": "Desarrollador"
+      },
+      "role": {
+        "owner": "Propietario",
+        "admin": "Administrador",
+        "member": "Miembro"
+      },
+      "general": {
+        "nameLabel": "Nombre del espacio de trabajo",
+        "slugLabel": "Slug",
+        "slugHint": "Se usa en URLs y enlaces de invitaciÃ³n. Solo letras minÃºsculas, dÃ­gitos y guiones.",
+        "saved": "Espacio de trabajo actualizado",
+        "dangerTitle": "Eliminar espacio de trabajo",
+        "dangerDescription": "Todas las notas, carpetas e integraciones compartidas se eliminarÃ¡n. Esto no se puede deshacer.",
+        "delete": "Eliminar espacio de trabajo",
+        "confirmTitle": "Â¿Eliminar {{name}}?",
+        "confirmDescription": "Esto cancela la suscripciÃ³n y elimina todos los datos del espacio de trabajo permanentemente."
+      },
+      "members": {
+        "title": "Miembros",
+        "description": "{{count}} de {{seats}} asientos utilizados.",
+        "invite": "Invitar",
+        "empty": "AÃºn no hay miembros.",
+        "roleUpdated": "Rol actualizado",
+        "promote": "Hacer administrador",
+        "demote": "Hacer miembro",
+        "transferOwnership": "Transferir propiedad",
+        "remove": "Quitar del espacio de trabajo"
+      },
+      "invites": {
+        "title": "Invitaciones pendientes",
+        "resend": "Reenviar",
+        "revoke": "Revocar",
+        "resent": "InvitaciÃ³n reenviada"
+      },
+      "teams": {
+        "title": "Equipos",
+        "description": "Agrupa miembros para compartir con alcance limitado.",
+        "new": "Nuevo equipo",
+        "empty": "AÃºn no hay equipos.",
+        "createFirst": "Crea tu primer equipo",
+        "createTitle": "Crear equipo",
+        "nameLabel": "Nombre del equipo",
+        "descriptionLabel": "DescripciÃ³n",
+        "memberCount": "{{count}} miembros"
+      },
+      "billing": {
+        "title": "FacturaciÃ³n",
+        "description": "Plan, asientos y pago.",
+        "plan": "Plan",
+        "seats": "Asientos",
+        "nextInvoice": "PrÃ³xima factura",
+        "manageStripe": "Administrar en Stripe",
+        "startSubscription": "Iniciar suscripciÃ³n"
+      },
+      "developer": {
+        "title": "Claves API",
+        "description": "Acceso programÃ¡tico limitado a este espacio de trabajo.",
+        "empty": "AÃºn no hay claves API. Crea una para integrarte con este espacio de trabajo.",
+        "new": "Nueva clave",
+        "create": "Crear clave",
+        "createTitle": "Crear clave API",
+        "createDescription": "Elige los permisos que necesita esta clave. Puedes revocarla en cualquier momento.",
+        "nameLabel": "Nombre de la clave",
+        "namePlaceholder": "IntegraciÃ³n de producciÃ³n",
+        "revoke": "Revocar clave",
+        "lastUsed": "Ãšltimo uso {{date}}",
+        "neverUsed": "Nunca utilizada",
+        "keyCreatedTitle": "Clave API creada",
+        "keyCreatedDescription": "Copia esta clave ahora — no podrÃ¡s verla de nuevo."
+      }
+    }
+  },
+  "models": {
+    "learnMore": "äº†è§£æ›´å¤š",
+    "descriptions": {
+      "parakeet": {
+        "parakeet_tdt_0_6b_v3": "å¿«é€Ÿå¤šè¯­è¨€è¯­éŸ³è¯†åˆ«ï¼Œè‡ªåŠ¨è¯­è¨€æ£€æµ‹ï¼ˆ25 ç§è¯­è¨€ï¼‰",
+        "parakeet_unified_en_0_6b": "ä»…è‹±è¯­ ASRï¼Œæœ€å…ˆè¿›çš„å‡†ç¡®åº¦ï¼ˆå¹³å‡ WER 5.91%ï¼‰"
+      },
+      "whisper": {
+        "tiny": "æœ€å¿«é€Ÿåº¦ï¼Œè¾ƒä½Žè´¨é‡",
+        "base": "å¹³è¡¡ä¹‹é€‰",
+        "small": "æ›´å¥½è´¨é‡ï¼Œè¾ƒæ…¢é€Ÿåº¦",
+        "medium": "é«˜è´¨é‡",
+        "large": "æœ€ä½³è´¨é‡ï¼Œæœ€æ…¢é€Ÿåº¦",
+        "turbo": "å¿«é€Ÿä¸”è´¨é‡è‰¯å¥½"
+      },
+      "transcription": {
+        "openai_gpt_4o_mini_transcribe": "å¿«é€Ÿä¸”å‡†ç¡®çš„è½¬å½•",
+        "openai_gpt_4o_transcribe": "æœ€å‡†ç¡®çš„è½¬å½•",
+        "openai_whisper_1": "åŽŸå§‹ Whisper æ¨¡åž‹",
+        "groq_whisper_large_v3_turbo": "216 å€å®žæ—¶é€Ÿåº¦",
+        "groq_whisper_large_v3": "Large v3 æ¨¡åž‹ï¼Œå¿«é€Ÿä¸”ç²¾å‡†",
+        "mistral_voxtral_mini_latest": "å¿«é€Ÿå¤šè¯­è¨€è½¬å½•",
+        "corti_transcribe": "ä¸´åºŠçº§åŒ»ç–—è½¬å½•",
+        "xai_grok_stt": "xAI é«˜ç²¾åº¦è¯­éŸ³è¯†åˆ«"
+      },
+      "cloud": {
+        "openai_gpt_5_2": "å¼ºå¤§çš„æŽ¨ç†æ¨¡åž‹",
+        "openai_gpt_5_mini": "å¿«é€Ÿä¸”ç»æµŽ",
+        "openai_gpt_5_nano": "è¶…å¿«é€Ÿã€ä½Žå»¶è¿Ÿ",
+        "openai_gpt_4_1": "ç¨³å®šåŸºå‡†ï¼Œ1M ä¸Šä¸‹æ–‡",
+        "openai_gpt_4_1_mini": "ç²¾ç®€ç‰ˆ GPT-4.1",
+        "openai_gpt_4_1_nano": "æœ€ä½Žå»¶è¿Ÿ GPT-4.1",
+        "anthropic_claude_sonnet_4_6": "å‡è¡¡æ€§èƒ½",
+        "anthropic_claude_sonnet_4_5": "ä¸Šä¸€ä»£ Sonnet",
+        "anthropic_claude_haiku_4_5": "å¿«é€Ÿä¸”æŽ¥è¿‘å‰æ²¿æ°´å¹³",
+        "gemini_gemini_3_5_flash": "æœ€æ–°ã€å¿«é€Ÿä¸”é«˜èƒ½åŠ›çš„ Gemini æ¨¡åž‹",
+        "gemini_gemini_3_1_pro_preview": "æ–°ä¸€ä»£æ——èˆ°æ¨¡åž‹ï¼Œæ“…é•¿å¤æ‚æŽ¨ç†",
+        "gemini_gemini_3_flash_preview": "è¶…å¿«é€Ÿã€é«˜èƒ½åŠ›çš„æ–°ä¸€ä»£æ¨¡åž‹",
+        "gemini_gemini_2_5_flash_lite": "æœ€ä½Žå»¶è¿Ÿå’Œæˆæœ¬",
+        "gemini_gemma_4_31b_it": "Google æœ€å¤§çš„ Gemma 4ï¼Œ31B ç¨ å¯†ï¼Œ256K ä¸Šä¸‹æ–‡",
+        "gemini_gemma_4_26b_a4b_it": "Google Gemma 4 MoEï¼Œ4B æ´»è·ƒå‚æ•°ï¼Œ256K ä¸Šä¸‹æ–‡",
+        "groq_qwen_qwen3_32b": "å¼ºå¤§çš„æŽ¨ç†æ¨¡åž‹ï¼Œ131K ä¸Šä¸‹æ–‡",
+        "groq_openai_gpt_oss_120b": "OpenAI å¼€æºæ——èˆ°ï¼Œ500 T/ç§’",
+        "groq_openai_gpt_oss_20b": "å¿«é€Ÿå¼€æºæ¨¡åž‹ï¼Œ1000 T/ç§’",
+        "groq_llama_3_3_70b_versatile": "Meta å¤šåŠŸèƒ½æ¨¡åž‹ï¼Œ280 T/ç§’",
+        "groq_llama_3_1_8b_instant": "è¶…å¿« 560 T/ç§’ï¼Œ131K ä¸Šä¸‹æ–‡",
+        "groq_llama_4_scout": "Meta é«˜æ•ˆå¤šæ¨¡æ€ï¼Œ750 T/ç§’",
+        "groq_compound": "Groq Compound ç³»ç»Ÿï¼Œ450 T/ç§’",
+        "groq_compound_mini": "å¿«é€Ÿ Compound ç³»ç»Ÿï¼Œ3x æ›´ä½Žå»¶è¿Ÿ",
+        "groq_kimi_k2_0905": "Moonshot AI 1T MoEï¼Œ256K ä¸Šä¸‹æ–‡",
+        "openai_gpt_5_5": "å¤æ‚æŽ¨ç†å‰æ²¿æ¨¡åž‹",
+        "anthropic_claude_opus_4_8": "æœ€å¼ºå¤§çš„ Claude æ¨¡åž‹",
+        "anthropic_claude_opus_4_7": "å¼ºå¤§çš„ Opus æ¨¡åž‹",
+        "anthropic_claude_opus_4_6": "ä¸Šä¸€ä»£ Opusï¼Œ1M ä¸Šä¸‹æ–‡",
+        "anthropic_claude_opus_4_5": "æ›´æ—©çš„ Opus æ¨¡åž‹"
+      },
+      "enterprise": {
+        "bedrock_claude_haiku_4_5": "å¿«é€Ÿä¸”ä½Žæˆæœ¬ã€‚é€‚åˆæ–‡æœ¬æ¸…ç†ã€‚",
+        "bedrock_claude_sonnet_4_6": "å‡è¡¡æ€§èƒ½ã€‚æŽ¨èç”¨ä½œæ™ºèƒ½åŠ©æ‰‹æ¨¡å¼çš„é»˜è®¤æ¨¡åž‹ã€‚",
+        "bedrock_claude_opus_4_7": "æœ€é«˜æ™ºèƒ½ã€‚é€‚ç”¨äºŽå¤æ‚çš„æ™ºèƒ½åŠ©æ‰‹æ¨¡å¼ä»»åŠ¡ã€‚",
+        "bedrock_nova_lite": "æœ€ä¾¿å®œçš„é€‰æ‹©ã€‚AWS åŽŸç”Ÿï¼Œé€‚åˆé«˜æµé‡åœºæ™¯ã€‚",
+        "vertex_gemini_2_5_flash": "Fast multimodal model via Vertex",
+        "vertex_gemini_2_5_pro": "Advanced reasoning via Vertex"
+      },
+      "local": {
+        "qwen_qwen3_5_9b_q4_k_m": "å¼ºå¤§çš„æ··åˆæ¨¡åž‹",
+        "qwen_qwen3_5_4b_q4_k_m": "å‡è¡¡çš„ Qwen3.5ï¼Œé€šç”¨ç”¨é€”",
+        "qwen_qwen3_5_2b_q4_k_m": "ç´§å‡‘çš„ Qwen3.5ï¼Œå¿«é€Ÿä»»åŠ¡",
+        "qwen_qwen3_8b_q4_k_m": "æœ€æ–° Qwen3ï¼Œæ”¯æŒæ€ç»´æ¨¡å¼",
+        "qwen_qwen3_8b_q5_k_m": "æ›´é«˜è´¨é‡ Qwen3ï¼Œæ”¯æŒæ€ç»´æ¨¡å¼",
+        "qwen_qwen3_4b_q4_k_m": "ç´§å‡‘åž‹ Qwen3ï¼Œå…·å¤‡æŽ¨ç†èƒ½åŠ›",
+        "qwen_qwen3_1_7b_q8_0": "å°è€Œå¼ºçš„ Qwen3 æ¨¡åž‹",
+        "qwen_qwen3_32b_q4_k_m": "æœ€å¼ºå¤§çš„æœ¬åœ° Qwen3ï¼Œæ·±åº¦æŽ¨ç†",
+        "qwen_qwen2_5_1_5b_instruct_q5_k_m": "å°åž‹æ¨¡åž‹ï¼Œé€‚åˆåŸºç¡€ä»»åŠ¡",
+        "qwen_qwen2_5_3b_instruct_q5_k_m": "å‡è¡¡æ¨¡åž‹ï¼Œé€šç”¨åœºæ™¯",
+        "qwen_qwen2_5_7b_instruct_q4_k_m": "å¤§åž‹æ¨¡åž‹ï¼Œé«˜è´¨é‡ï¼ˆQ4_K_Mï¼‰",
+        "qwen_qwen2_5_7b_instruct_q5_k_m": "å¤§åž‹æ¨¡åž‹ï¼Œé«˜è´¨é‡æŽ¨ç†ï¼ˆQ5_K_Mï¼‰",
+        "mistral_mistral_7b_instruct_v0_3_q4_k_m": "å¿«é€Ÿé«˜æ•ˆçš„æŒ‡ä»¤æ¨¡åž‹",
+        "mistral_mistral_7b_instruct_v0_3_q5_k_m": "æ›´é«˜è´¨é‡çš„æŒ‡ä»¤æ¨¡åž‹",
+        "mistral_nemo_12b_instruct_q4_k_m": "Mistral 12B æ¨¡åž‹ï¼Œå¼ºå¤§çš„å¤šè¯­è¨€æ€§èƒ½",
+        "llama_llama_3_2_1b_instruct_q4_k_m": "è¶…å°æ¨¡åž‹ï¼Œé€‚ç”¨äºŽè¾¹ç¼˜è®¾å¤‡",
+        "llama_llama_3_2_3b_instruct_q4_k_m": "å°è€Œå¼ºçš„å¤šè¯­è¨€æ¨¡åž‹",
+        "llama_llama_3_1_8b_instruct_q4_k_m": "å¼ºå¤§æ¨¡åž‹ï¼Œæ€§èƒ½å‡ºè‰²",
+        "openai_oss_gpt_oss_20b_mxfp4": "OpenAI å¼€æºæ¨¡åž‹ï¼Œé€‚ç”¨äºŽæ¶ˆè´¹çº§ç¡¬ä»¶",
+        "gemma_gemma_3_4b_it_q4_k_m": "è°·æ­Œå¼€æ”¾æƒé‡æ¨¡åž‹ï¼Œé€Ÿåº¦ä¸Žè´¨é‡çš„ç»ä½³å¹³è¡¡",
+        "gemma_gemma_4_31b_it_q4_k_m": "Google æœ€å¤§çš„ Gemma 4ï¼Œæœ€ä½³è´¨é‡",
+        "gemma_gemma_4_26b_a4b_it_q4_k_m": "Google MoE Gemma 4ï¼Œ4B æ´»è·ƒå‚æ•°ï¼Œé€Ÿåº¦å¿«",
+        "gemma_gemma_4_e4b_it_q4_k_m": "Google æœ€æ–°å¤šæ¨¡æ€æ¨¡åž‹ï¼Œå¼ºå¤§æŽ¨ç†èƒ½åŠ›",
+        "gemma_gemma_4_e2b_it_q4_k_m": "Google ç´§å‡‘åž‹ Gemma 4ï¼Œå¿«é€Ÿé«˜æ•ˆ",
+        "gemma_gemma_3_12b_it_q4_k_m": "Google ä¸­åž‹æ¨¡åž‹ï¼Œå¼ºæŽ¨ç†èƒ½åŠ›",
+        "gemma_gemma_3_1b_it_q4_k_m": "è¶…å¿«è°·æ­Œæ¨¡åž‹ï¼Œæœ€é€‚åˆçŸ­å¬å†™æ¸…ç†"
+      },
+      "diarization": {
+        "segmentation": "ç”¨äºŽè¯´è¯äººåˆ†ç¦»çš„è¯­éŸ³è¾¹ç•Œæ£€æµ‹",
+        "embedding_en": "ç”¨äºŽè¯´è¯äººè¯†åˆ«çš„å£°çº¹æå–"
+      }
+    }
+  },
+  "referral": {
+    "modalTitle": "æŽ¨èè®¡åˆ’",
+    "title": "æŽ¨èèµšå–å¥–åŠ±",
+    "subtitle": "é€ä¸€ä¸ªæœˆï¼Œå¾—ä¸€ä¸ªæœˆã€‚",
+    "tabs": {
+      "refer": "æŽ¨è",
+      "pastInvites": "åŽ†å²é‚€è¯·"
+    },
+    "howItWorks": {
+      "shareLink": "åˆ†äº«ä½ çš„é‚€è¯·é“¾æŽ¥",
+      "theySignUp": "å¯¹æ–¹æ³¨å†Œå³å¯èŽ·å¾—",
+      "freeMonthOfPro": "ä¸€ä¸ªæœˆå…è´¹ Pro",
+      "youGet": "ä½ å°†èŽ·å¾—",
+      "freeMonth": "ä¸€ä¸ªæœˆå…è´¹",
+      "whenTheyDictate": "å½“å¯¹æ–¹å¬å†™æ»¡ 2,000 ä¸ªè¯æ—¶"
+    },
+    "inviteLink": {
+      "title": "ä½ çš„é‚€è¯·é“¾æŽ¥",
+      "copy": "å¤åˆ¶",
+      "copied": "å·²å¤åˆ¶"
+    },
+    "sendInvites": {
+      "title": "å‘é€é‚€è¯·",
+      "placeholder": "friend@example.com",
+      "send": "å‘é€",
+      "sending": "å‘é€ä¸­"
+    },
+    "stats": {
+      "referred": "å·²æŽ¨è",
+      "converted": "å·²è½¬åŒ–",
+      "monthsEarned": "å·²èŽ·å¾—æœˆæ•°"
+    },
+    "status": {
+      "converted": "å·²è½¬åŒ–",
+      "opened": "å·²æ‰“å¼€",
+      "failed": "å¤±è´¥",
+      "sent": "å·²å‘é€"
+    },
+    "empty": {
+      "title": "å°šæœªå‘é€ä»»ä½•é‚€è¯·",
+      "description": "åˆ†äº«ä½ çš„é“¾æŽ¥æˆ–å‘é€é‚€è¯·ä»¥å¼€å§‹ä½¿ç”¨"
+    },
+    "toasts": {
+      "copiedTitle": "å·²å¤åˆ¶ï¼",
+      "copiedDescription": "æŽ¨èé“¾æŽ¥å·²å¤åˆ¶åˆ°å‰ªè´´æ¿",
+      "copyFailedTitle": "å¤åˆ¶å¤±è´¥",
+      "copyFailedDescription": "æ— æ³•å°†é“¾æŽ¥å¤åˆ¶åˆ°å‰ªè´´æ¿",
+      "invalidEmailTitle": "é‚®ç®±åœ°å€æ— æ•ˆ",
+      "invalidEmailDescription": "è¯·è¾“å…¥æœ‰æ•ˆçš„é‚®ç®±åœ°å€",
+      "inviteSentTitle": "é‚€è¯·å·²å‘é€ï¼",
+      "inviteSentDescription": "é‚€è¯·å·²å‘é€è‡³ {{email}}",
+      "sendFailedTitle": "å‘é€å¤±è´¥",
+      "sendFailedDescription": "é‚€è¯·å‘é€å¤±è´¥ï¼Œè¯·é‡è¯•ã€‚"
+    },
+    "errors": {
+      "unableToLoad": "æ— æ³•åŠ è½½æŽ¨èæ•°æ®",
+      "unableToLoadStats": "æ— æ³•åŠ è½½æŽ¨èç»Ÿè®¡æ•°æ®ï¼Œè¯·ç¨åŽé‡è¯•ã€‚"
+    },
+    "tryAgain": "é‡è¯•",
+    "card": {
+      "brand": "Dhwani",
+      "signalId": "Signal ID",
+      "audioSignature": "ä½ çš„å£°çº¹ç­¾å",
+      "stop": "åœæ­¢",
+      "playSignal": "æ’­æ”¾ä¿¡å·"
+    },
+    "friends": {
+      "title": "å¥½å‹",
+      "completed": "å·²å®Œæˆ",
+      "sentInvites": "å·²å‘å‡ºçš„é‚€è¯·"
+    }
+  },
+  "notes": {
+    "sidebar": {
+      "newNote": "æ–°å»ºç¬”è®°",
+      "searchNotes": "æœç´¢ç¬”è®°",
+      "actions": "æ“ä½œ"
+    },
+    "folders": {
+      "title": "æ–‡ä»¶å¤¹",
+      "soon": "å³å°†æŽ¨å‡º",
+      "folderName": "æ–‡ä»¶å¤¹åç§°",
+      "couldNotCreate": "æ— æ³•åˆ›å»ºæ–‡ä»¶å¤¹",
+      "couldNotRename": "æ— æ³•é‡å‘½åæ–‡ä»¶å¤¹",
+      "couldNotDelete": "æ— æ³•åˆ é™¤æ–‡ä»¶å¤¹",
+      "deleteTitle": "åˆ é™¤æ–‡ä»¶å¤¹ï¼Ÿ",
+      "deleteDescription": "è¿™å°†æ°¸ä¹…åˆ é™¤ã€Œ{{name}}ã€åŠå…¶ {{count}} æ¡ç¬”è®°ã€‚æ­¤æ“ä½œæ— æ³•æ’¤é”€ã€‚",
+      "deleteDescriptionEmpty": "è¿™å°†æ°¸ä¹…åˆ é™¤ã€Œ{{name}}ã€ã€‚æ­¤æ“ä½œæ— æ³•æ’¤é”€ã€‚",
+      "deleteConfirm": "åˆ é™¤æ–‡ä»¶å¤¹å’Œç¬”è®°"
+    },
+    "list": {
+      "title": "ç¬”è®°",
+      "newNote": "æ–°å»ºç¬”è®°",
+      "untitled": "æ— æ ‡é¢˜",
+      "untitledNote": "æ— æ ‡é¢˜ç¬”è®°",
+      "timeNow": "åˆšåˆš",
+      "minutesAgo": "{{count}} åˆ†é’Ÿå‰",
+      "hoursAgo": "{{count}} å°æ—¶å‰",
+      "daysAgo": "{{count}} å¤©å‰"
+    },
+    "editor": {
+      "untitled": "æ— æ ‡é¢˜",
+      "noteTitle": "ç¬”è®°æ ‡é¢˜",
+      "stop": "åœæ­¢",
+      "transcribe": "è½¬å½•",
+      "processing": "å¤„ç†ä¸­...",
+      "export": "å¯¼å‡º",
+      "asMarkdown": "å¯¼å‡ºä¸º Markdown",
+      "asPlainText": "å¯¼å‡ºä¸ºçº¯æ–‡æœ¬",
+      "asTranscriptText": "å¯¼å‡ºä¸ºçº¯æ–‡æœ¬ (.txt)",
+      "asSubtitles": "å¯¼å‡ºä¸ºå­—å¹• (.srt)",
+      "asJson": "å¯¼å‡ºä¸º JSON (.json)",
+      "asTranscriptMarkdown": "å¯¼å‡ºä¸º Markdown (.md)",
+      "raw": "åŽŸå§‹å†…å®¹",
+      "enhanced": "å¢žå¼ºå†…å®¹",
+      "saving": "ä¿å­˜ä¸­",
+      "startWriting": "å¼€å§‹ä¹¦å†™...",
+      "staleIndicator": "å†…å®¹åœ¨å¢žå¼ºåŽå·²æ›´æ”¹",
+      "live": "å®žæ—¶",
+      "transcript": "è½¬å½•",
+      "notes": "ç¬”è®°",
+      "conversationWillAppear": "å¯¹è¯å°†æ˜¾ç¤ºåœ¨è¿™é‡Œ...",
+      "linkedEvent": "å…³è”æ—¥ç¨‹",
+      "noFolder": "æ— æ–‡ä»¶å¤¹",
+      "participants": "å‚ä¸Žè€…"
+    },
+    "participants": {
+      "attendee": "ä½å‚ä¼šè€…",
+      "attendees": "ä½å‚ä¼šè€…",
+      "addAttendees": "æ·»åŠ å‚ä¼šè€…",
+      "addPlaceholder": "æ·»åŠ å‚ä¼šè€…...",
+      "typeEmail": "è¾“å…¥é‚®ç®±ä»¥æ·»åŠ ...",
+      "me": "ï¼ˆæˆ‘ï¼‰"
+    },
+    "upload": {
+      "title": "ä¸Šä¼ éŸ³é¢‘",
+      "using": "ä½¿ç”¨ {{model}}",
+      "dropOrBrowse": "æ‹–æ”¾éŸ³é¢‘æ–‡ä»¶æˆ–ç‚¹å‡»æµè§ˆ",
+      "supportedFormats": "MP3ã€WAVã€M4Aã€WebMã€OGGã€FLACã€AAC",
+      "dropToUpload": "æ‹–æ”¾ä»¥ä¸Šä¼ ",
+      "transcribe": "è½¬å½•",
+      "cancel": "å–æ¶ˆ",
+      "transcribingCloud": "æ­£åœ¨é€šè¿‡äº‘ç«¯è½¬å½•...",
+      "transcribingLocal": "æ­£åœ¨æœ¬åœ°è½¬å½•...",
+      "transcribingProvider": "æ­£åœ¨é€šè¿‡ {{provider}} è½¬å½•...",
+      "cancelTranscription": "å–æ¶ˆè½¬å½•",
+      "transcriptionComplete": "è½¬å½•å®Œæˆ",
+      "openNote": "æ‰“å¼€ç¬”è®°",
+      "uploadAnother": "ä¸Šä¼ å¦ä¸€ä¸ª",
+      "retry": "é‡è¯•",
+      "startOver": "é‡æ–°å¼€å§‹",
+      "newFolder": "æ–°å»ºæ–‡ä»¶å¤¹",
+      "folderName": "æ–‡ä»¶å¤¹åç§°",
+      "create": "åˆ›å»º",
+      "DhwaniCloud": "Dhwani Cloud",
+      "custom": "è‡ªå®šä¹‰",
+      "selectFolder": "é€‰æ‹©æ–‡ä»¶å¤¹",
+      "transcriptionFailed": "è½¬å½•å¤±è´¥",
+      "errorOccurred": "å‘ç”Ÿé”™è¯¯",
+      "noSpeechDetected": "æœªåœ¨æ­¤éŸ³é¢‘ä¸­æ£€æµ‹åˆ°è¯­éŸ³ã€‚",
+      "noProviderTitle": "å°šæœªè®¾ç½®è½¬å½•æœåŠ¡å•†",
+      "noProviderDescription": "æ·»åŠ  API Key æˆ–ä¸‹è½½æœ¬åœ°æ¨¡åž‹ä»¥å¼€å§‹è½¬å½•ã€‚",
+      "noProviderAction": "æ‰“å¼€è½¬å½•è®¾ç½®",
+      "fileTooLarge": "æ­¤æ–‡ä»¶è¶…è¿‡äº† 500 MB çš„å¤§å°é™åˆ¶ã€‚",
+      "largeFileNote": "å¤§æ–‡ä»¶å°†è¢«åˆ†å‰²å¹¶å¹³è¡Œè½¬å½•ã€‚",
+      "chunkProgress": "æ­£åœ¨è½¬å½•ç¬¬ {{completed}} éƒ¨åˆ†ï¼Œå…± {{total}} éƒ¨åˆ†...",
+      "paidPlanRequired": "è¶…è¿‡ 25 MB çš„æ–‡ä»¶éœ€è¦ä»˜è´¹è®¡åˆ’æ‰èƒ½ä½¿ç”¨äº‘ç«¯è½¬å½•ã€‚å¤§æ–‡ä»¶é€šè¿‡ Dhwani Cloud å¤„ç†ï¼Œç¡®ä¿å¯é ã€é«˜è´¨é‡çš„ç»“æžœã€‚",
+      "byokTooLarge": "ç¬¬ä¸‰æ–¹ API å¯†é’¥ä»…æ”¯æŒ 25 MB ä»¥å†…çš„æ–‡ä»¶ã€‚",
+      "byokTooLargeDetail": "è¶…è¿‡ 25 MB çš„æ–‡ä»¶ç”± Dhwani Cloud è´Ÿè´£åˆ†å‰²ã€å¹¶è¡Œå¤„ç†å’Œé‡ç»„——æ— éœ€ä¾èµ–ç¬¬ä¸‰æ–¹æœåŠ¡é™åˆ¶ï¼Œå³å¯èŽ·å¾—å¯é çš„ç»“æžœã€‚",
+      "byokTooLargeNeedsAccount": "åˆ›å»ºè´¦æˆ·å¹¶å‡çº§åˆ°ä»˜è´¹è®¡åˆ’ï¼Œå³å¯ä½¿ç”¨ Dhwani Cloud è½¬å½•æ›´å¤§çš„æ–‡ä»¶ã€‚",
+      "byokTooLargeNeedsUpgrade": "å‡çº§åˆ°ä»˜è´¹è®¡åˆ’ï¼Œå³å¯ä½¿ç”¨ Dhwani Cloud è½¬å½•æ›´å¤§çš„æ–‡ä»¶ã€‚",
+      "switchToCloudForLargeFiles": "åˆ‡æ¢åˆ° Dhwani Cloud æ¥è½¬å½•æ­¤æ–‡ä»¶ã€‚",
+      "createAccount": "åˆ›å»ºè´¦æˆ·",
+      "upgrade": "å‡çº§",
+      "switchToCloud": "Dhwani Cloud"
+    },
+    "meeting": {
+      "title": "ä¼šè®®ç¬”è®°",
+      "description": "è½¬å½•ä¸Žç»“æž„åŒ–æ‘˜è¦",
+      "comingSoon": "å³å°†æŽ¨å‡º",
+      "back": "è¿”å›ž"
+    },
+    "meetingPill": {
+      "returnToNote": "è¿”å›žåˆ°å½•éŸ³"
+    },
+    "context": {
+      "moveToFolder": "ç§»åŠ¨åˆ°æ–‡ä»¶å¤¹",
+      "delete": "åˆ é™¤",
+      "rename": "é‡å‘½å",
+      "searchFolders": "æœç´¢æ–‡ä»¶å¤¹...",
+      "noResults": "æœªæ‰¾åˆ°æ–‡ä»¶å¤¹",
+      "newFolder": "æ–°å»ºæ–‡ä»¶å¤¹",
+      "showInFileManager": "åœ¨{{manager}}ä¸­æ˜¾ç¤º"
+    },
+    "actions": {
+      "manage": "ç®¡ç†æ“ä½œ...",
+      "manageTitle": "è‡ªå®šä¹‰æ“ä½œ",
+      "addAction": "æ–°å»ºæ“ä½œ",
+      "editAction": "ç¼–è¾‘æ“ä½œ",
+      "namePlaceholder": "æ“ä½œåç§°",
+      "descriptionPlaceholder": "ç®€è¦æè¿°ï¼ˆå¯é€‰ï¼‰",
+      "promptPlaceholder": "AI åº”å¦‚ä½•å¤„ç†ç¬”è®°å†…å®¹ï¼Ÿ",
+      "builtIn": "å†…ç½®",
+      "save": "ä¿å­˜",
+      "update": "æ›´æ–°",
+      "cancel": "å–æ¶ˆ",
+      "noActions": "æš‚æ— è‡ªå®šä¹‰æ“ä½œ",
+      "promptLabel": "æç¤ºè¯",
+      "emptyEditorTitle": "é€‰æ‹©æ“ä½œ",
+      "emptyEditorDescription": "ä»Žåˆ—è¡¨ä¸­é€‰æ‹©ä¸€ä¸ªæ“ä½œæˆ–åˆ›å»ºæ–°æ“ä½œ",
+      "runAction": "è¿è¡Œ {{name}}",
+      "selectAction": "é€‰æ‹©æ“ä½œ",
+      "done": "å®Œæˆ",
+      "builtin": {
+        "generateNotes": {
+          "name": "ç”Ÿæˆç¬”è®°",
+          "description": "æ¸…ç†ã€ç»“æž„åŒ–å’Œå¢žå¼ºæ‚¨çš„ç¬”è®°"
+        }
+      },
+      "errors": {
+        "noModel": "æœªé€‰æ‹© AI æ¨¡åž‹ã€‚è¯·åœ¨è®¾ç½®ä¸­é…ç½®ã€‚",
+        "actionFailed": "æ“ä½œå¤±è´¥"
+      }
+    },
+    "empty": {
+      "title": "è¿™é‡Œè¿˜æ²¡æœ‰ç¬”è®°",
+      "description": "åˆ›å»ºä½ çš„ç¬¬ä¸€æ¡ç¬”è®°ï¼Œå¼€å§‹ä¹¦å†™",
+      "selectTitle": "é€‰æ‹©ç¬”è®°",
+      "selectDescription": "ä»Žä¾§è¾¹æ é€‰æ‹©ä¸€æ¡ç¬”è®°",
+      "createNote": "åˆ›å»ºç¬”è®°",
+      "emptyFolder": "æ­¤æ–‡ä»¶å¤¹ä¸­æ²¡æœ‰ç¬”è®°"
+    },
+    "addToFolder": {
+      "title": "æ·»åŠ ç¬”è®°",
+      "searchPlaceholder": "æœç´¢è¦æ·»åŠ çš„ç¬”è®°...",
+      "addExisting": "æ·»åŠ å·²æœ‰ç¬”è®°",
+      "addCount": "æ·»åŠ  {{count}} æ¡ç¬”è®°",
+      "noResults": "æ²¡æœ‰åŒ¹é…çš„ç¬”è®°",
+      "noNotesAvailable": "æ²¡æœ‰å…¶ä»–å¯ç”¨ç¬”è®°"
+    },
+    "onboarding": {
+      "llm": {
+        "title": "é…ç½® AI æ¨¡åž‹",
+        "description": "æ“ä½œä½¿ç”¨ AI æ¥å¤„ç†ä½ çš„ç¬”è®°ã€‚è®¾ç½®ä¸€ä¸ªè¯­è¨€æ¨¡åž‹ä»¥å¼€å§‹ä½¿ç”¨ã€‚",
+        "configured": "AI æ¨¡åž‹å·²é…ç½®"
+      },
+      "actions": {
+        "title": "AI é©±åŠ¨çš„æ“ä½œ",
+        "description": "æ“ä½œå¯ä»¥å¤„ç†ä½ çš„ç¬”è®°——æ•´ç†è½¬å½•ã€æ€»ç»“ä¼šè®®ç­‰ã€‚ä½¿ç”¨å†…ç½®æ“ä½œæˆ–åˆ›å»ºä½ è‡ªå·±çš„ã€‚",
+        "builtInLabel": "å†…ç½®",
+        "createTitle": "åˆ›å»ºä½ çš„æ“ä½œ",
+        "createDescription": "ä½¿ç”¨ä½ è‡ªå·±çš„ AI æç¤ºè¯å®šä¹‰è‡ªå®šä¹‰æ“ä½œã€‚ä½ å¯ä»¥éšæ—¶åœ¨è®¾ç½®ä¸­ç¼–è¾‘æˆ–æ·»åŠ æ›´å¤šã€‚",
+        "created": "å·²åˆ›å»ºï¼"
+      },
+      "getStarted": "å¼€å§‹ä½¿ç”¨",
+      "systemAudio": {
+        "title": "ç³»ç»ŸéŸ³é¢‘",
+        "description": "åœ¨ä½¿ç”¨éº¦å…‹é£Žçš„åŒæ—¶æ•èŽ·ä¼šè®®å’Œå…¶ä»–åº”ç”¨ç¨‹åºçš„éŸ³é¢‘ã€‚",
+        "grant": "æŽˆäºˆæƒé™",
+        "enabled": "å·²å¯ç”¨"
+      }
+    },
+    "realtimeBanner": {
+      "message": "Pro ç‰ˆå¯ä½¿ç”¨å®žæ—¶è½¬å½•",
+      "upgrade": "å‡çº§"
+    },
+    "enhance": {
+      "title": "å¢žå¼ºé”™è¯¯"
+    },
+    "speaker": {
+      "you": "ä½ ",
+      "them": "å¯¹æ–¹",
+      "label": "å‘è¨€è€… {{n}}",
+      "identifyingSpeakers": "æ­£åœ¨è¯†åˆ«å‘è¨€è€…...",
+      "liveAccuracyHint": "æ­£åœ¨è¯†åˆ«å‘è¨€è€…ã€‚é€šè¯ç»“æŸåŽï¼Œæ ‡ç­¾å‡†ç¡®æ€§ä¼šæå‡ã€‚",
+      "speakersIdentified": "å·²è¯†åˆ«å‘è¨€è€…",
+      "typeNamePlaceholder": "è¾“å…¥å§“å",
+      "knownSpeakers": "å·²çŸ¥è¯´è¯è€…",
+      "meetingAttendees": "ä¼šè®®å‚ä¸Žè€…",
+      "assignName": "åˆ†é…å§“å",
+      "isThisPerson": "è¿™æ˜¯{{name}}å—ï¼Ÿ",
+      "selected": "å·²é€‰ {{n}} ä¸ª",
+      "assignTo": "åˆ†é…ç»™â€¦",
+      "deselectAll": "å–æ¶ˆå…¨é€‰",
+      "confirmed": "å·²ç¡®è®¤",
+      "nameAssigned": "å§“åå·²åˆ†é…",
+      "state": {
+        "provisional": "ä¸´æ—¶",
+        "confirmed": "å·²ç¡®è®¤",
+        "suggested": "å»ºè®®",
+        "locked": "é”å®š"
+      },
+      "createNewPrefix": "åˆ›å»º",
+      "emailPlaceholder": "name@example.com",
+      "nameOrEmailPlaceholder": "è¾“å…¥å§“åæˆ–é‚®ç®±",
+      "addContact": "æ·»åŠ è”ç³»äºº",
+      "save": "ä¿å­˜",
+      "cancel": "å–æ¶ˆ",
+      "pill": {
+        "identifying": "æ­£åœ¨è¯†åˆ«å‘è¨€è€…",
+        "notLabeled": "å‘è¨€è€…æœªæ ‡è®°",
+        "finalizing": "æ­£åœ¨å®Œæˆå‘è¨€è€…è¯†åˆ«â€¦",
+        "justYou": "åªæœ‰ä½ ",
+        "defaultingHint": "é»˜è®¤ 1 ä½å…¶ä»–äºº",
+        "toggleAria": "åˆ‡æ¢æœ¬æ¬¡å½•éŸ³çš„å‘è¨€è€…è¯†åˆ«",
+        "incAria": "å¢žåŠ é¢„è®¡å‘è¨€äººæ•°",
+        "decAria": "å‡å°‘é¢„è®¡å‘è¨€äººæ•°",
+        "othersInCall_one": "é€šè¯ä¸­è¿˜æœ‰ {{count}} äºº",
+        "othersInCall_other": "é€šè¯ä¸­è¿˜æœ‰ {{count}} äºº"
+      }
+    }
+  },
+  "dictionary": {
+    "addWord": "æ·»åŠ è¯è¯­",
+    "removeWord": "ç§»é™¤ {{word}}",
+    "clearAll": "å…¨éƒ¨æ¸…é™¤",
+    "clearTitle": "æ¸…ç©ºè¯å…¸ï¼Ÿ",
+    "clearDescription": "è¿™å°†åˆ é™¤è‡ªå®šä¹‰è¯å…¸ä¸­çš„æ‰€æœ‰è¯æ±‡ï¼Œæ­¤æ“ä½œæ— æ³•æ’¤é”€ã€‚",
+    "addPlaceholder": "ç”¨é€—å·åˆ†éš”æ·»åŠ å¤šä¸ªè¯——Dhwaniã€Supabaseã€ARR",
+    "add": "æ·»åŠ ",
+    "importWords": "å¯¼å…¥è¯è¯­",
+    "importPlaceholder": "ç²˜è´´ä»¥é€—å·åˆ†éš”çš„è¯è¯­...",
+    "separateWithCommas": "ç”¨é€—å·åˆ†éš”",
+    "wordsReady_other": "{{count}} ä¸ªè¯è¯­å°±ç»ª",
+    "import": "å¯¼å…¥",
+    "yourDictionary": "ä½ çš„è¯å…¸",
+    "exportDictionary": "å¯¼å‡ºè¯å…¸",
+    "exportFailed": "å¯¼å‡ºå¤±è´¥",
+    "editWord": "ç¼–è¾‘ {{word}}",
+    "wordsReady_one": "{{count}} ä¸ªè¯è¯­å°±ç»ª",
+    "noMatches": "æ— åŒ¹é…é¡¹ — æŒ‰ Enter æ·»åŠ “{{word}}”",
+    "tabDictionary": "è¯å…¸",
+    "tabSnippets": "ç‰‡æ®µ",
+    "snippets": {
+      "title": "ç‰‡æ®µ",
+      "edit": "ç¼–è¾‘ {{trigger}}",
+      "remove": "åˆ é™¤ {{trigger}}",
+      "editTitle": "ç¼–è¾‘ç‰‡æ®µ",
+      "dialogDescription": "å½“ä½ è¯´å‡ºè§¦å‘è¯æ—¶ï¼Œå®ƒä¼šè¢«æ›¿æ¢ä¸ºä½ ä¿å­˜çš„æ–‡æœ¬ã€‚",
+      "triggerLabel": "è§¦å‘è¯",
+      "triggerPlaceholder": "ä¾‹å¦‚ï¼šæˆ‘çš„æ—¥ç¨‹é“¾æŽ¥",
+      "replacementLabel": "æ›¿æ¢æ–‡æœ¬",
+      "replacementPlaceholder": "è¯´å‡ºè§¦å‘è¯æ—¶æ’å…¥çš„æ–‡æœ¬â€¦",
+      "create": "åˆ›å»ºç‰‡æ®µ",
+      "duplicate": "å·²å­˜åœ¨ä½¿ç”¨æ­¤è§¦å‘è¯çš„ç‰‡æ®µ",
+      "emptyTitle": "åŒæ ·çš„è¯ï¼Œåªè¯´",
+      "emptyTitleAccent": "ä¸€é",
+      "emptyDescription": "è¯´å‡ºè§¦å‘è¯ï¼ŒDhwani ä¼šæŠŠå®ƒæ›¿æ¢ä¸ºä½ ä¿å­˜çš„å†…å®¹ï¼šé“¾æŽ¥ã€å¼€åœºç™½ã€ç­¾åã€æç¤ºè¯ã€‚",
+      "new": "æ–°å»ºç‰‡æ®µ",
+      "examples": {
+        "linkedinTrigger": "æˆ‘çš„ LinkedIn",
+        "linkedinText": "linkedin.com/in/you",
+        "rewriteTrigger": "æ”¹å†™æç¤ºè¯",
+        "rewriteText": "æŠŠè¿™æ®µè¯æ”¹å†™å¾—æ›´ç®€æ´ã€æ›´ä¸“ä¸š",
+        "introTrigger": "å¼€åœºé‚®ä»¶",
+        "introText": "ä½ å¥½ï¼Œå¸Œæœ›æœ¬å‘¨èƒ½æ‰¾ä¸ªæ—¶é—´èŠèŠâ€¦",
+        "signoffTrigger": "ç­¾å",
+        "signoffText": "ç¥å¥½ï¼ŒAlex Â· alex@example.com"
+      },
+      "addPlaceholder": "æ·»åŠ è§¦å‘è¯——“æˆ‘çš„æ—¥ç¨‹é“¾æŽ¥”“ç­¾å”"
+    },
+    "emptyTitle": "ä½ çš„è¯å…¸æ˜¯ç©ºçš„",
+    "emptyDescription": "æ·»åŠ å¸Œæœ›{{agentName}}å§‹ç»ˆè¯†åˆ«æ­£ç¡®çš„è¯ï¼šåå­—ã€å·¥å…·ã€ç¼©å†™ã€‚",
+    "addFirstWord": "æ·»åŠ ç¬¬ä¸€ä¸ªè¯",
+    "importList": "å¯¼å…¥åˆ—è¡¨",
+    "agentDefault": "é»˜è®¤æ·»åŠ "
+  },
+  "sidebar": {
+    "home": "é¦–é¡µ",
+    "notes": "ç¬”è®°",
+    "upload": "ä¸Šä¼ ",
+    "dictionary": "è¯å…¸",
+    "insights": "洞察",
+    "referral": "èŽ·å–å…è´¹ä¸€ä¸ªæœˆ",
+    "settings": "è®¾ç½®",
+    "support": "æ”¯æŒ",
+    "limitReached": "å·²è¾¾æ¯å‘¨ä¸Šé™",
+    "limitReachedDescription": "å‡çº§åˆ° Pro å³å¯æ— é™è½¬å½•ã€‚",
+    "viewPlans": "æŸ¥çœ‹å¥—é¤",
+    "upgradeTitle": "å‡çº§åˆ° Pro",
+    "upgradeDescription": "æ— é™è½¬å½•ã€å®žæ—¶è½¬å½•ç­‰æ›´å¤šåŠŸèƒ½ã€‚",
+    "learnMore": "äº†è§£æ›´å¤š",
+    "integrations": "é›†æˆ",
+    "defaultUser": "ç”¨æˆ·",
+    "notSignedIn": "æœªç™»å½•",
+    "chat": "èŠå¤©",
+    "inviteTeammate": "Invitar compaÃ±ero",
+    "createWorkspace": "Crear espacio de trabajo"
+  },
+  "chat": {
+    "newChat": "æ–°å¯¹è¯",
+    "search": "æœç´¢å¯¹è¯...",
+    "archived": "å·²å½’æ¡£",
+    "noConversations": "å¼€å§‹ä½ çš„ç¬¬ä¸€ä¸ªå¯¹è¯",
+    "selectChat": "é€‰æ‹©ä¸€ä¸ªå¯¹è¯æˆ–å¼€å§‹æ–°çš„å¯¹è¯",
+    "noResults": "æ²¡æœ‰åŒ¹é…çš„å¯¹è¯",
+    "today": "ä»Šå¤©",
+    "yesterday": "æ˜¨å¤©",
+    "previousWeek": "æœ€è¿‘ 7 å¤©",
+    "older": "æ›´æ—©",
+    "archive": "å½’æ¡£",
+    "unarchive": "å–æ¶ˆå½’æ¡£",
+    "delete": "åˆ é™¤",
+    "deleteConfirm": "æ­¤å¯¹è¯å°†è¢«æ°¸ä¹…åˆ é™¤ï¼Œæ— æ³•æ’¤æ¶ˆã€‚",
+    "editTitle": "åŒå‡»ç¼–è¾‘æ ‡é¢˜",
+    "untitled": "æ— æ ‡é¢˜",
+    "searchChats": "æœç´¢èŠå¤©",
+    "searchTitle": "æœç´¢å¯¹è¯",
+    "searchDescription": "æœç´¢æ‰€æœ‰å¯¹è¯",
+    "newChatEmpty": "è¯¢é—®å…³äºŽç¬”è®°ã€è½¬å½•æˆ–å…¶ä»–ä»»ä½•å†…å®¹"
+  },
+  "usage": {
+    "approachingLimit": "å³å°†è¾¾åˆ°å‘¨é™é¢",
+    "approachingLimitDescription": "ä½ æœ¬å‘¨å·²ä½¿ç”¨ {{wordsUsed}} / {{limit}} ä¸ªå…è´¹è¯æ•°ã€‚",
+    "yourPlan": "ä½ çš„å¥—é¤",
+    "trial": "è¯•ç”¨æœŸï¼ˆå‰©ä½™ {{days}} å¤©ï¼‰",
+    "trial_other": "è¯•ç”¨æœŸï¼ˆå‰©ä½™ {{days}} å¤©ï¼‰",
+    "pro": "Pro",
+    "business": "Business",
+    "unlimitedTrial": "è¯•ç”¨æœŸé—´æ— é™è½¬å½•",
+    "unlimited": "æ— é™è½¬å½•",
+    "manageSubscription": "ç®¡ç†è®¢é˜…",
+    "weeklyUsage": "æ¯å‘¨ç”¨é‡",
+    "limitReached": "å·²è¾¾ä¸Šé™",
+    "free": "å…è´¹ç‰ˆ",
+    "wordsRemaining": "å‰©ä½™ {{remaining}} ä¸ªè¯",
+    "rollingLimit": "æ»šåŠ¨å‘¨é™é¢",
+    "upgradeToPro": "å‡çº§åˆ° Pro",
+    "useYourOwnKey": "ä½¿ç”¨è‡ªå·±çš„ API Key",
+    "upgradeUnlimited": "å‡çº§åˆ° Pro — æ— é™è½¬å½•"
+  },
+  "support": {
+    "documentation": "æ–‡æ¡£",
+    "joinDiscord": "åŠ å…¥ Discord",
+    "contactSupport": "è”ç³»æ”¯æŒ",
+    "submitBug": "æäº¤ Bug"
+  },
+  "postMigration": {
+    "title": "æ¬¢è¿Žå›žåˆ° Dhwani",
+    "description": "æ‚¨çš„ç¬”è®°å’Œè®¾ç½®å·²ä»Žæ­¤å‰çš„ç‰ˆæœ¬ä¸­ä¿ç•™ä¸‹æ¥ã€‚ä¸è¿‡ macOS ä¼šå°†å…¶è§†ä¸ºä¸€æ¬¾å…¨æ–°çš„åº”ç”¨ï¼Œå› æ­¤éœ€è¦æ‚¨é‡æ–°æŽˆäºˆä¸€äº›æƒé™ã€‚",
+    "done": "å®Œæˆ",
+    "remindLater": "ç¨åŽæé†’æˆ‘"
+  },
+  "apiKeyInput": {
+    "placeholder": "è¾“å…¥ä½ çš„ API Key",
+    "label": "API Key",
+    "save": "ä¿å­˜",
+    "cancelEdit": "å–æ¶ˆç¼–è¾‘",
+    "edit": "ç¼–è¾‘",
+    "add": "æ·»åŠ ",
+    "editButton": "ç¼–è¾‘å¯†é’¥",
+    "addButton": "æ·»åŠ å¯†é’¥"
+  },
+  "gpu": {
+    "transcriptionBanner": "ä½¿ç”¨ GPU åŠ é€Ÿè½¬å½•",
+    "reasoningBanner": "ä½¿ç”¨ GPU åŠ é€Ÿ AI å¤„ç†",
+    "enableButton": "å¯ç”¨ GPU",
+    "active": "GPU åŠ é€Ÿå·²å¯ç”¨",
+    "ready": "GPU åŠ é€Ÿå·²å°±ç»ª",
+    "activating": "æ­£åœ¨æ¿€æ´» GPU...",
+    "activationFailed": "æ— æ³•æ¿€æ´» GPU",
+    "retry": "é‡è¯•",
+    "remove": "ç§»é™¤",
+    "dismiss": "æš‚ä¸å¯ç”¨",
+    "cancel": "å–æ¶ˆ"
+  },
+  "app": {
+    "toasts": {
+      "hotkeyChanged": {
+        "title": "å¿«æ·é”®å·²æ›´æ”¹",
+        "description": "\"{{original}}\" ä¸å¯ç”¨ï¼Œå·²æ”¹ç”¨ \"{{fallback}}\"ã€‚æ‚¨å¯ä»¥åœ¨è®¾ç½®ä¸­æ›´æ”¹ã€‚"
+      },
+      "hotkeyUnavailable": {
+        "title": "å¿«æ·é”®ä¸å¯ç”¨",
+        "description": "æ— æ³•æ³¨å†Œæ‰€é€‰å¿«æ·é”®ã€‚è¯·åœ¨è®¾ç½®ä¸­é€‰æ‹©å…¶ä»–å¿«æ·é”®ã€‚"
+      },
+      "addedToDict": "å·²å°† {{words}} æ·»åŠ åˆ°ä½ çš„è¯å…¸",
+      "undo": "æ’¤æ¶ˆ",
+      "accessibilityMissing": {
+        "title": "éœ€è¦è¾…åŠ©åŠŸèƒ½æƒé™",
+        "description": "Dhwani éœ€è¦è¾…åŠ©åŠŸèƒ½æƒé™æ¥æ£€æµ‹å¿«æ·é”®å’Œç²˜è´´æ–‡æœ¬ã€‚è¯·åœ¨æŽ§åˆ¶é¢æ¿ä¸­å¯ç”¨ã€‚"
+      }
+    },
+    "mic": {
+      "hotkeyToSpeak": "{{hotkey}} è¯´è¯",
+      "recording": "å½•éŸ³ä¸­...",
+      "processing": "å¤„ç†ä¸­...",
+      "clickToSpeak": "ç‚¹å‡»å¼€å§‹è¯´è¯",
+      "commandMode": "指令模式"
+    },
+    "buttons": {
+      "cancelRecording": "å–æ¶ˆå½•éŸ³",
+      "cancelProcessing": "å–æ¶ˆå¤„ç†"
+    },
+    "commandMenu": {
+      "stopListening": "åœæ­¢å½•éŸ³",
+      "startListening": "å¼€å§‹å½•éŸ³",
+      "hideForNow": "æš‚æ—¶éšè—"
+    }
+  },
+  "dictationAgent": {
+    "enabled": "å¯ç”¨è¯­éŸ³åŠ©æ‰‹",
+    "enabledDescription": "å‘åŠ©æ‰‹å£è¿°æŒ‡ä»¤ã€‚è¯´å‡º“{{agentName}}”å³å¯æ¿€æ´»ï¼Œå¯åœ¨ä¸‹æ–¹é…ç½®ã€‚",
+    "modes": {
+      "Dhwani": "Dhwani Cloud",
+      "DhwaniDesc": "ä½¿ç”¨ Dhwani æ‰˜ç®¡çš„åŠ©æ‰‹ï¼Œæ— éœ€ API Keyã€‚",
+      "providers": "ä½¿ç”¨è‡ªå·±çš„ API Key",
+      "providersDesc": "ç”¨ä½ è‡ªå·±çš„ API Key è¿žæŽ¥ OpenAIã€Anthropicã€Gemini æˆ– Groqã€‚",
+      "local": "æœ¬åœ°",
+      "localDesc": "åœ¨ä½ çš„è®¾å¤‡ä¸Šè¿è¡Œæœ¬åœ° LLMï¼Œå®Œå…¨ç§å¯†ã€‚",
+      "selfHosted": "è‡ªæ‰˜ç®¡",
+      "selfHostedDesc": "æŒ‡å‘å…¼å®¹ OpenAI çš„è‡ªæ‰˜ç®¡ç«¯ç‚¹ã€‚",
+      "enterprise": "ä¼ä¸šçº§",
+      "enterpriseDesc": "ä½¿ç”¨ AWS Bedrockã€Azure OpenAI æˆ– Google Vertexã€‚"
+    },
+    "prompt": {
+      "title": "åŠ©æ‰‹æç¤ºè¯",
+      "description": "æ£€æµ‹åˆ°å”¤é†’è¯æ—¶ä½¿ç”¨çš„ç³»ç»Ÿæç¤ºè¯ã€‚æœªè®¾ç½®æ—¶å›žé€€åˆ°å†…ç½®é»˜è®¤å€¼ã€‚"
+    }
+  },
+  "agentMode": {
+    "settings": {
+      "hotkey": "èŠå¤©åŠ©æ‰‹å¿«æ·é”®",
+      "hotkeyDescription": "æ‰“å¼€æˆ–å…³é—­èŠå¤©åŠ©æ‰‹çª—å£",
+      "model": "åŠ©æ‰‹æ¨¡åž‹",
+      "modelDescription": "ç”¨äºŽåŠ©æ‰‹å¯¹è¯çš„AIæ¨¡åž‹",
+      "systemPrompt": "ç³»ç»Ÿæç¤ºè¯",
+      "systemPromptDescription": "åŠ©æ‰‹çš„è‡ªå®šä¹‰æŒ‡ä»¤",
+      "systemPromptPlaceholder": "è¾“å…¥è‡ªå®šä¹‰ç³»ç»Ÿæç¤ºè¯...",
+      "modes": {
+        "Dhwani": "Dhwani Cloud",
+        "providers": "äº‘æœåŠ¡å•†",
+        "local": "æœ¬åœ°",
+        "selfHosted": "è‡ªæ‰˜ç®¡",
+        "DhwaniDesc": "å‡†ç¡®å¯é ï¼Œæ— éœ€è®¾ç½®ã€‚",
+        "providersDesc": "ä½¿ç”¨è‡ªå·±çš„ API å¯†é’¥ã€‚",
+        "localDesc": "è®¾å¤‡ç«¯æ¨¡åž‹ï¼Œå®Œå…¨ç§å¯†ã€‚",
+        "selfHostedDesc": "ä½ è‡ªå·±ç½‘ç»œä¸Šçš„æœåŠ¡å™¨ã€‚",
+        "enterprise": "ä¼ä¸šçº§",
+        "enterpriseDesc": "ä½¿ç”¨ä½ ç»„ç»‡çš„äº‘è´¦å·ï¼ˆAWSã€Azureã€GCPï¼‰ã€‚"
+      },
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "å‡†ç¡®å¯é ï¼Œæ— éœ€è®¾ç½®ã€‚",
+      "customSetup": "è‡ªå®šä¹‰é…ç½® (BYOK)",
+      "customSetupDescription": "ä½¿ç”¨è‡ªå·±çš„ API å¯†é’¥å¹¶é€‰æ‹©åå¥½çš„æ¨¡åž‹"
+    },
+    "chat": {
+      "placeholder": "æŒ‰ {{hotkey}} å¼€å§‹è¯´è¯",
+      "thinking": "æ€è€ƒä¸­...",
+      "transcribing": "è½¬å½•ä¸­...",
+      "listening": "æ­£åœ¨è†å¬...",
+      "newConversation": "æ–°å»º",
+      "copyToClipboard": "å¤åˆ¶åˆ°å‰ªè´´æ¿",
+      "copied": "å·²å¤åˆ¶ï¼",
+      "emptyState": "éšä¾¿é—®æˆ‘",
+      "errorPrefix": "é”™è¯¯"
+    },
+    "titleBar": {
+      "label": "åŠ©æ‰‹",
+      "newChat": "æ–°å¯¹è¯",
+      "close": "å…³é—­"
+    },
+    "input": {
+      "holdToSpeak": "æŒ‰ä½è¯´è¯",
+      "toClose": "å…³é—­",
+      "listening": "æ­£åœ¨è†å¬...",
+      "transcribing": "æ­£åœ¨è½¬å½•...",
+      "thinking": "æ­£åœ¨æ€è€ƒ...",
+      "typeMessage": "è¾“å…¥æ¶ˆæ¯...",
+      "send": "å‘é€"
+    },
+    "tools": {
+      "search_notesStatus": "æ­£åœ¨æœç´¢ç¬”è®°...",
+      "web_searchStatus": "æ­£åœ¨æœç´¢ç½‘é¡µ...",
+      "copy_to_clipboardStatus": "æ­£åœ¨å¤åˆ¶åˆ°å‰ªè´´æ¿...",
+      "get_calendar_eventsStatus": "æ­£åœ¨æŸ¥çœ‹æ—¥åŽ†...",
+      "get_noteStatus": "æ­£åœ¨è¯»å–ç¬”è®°...",
+      "create_noteStatus": "æ­£åœ¨åˆ›å»ºç¬”è®°...",
+      "update_noteStatus": "æ­£åœ¨æ›´æ–°ç¬”è®°...",
+      "copiedToClipboard": "å·²å¤åˆ¶åˆ°å‰ªè´´æ¿",
+      "foundNotes": "æ‰¾åˆ° {{count}} æ¡ç¬”è®°",
+      "foundNotes_plural": "æ‰¾åˆ° {{count}} æ¡ç¬”è®°",
+      "searchResults": "æ‰¾åˆ° {{count}} æ¡ç»“æžœ",
+      "searchResults_plural": "æ‰¾åˆ° {{count}} æ¡ç»“æžœ",
+      "openNote": "æ‰“å¼€ç¬”è®°",
+      "calendarEvents": "æ‰¾åˆ° {{count}} ä¸ªæ—¥ç¨‹",
+      "calendarEvents_plural": "æ‰¾åˆ° {{count}} ä¸ªæ—¥ç¨‹",
+      "noResults": "æœªæ‰¾åˆ°ç»“æžœ",
+      "error": "å·¥å…·é”™è¯¯",
+      "unknownTool": "æœªçŸ¥å·¥å…·ï¼š{{name}}",
+      "invalidArgs": "{{name}} çš„å·¥å…·å‚æ•°æ— æ•ˆ"
+    }
+  },
+  "integrations": {
+    "title": "é›†æˆ",
+    "description": "è¿žæŽ¥æœåŠ¡ä»¥å¢žå¼ºæ‚¨çš„å·¥ä½œæµç¨‹",
+    "googleCalendar": {
+      "title": "Google æ—¥åŽ†",
+      "optional": "å¯é€‰",
+      "description": "ä»Žæ—¥åŽ†è‡ªåŠ¨å¡«å……ä¼šè®®åç§°å’Œå‚ä¸Žè€…ã€‚",
+      "connect": "è¿žæŽ¥ Google æ—¥åŽ†",
+      "connecting": "è¿žæŽ¥ä¸­...",
+      "connected": "å·²è¿žæŽ¥",
+      "addAnother": "æ·»åŠ å…¶ä»–æ—¥åŽ†",
+      "primaryOnly": "ä»…åŒæ­¥ä¸»æ—¥åŽ†",
+      "primaryOnlyDescription": "å¿½ç•¥ä»–äººå…±äº«ç»™ä½ çš„æ—¥åŽ†äº‹ä»¶ã€‚",
+      "disconnect": "æ–­å¼€",
+      "disconnectConfirm": "æ–­å¼€ {{email}}ï¼Ÿ",
+      "disconnectDescription": "å°†ä¸å†ä»Žæ­¤æ—¥åŽ†è®°å½•ä¼šè®®ç¬”è®°ã€‚",
+      "systemAudioRequired": "éœ€è¦ç³»ç»ŸéŸ³é¢‘æƒé™",
+      "systemAudioDescription": "è¦è½¬å½•ä¼šè®®ï¼ŒDhwani éœ€è¦ç³»ç»ŸéŸ³é¢‘æƒé™æ¥å½•åˆ¶å…¶ä»–å‚ä¸Žè€…çš„éŸ³é¢‘ã€‚æˆ‘ä»¬ç»ä¸ä¼šå½•åˆ¶æ‚¨çš„å±å¹•ã€‚æ‚¨å°†è¢«å¼•å¯¼è‡³ç³»ç»Ÿè®¾ç½®ä»¥å¯ç”¨æ­¤æƒé™ã€‚",
+      "openSettings": "æ‰“å¼€ç³»ç»Ÿè®¾ç½®"
+    },
+    "sections": {
+      "calendar": "æ—¥åŽ†",
+      "api": "API",
+      "mcp": "MCP",
+      "cli": "CLI"
+    },
+    "api": {
+      "title": "API å¯†é’¥",
+      "description": "ç®¡ç†ç”¨äºŽç¨‹åºè®¿é—®çš„ API å¯†é’¥",
+      "proRequired": "å‡çº§åˆ°ä»˜è´¹è®¡åˆ’ä»¥è®¿é—® API",
+      "manage": "ç®¡ç†å¯†é’¥",
+      "viewPlans": "æŸ¥çœ‹å¥—é¤",
+      "dialogTitle": "API å¯†é’¥"
+    },
+    "mcp": {
+      "title": "å°†ç¬”è®°å¸¦åˆ°ä½ çš„ AI å·¥å…·ä¸­",
+      "description": "åœ¨ Claudeã€ChatGPT å’Œ Cursor ä¸­ä¸Žä½ çš„ç¬”è®°ä¸€èµ·èŠå¤©ã€æœç´¢å’Œå·¥ä½œã€‚",
+      "step1": "åœ¨ä½ çš„ AI å·¥å…·ä¸­ï¼Œä½¿ç”¨å…¬å¼€ URL æ·»åŠ  Dhwani MCP",
+      "step2": "åœ¨ä¸Šæ–¹åˆ›å»ºå…·æœ‰æ‰€éœ€æƒé™çš„ API å¯†é’¥ã€‚",
+      "step3": "å°†å¯†é’¥ç²˜è´´ä¸º Authorization æ ‡å¤´ä»¥è¿žæŽ¥ã€‚",
+      "learnMore": "äº†è§£æ›´å¤š",
+      "viewPlans": "æŸ¥çœ‹å¥—é¤",
+      "copyUrl": "å¤åˆ¶ MCP URL",
+      "proRequired": "å‡çº§åˆ°ä»˜è´¹è®¡åˆ’ï¼Œä»¥å°† Dhwani è¿žæŽ¥åˆ° Claudeã€ChatGPT å’Œ Cursorã€‚",
+      "copied": "å·²å¤åˆ¶"
+    },
+    "cli": {
+      "title": "å‘½ä»¤è¡Œè®¿é—®",
+      "description": "è®©ä½ çš„æ™ºèƒ½åŠ©æ‰‹é€šè¿‡ç»ˆç«¯è®¿é—®ä½ çš„ç¬”è®°ã€‚",
+      "installLabel": "å®‰è£…",
+      "learnMore": "æŸ¥çœ‹æ–‡æ¡£",
+      "copyDocsLink": "å¤åˆ¶æ–‡æ¡£é“¾æŽ¥",
+      "docsLinkCopied": "å·²å¤åˆ¶æ–‡æ¡£é“¾æŽ¥",
+      "viewPlans": "æŸ¥çœ‹å¥—é¤",
+      "local": {
+        "label": "æœ¬åœ°",
+        "freeBadge": "å…è´¹",
+        "description": "ç›´æŽ¥è¯»å–ä½ çš„æœ¬åœ°ç¬”è®°ã€‚æ— éœ€ç™»å½•æˆ– API å¯†é’¥ — åœ¨ Dhwani è¿è¡Œæ—¶å³å¯ä½¿ç”¨ã€‚"
+      },
+      "cloud": {
+        "label": "äº‘ç«¯",
+        "description": "ä½¿ç”¨ API å¯†é’¥åœ¨å¤šå°è®¾å¤‡ä¹‹é—´åŒæ­¥ã€‚",
+        "proRequired": "å‡çº§åˆ°ä»˜è´¹è®¡åˆ’ä»¥åœ¨äº‘ç«¯æ¨¡å¼ä¸‹ä½¿ç”¨ CLIã€‚"
+      }
+    },
+    "plan": {
+      "title": "æ‚¨çš„æ–¹æ¡ˆ",
+      "current": "å½“å‰",
+      "free": "å…è´¹",
+      "freeLimit": "æ¯æœˆ5æ¬¡ä¼šè®®",
+      "essential": "Essential",
+      "essentialLimit": "æ¯æœˆ20æ¬¡ä¼šè®®",
+      "pro": "Pro",
+      "proLimit": "æ— é™",
+      "upgrade": "å‡çº§"
+    },
+    "notABot": {
+      "title": "Dhwani æ˜¯ä¼šè®®å½•åˆ¶å·¥å…·ï¼Œä¸æ˜¯æœºå™¨äºº",
+      "description": "Dhwani ç›´æŽ¥ä»Žæ‚¨çš„ç³»ç»Ÿæ•èŽ·éŸ³é¢‘ — å®ƒä¸ä¼šä»¥å‚ä¸Žè€…èº«ä»½åŠ å…¥æ‚¨çš„ä¼šè®®ã€‚åªéœ€è¿žæŽ¥æ—¥åŽ†ï¼Œæ­£å¸¸è®°å½•ç¬”è®°å³å¯ã€‚"
+    }
+  },
+  "calendar": {
+    "title": "Google æ—¥åŽ†",
+    "status": "çŠ¶æ€",
+    "connected": "å·²è¿žæŽ¥",
+    "disconnected": "æœªè¿žæŽ¥",
+    "notConnectedDescription": "è¿žæŽ¥ä»¥æ£€æµ‹å’Œå½•åˆ¶ä¼šè®®",
+    "connectCta": {
+      "title": "æ—¥åŽ†é›†æˆ",
+      "description": "è‡ªåŠ¨æ£€æµ‹ä¼šè®®å¹¶å½•åˆ¶è½¬å½•"
+    },
+    "connect": "è¿žæŽ¥ Google æ—¥åŽ†",
+    "connecting": "è¿žæŽ¥ä¸­...",
+    "disconnect": "æ–­å¼€è¿žæŽ¥",
+    "disconnecting": "æ–­å¼€ä¸­...",
+    "sync": "åŒæ­¥",
+    "syncing": "åŒæ­¥ä¸­...",
+    "calendarsTitle": "æ—¥åŽ†",
+    "upcomingTitle": "å³å°†åˆ°æ¥",
+    "noUpcoming": "æ²¡æœ‰å³å°†åˆ°æ¥çš„äº‹ä»¶",
+    "meetingStarting": "ä¼šè®®å³å°†å¼€å§‹",
+    "today": "ä»Šå¤©",
+    "tomorrow": "æ˜Žå¤©"
+  },
+  "upcoming": {
+    "title": "å³å°†å¼€å§‹çš„ä¼šè®®",
+    "transcriptions": "è½¬å½•",
+    "tomorrow": "æ˜Žå¤©",
+    "noMoreMeetings": "ä»Šå¤©æ²¡æœ‰æ›´å¤šä¼šè®®äº†",
+    "now": "è¿›è¡Œä¸­",
+    "join": "åŠ å…¥",
+    "untitledEvent": "æ— æ ‡é¢˜äº‹ä»¶",
+    "systemAudioRequired": "éœ€è¦ç³»ç»ŸéŸ³é¢‘æƒé™æ¥å½•åˆ¶å…¶ä»–å‚ä¸Žè€…çš„éŸ³é¢‘ã€‚",
+    "openSettings": "æ‰“å¼€ç³»ç»Ÿè®¾ç½®",
+    "signInRequired": "ç™»å½•ä»¥ä½¿ç”¨ä¼šè®®å½•åˆ¶",
+    "signInDescription": "åˆ›å»ºè´¦æˆ·æˆ–ç™»å½•ä»¥å½•åˆ¶å’Œè½¬å½•ä¼šè®®ã€‚",
+    "connectCalendar": "è¿žæŽ¥æ‚¨çš„æ—¥åŽ†",
+    "connectCalendarDescription": "å…³è” Google æ—¥åŽ†ä»¥æŸ¥çœ‹å³å°†åˆ°æ¥çš„ä¼šè®®å¹¶è‡ªåŠ¨è®°å½•ç¬”è®°ã€‚",
+    "notABot": "Dhwani é€šè¿‡ç³»ç»ŸéŸ³é¢‘å½•åˆ¶ — å®ƒä¸ä¼šä»¥æœºå™¨äººèº«ä»½åŠ å…¥æ‚¨çš„ä¼šè®®ã€‚",
+    "connectCalendarButton": "è¿žæŽ¥æ—¥åŽ†"
+  },
+  "notesView": {
+    "searchPlaceholder": "æœç´¢ç¬”è®°â€¦",
+    "newNote": "æ–°å»ºç¬”è®°",
+    "empty": {
+      "title": "æš‚æ— ç¬”è®°",
+      "description": "åˆ›å»ºä½ çš„ç¬¬ä¸€æ¡ç¬”è®°å¼€å§‹ä½¿ç”¨ã€‚"
+    },
+    "searchEmpty": {
+      "title": "æ— ç»“æžœ",
+      "description": "æœªæ‰¾åˆ°ä¸Ž“{{query}}”åŒ¹é…çš„ç¬”è®°ã€‚"
+    },
+    "noteType": {
+      "personal": "ä¸ªäºº",
+      "meeting": "ä¼šè®®",
+      "upload": "ä¸Šä¼ "
+    }
+  },
+  "noteEditor": {
+    "saved": "å·²ä¿å­˜",
+    "deleteNote": "åˆ é™¤ç¬”è®°",
+    "deleteConfirmTitle": "åˆ é™¤ç¬”è®°ï¼Ÿ",
+    "deleteConfirmDescription": "æ­¤ç¬”è®°å°†è¢«æ°¸ä¹…åˆ é™¤ï¼Œæ— æ³•æ¢å¤ã€‚",
+    "deleteConfirm": "åˆ é™¤",
+    "share": {
+      "button": "åˆ†äº«",
+      "dialog": {
+        "title": "åˆ†äº«ç¬”è®°",
+        "searchPlaceholder": "é€šè¿‡ç”µå­é‚®ä»¶æ·»åŠ æˆå‘˜",
+        "emailLabel": "æ”¶ä»¶äººé‚®ç®±",
+        "shareButton": "åˆ†äº«",
+        "copyLink": "å¤åˆ¶é“¾æŽ¥",
+        "copied": "å·²å¤åˆ¶",
+        "owner": "æ‰€æœ‰è€…",
+        "pending": "å¾…å¤„ç†",
+        "accepted": "å·²èŽ·å¾—è®¿é—®æƒé™",
+        "resend": "é‡æ–°å‘é€é‚€è¯·",
+        "revoke": "ç§»é™¤",
+        "invitationActions": "é‚€è¯·æ“ä½œ",
+        "permissionRequired": "åªæœ‰ç¬”è®°çš„æ‰€æœ‰è€…å¯ä»¥æ›´æ”¹åˆ†äº«è®¾ç½®ã€‚",
+        "visibility": {
+          "label": "å¯è§æ€§",
+          "link": "æ‹¥æœ‰é“¾æŽ¥çš„ä»»ä½•äºº",
+          "domain": "{{domain}} å†…æ‹¥æœ‰é“¾æŽ¥çš„æ‰€æœ‰äºº",
+          "invited": "ä»…å—é‚€è€…"
+        },
+        "error": {
+          "invalidEmail": "è¯·è¾“å…¥æœ‰æ•ˆçš„ç”µå­é‚®ä»¶åœ°å€",
+          "alreadyInvited": "{{email}} å·²ç»è¢«é‚€è¯·",
+          "inviteFailed": "æ— æ³•å‘é€é‚€è¯·ã€‚è¯·é‡è¯•ã€‚",
+          "linkUnavailable": "ç”Ÿæˆæˆ–æ›´æ¢é“¾æŽ¥åŽå³å¯å¤åˆ¶"
+        }
+      }
+    }
+  },
+  "commandSearch": {
+    "title": "æœç´¢",
+    "description": "æœç´¢ç¬”è®°å’Œè½¬å½•",
+    "shortPlaceholder": "æœç´¢",
+    "placeholder": "æœç´¢ç¬”è®°å’Œè½¬å½•â€¦",
+    "sections": {
+      "notes": "ç¬”è®°",
+      "transcripts": "è½¬å½•"
+    },
+    "noResults": "æ— ç»“æžœ",
+    "emptyState": "è¾“å…¥å†…å®¹å¼€å§‹æœç´¢",
+    "footer": {
+      "navigate": "å¯¼èˆª",
+      "open": "æ‰“å¼€",
+      "dismiss": "å…³é—­"
+    }
+  },
+  "updateNotification": {
+    "title": "Dhwani æœ‰å¯ç”¨æ›´æ–°",
+    "body": "ç‰ˆæœ¬ {{version}} å·²å¯ä¸‹è½½",
+    "cta": "ç«‹å³æ›´æ–°"
+  },
+  "permissionsGate": {
+    "title": "éœ€è¦æƒé™",
+    "description": "Dhwani éœ€è¦ä¸€äº›æƒé™æ‰èƒ½åœ¨æ­¤ç”µè„‘ä¸Šæ­£å¸¸è¿è¡Œã€‚",
+    "continue": "ç»§ç»­"
+  },
+  "apiKeysSection": {
+    "title": "API å¯†é’¥",
+    "description": "åˆ›å»ºå¯†é’¥ä»¥ç¼–ç¨‹æ–¹å¼è®¿é—® Dhwani APIã€‚",
+    "docsLink": "API æ–‡æ¡£",
+    "empty": "æš‚æ—  API å¯†é’¥",
+    "createButton": "åˆ›å»º API å¯†é’¥",
+    "create": {
+      "title": "åˆ›å»º API å¯†é’¥",
+      "nameLabel": "å¯†é’¥åç§°",
+      "namePlaceholder": "ä¾‹å¦‚ï¼šæˆ‘çš„é›†æˆ",
+      "scopesLabel": "æƒé™",
+      "expiryLabel": "æœ‰æ•ˆæœŸ",
+      "expiryOptions": {
+        "never": "æ°¸ä¸è¿‡æœŸ",
+        "30days": "30 å¤©",
+        "60days": "60 å¤©",
+        "90days": "90 å¤©",
+        "1year": "1 å¹´"
+      },
+      "submit": "åˆ›å»º",
+      "cancel": "å–æ¶ˆ"
+    },
+    "created": {
+      "title": "API å¯†é’¥å·²åˆ›å»º",
+      "warning": "è¯·ç«‹å³å¤åˆ¶æ­¤å¯†é’¥ï¼Œå®ƒå°†ä¸ä¼šå†æ¬¡æ˜¾ç¤ºã€‚",
+      "copied": "å·²å¤åˆ¶ï¼",
+      "copyButton": "å¤åˆ¶åˆ°å‰ªè´´æ¿",
+      "done": "å®Œæˆ"
+    },
+    "scopes": {
+      "notesRead": "è¯»å–ç¬”è®°",
+      "notesWrite": "åˆ›å»ºå’Œç¼–è¾‘ç¬”è®°",
+      "transcriptionsRead": "è¯»å–è½¬å½•"
+    },
+    "revoke": {
+      "button": "æ’¤é”€",
+      "confirm": "æ’¤é”€æ­¤å¯†é’¥ï¼Ÿä½¿ç”¨å®ƒçš„é›†æˆå°†åœæ­¢å·¥ä½œã€‚",
+      "success": "API å¯†é’¥å·²æ’¤é”€"
+    },
+    "neverUsed": "ä»Žæœªä½¿ç”¨",
+    "lastUsed": "ä¸Šæ¬¡ä½¿ç”¨ {{time}}",
+    "maxKeysReached": "æœ€å¤šå…è®¸ {{max}} ä¸ªå¯†é’¥",
+    "errors": {
+      "loadFailed": "æ— æ³•åŠ è½½ API å¯†é’¥",
+      "createFailed": "æ— æ³•åˆ›å»º API å¯†é’¥",
+      "revokeFailed": "æ— æ³•æ’¤é”€ API å¯†é’¥"
+    }
+  },
+  "embeddedChat": {
+    "askPlaceholder": "éšä¾¿é—®ç‚¹ä»€ä¹ˆ...",
+    "send": "å‘é€",
+    "title": "èŠå¤©",
+    "emptyState": "å°±è¿™æ¡ç¬”è®°æä¸ªé—®é¢˜",
+    "dock": "å›ºå®šåˆ°ä¾§è¾¹æ ",
+    "undock": "ä»Žä¾§è¾¹æ å–æ¶ˆå›ºå®š",
+    "close": "å…³é—­èŠå¤©",
+    "newChat": "æ–°å¯¹è¯",
+    "conversationSelector": "åˆ‡æ¢å¯¹è¯"
+  },
+  "transcriptionPreview": {
+    "label": "é¢„è§ˆ",
+    "listening": "æ­£åœ¨è†å¬...",
+    "polishing": "æ­£åœ¨æ¶¦è‰²...",
+    "ready": "å°±ç»ª",
+    "copy": "å¤åˆ¶",
+    "copied": "å·²å¤åˆ¶",
+    "waitingForInput": "è¯´ç‚¹ä»€ä¹ˆ..."
+  },
+  "transcript": {
+    "speaker": {
+      "you": "ä½ ",
+      "others": "å…¶ä»–äºº"
+    }
+  },
+  "workspaces": {
+    "switcher": {
+      "personal": "Personal",
+      "workspaces": "Espacios de trabajo",
+      "empty": "AÃºn no hay espacios de trabajo",
+      "create": "Crear espacio de trabajoâ€¦"
+    },
+    "create": {
+      "title": "Crear espacio de trabajo",
+      "description": "Los espacios de trabajo te permiten colaborar, compartir notas y administrar la facturaciÃ³n.",
+      "nameLabel": "Nombre del espacio de trabajo",
+      "namePlaceholder": "Acme Corp",
+      "submit": "Crear espacio de trabajo",
+      "submitting": "Creandoâ€¦",
+      "errorTitle": "No se pudo crear el espacio de trabajo"
+    },
+    "created": {
+      "title": "Espacio de trabajo creado",
+      "description": "Ahora eres el propietario de {{name}}."
+    },
+    "invite": {
+      "title": "Invitar a {{workspace}}",
+      "description": "Agrega compaÃ±eros por correo. RecibirÃ¡n un enlace para unirse.",
+      "emailLabel": "Correo electrÃ³nico",
+      "roleLabel": "Rol",
+      "teamsLabel": "Agregar a equipos",
+      "submit": "Enviar invitaciÃ³n",
+      "submitting": "Enviandoâ€¦",
+      "sentTitle": "InvitaciÃ³n enviada",
+      "sentDescription": "Enviamos una invitaciÃ³n a {{email}}.",
+      "errorTitle": "No se pudo enviar la invitaciÃ³n",
+      "role": {
+        "admin": "Administrador",
+        "member": "Miembro"
+      }
+    },
+    "accept": {
+      "title": "Unirse al espacio de trabajo",
+      "description": "{{inviter}} te invitÃ³ a unirte a {{workspace}} como {{role}}.",
+      "loading": "Cargando invitaciÃ³nâ€¦",
+      "accept": "Aceptar invitaciÃ³n",
+      "accepting": "Aceptandoâ€¦",
+      "signInToAccept": "Inicia sesiÃ³n para aceptar",
+      "successTitle": "Te uniste",
+      "successDescription": "Bienvenido a {{name}}.",
+      "errorTitle": "No se pudo aceptar la invitaciÃ³n"
+    }
+  },
+  "polish": {
+    "noSelection": "请先选中文字",
+    "failed": "Polish 失败"
+  },
+  "insights": {
+    "title": "洞察",
+    "totalWords": "总字数",
+    "totalDictations": "总听写次数",
+    "averageWPM": "平均每分钟字数",
+    "wordsToday": "今日字数",
+    "wordsThisWeek": "本周字数",
+    "dayStreak": "连续天数",
+    "wpmGauge": {
+      "title": "每分钟字数",
+      "best": "最佳: {{value}}",
+      "pctOfBest": "达到最佳的{{pct}}%"
+    },
+    "fixes": {
+      "title": "自动修正次数",
+      "subtitle": "由 Dhwani 自动清理"
+    },
+    "totalWordsCard": {
+      "subtitle": "今天 {{today}} · 本周 {{week}}"
+    },
+    "streak": {
+      "title": "连续 {{count}} 天",
+      "longest": "最长连续: {{count}} 天",
+      "less": "少",
+      "more": "多"
+    },
+    "appUsage": {
+      "title": "桌面使用情况",
+      "totalApps": "使用了 {{count}} 个应用"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "为你的系统推荐",
+    "reasons": {
+      "nvidiaGpu": "你的 NVIDIA GPU 可以运行最快、最准确的模型",
+      "highRamManyCores": "你的系统有足够的内存和 CPU 核心以获得更高准确度",
+      "moderateRam": "适合你系统可用内存的均衡选择",
+      "lowRam": "适合你系统可用内存的最快选项"
+    }
+  }
+}

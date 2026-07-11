@@ -1,0 +1,322 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "./button";
+import { Tooltip } from "./tooltip";
+import {
+  Copy,
+  Trash2,
+  FileText,
+  FolderOpen,
+  RotateCcw,
+  Loader2,
+  AlertCircle,
+  ArchiveRestore,
+  Flag,
+  MoreVertical,
+} from "lucide-react";
+import type {
+  TranscriptionItem as TranscriptionItemType,
+  TranscriptionErrorCode,
+} from "../../types/electron";
+import { cn } from "../lib/utils";
+import { getCachedPlatform } from "../../utils/platform";
+import { formatMmSs } from "../../utils/formatDuration";
+
+const platform = getCachedPlatform();
+
+function getShowInFolderKey(): string {
+  if (platform === "win32") return "controlPanel.history.showInFolderWindows";
+  if (platform === "linux") return "controlPanel.history.showInFolderLinux";
+  return "controlPanel.history.showInFolder";
+}
+
+interface TranscriptionItemProps {
+  item: TranscriptionItemType;
+  onCopy: (text: string) => void;
+  onDelete: (id: number) => void;
+  onShowAudioInFolder?: (id: number) => void;
+  onRetryTranscription?: (id: number, options?: { isRecover?: boolean }) => Promise<void>;
+  onOpenSettings?: () => void;
+}
+
+export default function TranscriptionItem({
+  item,
+  onCopy,
+  onDelete,
+  onShowAudioInFolder,
+  onRetryTranscription,
+  onOpenSettings,
+}: TranscriptionItemProps) {
+  const { t, i18n } = useTranslation();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  const timestampSource = item.timestamp.endsWith("Z") ? item.timestamp : `${item.timestamp}Z`;
+  const timestampDate = new Date(timestampSource);
+  const formattedTime = Number.isNaN(timestampDate.getTime())
+    ? ""
+    : timestampDate
+        .toLocaleTimeString(i18n.language, {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        })
+        .toLowerCase();
+
+  const handleRetry = async () => {
+    if (isRetrying || !onRetryTranscription) return;
+    setIsRetrying(true);
+    try {
+      await onRetryTranscription(item.id, { isRecover: item.status === "discarded" });
+    } finally {
+      setIsRetrying(false);
+    }
+  };
+
+  const isFailed = item.status === "failed";
+  const isDiscarded = item.status === "discarded";
+  const discardedDuration =
+    item.audio_duration_ms && item.audio_duration_ms > 0
+      ? formatMmSs(Math.round(item.audio_duration_ms / 1000))
+      : null;
+  const hasRawText = item.raw_text !== null;
+  const hasAudio = item.has_audio === 1;
+  const showUtilityGroup = hasRawText || hasAudio;
+
+  const errorCode = item.error_code as TranscriptionErrorCode;
+  const isConfigError =
+    errorCode === "API_KEY_MISSING" ||
+    errorCode === "INVALID_KEY" ||
+    errorCode === "MODEL_NOT_AVAILABLE";
+  const isLimitError = errorCode === "LIMIT_REACHED";
+  const isOfflineError = errorCode === "OFFLINE";
+
+  return (
+    <div
+      className={cn(
+        "group px-5 py-4 transition-colors duration-150 bg-transparent hover:bg-muted/50 dark:hover:bg-white/5 hover:rounded-lg",
+        isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : ""
+      )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="flex items-start gap-3">
+        {formattedTime && (
+          <span className="w-16 shrink-0 text-xs text-muted-foreground/60 tabular-nums pt-0.5 text-left">
+            {formattedTime}
+          </span>
+        )}
+
+        {isFailed ? (
+          <div className="flex-1 min-w-0 flex items-start gap-2">
+            <AlertCircle size={14} className="shrink-0 text-destructive mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-sm text-destructive font-medium">
+                {t("controlPanel.history.transcriptionFailed")}
+              </p>
+              {item.error_message && (
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                  {item.error_message}
+                </p>
+              )}
+              {isConfigError && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {hasAudio ? (
+                    <>
+                      <button
+                        onClick={() => onOpenSettings?.()}
+                        className="text-primary hover:underline cursor-pointer"
+                      >
+                        {t("controlPanel.history.failedCtaSettings")}
+                      </button>{" "}
+                      {t("controlPanel.history.failedCtaAndRetry")}
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => onOpenSettings?.()}
+                      className="text-primary hover:underline cursor-pointer"
+                    >
+                      {t("controlPanel.history.failedCtaSettingsOnly")}
+                    </button>
+                  )}
+                </p>
+              )}
+              {isLimitError && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("controlPanel.history.failedLimitReached")}
+                </p>
+              )}
+              {isOfflineError && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("controlPanel.history.failedOffline")}
+                </p>
+              )}
+            </div>
+          </div>
+        ) : isDiscarded ? (
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span className="shrink-0 rounded-sm bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+              {t("controlPanel.history.discarded.badge")}
+            </span>
+            <span className="text-sm text-muted-foreground truncate">
+              {discardedDuration
+                ? t("controlPanel.history.discarded.recordingWithDuration", {
+                    duration: discardedDuration,
+                  })
+                : t("controlPanel.history.discarded.recording")}
+            </span>
+          </div>
+        ) : (
+          <p className="flex-1 min-w-0 text-foreground text-sm leading-[1.5] break-words">
+            {item.text}
+          </p>
+        )}
+
+        <div
+          className={cn(
+            "flex items-center gap-0.5 shrink-0 transition-opacity duration-150",
+            isFailed || isDiscarded ? "opacity-100" : isHovered ? "opacity-100" : "opacity-0"
+          )}
+        >
+          {isDiscarded && hasAudio && (
+            <Tooltip content={t("controlPanel.history.discarded.recover")}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={handleRetry}
+                disabled={isRetrying}
+                className="h-6 w-6 rounded-sm text-muted-foreground hover:text-primary hover:bg-primary/10"
+              >
+                {isRetrying ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <ArchiveRestore size={12} />
+                )}
+              </Button>
+            </Tooltip>
+          )}
+          {isFailed && hasAudio && (
+            <Tooltip content={t("controlPanel.history.retryTranscription")}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={handleRetry}
+                disabled={isRetrying}
+                className="h-6 w-6 rounded-sm text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                {isRetrying ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <RotateCcw size={12} />
+                )}
+              </Button>
+            </Tooltip>
+          )}
+          {!isFailed && !isDiscarded && hasRawText && (
+            <Tooltip content={t("controlPanel.history.viewRawTranscript")}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={cn(
+                  "h-6 w-6 rounded-sm text-muted-foreground hover:text-primary hover:bg-primary/10",
+                  isExpanded && "text-primary"
+                )}
+              >
+                <FileText size={12} />
+              </Button>
+            </Tooltip>
+          )}
+          {hasAudio && (
+            <Tooltip content={t(getShowInFolderKey())}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => onShowAudioInFolder?.(item.id)}
+                className="h-6 w-6 rounded-sm text-muted-foreground hover:text-primary hover:bg-primary/10"
+              >
+                <FolderOpen size={12} />
+              </Button>
+            </Tooltip>
+          )}
+          {!isFailed && !isDiscarded && hasAudio && (
+            <Tooltip content={t("controlPanel.history.retryTranscription")}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={handleRetry}
+                disabled={isRetrying}
+                className="h-6 w-6 rounded-sm text-muted-foreground hover:text-primary hover:bg-primary/10"
+              >
+                {isRetrying ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <RotateCcw size={12} />
+                )}
+              </Button>
+            </Tooltip>
+          )}
+          {showUtilityGroup && <div className="w-px h-3 bg-border/30" />}
+          {!isFailed && !isDiscarded && (
+            <>
+              <button
+                onClick={() => onCopy(item.text)}
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                title={t("controlPanel.history.copyText")}
+              >
+                <Copy size={14} />
+              </button>
+              <button
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                title="Flag entry"
+              >
+                <Flag size={14} />
+              </button>
+              <button
+                onClick={() => onDelete(item.id)}
+                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-all cursor-pointer"
+                title={t("common.delete")}
+              >
+                <Trash2 size={14} strokeWidth={2.5} />
+              </button>
+            </>
+          )}
+          {(isFailed || isDiscarded) && (
+            <Tooltip content={t("controlPanel.history.deleteItem")}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => onDelete(item.id)}
+                className="h-6 w-6 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 size={12} />
+              </Button>
+            </Tooltip>
+          )}
+        </div>
+      </div>
+
+      {!isFailed && !isDiscarded && (
+        <div
+          className={cn(
+            "overflow-hidden transition-all duration-200",
+            isExpanded ? "max-h-96" : "max-h-0"
+          )}
+        >
+          <div className="border-t border-border/20 mt-2 pt-2">
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              {t("controlPanel.history.rawTranscript")}
+            </span>
+            <p className="text-xs text-muted-foreground/80 leading-relaxed mt-1">{item.raw_text}</p>
+            {item.raw_text === item.text && (
+              <p className="text-[10px] text-muted-foreground/50 italic mt-1">
+                {t("controlPanel.history.noAiProcessing")}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

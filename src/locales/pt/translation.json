@@ -1,0 +1,2924 @@
+{
+  "settings": {
+    "language": {
+      "sectionTitle": "Idioma",
+      "sectionDescription": "Defina separadamente os idiomas da interface e da transcriÃ§Ã£o",
+      "uiLabel": "Idioma da interface",
+      "uiDescription": "Escolha o idioma usado na interface do Dhwani",
+      "transcriptionLabel": "Idioma de transcriÃ§Ã£o",
+      "transcriptionDescription": "Escolha o idioma que vocÃª fala para maior precisÃ£o"
+    },
+    "noteFiles": {
+      "title": "Salvar notas como arquivos",
+      "description": "Salvar notas e transcriÃ§Ãµes automaticamente como arquivos no disco, organizados por pasta",
+      "path": "Local de salvamento",
+      "changePath": "Alterar local",
+      "rebuild": "Reconstruir todos os arquivos",
+      "rebuildDescription": "Ressincronizar todas as notas e transcriÃ§Ãµes no disco",
+      "rebuildError": {
+        "title": "Falha na reconstruÃ§Ã£o",
+        "description": "NÃ£o foi possÃ­vel reconstruir os arquivos de notas. Verifique se o recurso estÃ¡ ativado e se a pasta permite gravaÃ§Ã£o."
+      }
+    },
+    "meeting": {
+      "speakerDetection": {
+        "title": "Identificar e rotular participantes",
+        "description": "Quando desativado, as transcriÃ§Ãµes mostram \"VocÃª\" e \"Outros\""
+      }
+    }
+  },
+  "tray": {
+    "toggleDictation": {
+      "show": "Mostrar painel de ditado",
+      "hide": "Ocultar painel de ditado"
+    },
+    "openControlPanel": "Abrir painel de controle",
+    "quit": "Sair do Dhwani",
+    "tooltip": "Dhwani - Ditado por voz"
+  },
+  "menu": {
+    "appLabel": "Dhwani",
+    "quit": "Sair do Dhwani",
+    "speech": "Fala",
+    "settings": "ConfiguraÃ§Ãµes...",
+    "help": "Ajuda",
+    "learnMore": "Saiba mais",
+    "file": "Arquivo",
+    "closeWindow": "Fechar janela"
+  },
+  "window": {
+    "voiceRecorderTitle": "Gravador de voz",
+    "controlPanelTitle": "Painel de controle",
+    "agentChatTitle": "Chat do agente"
+  },
+  "dialog": {
+    "openLink": {
+      "title": "NÃ£o foi possÃ­vel abrir o link",
+      "message": "Falha ao abrir o link no navegador:\n{{url}}\n\nErro: {{error}}"
+    },
+    "loadFailure": {
+      "title": "Dhwani falhou ao carregar",
+      "message": "Dhwani nÃ£o conseguiu carregar a interface.",
+      "detail": {
+        "window": "Janela: {{windowName}}",
+        "error": "Erro {{errorCode}}: {{errorDescription}}",
+        "url": "URL: {{url}}",
+        "hint": "Reinstale o app ou inicie com --log-level=debug."
+      }
+    }
+  },
+  "startup": {
+    "error": {
+      "title": "Erro de inicializaÃ§Ã£o do Dhwani",
+      "message": "Falha ao iniciar o aplicativo:\n\n{{error}}\n\nPor favor, reporte este problema."
+    },
+    "globeHotkey": {
+      "title": "Atalho Globe indisponÃ­vel",
+      "message": "Dhwani nÃ£o conseguiu ativar o atalho da tecla Globe.",
+      "details": {
+        "unknown": "Erro desconhecido ao iniciar o listener da tecla Globe.",
+        "fallback": "O atalho Globe permanecerÃ¡ desativado; os atalhos existentes continuarÃ£o funcionando.",
+        "devHint": "Execute `npm run compile:globe` e reconstrua o app para regenerar o binÃ¡rio.",
+        "reinstallHint": "Reinstale o Dhwani ou contate o suporte se o problema persistir."
+      }
+    }
+  },
+  "hotkey": {
+    "errors": {
+      "callbackRequired": "Uma funÃ§Ã£o de callback Ã© obrigatÃ³ria para configurar o atalho",
+      "globeOnlyMac": "A tecla Globe estÃ¡ disponÃ­vel apenas no macOS.",
+      "mouseButtonOnlyMac": "Atalhos com botÃµes do mouse atualmente sÃ£o compatÃ­veis apenas no macOS.",
+      "alreadyRegistered": "\"{{hotkey}}\" jÃ¡ estÃ¡ registrada por outro aplicativo.",
+      "osReserved": "\"{{hotkey}}\" pode estar reservada pelo seu ambiente de desktop.",
+      "registrationFailed": "NÃ£o foi possÃ­vel registrar \"{{hotkey}}\". Pode estar em uso por outro aplicativo.",
+      "trySuggestions": "Tente: {{suggestions}}",
+      "slotConflict": "Este atalho jÃ¡ estÃ¡ sendo usado para {{slot}}."
+    }
+  },
+  "systemSettings": {
+    "microphone": "Abra as configuraÃ§Ãµes do sistema para configurar as permissÃµes de microfone.",
+    "sound": "Abra as configuraÃ§Ãµes de som do sistema (por exemplo, pavucontrol).",
+    "accessibility": "As configuraÃ§Ãµes de acessibilidade nÃ£o estÃ£o disponÃ­veis nesta plataforma.",
+    "systemAudio": "As configuraÃ§Ãµes de Ã¡udio do sistema nÃ£o estÃ£o disponÃ­veis nesta plataforma."
+  },
+  "windows": {
+    "pttUnavailable": "O listener nativo de Push-to-Talk nÃ£o estÃ¡ disponÃ­vel"
+  },
+  "common": {
+    "back": "Voltar",
+    "next": "AvanÃ§ar",
+    "complete": "Concluir",
+    "reset": "Redefinir",
+    "refresh": "Atualizar",
+    "download": "Baixar",
+    "cancel": "Cancelar",
+    "recommended": "Recomendado",
+    "active": "Ativo",
+    "freeAccountRequired": "Conta gratuita necessÃ¡ria",
+    "cloud": "Nuvem",
+    "local": "Local",
+    "apiKey": "Chave API",
+    "model": "Modelo",
+    "loading": "Carregando...",
+    "unknown": "Desconhecido",
+    "availableModels": "Modelos disponÃ­veis",
+    "fast": "RÃ¡pido",
+    "hold": "Segurar",
+    "private": "Privado",
+    "tap": "Toque",
+    "close": "Fechar",
+    "dismiss": "Dispensar",
+    "save": "Guardar",
+    "saving": "Guardandoâ€¦",
+    "create": "Crear",
+    "delete": "Eliminar",
+    "actions": "Acciones",
+    "error": "Algo saliÃ³ mal",
+    "unknownError": "OcurriÃ³ un error desconocido",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "done": "Listo",
+    "skip": "Pular"
+  },
+  "onboarding": {
+    "steps": {
+      "welcome": "Boas-vindas",
+      "setup": "ConfiguraÃ§Ã£o",
+      "permissions": "PermissÃµes",
+      "activation": "Ditado",
+      "useCase": "Sobre vocÃª",
+      "meeting": "ReuniÃµes",
+      "finish": "Concluir",
+      "voiceAgent": "Agente de voz"
+    },
+    "hotkey": {
+      "couldNotRegisterTitle": "NÃ£o foi possÃ­vel registrar esse atalho",
+      "couldNotRegisterDescription": "Essa combinaÃ§Ã£o pode estar em uso. Tente outra."
+    },
+    "setup": {
+      "title": "ConfiguraÃ§Ã£o",
+      "description": "Escolha seu idioma e conceda permissÃµes",
+      "language": "Idioma"
+    },
+    "permissions": {
+      "title": "PermissÃµes",
+      "microphoneTitle": "Microfone",
+      "microphoneDescription": "Transforma sua fala em texto. Nada Ã© gravado atÃ© vocÃª pressionar seu atalho.",
+      "grant": "Conceder",
+      "grantAccess": "Conceder acesso",
+      "accessibilityTitle": "Acessibilidade",
+      "accessibilityDescription": "Digita o texto final diretamente no aplicativo em que vocÃª estiver — documentos, e-mail, chat.",
+      "testAndGrant": "Testar e conceder",
+      "requiredForApp": "NecessÃ¡rio para o Dhwani funcionar",
+      "microphoneRequired": "Acesso ao microfone necessÃ¡rio",
+      "openSystemSettings": "Abrir ConfiguraÃ§Ãµes do Sistema",
+      "systemAudioTitle": "Ãudio do Sistema",
+      "systemAudioDescription": "Permite que o gravador de reuniÃµes ouÃ§a o outro lado das suas chamadas — reuniÃµes, aulas, podcasts. VocÃª pode ativar depois nas ConfiguraÃ§Ãµes.",
+      "optional": "Opcional",
+      "recommended": "Recomendado",
+      "accessibilityTroubleshooting": "Em ConfiguraÃ§Ãµes do Sistema → Acessibilidade, desative o interruptor do Dhwani e ative-o novamente. Se isso nÃ£o funcionar, remova o Dhwani da lista e adicione-o de volta. Ainda com problemas? Envie um e-mail para support@Dhwani.com."
+    },
+    "transcription": {
+      "title": "ConfiguraÃ§Ã£o de transcriÃ§Ã£o",
+      "description": "Escolha seu modo e provedor",
+      "preferredLanguage": "Idioma preferido"
+    },
+    "activation": {
+      "title": "ConfiguraÃ§Ã£o de ditado",
+      "description": "Configure como acionar o ditado",
+      "hotkey": "Atalho",
+      "mode": "Modo",
+      "tapDescription": "Pressione para iniciar/parar",
+      "holdDescription": "Segure enquanto fala",
+      "test": "Teste",
+      "hotkeyToStartStop": "{{hotkey}} para iniciar/parar",
+      "holdHotkey": "Segure {{hotkey}}",
+      "textareaPlaceholder": "Clique aqui e use seu atalho para ditar..."
+    },
+    "voiceAgent": {
+      "title": "ConfiguraÃ§Ã£o do agente de voz",
+      "description": "Fale com seu agente de IA com um Ãºnico atalho",
+      "hotkey": "Atalho",
+      "howItWorks": "Pressione a tecla e diga o que quer — por exemplo, “escreva uma breve nota de agradecimento”. {{agentName}} escreve o resultado onde estiver o cursor. NÃ£o precisa dizer “Hey {{agentName}}” antes.",
+      "test": "Experimente",
+      "testInstruction": "Clique abaixo, pressione {{hotkey}} e diga um comando",
+      "testSetHotkey": "Defina um atalho acima para experimentar",
+      "testPlaceholder": "Clique aqui, pressione seu atalho e diga um dos exemplos...",
+      "examples": [
+        "Traduza para o italiano: Â«Falo mais rÃ¡pido do que escrevoÂ»",
+        "Escreva um e-mail curto para o meu chefe dizendo que quero uma promoÃ§Ã£o, ele se chama Mark",
+        "Quanto Ã© 5 Ã— 5?"
+      ],
+      "optionalNote": "Opcional — vocÃª pode definir ou alterar a qualquer momento nas configuraÃ§Ãµes."
+    },
+    "connectivity": {
+      "title": "NÃ£o conseguimos acessar o Dhwani Cloud nesta rede",
+      "body": "{{cause}} VocÃª pode mudar para o motor local ou continuar e tentar de novo depois.",
+      "useLocal": "Usar motor local",
+      "continue": "Continuar mesmo assim"
+    },
+    "useCase": {
+      "title": "O que traz vocÃª aqui?",
+      "description": "Somos uma equipe pequena lanÃ§ando melhorias toda semana. O que vocÃª escolher configura o app para vocÃª — e nos diz o que construir em seguida.",
+      "noteLabel": "Algo mais que gostaria de nos contar?",
+      "notePlaceholder": "Opcional",
+      "options": {
+        "dictation": {
+          "title": "Escrever mais rÃ¡pido",
+          "description": "Dite em qualquer aplicativo em vez de digitar"
+        },
+        "meetings": {
+          "title": "Notas e resumos de reuniÃµes",
+          "description": "Grave, transcreva e resuma suas reuniÃµes"
+        },
+        "healthcare": {
+          "title": "TranscriÃ§Ã£o mÃ©dica, clÃ­nica e terapÃªutica",
+          "description": "Dite notas de pacientes, notas de sessÃ£o e relatÃ³rios"
+        },
+        "translation": {
+          "title": "Traduzir idiomas",
+          "description": "Fale um idioma, escreva em outro"
+        },
+        "ai": {
+          "title": "Falar com minha IA",
+          "description": "Controle por voz o ChatGPT, o Claude e outros agentes"
+        },
+        "upload": {
+          "title": "Enviar arquivos de Ã¡udio",
+          "description": "Envie e transcreva MP3, OGG e mais"
+        }
+      },
+      "selectHint": "Selecione todas as opÃ§Ãµes aplicÃ¡veis"
+    },
+    "meeting": {
+      "title": "Notas de reuniÃ£o",
+      "description": "Capture e resuma suas reuniÃµes",
+      "autoDetect": "O Dhwani detecta automaticamente quando vocÃª estÃ¡ em uma reuniÃ£o e oferece iniciar notas — nada Ã© gravado sem vocÃª.",
+      "notification": {
+        "title": "ReuniÃ£o detectada",
+        "body": "Parece que vocÃª estÃ¡ em uma reuniÃ£o. Quer fazer anotaÃ§Ãµes?",
+        "cta": "ComeÃ§ar a gravar"
+      },
+      "hotkeyLabel": "Atalho de reuniÃ£o",
+      "hotkeyHint": "Opcional — pressione-o em qualquer reuniÃ£o para iniciar uma nota na hora."
+    },
+    "finish": {
+      "title": "Tudo pronto",
+      "cloudDescription": "VocÃª estÃ¡ no Dhwani Cloud — rÃ¡pido, preciso, zero retenÃ§Ã£o de dados e 2.000 palavras grÃ¡tis por semana. Prefere tudo no seu dispositivo? Mude para o processamento local nas ConfiguraÃ§Ãµes.",
+      "localDescription": "VocÃª estÃ¡ configurado com processamento local ou sua prÃ³pria chave. Ajuste como seu Ã¡udio Ã© processado a qualquer momento nas ConfiguraÃ§Ãµes.",
+      "cleanupNote": "A limpeza de texto por IA usa padrÃµes sensatos. VocÃª pode ajustÃ¡-la a qualquer momento nas ConfiguraÃ§Ãµes.",
+      "openSettings": "Abrir ConfiguraÃ§Ãµes",
+      "skipForNow": "Pular por enquanto",
+      "corti": {
+        "title": "VocÃª nos disse que estÃ¡ aqui pela transcriÃ§Ã£o clÃ­nica",
+        "description": "Firmamos parceria com a Corti — voz para texto de nÃ­vel clÃ­nico com a maior precisÃ£o e em conformidade com a HIPAA.",
+        "createAccount": "Crie sua conta Corti",
+        "creditBadge": "US$ 50 de crÃ©dito grÃ¡tis",
+        "regionHint": "Escolha onde seu Ã¡udio Ã© processado — EUA ou UE.",
+        "useCorti": "Usar Corti",
+        "skip": "Agora nÃ£o",
+        "step1": "Cadastre-se em corti.ai",
+        "step2": "Abra o console da Corti e crie credenciais de API",
+        "step3": "Cole seu Client ID e Secret abaixo"
+      }
+    }
+  },
+  "streaming": {
+    "errors": {
+      "cloudUnreachable": {
+        "title": "NÃ£o foi possÃ­vel acessar o Dhwani Cloud",
+        "generic": "A solicitaÃ§Ã£o de rede falhou. Verifique sua conexÃ£o.",
+        "dnsBlocked": "O DNS nÃ£o estÃ¡ resolvendo Dhwani.com — pode ser um bloqueador de anÃºncios ou filtro.",
+        "refused": "A conexÃ£o foi recusada — provavelmente um firewall ou VPN.",
+        "timeout": "Tempo limite da rede esgotado — VPN, portal cativo ou conexÃ£o instÃ¡vel.",
+        "tls": "Falha no handshake TLS — verifique o relÃ³gio do sistema ou um proxy corporativo.",
+        "fallback": "Cloud indisponÃ­vel — usando o motor local para esta gravaÃ§Ã£o."
+      }
+    }
+  },
+  "controlPanel": {
+    "update": {
+      "readyTitle": "AtualizaÃ§Ã£o pronta para instalar",
+      "readyDescription": "Clique em 'Instalar atualizaÃ§Ã£o' para reiniciar com a versÃ£o mais recente.",
+      "problemTitle": "Houve um problema na atualizaÃ§Ã£o",
+      "problemDescription": "NÃ£o foi possÃ­vel concluir a atualizaÃ§Ã£o. Tente novamente mais tarde.",
+      "installTitle": "Instalar atualizaÃ§Ã£o",
+      "installDescription": "O Dhwani serÃ¡ reiniciado para aplicar a atualizaÃ§Ã£o. O trabalho em andamento serÃ¡ salvo.",
+      "couldNotInstallTitle": "NÃ£o foi possÃ­vel instalar a atualizaÃ§Ã£o",
+      "couldNotInstallDescription": "Algo deu errado. Tente novamente.",
+      "couldNotDownloadTitle": "NÃ£o foi possÃ­vel baixar a atualizaÃ§Ã£o",
+      "couldNotDownloadDescription": "Verifique sua conexÃ£o e tente novamente.",
+      "installing": "Instalando...",
+      "installButton": "Instalar atualizaÃ§Ã£o",
+      "availableButton": "AtualizaÃ§Ã£o disponÃ­vel"
+    },
+    "limit": {
+      "weeklyTitle": "Limite semanal atingido",
+      "weeklyDescription": "Seu limite Ã© redefinido continuamente. FaÃ§a upgrade para Pro ou use sua prÃ³pria chave API para uso ilimitado."
+    },
+    "accessibilityMissing": {
+      "title": "PermissÃµes de acessibilidade necessÃ¡rias",
+      "description": "Detectamos que o Dhwani precisa de permissÃµes de acessibilidade para funcionar corretamente. Ative-as abaixo."
+    },
+    "billing": {
+      "pastDueTitle": "NÃ£o foi possÃ­vel processar seu pagamento",
+      "pastDueDescription": "Sem problemas — vocÃª estÃ¡ no plano gratuito por enquanto. Atualize o pagamento em ConfiguraÃ§Ãµes para voltar ao Pro.",
+      "bannerDescription": "VocÃª estÃ¡ no plano gratuito por enquanto — ainda tem {{limit}} palavras por semana. Atualize seu pagamento para voltar ao Pro.",
+      "updatePayment": "Atualizar pagamento"
+    },
+    "history": {
+      "couldNotLoadTitle": "NÃ£o foi possÃ­vel carregar seu histÃ³rico",
+      "couldNotLoadDescription": "Ocorreu um erro ao carregar as transcriÃ§Ãµes. Feche e abra o app novamente.",
+      "copiedTitle": "Copiado!",
+      "copiedDescription": "Texto copiado para a Ã¡rea de transferÃªncia",
+      "couldNotCopyTitle": "NÃ£o foi possÃ­vel copiar",
+      "couldNotCopyDescription": "Ocorreu um erro ao copiar para a Ã¡rea de transferÃªncia. Tente novamente.",
+      "deleteTitle": "Excluir transcriÃ§Ã£o",
+      "deleteDescription": "Esta transcriÃ§Ã£o serÃ¡ removida permanentemente.",
+      "couldNotDeleteTitle": "NÃ£o foi possÃ­vel excluir",
+      "couldNotDeleteDescription": "Esta transcriÃ§Ã£o pode jÃ¡ ter sido removida.",
+      "couldNotDeleteDescriptionGeneric": "Algo deu errado. Tente novamente.",
+      "empty": "Ainda sem transcriÃ§Ãµes",
+      "dataRetentionDisabled": "A retenÃ§Ã£o de dados estÃ¡ desativada. TranscriÃ§Ãµes e Ã¡udio nÃ£o sÃ£o salvos no histÃ³rico.",
+      "press": "Pressione",
+      "toStart": "para iniciar",
+      "dateGroups": {
+        "today": "Hoje",
+        "yesterday": "Ontem"
+      },
+      "transcriptionFailed": "A transcriÃ§Ã£o falhou",
+      "failedCtaSettings": "Configure seu provedor de transcriÃ§Ã£o",
+      "failedCtaAndRetry": "e depois clique em tentar novamente",
+      "failedCtaSettingsOnly": "Configure seu provedor de transcriÃ§Ã£o nas ConfiguraÃ§Ãµes",
+      "failedLimitReached": "Limite diÃ¡rio atingido",
+      "failedOffline": "Sem conexÃ£o",
+      "clearAll": "Limpar tudo",
+      "clearAllTitle": "Limpar todas as transcriÃ§Ãµes",
+      "clearAllDescription": "Todas as transcriÃ§Ãµes e arquivos de Ã¡udio serÃ£o removidos permanentemente.",
+      "clearAllSuccess": "HistÃ³rico limpo",
+      "clearAllErrorTitle": "NÃ£o foi possÃ­vel limpar o histÃ³rico",
+      "clearAllErrorDescription": "Algo deu errado. Tente novamente.",
+      "copyText": "Copiar texto",
+      "deleteItem": "Excluir",
+      "viewRawTranscript": "Ver transcriÃ§Ã£o bruta",
+      "showInFolder": "Mostrar no Finder",
+      "showInFolderWindows": "Mostrar no Explorador",
+      "showInFolderLinux": "Mostrar no gerenciador de arquivos",
+      "retryTranscription": "Retranscrever",
+      "retrying": "Retranscrevendoâ€¦",
+      "retrySuccess": "TranscriÃ§Ã£o atualizada",
+      "retryError": "Falha ao retranscrever",
+      "audioNotFound": "Arquivo de Ã¡udio nÃ£o encontrado ou expirado",
+      "noAiProcessing": "Nenhum processamento de IA foi aplicado a esta transcriÃ§Ã£o",
+      "rawTranscript": "TranscriÃ§Ã£o bruta",
+      "discarded": {
+        "show": "Mostrar descartadas",
+        "hide": "Ocultar descartadas",
+        "badge": "Descartada",
+        "recording": "GravaÃ§Ã£o descartada",
+        "recordingWithDuration": "GravaÃ§Ã£o descartada Â· {{duration}}",
+        "recover": "Recuperar",
+        "recovered": "Recuperada"
+      }
+    },
+    "cloudMigration": {
+      "title": "Boas-vindas ao Dhwani Cloud",
+      "description": "Mudamos sua transcriÃ§Ã£o para o Dhwani Cloud para resultados mais rÃ¡pidos e precisos. Suas configuraÃ§Ãµes anteriores foram salvas — volte quando quiser em ConfiguraÃ§Ãµes.",
+      "viewSettings": "Ver configuraÃ§Ãµes"
+    },
+    "aiCta": {
+      "title": "Melhore suas transcriÃ§Ãµes com IA",
+      "description": "Corrija automaticamente gramÃ¡tica, pontuaÃ§Ã£o e formataÃ§Ã£o enquanto vocÃª fala.",
+      "enable": "Ativar melhoria com IA"
+    },
+    "loading": "Carregando...",
+    "gpu": {
+      "bannerTitle": "AceleraÃ§Ã£o GPU disponÃ­vel",
+      "bannerDescription": "Ative a aceleraÃ§Ã£o GPU para um desempenho mais rÃ¡pido.",
+      "enableButton": "Ativar GPU",
+      "dismissButton": "Agora nÃ£o"
+    },
+    "backToNotes": "Voltar para notas"
+  },
+  "reasoning": {
+    "mode": {
+      "cloud": "Nuvem",
+      "local": "Local",
+      "enterprise": "Corporativo",
+      "localDescription": "Roda no seu dispositivo. Privacidade total, funciona offline.",
+      "cloudDescription": "Modelos avanÃ§ados via API. RÃ¡pido e potente, requer internet.",
+      "enterpriseDescription": "Use as credenciais de nuvem da sua organizaÃ§Ã£o."
+    },
+    "custom": {
+      "endpointWithProtocol": "Informe uma URL base completa com protocolo (por exemplo, https://server/v1).",
+      "httpsRequired": "HTTPS obrigatÃ³rio (HTTP permitido apenas em rede local).",
+      "endpointUnauthorized": "O endpoint rejeitou a requisiÃ§Ã£o (401/403). Adicione uma chave API ou ajuste a autenticaÃ§Ã£o do servidor.",
+      "endpointTitle": "URL do endpoint",
+      "endpointExamples": "Exemplos:",
+      "ollama": "(Ollama)",
+      "localAi": "(LocalAI)",
+      "apiKeyOptional": "Chave API (opcional)",
+      "apiKeyHelp": "Opcional. Enviada como token Bearer para autenticaÃ§Ã£o. Separada da sua chave API da OpenAI.",
+      "applyAndRefresh": "Aplicar e atualizar",
+      "queryPrefix": "Vamos consultar",
+      "querySuffix": "para modelos disponÃ­veis.",
+      "modelsReloadHint": "Os modelos serÃ£o recarregados ao sair do campo de URL ou ao clicar em \"Aplicar e atualizar\".",
+      "enterEndpoint": "Informe acima uma URL de endpoint para carregar modelos.",
+      "fetchingModels": "Buscando lista de modelos no endpoint...",
+      "noModels": "Nenhum modelo retornado. Verifique a URL do endpoint.",
+      "providerName": "Personalizado",
+      "ownerLabel": "ProprietÃ¡rio: {{owner}}",
+      "unableToLoadModels": "NÃ£o foi possÃ­vel carregar modelos do endpoint."
+    },
+    "getApiKey": "Obter chave API ->",
+    "selectModel": "Selecionar modelo",
+    "availableModels": "Modelos disponÃ­veis",
+    "disableThinking": {
+      "label": "Desativar saÃ­da de raciocÃ­nio",
+      "help": "Ignora tokens de raciocÃ­nio para uma saÃ­da mais limpa. Recomendado para limpeza. Alguns servidores ignoram esta dica."
+    },
+    "selfHosted": {
+      "endpointHelp": "Aponte para um servidor compatÃ­vel com OpenAI na sua rede local (ex.: Ollama, LM Studio, vLLM ou llama-server)."
+    },
+    "enterprise": {
+      "title": "Provedores corporativos",
+      "description": "Conecte-se a provedores de nuvem usando as credenciais da sua organizaÃ§Ã£o.",
+      "testConnection": "Testar conexÃ£o",
+      "testing": "Testandoâ€¦",
+      "testSuccess": "Conectado",
+      "testFailed": "Falha na conexÃ£o",
+      "authMode": "AutenticaÃ§Ã£o",
+      "ssoProfile": "Perfil SSO",
+      "accessKeys": "Chaves de acesso",
+      "adc": "Application Default Credentials",
+      "apiKeyMode": "Chave API",
+      "region": "RegiÃ£o",
+      "profile": "Nome do perfil",
+      "accessKeyId": "Access Key ID",
+      "secretAccessKey": "Secret Access Key",
+      "sessionToken": "Session Token (opcional)",
+      "endpoint": "URL do endpoint",
+      "deploymentName": "Nome do deployment",
+      "apiVersion": "VersÃ£o da API",
+      "projectId": "ID do projeto",
+      "location": "LocalizaÃ§Ã£o",
+      "customModelId": "ID de modelo personalizado",
+      "customModelPlaceholder": "Informe um ID de modelo ou nome de deployment",
+      "suggestedModels": "Modelos sugeridos",
+      "bedrock": {
+        "ssoHelp": "Usa sua configuraÃ§Ã£o SSO do AWS CLI. Certifique-se de ter executado 'aws sso login'.",
+        "keysHelp": "Informe suas chaves de acesso AWS IAM."
+      },
+      "azure": {
+        "endpointHelp": "O endpoint do seu recurso Azure OpenAI (ex.: https://myresource.openai.azure.com).",
+        "deploymentHelp": "Nome do deployment do seu modelo no Azure OpenAI."
+      },
+      "vertex": {
+        "adcHelp": "Usa Application Default Credentials. Execute: gcloud auth application-default login",
+        "apikeyHelp": "Chave API do Vertex AI Express Mode obtida no Google AI Studio."
+      }
+    }
+  },
+  "transcription": {
+    "deleteModel": {
+      "title": "Excluir modelo",
+      "description": "Tem certeza de que deseja excluir este modelo? SerÃ¡ necessÃ¡rio baixÃ¡-lo novamente para usÃ¡-lo."
+    },
+    "parakeet": {
+      "multilingual": "25 idiomas",
+      "english": "InglÃªs"
+    },
+    "apiKeyOptional": "Chave API (opcional)",
+    "getKey": "Obter chave ->",
+    "endpointUrl": "URL do endpoint",
+    "azureHint": "Azure AI Foundry: insira o endpoint do seu recurso (ex.: https://your-resource.cognitiveservices.azure.com) e defina Modelo com o nome exato da sua implantaÃ§Ã£o.",
+    "customProvider": "Personalizado",
+    "fallback": {
+      "whisperModelDescription": "Modelo",
+      "parakeetModelDescription": "Modelo NVIDIA Parakeet"
+    },
+    "whisperModels": "Modelos Whisper",
+    "corti": {
+      "clientId": "ID do cliente",
+      "clientSecret": "Segredo do cliente",
+      "environment": "RegiÃ£o de dados",
+      "tenant": "Tenant"
+    }
+  },
+  "hooks": {
+    "audioRecording": {
+      "errorTitles": {
+        "sessionExpired": "SessÃ£o expirada",
+        "offline": "Sem conexÃ£o",
+        "dailyLimitReached": "Limite diÃ¡rio atingido",
+        "providerRateLimited": "Limite de taxa do provedor"
+      },
+      "fallback": {
+        "title": "Modo de fallback",
+        "description": "O Whisper local falhou. A API da OpenAI foi usada no lugar."
+      },
+      "noAudio": {
+        "title": "Nenhum Ã¡udio detectado",
+        "description": "A gravaÃ§Ã£o nÃ£o contÃ©m Ã¡udio detectÃ¡vel. Tente novamente."
+      },
+      "errorDescriptions": {
+        "sessionExpired": "Sua sessÃ£o do Dhwani Cloud estÃ¡ indisponÃ­vel. Entre novamente nas ConfiguraÃ§Ãµes.",
+        "offline": "VocÃª estÃ¡ offline. A transcriÃ§Ã£o na nuvem exige conexÃ£o com a internet.",
+        "dailyLimitReached": "VocÃª atingiu o limite de transcriÃ§Ãµes de hoje. Tente novamente amanhÃ£ ou faÃ§a upgrade do seu plano.",
+        "providerRateLimited": "Seu provedor de transcriÃ§Ã£o limitou a solicitaÃ§Ã£o. Aguarde um momento e tente novamente."
+      }
+    },
+    "clipboard": {
+      "pasteFailed": {
+        "title": "Falha ao colar da Ã¡rea de transferÃªncia",
+        "description": "NÃ£o foi possÃ­vel colar da Ã¡rea de transferÃªncia. Tente digitar ou use Cmd+V/Ctrl+V."
+      }
+    },
+    "hotkeyRegistration": {
+      "titles": {
+        "invalidHotkey": "Atalho invÃ¡lido",
+        "notRegistered": "Atalho nÃ£o registrado",
+        "saved": "Atalho salvo",
+        "error": "Erro de atalho"
+      },
+      "errors": {
+        "enterValidHotkey": "Digite um atalho vÃ¡lido",
+        "unsupportedShortcut": "Esse atalho nÃ£o Ã© suportado.",
+        "couldNotRegister": "Esta tecla nÃ£o pode ser registrada. Escolha outra.",
+        "failedToRegister": "Falha ao registrar atalho. Tente novamente."
+      },
+      "messages": {
+        "nowUsing": "Agora usando {{hotkey}} para ditado"
+      }
+    },
+    "modelDownload": {
+      "errors": {
+        "timeout": "Tempo de download esgotado. Verifique sua conexÃ£o e tente novamente.",
+        "notFound": "NÃ£o foi possÃ­vel acessar o servidor de download. Verifique sua conexÃ£o.",
+        "corrupted": "Download incompleto ou corrompido. Tente novamente.",
+        "rateLimited": "Servidor limitando requisiÃ§Ãµes. Aguarde alguns minutos e tente novamente.",
+        "server": "Erro do servidor ({{error}}). Tente mais tarde.",
+        "generic": "Falha no download: {{error}}",
+        "extractionFailed": "Modelo baixado, mas a instalaÃ§Ã£o falhou. Clique em baixar para tentar a instalaÃ§Ã£o novamente sem precisar baixar de novo.",
+        "tlsError": "Erro de certificado — sua rede pode usar inspeÃ§Ã£o SSL que bloqueia downloads. Tente baixar de outra rede.",
+        "unknown": "Erro desconhecido"
+      },
+      "downloadFailed": {
+        "title": "Falha no download"
+      },
+      "installationFailed": {
+        "title": "Falha na instalaÃ§Ã£o"
+      },
+      "downloadInProgress": {
+        "title": "Download em andamento",
+        "description": "Aguarde o download atual terminar ou cancele-o primeiro."
+      },
+      "modelDeleted": {
+        "title": "Modelo removido",
+        "descriptionWithSpace": "Modelo removido com sucesso! {{sizeMb}}MB de espaÃ§o liberados.",
+        "description": "Modelo removido com sucesso!"
+      },
+      "deleteFailed": {
+        "title": "Falha ao remover",
+        "description": "Falha ao remover modelo: {{error}}"
+      },
+      "downloadCancelled": {
+        "title": "Download cancelado",
+        "description": "O download foi cancelado."
+      }
+    },
+    "permissions": {
+      "paths": {
+        "windowsMicrophone": "ConfiguraÃ§Ãµes -> Privacidade -> Microfone",
+        "linuxSound": "as configuraÃ§Ãµes de som do sistema",
+        "defaultSound": "ConfiguraÃ§Ãµes do sistema -> Som -> Entrada",
+        "linuxPrivacy": "as configuraÃ§Ãµes de privacidade do sistema",
+        "defaultPrivacy": "ConfiguraÃ§Ãµes do sistema -> Privacidade e SeguranÃ§a -> Microfone"
+      },
+      "micErrors": {
+        "accessFailed": "Falha no acesso ao microfone. Tente novamente.",
+        "noMicrophones": "Nenhum microfone detectado. Conecte ou selecione um microfone em {{settingsPath}}.",
+        "permissionDenied": "PermissÃ£o negada. Abra {{privacyPath}} e permita o Dhwani.",
+        "couldNotStart": "NÃ£o foi possÃ­vel iniciar o microfone selecionado. Escolha um dispositivo em {{settingsPath}} e teste novamente.",
+        "noActiveInput": "Nenhuma entrada de Ã¡udio ativa encontrada. Escolha um microfone em {{settingsPath}}.",
+        "unknown": "Falha no acesso ao microfone: {{error}}. Selecione outro dispositivo e tente novamente.",
+        "unknownFallback": "Erro desconhecido"
+      },
+      "settingsTitles": {
+        "microphone": "ConfiguraÃ§Ãµes de microfone",
+        "sound": "ConfiguraÃ§Ãµes de som",
+        "accessibility": "ConfiguraÃ§Ãµes de acessibilidade"
+      },
+      "settingsErrors": {
+        "unableToOpenMicrophone": "NÃ£o foi possÃ­vel abrir configuraÃ§Ãµes de microfone. Abra as configuraÃ§Ãµes do sistema manualmente.",
+        "unableToOpenSound": "NÃ£o foi possÃ­vel abrir configuraÃ§Ãµes de som. Abra as configuraÃ§Ãµes do sistema manualmente.",
+        "unableToOpenAccessibility": "NÃ£o foi possÃ­vel abrir configuraÃ§Ãµes de acessibilidade. Abra as configuraÃ§Ãµes do sistema manualmente."
+      },
+      "micUnavailable": "As APIs de microfone nÃ£o estÃ£o disponÃ­veis neste ambiente. Reinicie o app.",
+      "titles": {
+        "microphoneUnavailable": "Microfone indisponÃ­vel",
+        "microphonePermissionRequired": "PermissÃ£o de microfone obrigatÃ³ria",
+        "accessibilityNeeded": "PermissÃµes de acessibilidade necessÃ¡rias",
+        "readyToGo": "Tudo pronto!",
+        "waylandClipboardMode": "Modo Ã¡rea de transferÃªncia no Wayland",
+        "optionalPasteTool": "Opcional: instalar ferramenta de colagem"
+      },
+      "descriptions": {
+        "accessibilityNeeded": "Conceda permissÃµes de acessibilidade nas configuraÃ§Ãµes do sistema para habilitar colagem automÃ¡tica.",
+        "windowsReady": "O Windows nÃ£o exige permissÃµes especiais para colagem automÃ¡tica. Tudo pronto!",
+        "linuxReadyWithMethod": "A colagem automÃ¡tica estÃ¡ disponÃ­vel usando {{method}}. Tudo pronto!",
+        "waylandClipboardMode": "A colagem automÃ¡tica nÃ£o estÃ¡ disponÃ­vel nesta sessÃ£o Wayland. O Dhwani copiarÃ¡ o texto para a Ã¡rea de transferÃªncia e vocÃª poderÃ¡ colar com Ctrl+V.",
+        "optionalPasteTool": "Para colagem automÃ¡tica, instale {{tool}}:\n\n{{installCmd}}{{waylandNote}}\n\nSem isso, vocÃª ainda pode usar o Dhwani — o texto serÃ¡ copiado para a Ã¡rea de transferÃªncia e vocÃª poderÃ¡ colar com Ctrl+V."
+      },
+      "alerts": {
+        "accessibilityNeeded": "PermissÃµes de acessibilidade necessÃ¡rias! Conceda nas configuraÃ§Ãµes do sistema."
+      },
+      "notes": {
+        "waylandWtype": "\n\nNota: para apps XWayland, xdotool tambÃ©m funciona.",
+        "waylandXwaylandOnly": "\n\nNota: a colagem automÃ¡tica funciona apenas para apps XWayland."
+      },
+      "labels": {
+        "defaultPasteTool": "xdotool",
+        "xdotoolXwayland": "xdotool (apps XWayland)"
+      },
+      "accessibilityTestText": "teste de acessibilidade do Dhwani",
+      "warning": {
+        "messages": {
+          "macos": "Verifique as configuraÃ§Ãµes de Som para selecionar o dispositivo de entrada",
+          "windows": "Verifique as configuraÃ§Ãµes do Windows para selecionar o dispositivo de entrada",
+          "linux": "Verifique as configuraÃ§Ãµes de som do sistema para selecionar o dispositivo de entrada"
+        },
+        "soundLabel": "Som",
+        "privacyLabel": "Privacidade"
+      }
+    }
+  },
+  "auth": {
+    "sessionExpired": "SessÃ£o expirada",
+    "cloudNotConfigured": "Nuvem nÃ£o configurada",
+    "common": {
+      "back": "Voltar",
+      "continue": "Continuar",
+      "or": "ou"
+    },
+    "emailStep": {
+      "continueWithEmail": "Continuar com e-mail",
+      "continueWithoutAccount": "Continuar sem conta",
+      "emailPlaceholder": "voce@exemplo.com"
+    },
+    "errors": {
+      "accountExistsSignIn": "JÃ¡ existe uma conta com este e-mail. FaÃ§a login.",
+      "accountNotFoundCreate": "Nenhuma conta encontrada com este e-mail. Crie uma conta.",
+      "authNotConfigured": "A autenticaÃ§Ã£o nÃ£o estÃ¡ configurada",
+      "createAccountFailed": "Falha ao criar conta",
+      "failedProviderSignIn": "Falha ao fazer login com {{provider}}",
+      "failedUserCheck": "Falha ao verificar conta do usuÃ¡rio",
+      "generic": "Algo deu errado. Tente novamente.",
+      "invalidCredentials": "E-mail ou senha invÃ¡lidos",
+      "plusAliasUnsupported": "EndereÃ§os de e-mail com '+' nÃ£o sÃ£o aceitos"
+    },
+    "getStarted": "ComeÃ§ar",
+    "legal": {
+      "and": "e",
+      "prefix": "Ao continuar, vocÃª concorda com nossos",
+      "privacy": "PolÃ­tica de Privacidade",
+      "suffix": "",
+      "terms": "Termos de ServiÃ§o"
+    },
+    "passwordForm": {
+      "createAccount": "Criar uma conta",
+      "createAccountButton": "Criar conta",
+      "createAccountLink": "Criar conta",
+      "createPasswordPlaceholder": "Crie uma senha",
+      "creatingAccount": "Criando conta...",
+      "enterPasswordPlaceholder": "Digite sua senha",
+      "forgotPassword": "Esqueceu a senha?",
+      "fullNamePlaceholder": "Nome completo",
+      "haveAccount": "JÃ¡ tem uma conta?",
+      "newHere": "Novo por aqui?",
+      "passwordMinLength": "A senha deve ter pelo menos 8 caracteres",
+      "signIn": "Entrar",
+      "signInLink": "Entrar",
+      "signingIn": "Entrando...",
+      "welcomeBack": "Que bom ter vocÃª de volta"
+    },
+    "signedIn": {
+      "ready": "Pronto",
+      "welcomeBack": "Que bom ter vocÃª de volta",
+      "welcomeBackName": "Que bom ter vocÃª de volta, {{name}}"
+    },
+    "sso": {
+      "continueWithSSO": "Entrar com SSO",
+      "emailRequired": "Insira seu e-mail corporativo para usar o SSO.",
+      "failed": "Falha no logon Ãºnico. Tente novamente."
+    },
+    "social": {
+      "completeInBrowser": "Conclua o login no navegador",
+      "continueWithApple": "Continuar com a Apple",
+      "continueWithGoogle": "Continuar com o Google",
+      "continueWithMicrosoft": "Continuar com a Microsoft",
+      "protocolUnavailable": "Login pelo navegador indisponÃ­vel — registre novamente o protocolo Dhwani:// nas configuraÃ§Ãµes de Aplicativos PadrÃ£o do sistema."
+    },
+    "welcomeSubtitle": "Use sua voz para ditar em qualquer lugar",
+    "welcomeTitle": "Boas-vindas ao Dhwani"
+  },
+  "cleanupPrompt": "Limpeza",
+  "developerSection": {
+    "currentLogFile": "Arquivo de log atual",
+    "debugMode": {
+      "disabledDescription": "Ative para capturar informaÃ§Ãµes detalhadas de diagnÃ³stico",
+      "enabledDescription": "Registrando processamento de Ã¡udio, requisiÃ§Ãµes de API e operaÃ§Ãµes do sistema",
+      "label": "Modo de depuraÃ§Ã£o"
+    },
+    "description": "Capture logs detalhados para ajudar a diagnosticar problemas",
+    "openLogsFolder": "Abrir pasta de logs",
+    "performanceNote": {
+      "description": "O log de depuraÃ§Ã£o grava em disco continuamente e pode afetar levemente o desempenho. Desative quando nÃ£o estiver investigando problemas.",
+      "label": "Nota"
+    },
+    "sharing": {
+      "footer": "Os logs nÃ£o contÃªm chaves API ou dados sensÃ­veis",
+      "steps": {
+        "0": "Reproduza o problema com o modo de depuraÃ§Ã£o ativado",
+        "1": "Clique em \"Abrir pasta de logs\" acima",
+        "2": "Anexe o arquivo de log mais recente ao seu relatÃ³rio de bug"
+      },
+      "title": "Compartilhando logs para suporte"
+    },
+    "title": "Log de depuraÃ§Ã£o",
+    "toasts": {
+      "copied": {
+        "description": "Caminho do arquivo de log copiado para a Ã¡rea de transferÃªncia",
+        "title": "Copiado"
+      },
+      "copyFailed": {
+        "description": "Algo deu errado ao copiar para a Ã¡rea de transferÃªncia.",
+        "title": "NÃ£o foi possÃ­vel copiar"
+      },
+      "debugDisabled": {
+        "description": "O log de depuraÃ§Ã£o foi desativado",
+        "title": "Log de depuraÃ§Ã£o desativado"
+      },
+      "debugEnabled": {
+        "description": "Logs detalhados estÃ£o sendo gravados em disco",
+        "title": "Log de depuraÃ§Ã£o ativado"
+      },
+      "loadFailed": {
+        "description": "Algo deu errado. Tente reabrir as ConfiguraÃ§Ãµes.",
+        "title": "NÃ£o foi possÃ­vel carregar configuraÃ§Ãµes de depuraÃ§Ã£o"
+      },
+      "openLogsFailed": {
+        "description": "Algo deu errado ao abrir o diretÃ³rio de logs.",
+        "title": "NÃ£o foi possÃ­vel abrir a pasta de logs"
+      },
+      "updateFailed": {
+        "description": "Algo deu errado. Tente novamente.",
+        "title": "NÃ£o foi possÃ­vel atualizar o log de depuraÃ§Ã£o"
+      }
+    },
+    "whatGetsLogged": {
+      "items": {
+        "apiRequests": "RequisiÃ§Ãµes de API",
+        "audioProcessing": "Processamento de Ã¡udio",
+        "errorDetails": "Detalhes de erros",
+        "ffmpegOperations": "OperaÃ§Ãµes FFmpeg",
+        "systemDiagnostics": "DiagnÃ³sticos do sistema",
+        "transcriptionPipeline": "Pipeline de transcriÃ§Ã£o"
+      },
+      "title": "O que Ã© registrado"
+    }
+  },
+  "dictionarySuffix": "Sufixo do dicionÃ¡rio",
+  "emailVerification": {
+    "checkEmailDescription": "Enviamos um link de verificaÃ§Ã£o para",
+    "checkEmailTitle": "Verifique seu e-mail",
+    "errors": {
+      "resendFailed": "NÃ£o foi possÃ­vel reenviar o e-mail. Tente novamente.",
+      "serverUnreachable": "NÃ£o foi possÃ­vel acessar o servidor. Verifique sua conexÃ£o e tente novamente."
+    },
+    "resendButton": "Reenviar e-mail de verificaÃ§Ã£o",
+    "resendIn": "Reenviar em {{seconds}}s",
+    "verifiedDescription": "Sua conta estÃ¡ pronta.",
+    "verifiedTitle": "E-mail verificado",
+    "waiting": "Aguardando verificaÃ§Ã£o...",
+    "backToSignIn": "Voltar para o login"
+  },
+  "errorBoundary": {
+    "description": "Ocorreu um erro inesperado. Recarregue para tentar novamente.",
+    "reload": "Recarregar",
+    "title": "Algo deu errado"
+  },
+  "forgotPassword": {
+    "back": "Voltar",
+    "backToSignIn": "Voltar para login",
+    "emailPlaceholder": "Digite seu e-mail",
+    "goBack": "Voltar",
+    "notConfigured": "A autenticaÃ§Ã£o ainda nÃ£o estÃ¡ configurada.",
+    "sendResetLink": "Enviar link de redefiniÃ§Ã£o",
+    "sending": "Enviando...",
+    "subtitle": "Digite seu e-mail e enviaremos um link de redefiniÃ§Ã£o",
+    "success": {
+      "description": "Enviamos um link de redefiniÃ§Ã£o de senha para",
+      "help": "NÃ£o recebeu o e-mail? Verifique a pasta de spam ou tente novamente.",
+      "title": "Verifique seu e-mail",
+      "tryAnother": "Tentar outro e-mail"
+    },
+    "title": "Redefinir sua senha"
+  },
+  "actionPrompt": "Prompt de aÃ§Ã£o",
+  "hotkeyGuidance": {
+    "blockedDescription": "Esses atalhos sÃ£o bloqueados porque sÃ£o comumente usados pelo sistema.",
+    "blockedTitle": "Atalhos bloqueados",
+    "description": "Use essas regras de plataforma para escolher um atalho que nÃ£o entre em conflito com o sistema.",
+    "examplesTitle": "Exemplos vÃ¡lidos",
+    "platforms": {
+      "linux": "Linux",
+      "macos": "macOS",
+      "windows": "Windows"
+    },
+    "recommended": {
+      "linux": {
+        "0": "Ctrl+Alt+Space",
+        "1": "Super+S",
+        "2": "Ctrl+Alt+D",
+        "3": "Ctrl+Shift+J",
+        "4": "Alt+Space"
+      },
+      "macos": {
+        "0": "âŒ¥Space",
+        "1": "âŒƒâŒ¥S",
+        "2": "âŒƒâŒ¥D",
+        "3": "Fn",
+        "4": "âŒ˜â‡§J"
+      },
+      "windows": {
+        "0": "Ctrl+Alt+Space",
+        "1": "Ctrl+Shift+S",
+        "2": "Ctrl+Alt+D",
+        "3": "Win+Alt+K"
+      }
+    },
+    "recommendedTitle": "Atalhos recomendados",
+    "rulesTitle": "Regras de atalhos",
+    "showAll": "Mostrar todos",
+    "showFewer": "Mostrar menos",
+    "title": "Guia de atalhos",
+    "validationRules": {
+      "0": "Deve usar pelo menos um modificador (Ctrl, Alt, Shift, etc.)",
+      "1": "NÃ£o pode usar atalhos reservados do sistema",
+      "2": "Teclas sozinhas nÃ£o sÃ£o permitidas",
+      "3": "Algumas combinaÃ§Ãµes podem conflitar com outros aplicativos"
+    }
+  },
+  "hotkeyInput": {
+    "ariaLabel": "Pressione uma combinaÃ§Ã£o de teclas para definir o atalho",
+    "clickToChange": "Clique para alterar",
+    "clickToChangeLower": "clique para alterar",
+    "clickToSet": "Clique para definir o atalho",
+    "fnCaptureHint": "Pressione uma tecla para combinar, ou solte para Globe",
+    "fnHeldHint": "+ tecla ou solte para Globe",
+    "globe": "Globe",
+    "hotkeyLabel": "Atalho",
+    "keyHint": "+ tecla",
+    "listening": "Escutando...",
+    "pressAnyKey": "Pressione qualquer tecla ou Ctrl+Shift+K",
+    "pressAnyKeyMac": "Pressione qualquer tecla ou âŒ˜â‡§K",
+    "recording": "Gravando",
+    "tryShortcut": "Tente Ctrl+Shift+K",
+    "tryShortcutMac": "Tente âŒ˜â‡§K",
+    "remove": "Remover atalho"
+  },
+  "languageSelector": {
+    "noLanguagesFound": "Nenhum idioma encontrado",
+    "searchPlaceholder": "Buscar..."
+  },
+  "microphoneSettings": {
+    "builtIn": "(Integrado)",
+    "errors": {
+      "unableToAccess": "NÃ£o foi possÃ­vel acessar o microfone. Verifique as permissÃµes."
+    },
+    "helpText": "Selecione um microfone especÃ­fico ou use a configuraÃ§Ã£o padrÃ£o do sistema.",
+    "inputDevice": "Dispositivo de entrada",
+    "noBuiltInDetected": "Nenhum microfone integrado detectado. Usando o padrÃ£o do sistema.",
+    "preferBuiltIn": {
+      "description": "Microfones externos podem causar latÃªncia ou reduzir a qualidade da transcriÃ§Ã£o",
+      "label": "Preferir microfone integrado"
+    },
+    "selectPlaceholder": "Selecione um microfone",
+    "systemDefault": "PadrÃ£o do sistema",
+    "unknownDevice": "Dispositivo desconhecido",
+    "using": "Usando: {{device}}"
+  },
+  "pasteToolsInfo": {
+    "checking": "Verificando capacidades do sistema...",
+    "installCommands": {
+      "archLinux": "# Arch Linux",
+      "debianUbuntu": "# Debian / Ubuntu",
+      "debianUbuntuMint": "# Debian / Ubuntu / Mint",
+      "fedoraRhel": "# Fedora / RHEL"
+    },
+    "installPrefix": "Para colagem automÃ¡tica de texto, instale",
+    "methodReady": "para colagem automÃ¡tica de texto",
+    "noteXwaylandAlso": "Nota: para apps XWayland, xdotool tambÃ©m funciona.",
+    "noteXwaylandOnly": "Nota: a colagem automÃ¡tica funciona apenas para apps XWayland.",
+    "optionalEnableTitle": "Opcional: ativar colagem automÃ¡tica",
+    "readyTitle": "Colagem automÃ¡tica pronta",
+    "recheck": "Verificar novamente",
+    "recheckChecking": "Verificando...",
+    "title": "Colagem automÃ¡tica",
+    "usingMethodPrefix": "Usando",
+    "waylandClipboardDescription": "A colagem automÃ¡tica nÃ£o estÃ¡ disponÃ­vel nesta sessÃ£o Wayland. O Dhwani copiarÃ¡ o texto para a Ã¡rea de transferÃªncia para que vocÃª cole manualmente com Ctrl+V.",
+    "waylandClipboardTitle": "Modo Ã¡rea de transferÃªncia no Wayland",
+    "windowsReady": "O Windows suporta colagem automÃ¡tica nativamente. Nenhuma configuraÃ§Ã£o necessÃ¡ria!",
+    "withoutToolPrefix": "Sem essa ferramenta, o Dhwani copiarÃ¡ o texto para a Ã¡rea de transferÃªncia. VocÃª poderÃ¡ colar manualmente com Ctrl+V.",
+    "xwaylandAppsOnly": "a colagem automÃ¡tica funciona apenas para apps XWayland"
+  },
+  "promptStudio": {
+    "common": {
+      "copied": "Copiado",
+      "copy": "Copiar",
+      "reset": "Redefinir",
+      "save": "Salvar"
+    },
+    "defaultTestInput": "Ei Whispr, como estÃ¡ o tempo hoje?",
+    "dialogs": {
+      "reset": {
+        "description": "O prompt foi redefinido para o valor padrÃ£o.",
+        "title": "RedefiniÃ§Ã£o concluÃ­da"
+      },
+      "saved": {
+        "description": "Seu prompt personalizado serÃ¡ usado em todo processamento de IA futuro.",
+        "title": "Prompt salvo"
+      }
+    },
+    "edit": {
+      "agentNameLabel": "Nome do agente:",
+      "cautionLabel": "Cuidado",
+      "cautionTextPrefix": "Modificar este prompt pode afetar a qualidade da transcriÃ§Ã£o.",
+      "cautionTextSuffix": "Mantenha o marcador {{agentName}} para preservar a detecÃ§Ã£o do agente.",
+      "placeholder": "Digite seu prompt de sistema personalizado..."
+    },
+    "tabs": {
+      "customize": "Personalizar",
+      "test": "Testar",
+      "view": "Visualizar"
+    },
+    "test": {
+      "addressHint": "Tente chamar \"{{agentName}}\" para testar o modo de instruÃ§Ã£o",
+      "aiModels": "Modelos de IA",
+      "baseUrlMissing": "URL base do {{provider}} ausente. Adicione nas configuraÃ§Ãµes de Modelos de IA.",
+      "cleanup": "Limpeza",
+      "disabledInSettingsPrefix": "A melhoria de texto com IA estÃ¡ desativada.",
+      "disabledInSettingsSuffix": "Ative em Modelos de IA para testar prompts.",
+      "disabledReasoning": "A melhoria de texto com IA estÃ¡ desativada. Ative em Modelos de IA para testar prompts.",
+      "failed": "Teste falhou: {{error}}",
+      "inputLabel": "Entrada",
+      "inputPlaceholder": "Digite texto para testar...",
+      "instruction": "InstruÃ§Ã£o",
+      "modelLabel": "Modelo",
+      "noModelSelected": "Nenhum modelo selecionado",
+      "none": "Nenhum",
+      "outputLabel": "SaÃ­da",
+      "processing": "Processando...",
+      "DhwaniCloud": "Dhwani Cloud",
+      "providerLabel": "Provedor",
+      "run": "Executar teste",
+      "customEndpoint": "Endpoint personalizado"
+    },
+    "view": {
+      "customPrompt": "Prompt personalizado",
+      "defaultPrompt": "Prompt padrÃ£o",
+      "modified": "Modificado"
+    }
+  },
+  "settingsModal": {
+    "groups": {
+      "account": "Conta",
+      "app": "Aplicativo",
+      "aiModels": "Modelos de IA",
+      "system": "Sistema"
+    },
+    "sections": {
+      "account": {
+        "description": "Perfil e login",
+        "label": "Conta"
+      },
+      "plansBilling": {
+        "description": "Planos, uso e cobranÃ§a",
+        "label": "Planos e cobranÃ§a"
+      },
+      "general": {
+        "description": "AparÃªncia, sons e inicializaÃ§Ã£o",
+        "label": "PreferÃªncias"
+      },
+      "hotkeys": {
+        "description": "Atalho de ditado e ativaÃ§Ã£o",
+        "label": "Atalhos"
+      },
+      "speechToText": {
+        "description": "Motores para ditado e gravaÃ§Ã£o de notas",
+        "label": "Voz para texto"
+      },
+      "llms": {
+        "description": "Modelos para chat, limpeza e resumos",
+        "label": "Modelos de linguagem"
+      },
+      "privacyData": {
+        "description": "Privacidade, permissÃµes e anÃ¡lise",
+        "label": "Privacidade e dados"
+      },
+      "system": {
+        "description": "AtualizaÃ§Ãµes, armazenamento e ferramentas de desenvolvimento",
+        "label": "Sistema"
+      },
+      "workspace": {
+        "label": "Espacio de trabajo",
+        "description": "Miembros, equipos, facturaciÃ³n y claves API"
+      }
+    },
+    "title": "ConfiguraÃ§Ãµes"
+  },
+  "settingsPage": {
+    "account": {
+      "badges": {
+        "free": "Gratuito",
+        "limitReached": "Limite atingido",
+        "pastDue": "Em atraso",
+        "pro": "Pro",
+        "business": "Business",
+        "trial": "Teste"
+      },
+      "billing": {
+        "couldNotOpenDescription": "Tivemos dificuldade em abrir a pÃ¡gina de cobranÃ§a. Tente novamente.",
+        "couldNotOpenTitle": "NÃ£o foi possÃ­vel abrir cobranÃ§a",
+        "manageBilling": "Gerenciar cobranÃ§a",
+        "opening": "Abrindo...",
+        "updatePaymentMethod": "Atualizar forma de pagamento"
+      },
+      "checkout": {
+        "couldNotOpenDescription": "Tivemos dificuldade em abrir a pÃ¡gina de checkout. Tente novamente.",
+        "couldNotOpenTitle": "NÃ£o foi possÃ­vel abrir checkout",
+        "opening": "Abrindo...",
+        "upgradeToPro": "Fazer upgrade para Pro"
+      },
+      "disabled": "Desabilitado",
+      "featuresDisabled": "Recursos de conta desabilitados",
+      "featuresDisabledDescription": "Defina VITE_AUTH_URL no seu arquivo .env para habilitar os recursos de conta.",
+      "notConfigured": "A autenticaÃ§Ã£o nÃ£o estÃ¡ configurada",
+      "notSignedIn": "NÃ£o conectado",
+      "notSignedInDescription": "Crie uma conta para desbloquear recursos premium.",
+      "offline": "Offline",
+      "pastDue": {
+        "description": "VocÃª estÃ¡ no plano gratuito por enquanto. Atualize sua forma de pagamento para voltar ao Pro.",
+        "title": "NÃ£o foi possÃ­vel processar seu pagamento"
+      },
+      "planDescriptions": {
+        "freeUsage": "{{used}} / {{limit}} palavras esta semana",
+        "nextBilling": "PrÃ³xima cobranÃ§a: {{date}}",
+        "pastDue": "{{used}} / {{limit}} palavras gratuitas esta semana — atualize o pagamento para restaurar o Pro",
+        "trial": "{{days}} dias restantes — transcriÃ§Ãµes ilimitadas",
+        "unlimited": "Ilimitado"
+      },
+      "planLabels": {
+        "free": "Gratuito",
+        "pro": "Pro",
+        "business": "Business",
+        "trial": "Teste"
+      },
+      "planTitle": "Plano",
+      "rollingWeeklyLimit": "Limite semanal contÃ­nuo",
+      "signOut": {
+        "failedDescription": "Algo deu errado ao sair. Tente novamente.",
+        "failedTitle": "NÃ£o foi possÃ­vel sair",
+        "signOut": "Sair",
+        "signingOut": "Saindo..."
+      },
+      "signedIn": "Conectado",
+      "title": "Conta",
+      "toasts": {
+        "approachingLimit": {
+          "description": "VocÃª usou {{used}} de {{limit}} palavras gratuitas esta semana. FaÃ§a upgrade para Pro para uso ilimitado.",
+          "title": "Aproximando-se do limite semanal"
+        }
+      },
+      "trialCta": {
+        "button": "Criar conta gratuita",
+        "description": "TranscriÃ§Ãµes ilimitadas, processamento prioritÃ¡rio e muito mais.",
+        "title": "Experimente o Pro grÃ¡tis por 7 dias"
+      },
+      "pricing": {
+        "title": "Planos",
+        "billedYearly": "CobranÃ§a anual",
+        "free": {
+          "name": "Free",
+          "price": "$0",
+          "period": "para sempre",
+          "features": [
+            "## Dhwani Cloud",
+            "2.000 palavras/semana de transcriÃ§Ã£o",
+            "5 horas de gravaÃ§Ã£o de reuniÃµes/mÃªs",
+            "## Sempre gratuito",
+            "Modelos de IA locais ilimitados",
+            "TranscriÃ§Ã£o na nuvem ilimitada com suas prÃ³prias chaves de API",
+            "Mais de 100 idiomas suportados",
+            "DicionÃ¡rio personalizado",
+            "Zero retenÃ§Ã£o de dados",
+            "Suporte da comunidade"
+          ]
+        },
+        "pro": {
+          "name": "Pro",
+          "monthlyPrice": "$8",
+          "monthlyPeriod": "/mÃªs",
+          "annualPrice": "$80",
+          "annualPeriod": "/ano",
+          "annualEquivalent": "$6.67",
+          "includesPrefix": "Todos os recursos do Free +",
+          "features": [
+            "TranscriÃ§Ã£o na nuvem ilimitada",
+            "20 horas de gravaÃ§Ã£o de reuniÃµes/mÃªs",
+            "SincronizaÃ§Ã£o entre dispositivos",
+            "Acesso pessoal Ã  API",
+            "IntegraÃ§Ã£o MCP em todos os seus apps",
+            "Aplicativo mÃ³vel (iOS em breve)",
+            "Suporte por e-mail"
+          ],
+          "cta": "ComeÃ§ar",
+          "switchToAnnual": "Mudar para anual"
+        },
+        "business": {
+          "name": "Business",
+          "monthlyPrice": "$20",
+          "monthlyPeriod": "/mÃªs",
+          "annualPrice": "$200",
+          "annualPeriod": "/ano",
+          "annualEquivalent": "$16.67",
+          "includesPrefix": "Todos os recursos do Pro +",
+          "badge": "Mais popular",
+          "features": [
+            "GravaÃ§Ãµes de reuniÃµes ilimitadas",
+            "Modo agente",
+            "Converse com seus dados",
+            "Suporte prioritÃ¡rio"
+          ],
+          "cta": "ComeÃ§ar",
+          "switchToAnnual": "Mudar para anual"
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "price": "Personalizado",
+          "subtitle": "Para seguranÃ§a avanÃ§ada e suporte",
+          "includesPrefix": "Todos os recursos do Business +",
+          "features": [
+            "CrÃ©ditos de API gerenciados",
+            "SincronizaÃ§Ã£o na nuvem entre dispositivos",
+            "Recursos de equipe e administraÃ§Ã£o",
+            "SSO e conformidade",
+            "Suporte dedicado"
+          ],
+          "cta": "Falar com Vendas"
+        },
+        "currentPlan": "Plano atual",
+        "upgrade": "Fazer upgrade",
+        "downgrade": "Fazer downgrade",
+        "planSwitched": "Plano atualizado com sucesso",
+        "confirmSwitch": {
+          "title": "Confirmar alteraÃ§Ã£o de plano",
+          "description": "Mudar para {{plan}} ({{interval}})",
+          "monthly": "mensal",
+          "yearly": "anual",
+          "chargeToday": "CobranÃ§a hoje",
+          "accountCredit": "CrÃ©dito na conta",
+          "newPrice": "Novo preÃ§o",
+          "nextBilling": "PrÃ³xima cobranÃ§a",
+          "mo": "mo",
+          "yr": "yr",
+          "cancel": "Cancelar",
+          "confirm": "Confirmar"
+        }
+      },
+      "signedOutPlans": {
+        "button": "Criar conta gratuita"
+      },
+      "user": "UsuÃ¡rio",
+      "wordsRemaining": "{{remaining}} restantes",
+      "deleteAccount": {
+        "label": "Excluir conta",
+        "labelDescription": "Excluir permanentemente sua conta, todos os dados na nuvem e dados locais. Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+        "button": "Excluir minha conta",
+        "deleting": "Excluindo...",
+        "title": "Excluir sua conta?",
+        "description": "Isso excluirÃ¡ permanentemente sua conta Dhwani, todas as notas sincronizadas na nuvem e todos os dados locais, incluindo transcriÃ§Ãµes, gravaÃ§Ãµes de Ã¡udio, modelos baixados, conexÃµes de calendÃ¡rio e configuraÃ§Ãµes. Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+        "confirmText": "Excluir tudo",
+        "successTitle": "Conta excluÃ­da",
+        "successDescription": "Sua conta e todos os dados foram excluÃ­dos. O aplicativo serÃ¡ recarregado agora.",
+        "failedTitle": "Falha na exclusÃ£o",
+        "failedDescription": "Algo deu errado ao excluir sua conta. Seus dados locais podem ter sido parcialmente removidos. Tente novamente."
+      }
+    },
+    "agentConfig": {
+      "agentName": "Nome do agente",
+      "description": "DÃª um nome ao seu assistente de IA para poder chamÃ¡-lo diretamente durante o ditado",
+      "dialogs": {
+        "updatedDescription": "Seu agente agora se chama \"{{name}}\". Chame-o dizendo \"Ei {{name}}\" seguido das suas instruÃ§Ãµes.",
+        "updatedTitle": "Nome do agente atualizado"
+      },
+      "examplesTitle": "Exemplos",
+      "helper": "Escolha algo curto e natural de se dizer em voz alta",
+      "howItWorksDescription": "Quando vocÃª diz \"Ei {{agentName}}\" seguido de uma instruÃ§Ã£o, a IA executa seu comando — redigindo conteÃºdo, formatando texto ou respondendo perguntas — em vez de transcrevÃª-lo literalmente.",
+      "howItWorksTitle": "Como funciona",
+      "instructionMode": "InstruÃ§Ã£o",
+      "placeholder": "ex.: Jarvis, Nova, Atlas...",
+      "save": "Salvar",
+      "title": "Agente de voz",
+      "examples": {
+        "formalEmail": "Hey {{agentName}}, escreva um e-mail formal sobre o orÃ§amento",
+        "professional": "Hey {{agentName}}, torne isso mais profissional",
+        "bulletPoints": "Hey {{agentName}}, converta isso em tÃ³picos"
+      }
+    },
+    "aiModels": {
+      "customSetup": "ConfiguraÃ§Ã£o personalizada",
+      "customSetupDescription": "Use seu prÃ³prio provedor e chave API.",
+      "description": "Limpe transcriÃ§Ãµes, processe comandos e corrija erros preservando seu tom de voz.",
+      "enableTextCleanup": "Ativar limpeza de texto",
+      "enableTextCleanupDescription": "A IA remove palavras de preenchimento, corrige gramÃ¡tica e pontuaÃ§Ã£o",
+      "modes": {
+        "Dhwani": "Dhwani Cloud",
+        "providers": "Provedores na nuvem",
+        "local": "Local",
+        "selfHosted": "Auto-hospedado",
+        "DhwaniDesc": "Resultados confiÃ¡veis. Sem configuraÃ§Ã£o.",
+        "providersDesc": "Use sua prÃ³pria chave API.",
+        "localDesc": "Modelos no dispositivo. Privado.",
+        "selfHostedDesc": "Seu servidor na sua rede.",
+        "enterprise": "Corporativo",
+        "enterpriseDesc": "Use a conta de nuvem da sua organizaÃ§Ã£o (AWS, Azure, GCP)."
+      },
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "Resultados confiÃ¡veis. Sem configuraÃ§Ã£o.",
+      "title": "Melhoria de texto com IA",
+      "toasts": {
+        "switchedCloud": {
+          "description": "A melhoria de texto usarÃ¡ o serviÃ§o de nuvem do Dhwani.",
+          "title": "Mudou para Dhwani Cloud"
+        },
+        "switchedCustom": {
+          "description": "Configure seu prÃ³prio provedor e chave API.",
+          "title": "Mudou para configuraÃ§Ã£o personalizada"
+        },
+        "switchedProviders": {
+          "title": "Provedores na nuvem",
+          "description": "Usando suas prÃ³prias chaves API."
+        },
+        "switchedLocal": {
+          "title": "No dispositivo",
+          "description": "A IA Ã© executada localmente na sua mÃ¡quina."
+        },
+        "switchedSelfHosted": {
+          "title": "Auto-hospedado",
+          "description": "Usando seu prÃ³prio servidor."
+        },
+        "switchedEnterprise": {
+          "title": "Corporativo",
+          "description": "Usando a conta de nuvem da sua organizaÃ§Ã£o."
+        }
+      }
+    },
+    "developer": {
+      "clearCache": "Limpar cache",
+      "dataManagementDescription": "Gerencie modelos em cache e dados do app",
+      "dataManagementTitle": "Gerenciamento de dados",
+      "modelCache": "Cache de modelos",
+      "open": "Abrir",
+      "removeModels": {
+        "confirmText": "Excluir modelos",
+        "description": "Isso exclui todos os modelos Whisper armazenados localmente ({{path}}) e libera espaÃ§o em disco. VocÃª pode baixÃ¡-los novamente no seletor de modelos.",
+        "failedDescription": "Algo deu errado ao remover os modelos. Tente novamente.",
+        "failedDescriptionShort": "NÃ£o foi possÃ­vel remover os modelos em cache.",
+        "failedTitle": "NÃ£o foi possÃ­vel remover modelos",
+        "successDescription": "Todos os modelos em cache foram removidos.",
+        "successTitle": "Modelos removidos",
+        "title": "Remover modelos baixados?"
+      },
+      "removing": "Removendo...",
+      "resetAll": {
+        "confirmText": "Excluir tudo",
+        "description": "Isso excluirÃ¡ permanentemente todas as configuraÃ§Ãµes locais, transcriÃ§Ãµes, gravaÃ§Ãµes de Ã¡udio, modelos de IA baixados, conexÃµes de calendÃ¡rio e dados em cache. Os dados na nuvem e sua conta nÃ£o serÃ£o afetados. O aplicativo serÃ¡ recarregado apÃ³s a redefiniÃ§Ã£o.",
+        "failedDescription": "Algo deu errado. Tente novamente ou reinstale o app.",
+        "failedTitle": "NÃ£o foi possÃ­vel redefinir",
+        "successDescription": "Tudo foi redefinido. O app serÃ¡ recarregado agora.",
+        "successTitle": "Tudo pronto",
+        "title": "Redefinir todos os dados do app"
+      },
+      "resetAppData": "Redefinir dados do app",
+      "resetAppDataDescription": "Excluir permanentemente todas as configuraÃ§Ãµes locais, transcriÃ§Ãµes, gravaÃ§Ãµes de Ã¡udio, modelos baixados e dados em cache"
+    },
+    "dictionary": {
+      "title": "DicionÃ¡rio personalizado",
+      "description": "Ensine Ã  IA o seu vocabulÃ¡rio — nomes, jargÃµes e termos que ela poderia nÃ£o reconhecer",
+      "addWordOrPhrase": "Adicionar palavra ou frase",
+      "placeholder": "Adicionar uma palavra ou frase...",
+      "add": "Adicionar",
+      "pressEnterToAdd": "Pressione Enter para adicionar",
+      "autoLearnTitle": "Aprender automaticamente com correÃ§Ãµes",
+      "autoLearnDescription": "Quando vocÃª corrige uma transcriÃ§Ã£o no aplicativo de destino, a palavra corrigida Ã© adicionada automaticamente ao seu dicionÃ¡rio.",
+      "yourWords": "Suas palavras",
+      "clearDictionaryTitle": "Limpar dicionÃ¡rio?",
+      "clearDictionaryDescription": "Isso removerÃ¡ todas as palavras do seu dicionÃ¡rio personalizado. Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+      "clearAll": "Limpar tudo",
+      "agentNameAutoManaged": "Gerenciado automaticamente — sincronizado com o nome do agente",
+      "removeWord": "Remover palavra",
+      "noWords": "Nenhuma palavra ainda",
+      "wordsAppearHere": "Palavras que vocÃª adicionar aparecerÃ£o aqui",
+      "howItWorksTitle": "Como funciona",
+      "howItWorksDescription": "As palavras sÃ£o fornecidas como dicas de contexto ao modelo de fala, ajudando-o a reconhecer termos incomuns. Para palavras difÃ­ceis, tente adicionar contexto como \"The word is Synty\" junto com a prÃ³pria palavra.",
+      "tipLabel": "Dica",
+      "tipDescription": "Separe vÃ¡rias palavras com vÃ­rgulas. Adicione frases de contexto como \"The word is Synty\" para melhor reconhecimento."
+    },
+    "general": {
+      "appearance": {
+        "auto": "Auto",
+        "dark": "Escuro",
+        "description": "Controle a aparÃªncia do Dhwani",
+        "light": "Claro",
+        "theme": "Tema",
+        "themeDescription": "Escolha claro, escuro ou acompanhe o sistema",
+        "title": "AparÃªncia"
+      },
+      "floatingIcon": {
+        "autoHide": "Ocultar automaticamente quando ocioso",
+        "autoHideDescription": "Mantenha o Ã­cone oculto atÃ© iniciar o ditado",
+        "description": "Controle quando o Ã­cone de ditado fica visÃ­vel na tela",
+        "title": "Ãcone flutuante",
+        "startPosition": "PosiÃ§Ã£o inicial",
+        "startPositionDescription": "Onde o painel de gravaÃ§Ã£o de voz aparece na tela",
+        "bottomRight": "Inferior direito",
+        "center": "Inferior central",
+        "bottomLeft": "Inferior esquerdo"
+      },
+      "hotkey": {
+        "activationMode": "Modo de ativaÃ§Ã£o",
+        "description": "A combinaÃ§Ã£o de teclas que inicia e para o ditado por voz",
+        "resetToDefault": "Redefinir para {{hotkey}}",
+        "title": "Atalho de ditado",
+        "linuxPttPermissionTitle": "Manter pressionado para falar requer configuraÃ§Ã£o",
+        "linuxPttPermissionDescription": "Execute este comando e faÃ§a logout: sudo usermod -aG input $USER",
+        "linuxPttSetupTitle": "Manter pressionado para falar requer configuraÃ§Ã£o",
+        "linuxPttSetupDescription": "O seu utilizador precisa de acesso aos dispositivos de entrada do teclado.",
+        "linuxPttSetupNote": "Depois de executar o comando, termine e reinicie a sessÃ£o.",
+        "hyprlandConfigWriteWarningTitle": "Os atalhos do Hyprland nÃ£o serÃ£o mantidos",
+        "hyprlandConfigWriteWarningDescription": "O Dhwani nÃ£o consegue escrever em {{path}}, por isso os atalhos nÃ£o serÃ£o mantidos apÃ³s recarregar a configuraÃ§Ã£o do Hyprland. Verifique se o ficheiro existe e permite escrita.",
+        "hyprlandUnbindDescription": "No Hyprland, o Dhwani reserva o atalho selecionado. Qualquer atalho existente do Hyprland que use a mesma combinaÃ§Ã£o de teclas serÃ¡ desvinculado quando o Dhwani registar o atalho."
+      },
+      "meetingHotkey": {
+        "title": "Atalho modo reuniÃ£o",
+        "description": "Iniciar modo reuniÃ£o e posicionar o painel ao lado da tela",
+        "layoutLabel": "Ao acionar pelo atalho, abrir em:",
+        "layoutFullWidth": "Largura total",
+        "layoutSidePanel": "Painel lateral"
+      },
+      "voiceAgentHotkey": {
+        "title": "Atalho do agente de voz",
+        "description": "Diga o que vocÃª precisa — seu agente de IA escreve o resultado, nÃ£o suas palavras"
+      },
+      "microphone": {
+        "description": "Selecione qual dispositivo de entrada usar para ditado",
+        "title": "Microfone"
+      },
+      "soundEffects": {
+        "dictationSounds": "Sons de ditado",
+        "dictationSoundsDescription": "Tocar um som ao iniciar e parar a gravaÃ§Ã£o",
+        "pauseMedia": "Pausar mÃ­dia",
+        "pauseMediaDescription": "Pausar a mÃºsica automaticamente ao iniciar o ditado",
+        "title": "Efeitos sonoros"
+      },
+      "notifications": {
+        "title": "NotificaÃ§Ãµes",
+        "description": "Controle quais notificaÃ§Ãµes o Dhwani pode mostrar",
+        "disableAll": "Desativar todas as notificaÃ§Ãµes",
+        "disableAllDescription": "Silenciar tudo exceto mensagens de erro",
+        "meetingDetection": "DetecÃ§Ã£o de reuniÃµes",
+        "meetingDetectionDescription": "Notificar quando uma reuniÃ£o for detectada para iniciar a gravaÃ§Ã£o",
+        "calendarReminders": "Lembretes do calendÃ¡rio",
+        "calendarRemindersDescription": "Notificar quando uma reuniÃ£o agendada estÃ¡ prestes a comeÃ§ar",
+        "updates": "AtualizaÃ§Ãµes do app",
+        "updatesDescription": "Notificar quando uma nova versÃ£o estiver disponÃ­vel"
+      },
+      "clipboard": {
+        "title": "Ãrea de transferÃªncia",
+        "autoPaste": "Colagem automÃ¡tica",
+        "autoPasteDescription": "Colar automaticamente o texto transcrito no aplicativo ativo ao finalizar o ditado",
+        "keepInClipboard": "Manter transcriÃ§Ã£o na Ã¡rea de transferÃªncia",
+        "keepInClipboardDescription": "Manter o texto ditado na Ã¡rea de transferÃªncia para poder colar manualmente se necessÃ¡rio"
+      },
+      "startup": {
+        "launchAtLogin": "Iniciar ao fazer login",
+        "launchAtLoginDescription": "Iniciar o Dhwani automaticamente ao fazer login",
+        "title": "InicializaÃ§Ã£o",
+        "description": "Controle o comportamento do Dhwani ao iniciar",
+        "startMinimized": "Iniciar minimizado",
+        "startMinimizedDescription": "Iniciar sem mostrar a janela do painel de controle"
+      },
+      "waylandPaste": {
+        "title": "ConfiguraÃ§Ã£o de colagem no Wayland",
+        "description": "A colagem automÃ¡tica no Wayland requer o ydotool. Verifique o estado de cada componente abaixo.",
+        "allGoodDesc": "A colagem automÃ¡tica estÃ¡ pronta.",
+        "recheck": "Verificar novamente",
+        "copy": "Copiar",
+        "ydotoolDesc": "Ferramenta de automaÃ§Ã£o de entrada para Wayland",
+        "ydotooldDesc": "Daemon do ydotool (pacote separado no Ubuntu/Pop!_OS)",
+        "uinputDesc": "Acesso ao dispositivo de entrada do kernel",
+        "uinputRuleFound": "Regra presente mas nÃ£o ativa. Uma reinicializaÃ§Ã£o deve resolver.",
+        "uinputRuleMissing": "nenhuma regra udev encontrada",
+        "inputGroup": "grupo input",
+        "inputGroupDesc": "O utilizador deve pertencer ao grupo input (requer nova sessÃ£o)",
+        "service": "serviÃ§o systemd",
+        "serviceDesc": "Ficheiro de serviÃ§o do utilizador para iniciar o ydotoold automaticamente",
+        "daemon": "daemon ydotoold",
+        "daemonDesc": "O serviÃ§o em segundo plano deve estar em execuÃ§Ã£o",
+        "guide": {
+          "open": "Guia",
+          "ydotool": {
+            "step1Title": "Instalar o ydotool",
+            "step1Desc": "Use o gestor de pacotes da sua distribuiÃ§Ã£o para instalar o ydotool.",
+            "step2Title": "Verificar a instalaÃ§Ã£o",
+            "step2Desc": "Verifique se o ydotool estÃ¡ disponÃ­vel no seu PATH."
+          },
+          "ydotoold": {
+            "step1Title": "Instalar o ydotoold",
+            "step1Desc": "No Ubuntu e Pop!_OS, o ydotoold Ã© um pacote separado. No Fedora, estÃ¡ incluÃ­do no ydotool."
+          },
+          "uinput": {
+            "ruleFoundTitle": "Regra udev jÃ¡ configurada",
+            "ruleFoundDesc": "A regra udev para /dev/uinput jÃ¡ estÃ¡ no seu sistema, mas ainda nÃ£o estÃ¡ ativa. Tente recarregÃ¡-la:",
+            "rebootTitle": "Se recarregar nÃ£o funcionou, reinicie",
+            "rebootDesc": "Em algumas distribuiÃ§Ãµes, as alteraÃ§Ãµes udev sÃ³ se aplicam apÃ³s uma reinicializaÃ§Ã£o completa. Reinicie o computador e volte a verificar.",
+            "step1Title": "Criar uma regra udev",
+            "step1Desc": "Esta regra concede acesso a /dev/uinput aos utilizadores do grupo input.",
+            "step2Title": "Recarregar as regras udev",
+            "step2Desc": "Aplicar a nova regra sem reiniciar."
+          },
+          "group": {
+            "step1Title": "Adicionar o seu utilizador ao grupo input",
+            "step2Title": "Terminar sessÃ£o e voltar a entrar",
+            "step2Desc": "As alteraÃ§Ãµes de grupo sÃ³ tÃªm efeito apÃ³s uma nova sessÃ£o. Termine sessÃ£o no ambiente de trabalho, inicie sessÃ£o novamente e reabra o Dhwani."
+          },
+          "service": {
+            "step1Title": "Criar o diretÃ³rio do serviÃ§o",
+            "step2Title": "Criar o ficheiro do serviÃ§o",
+            "step2Desc": "Cria um serviÃ§o systemd ao nÃ­vel do utilizador que inicia o ydotoold automaticamente no inÃ­cio de sessÃ£o.",
+            "step3Title": "Recarregar e ativar"
+          },
+          "daemon": {
+            "step1Title": "Iniciar o daemon",
+            "step1Desc": "Inicie o ydotoold e ative-o para que seja executado em cada inÃ­cio de sessÃ£o.",
+            "step2Title": "Verificar se estÃ¡ em execuÃ§Ã£o"
+          },
+          "xclip": {
+            "step1Title": "Instalar xclip"
+          }
+        },
+        "xclipDesc": "Ferramenta de Ã¡rea de transferÃªncia para colar no KDE Wayland (xclip ou xsel)",
+        "nixos": {
+          "intro": "EstÃ¡ no NixOS. A colagem automÃ¡tica requer ydotool e acesso a /dev/uinput, que o NixOS concede de forma declarativa.",
+          "detected": "Detetado",
+          "manualTitle": "Adicione isto Ã  sua configuraÃ§Ã£o",
+          "manualDesc": "Configure manualmente e depois reconstrua.",
+          "flakeTitle": "A instalar pelo nosso flake?",
+          "flakeDesc": "Se instalar o Dhwani pelo flake, programs.Dhwani.enable ativa o ydotool, o mÃ³dulo uinput e as associaÃ§Ãµes de grupo por si.",
+          "rebuildNote": "Execute sudo nixos-rebuild switch, depois termine a sessÃ£o e volte a entrar para que a alteraÃ§Ã£o de grupo e a regra /dev/uinput entrem em vigor. Substitua <you> pelo seu nome de utilizador."
+        }
+      },
+      "updates": {
+        "badges": {
+          "dev": "Dev",
+          "latest": "Mais recente",
+          "update": "AtualizaÃ§Ã£o"
+        },
+        "checkForUpdates": "Verificar atualizaÃ§Ãµes",
+        "checking": "Verificando...",
+        "currentVersion": "VersÃ£o atual",
+        "devMode": "Executando em modo de desenvolvimento",
+        "dialogs": {
+          "almostThere": {
+            "description": "A atualizaÃ§Ã£o estÃ¡ quase pronta. Aguarde um momento.",
+            "title": "Quase lÃ¡"
+          },
+          "checkFailed": {
+            "description": "Tivemos dificuldade ao verificar atualizaÃ§Ãµes. Tente novamente mais tarde.",
+            "title": "NÃ£o foi possÃ­vel verificar atualizaÃ§Ãµes"
+          },
+          "downloadFailed": {
+            "description": "Tivemos dificuldade ao baixar a atualizaÃ§Ã£o. Tente novamente.",
+            "title": "NÃ£o foi possÃ­vel baixar a atualizaÃ§Ã£o"
+          },
+          "installFailed": {
+            "description": "Tivemos dificuldade ao instalar a atualizaÃ§Ã£o. Tente novamente.",
+            "title": "NÃ£o foi possÃ­vel instalar a atualizaÃ§Ã£o"
+          },
+          "installUpdate": {
+            "confirmText": "Instalar e reiniciar",
+            "description": "O Dhwani serÃ¡ reiniciado para aplicar a atualizaÃ§Ã£o.",
+            "title": "Instalar atualizaÃ§Ã£o"
+          },
+          "noUpdates": {
+            "description": "VocÃª estÃ¡ na versÃ£o mais recente.",
+            "title": "Sem atualizaÃ§Ãµes"
+          },
+          "updateAvailable": {
+            "description": "AtualizaÃ§Ã£o disponÃ­vel: v{{version}}",
+            "title": "AtualizaÃ§Ã£o disponÃ­vel"
+          },
+          "updateError": {
+            "description": "Algo deu errado com a atualizaÃ§Ã£o. Tente novamente.",
+            "title": "Erro de atualizaÃ§Ã£o"
+          }
+        },
+        "downloadUpdate": "Baixar atualizaÃ§Ã£o {{version}}",
+        "downloading": "Baixando... {{progress}}%",
+        "installAndRestart": "Instalar e reiniciar",
+        "latestVersion": "VocÃª estÃ¡ na versÃ£o mais recente",
+        "newVersion": "Uma versÃ£o mais recente estÃ¡ disponÃ­vel",
+        "newVersionAvailable": "Nova versÃ£o disponÃ­vel",
+        "restarting": "Reiniciando...",
+        "title": "AtualizaÃ§Ãµes",
+        "versionPlaceholder": "—",
+        "whatsNew": "Novidades na v{{version}}"
+      },
+      "polishHotkey": {
+        "title": "Atalho do Polish",
+        "description": "Selecione texto em qualquer app e reescreva-o na hora com IA",
+        "enabledLabel": "Ativar Polish",
+        "instructionsLabel": "Edições a aplicar",
+        "instructionConcise": "Tornar mais conciso",
+        "instructionClarity": "Melhorar clareza e fluidez",
+        "instructionTone": "Preservar o tom original",
+        "instructionStructure": "Adicionar estrutura quando útil"
+      },
+      "personalizedStyles": {
+        "title": "Estilos personalizados",
+        "description": "Defina um tom de escrita para a limpeza do ditado com base no app que você está usando",
+        "off": "Desativado",
+        "casual": "Casual",
+        "formal": "Formal",
+        "contexts": {
+          "work": "Apps de trabalho",
+          "email": "Apps de e-mail",
+          "personal": "Apps pessoais/mensagens",
+          "other": "Todo o resto"
+        }
+      }
+    },
+    "permissions": {
+      "accessibilityDescription": "NecessÃ¡rio para colagem automÃ¡tica apÃ³s a transcriÃ§Ã£o",
+      "accessibilityTitle": "Acessibilidade",
+      "description": "Teste e gerencie as permissÃµes do sistema necessÃ¡rias para o Dhwani funcionar corretamente",
+      "microphoneDescription": "Captura a sua voz para ditado e transcriÃ§Ã£o",
+      "microphoneTitle": "Microfone",
+      "resetAccessibility": {
+        "description": "Isso removerÃ¡ o Dhwani das permissÃµes de acessibilidade. VocÃª precisarÃ¡ conceder novamente em ConfiguraÃ§Ãµes do Sistema > Privacidade e SeguranÃ§a > Acessibilidade.",
+        "label": "Redefinir permissÃµes de acessibilidade",
+        "rowDescription": "Corrija problemas apÃ³s reinstalar ou recompilar o app removendo e readicionando o Dhwani nas ConfiguraÃ§Ãµes do Sistema",
+        "title": "Redefinir permissÃµes de acessibilidade"
+      },
+      "optional": "Opcional",
+      "systemAudioTitle": "Ãudio do Sistema",
+      "systemAudioDescription": "Transcreva reuniÃµes, chamadas, palestras, podcasts e outros Ã¡udios do sistema.",
+      "grantAccess": "Conceder acesso",
+      "test": "Testar",
+      "testAndGrant": "Testar e conceder",
+      "title": "PermissÃµes",
+      "troubleshoot": "Solucionar problemas",
+      "troubleshootingTitle": "SoluÃ§Ã£o de problemas"
+    },
+    "privacy": {
+      "cloudBackup": "Backup na nuvem",
+      "cloudBackupDescription": "Salve suas transcriÃ§Ãµes e notas na nuvem para acesso contÃ­nuo em todos os dispositivos.",
+      "cloudNotesMigration": "Fazendo backup das notasâ€¦ {{done}} / {{total}}",
+      "cloudNotesMigrationDone": "Todas as notas salvas na nuvem",
+      "description": "Controle quais dados saem do seu dispositivo. Tudo estÃ¡ desativado por padrÃ£o.",
+      "title": "Privacidade",
+      "usageAnalytics": "AnÃ¡lise de uso",
+      "usageAnalyticsDescription": "Ajude-nos a melhorar o Dhwani compartilhando mÃ©tricas anÃ´nimas de desempenho. Nunca enviamos conteÃºdo de transcriÃ§Ã£o — apenas dados de tempo e erros.",
+      "dataRetention": "RetenÃ§Ã£o de dados",
+      "dataRetentionDescription": "Armazenar transcriÃ§Ãµes e Ã¡udio localmente no seu histÃ³rico. Quando desativado, as transcriÃ§Ãµes sÃ£o coladas mas nÃ£o salvas.",
+      "hoursAgo": "hÃ¡ {{count}}h",
+      "justNow": "agora mesmo",
+      "lastSynced": "Ãšltima sincronizaÃ§Ã£o {{time}}",
+      "minutesAgo": "hÃ¡ {{count}}min",
+      "audioRetention": "RetenÃ§Ã£o de Ã¡udio",
+      "audioRetentionDescription": "Armazena gravaÃ§Ãµes de Ã¡udio localmente para retranscriÃ§Ã£o e download. Os arquivos sÃ£o excluÃ­dos automaticamente apÃ³s o perÃ­odo de retenÃ§Ã£o.",
+      "audioRetentionDisabled": "Desativado",
+      "audioRetentionDays": "{{count}} dias",
+      "audioStorageUsage": "Uso de armazenamento",
+      "audioStorageUsageDescription": "Arquivos de Ã¡udio armazenados neste dispositivo",
+      "audioStorageFiles": "{{count}} arquivos, {{size}}",
+      "audioStorageEmpty": "Nenhum arquivo de Ã¡udio armazenado",
+      "clearAllAudio": "Excluir todos os Ã¡udios",
+      "clearAllAudioConfirm": "Excluir todos os arquivos de Ã¡udio armazenados? Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+      "saveDiscarded": "Salvar ditados descartados",
+      "saveDiscardedDescription": "Quando vocÃª cancela um ditado com Escape, mantÃ©m o Ã¡udio no histÃ³rico para poder recuperÃ¡-lo. Requer a retenÃ§Ã£o de dados e Ã¡udio ativada."
+    },
+    "prompts": {
+      "description": "Visualize, personalize e teste o prompt de sistema unificado que alimenta a limpeza de texto e a detecÃ§Ã£o de instruÃ§Ãµes",
+      "title": "EstÃºdio de prompts"
+    },
+    "speechToText": {
+      "title": "Voz para texto",
+      "description": "Escolha um motor para ditado e gravaÃ§Ã£o de notas",
+      "tabs": {
+        "dictation": "Ditado",
+        "noteRecording": "GravaÃ§Ã£o de notas",
+        "upload": "Enviar Ã¡udio"
+      },
+      "selfHostedStreamingNote": "Requer um servidor que suporte transcriÃ§Ã£o em streaming."
+    },
+    "llms": {
+      "title": "Modelos de linguagem",
+      "description": "Configure modelos para limpeza, formataÃ§Ã£o de notas e chat",
+      "tabs": {
+        "dictationCleanup": "Limpeza do ditado",
+        "dictationAgent": "Voice Agent",
+        "noteFormatting": "FormataÃ§Ã£o de notas",
+        "chatIntelligence": "Chat"
+      }
+    },
+    "noteFormatting": {
+      "autoGenerateTitle": "Gerar tÃ­tulos de notas automaticamente",
+      "autoGenerateTitleDescription": "Usar IA para gerar um tÃ­tulo curto para notas apÃ³s transcriÃ§Ã£o ou aprimoramento"
+    },
+    "transcription": {
+      "customSetup": "ConfiguraÃ§Ã£o personalizada",
+      "customSetupDescription": "Use seu prÃ³prio provedor e chave API.",
+      "description": "Escolha como o Dhwani transcreve sua voz",
+      "modes": {
+        "Dhwani": "Dhwani Cloud",
+        "providers": "Provedores na nuvem",
+        "local": "Local",
+        "selfHosted": "Auto-hospedado",
+        "DhwaniDesc": "Resultados confiÃ¡veis. Sem configuraÃ§Ã£o.",
+        "providersDesc": "Use sua prÃ³pria chave API.",
+        "localDesc": "Modelos no dispositivo. Privado.",
+        "selfHostedDesc": "Seu servidor na sua rede."
+      },
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "Resultados confiÃ¡veis. Sem configuraÃ§Ã£o.",
+      "title": "Fala para texto",
+      "toasts": {
+        "switchedCloud": {
+          "description": "A transcriÃ§Ã£o usarÃ¡ o serviÃ§o de nuvem do Dhwani.",
+          "title": "Mudou para Dhwani Cloud"
+        },
+        "switchedCustom": {
+          "description": "Configure seu prÃ³prio provedor e chave API.",
+          "title": "Mudou para configuraÃ§Ã£o personalizada"
+        },
+        "switchedProviders": {
+          "title": "Provedores na nuvem",
+          "description": "Usando suas prÃ³prias chaves API."
+        },
+        "switchedLocal": {
+          "title": "No dispositivo",
+          "description": "A transcriÃ§Ã£o Ã© executada localmente na sua mÃ¡quina."
+        },
+        "switchedSelfHosted": {
+          "title": "Auto-hospedado",
+          "description": "Usando seu prÃ³prio servidor."
+        }
+      },
+      "gpuDevice": {
+        "title": "GPU de transcriÃ§Ã£o",
+        "description": "GPU usada para transcriÃ§Ã£o local"
+      },
+      "diarization": {
+        "title": "IdentificaÃ§Ã£o de falantes",
+        "description": "Identificar falantes individuais em gravaÃ§Ãµes de reuniÃµes",
+        "modelsReady": "Modelos prontos",
+        "deleteModels": "Excluir modelos"
+      },
+      "transcriptionPreview": "PrÃ©-visualizaÃ§Ã£o ao vivo",
+      "transcriptionPreviewDescription": "Mostrar transcriÃ§Ã£o em janela flutuante antes da limpeza",
+      "vad": {
+        "title": "DetecÃ§Ã£o de atividade de voz",
+        "description": "Configure como o Silero VAD detecta e segmenta a fala na transcriÃ§Ã£o local do Whisper",
+        "toggles": {
+          "dictation": {
+            "title": "Silero VAD para ditado",
+            "description": "Ativar detecÃ§Ã£o de atividade de voz para ditado local"
+          },
+          "noteRecording": {
+            "title": "Silero VAD para gravaÃ§Ã£o de notas",
+            "description": "Ativar detecÃ§Ã£o de atividade de voz para gravaÃ§Ã£o local de notas"
+          },
+          "meeting": {
+            "title": "Silero VAD para reuniÃµes",
+            "description": "Ativar detecÃ§Ã£o de atividade de voz para transcriÃ§Ã£o local de reuniÃµes"
+          }
+        },
+        "fields": {
+          "threshold": {
+            "label": "Limiar de VAD",
+            "info": "Probabilidade acima da qual um quadro Ã© classificado como fala."
+          },
+          "minSpeechDurationMs": {
+            "label": "DuraÃ§Ã£o mÃ­nima da fala (ms)",
+            "info": "Segmentos de fala mais curtos sÃ£o descartados como ruÃ­do ou falsos positivos."
+          },
+          "minSilenceDurationMs": {
+            "label": "DuraÃ§Ã£o mÃ­nima de silÃªncio (ms)",
+            "info": "O silÃªncio precisa durar pelo menos esse tempo para encerrar um segmento. Pausas mais curtas permanecem dentro do segmento."
+          },
+          "maxSpeechDurationS": {
+            "label": "DuraÃ§Ã£o mÃ¡xima da fala (s)",
+            "info": "Segmentos maiores sÃ£o divididos em pontos de silÃªncio para manter pedaÃ§os gerenciÃ¡veis."
+          },
+          "speechPadMs": {
+            "label": "Preenchimento da fala (ms)",
+            "info": "Preenchimento antes e depois de cada segmento para nÃ£o cortar as bordas das palavras."
+          },
+          "samplesOverlap": {
+            "label": "SobreposiÃ§Ã£o de amostras (s)",
+            "info": "Ãudio estendido de um segmento para o prÃ³ximo, evitando cortes bruscos na concatenaÃ§Ã£o."
+          }
+        }
+      }
+    },
+    "intelligence": {
+      "gpuDevice": {
+        "title": "GPU de inteligÃªncia",
+        "description": "GPU usado para processamento IA local"
+      }
+    },
+    "selfHosted": {
+      "endpointUrl": "URL do endpoint",
+      "serverUrl": "URL do servidor",
+      "apiKeyOptional": "API Key (opcional)"
+    },
+    "workspace": {
+      "title": "Espacio de trabajo",
+      "description": "Colabora con compaÃ±eros, comparte notas y administra la facturaciÃ³n en un solo lugar.",
+      "empty": {
+        "title": "Crea tu primer espacio de trabajo",
+        "description": "Los espacios de trabajo te permiten colaborar con compaÃ±eros y compartir notas.",
+        "create": "Crear espacio de trabajo"
+      },
+      "tab": {
+        "general": "General",
+        "members": "Miembros",
+        "teams": "Equipos",
+        "billing": "FacturaciÃ³n",
+        "developer": "Desarrollador"
+      },
+      "role": {
+        "owner": "Propietario",
+        "admin": "Administrador",
+        "member": "Miembro"
+      },
+      "general": {
+        "nameLabel": "Nombre del espacio de trabajo",
+        "slugLabel": "Slug",
+        "slugHint": "Se usa en URLs y enlaces de invitaciÃ³n. Solo letras minÃºsculas, dÃ­gitos y guiones.",
+        "saved": "Espacio de trabajo actualizado",
+        "dangerTitle": "Eliminar espacio de trabajo",
+        "dangerDescription": "Todas las notas, carpetas e integraciones compartidas se eliminarÃ¡n. Esto no se puede deshacer.",
+        "delete": "Eliminar espacio de trabajo",
+        "confirmTitle": "Â¿Eliminar {{name}}?",
+        "confirmDescription": "Esto cancela la suscripciÃ³n y elimina todos los datos del espacio de trabajo permanentemente."
+      },
+      "members": {
+        "title": "Miembros",
+        "description": "{{count}} de {{seats}} asientos utilizados.",
+        "invite": "Invitar",
+        "empty": "AÃºn no hay miembros.",
+        "roleUpdated": "Rol actualizado",
+        "promote": "Hacer administrador",
+        "demote": "Hacer miembro",
+        "transferOwnership": "Transferir propiedad",
+        "remove": "Quitar del espacio de trabajo"
+      },
+      "invites": {
+        "title": "Invitaciones pendientes",
+        "resend": "Reenviar",
+        "revoke": "Revocar",
+        "resent": "InvitaciÃ³n reenviada"
+      },
+      "teams": {
+        "title": "Equipos",
+        "description": "Agrupa miembros para compartir con alcance limitado.",
+        "new": "Nuevo equipo",
+        "empty": "AÃºn no hay equipos.",
+        "createFirst": "Crea tu primer equipo",
+        "createTitle": "Crear equipo",
+        "nameLabel": "Nombre del equipo",
+        "descriptionLabel": "DescripciÃ³n",
+        "memberCount": "{{count}} miembros"
+      },
+      "billing": {
+        "title": "FacturaciÃ³n",
+        "description": "Plan, asientos y pago.",
+        "plan": "Plan",
+        "seats": "Asientos",
+        "nextInvoice": "PrÃ³xima factura",
+        "manageStripe": "Administrar en Stripe",
+        "startSubscription": "Iniciar suscripciÃ³n"
+      },
+      "developer": {
+        "title": "Claves API",
+        "description": "Acceso programÃ¡tico limitado a este espacio de trabajo.",
+        "empty": "AÃºn no hay claves API. Crea una para integrarte con este espacio de trabajo.",
+        "new": "Nueva clave",
+        "create": "Crear clave",
+        "createTitle": "Crear clave API",
+        "createDescription": "Elige los permisos que necesita esta clave. Puedes revocarla en cualquier momento.",
+        "nameLabel": "Nombre de la clave",
+        "namePlaceholder": "IntegraciÃ³n de producciÃ³n",
+        "revoke": "Revocar clave",
+        "lastUsed": "Ãšltimo uso {{date}}",
+        "neverUsed": "Nunca utilizada",
+        "keyCreatedTitle": "Clave API creada",
+        "keyCreatedDescription": "Copia esta clave ahora — no podrÃ¡s verla de nuevo."
+      }
+    }
+  },
+  "models": {
+    "learnMore": "Saiba mais",
+    "descriptions": {
+      "parakeet": {
+        "parakeet_tdt_0_6b_v3": "ASR multilÃ­ngue rÃ¡pido com detecÃ§Ã£o automÃ¡tica de idioma (25 idiomas)",
+        "parakeet_unified_en_0_6b": "ASR apenas em inglÃªs com precisÃ£o de ponta (5,91% WER mÃ©dio)"
+      },
+      "whisper": {
+        "tiny": "Mais rÃ¡pido, qualidade inferior",
+        "base": "Bom equilÃ­brio",
+        "small": "Melhor qualidade, mais lento",
+        "medium": "Alta qualidade",
+        "large": "Melhor qualidade, o mais lento",
+        "turbo": "RÃ¡pido com boa qualidade"
+      },
+      "transcription": {
+        "openai_gpt_4o_mini_transcribe": "TranscriÃ§Ã£o rÃ¡pida e precisa",
+        "openai_gpt_4o_transcribe": "TranscriÃ§Ã£o mais precisa",
+        "openai_whisper_1": "Modelo Whisper original",
+        "groq_whisper_large_v3_turbo": "Velocidade 216x em tempo real",
+        "groq_whisper_large_v3": "Modelo Large v3, rÃ¡pido e preciso",
+        "mistral_voxtral_mini_latest": "TranscriÃ§Ã£o multilÃ­ngue rÃ¡pida",
+        "corti_transcribe": "TranscriÃ§Ã£o mÃ©dica de nÃ­vel clÃ­nico",
+        "xai_grok_stt": "Reconhecimento de voz de alta precisÃ£o pela xAI"
+      },
+      "cloud": {
+        "openai_gpt_5_2": "Modelo forte de raciocÃ­nio",
+        "openai_gpt_5_mini": "RÃ¡pido e eficiente em custo",
+        "openai_gpt_5_nano": "UltrarÃ¡pido, baixa latÃªncia",
+        "openai_gpt_4_1": "Base sÃ³lida, contexto de 1M",
+        "openai_gpt_4_1_mini": "Modelo GPT-4.1 menor",
+        "openai_gpt_4_1_nano": "GPT-4.1 com menor latÃªncia",
+        "anthropic_claude_sonnet_4_6": "Desempenho equilibrado",
+        "anthropic_claude_sonnet_4_5": "GeraÃ§Ã£o anterior do Sonnet",
+        "anthropic_claude_haiku_4_5": "RÃ¡pido com inteligÃªncia quase de ponta",
+        "gemini_gemini_3_5_flash": "Modelo Gemini mais recente, rÃ¡pido e de alta capacidade",
+        "gemini_gemini_3_1_pro_preview": "Modelo principal de nova geraÃ§Ã£o para raciocÃ­nio complexo",
+        "gemini_gemini_3_flash_preview": "Modelo de nova geraÃ§Ã£o ultrarÃ¡pido e de alta capacidade",
+        "gemini_gemini_2_5_flash_lite": "Menor latÃªncia e custo",
+        "gemini_gemma_4_31b_it": "O maior Gemma 4 do Google, 31B denso, contexto 256K",
+        "gemini_gemma_4_26b_a4b_it": "Gemma 4 MoE do Google, 4B parÃ¢metros ativos, contexto 256K",
+        "groq_qwen_qwen3_32b": "Modelo de raciocÃ­nio poderoso, contexto de 131K",
+        "groq_openai_gpt_oss_120b": "Modelo principal open source da OpenAI, 500 T/seg",
+        "groq_openai_gpt_oss_20b": "Modelo open source rÃ¡pido, 1000 T/seg",
+        "groq_llama_3_3_70b_versatile": "Modelo versÃ¡til da Meta, 280 T/seg",
+        "groq_llama_3_1_8b_instant": "UltrarÃ¡pido 560 T/seg, contexto de 131K",
+        "groq_llama_4_scout": "Multimodal eficiente da Meta, 750 T/seg",
+        "groq_compound": "Sistema compound da Groq, 450 T/seg",
+        "groq_compound_mini": "Sistema compound rÃ¡pido, 3x menor latÃªncia",
+        "groq_kimi_k2_0905": "Moonshot AI 1T MoE, contexto 256K",
+        "openai_gpt_5_5": "Modelo frontier para raciocÃ­nio complexo",
+        "anthropic_claude_opus_4_8": "Modelo Claude mais capaz",
+        "anthropic_claude_opus_4_7": "Modelo Opus potente",
+        "anthropic_claude_opus_4_6": "GeraÃ§Ã£o anterior do Opus, contexto de 1M",
+        "anthropic_claude_opus_4_5": "Modelo Opus mais antigo"
+      },
+      "enterprise": {
+        "bedrock_claude_haiku_4_5": "RÃ¡pido e barato. Ã“timo para limpar texto.",
+        "bedrock_claude_sonnet_4_6": "Equilibrado. PadrÃ£o recomendado para o Modo Agente.",
+        "bedrock_claude_opus_4_7": "MÃ¡xima inteligÃªncia. Para tarefas complexas do Modo Agente.",
+        "bedrock_nova_lite": "OpÃ§Ã£o mais barata. Nativo da AWS, ideal para alto volume.",
+        "vertex_gemini_2_5_flash": "Fast multimodal model via Vertex",
+        "vertex_gemini_2_5_pro": "Advanced reasoning via Vertex"
+      },
+      "local": {
+        "qwen_qwen3_5_9b_q4_k_m": "Modelo hÃ­brido poderoso",
+        "qwen_qwen3_5_4b_q4_k_m": "Qwen3.5 equilibrado para uso geral",
+        "qwen_qwen3_5_2b_q4_k_m": "Qwen3.5 compacto para tarefas rÃ¡pidas",
+        "qwen_qwen3_8b_q4_k_m": "Qwen3 mais recente com suporte ao modo de pensamento",
+        "qwen_qwen3_8b_q5_k_m": "Qwen3 de maior qualidade com modo de pensamento",
+        "qwen_qwen3_4b_q4_k_m": "Qwen3 compacto com capacidades de raciocÃ­nio",
+        "qwen_qwen3_1_7b_q8_0": "Modelo Qwen3 pequeno, mas capaz",
+        "qwen_qwen3_32b_q4_k_m": "O Qwen3 local mais poderoso com raciocÃ­nio profundo",
+        "qwen_qwen2_5_1_5b_instruct_q5_k_m": "Modelo pequeno, bom para tarefas bÃ¡sicas",
+        "qwen_qwen2_5_3b_instruct_q5_k_m": "Modelo equilibrado para uso geral",
+        "qwen_qwen2_5_7b_instruct_q4_k_m": "Modelo grande com alta qualidade (Q4_K_M)",
+        "qwen_qwen2_5_7b_instruct_q5_k_m": "Modelo grande, raciocÃ­nio de alta qualidade (Q5_K_M)",
+        "mistral_mistral_7b_instruct_v0_3_q4_k_m": "Modelo de instruÃ§Ã£o rÃ¡pido e eficiente",
+        "mistral_mistral_7b_instruct_v0_3_q5_k_m": "Modelo de instruÃ§Ã£o de maior qualidade",
+        "mistral_nemo_12b_instruct_q4_k_m": "Modelo 12B da Mistral, forte desempenho multilÃ­ngue",
+        "llama_llama_3_2_1b_instruct_q4_k_m": "Modelo minÃºsculo para dispositivos de borda",
+        "llama_llama_3_2_3b_instruct_q4_k_m": "Modelo multilÃ­ngue pequeno, mas capaz",
+        "llama_llama_3_1_8b_instruct_q4_k_m": "Modelo poderoso com excelente desempenho",
+        "openai_oss_gpt_oss_20b_mxfp4": "Modelo open-weight da OpenAI para hardware de consumo",
+        "gemma_gemma_3_4b_it_q4_k_m": "Modelo open-weight do Google, Ã³timo equilÃ­brio entre velocidade e qualidade",
+        "gemma_gemma_4_31b_it_q4_k_m": "O maior Gemma 4 do Google, melhor qualidade",
+        "gemma_gemma_4_26b_a4b_it_q4_k_m": "Gemma 4 MoE do Google, rÃ¡pido com 4B parÃ¢metros ativos",
+        "gemma_gemma_4_e4b_it_q4_k_m": "Ãšltimo multimodal do Google, raciocÃ­nio avanÃ§ado",
+        "gemma_gemma_4_e2b_it_q4_k_m": "Gemma 4 compacto do Google, rÃ¡pido e eficiente",
+        "gemma_gemma_3_12b_it_q4_k_m": "Modelo intermediÃ¡rio do Google, raciocÃ­nio sÃ³lido",
+        "gemma_gemma_3_1b_it_q4_k_m": "Modelo Google ultrarrÃ¡pido, ideal para limpeza de ditados curtos"
+      },
+      "diarization": {
+        "segmentation": "DetecÃ§Ã£o de limites de fala para identificaÃ§Ã£o de falantes",
+        "embedding_en": "ImpressÃ£o vocal para identificaÃ§Ã£o de falantes"
+      }
+    }
+  },
+  "upgradePrompt": {
+    "paymentFailed": "NÃ£o foi possÃ­vel processar seu pagamento",
+    "weeklyLimit": "VocÃª atingiu seu limite semanal",
+    "pastDueDescription": "VocÃª estÃ¡ no plano gratuito por enquanto — sem problemas, vocÃª ainda tem {{limit}} palavras por semana.\nAtualize sua forma de pagamento para voltar ao Pro ilimitado.",
+    "limitDescription": "{{used}} de {{limit}} palavras usadas.\nSua transcriÃ§Ã£o foi salva e colada.",
+    "updatePayment": "Atualizar forma de pagamento",
+    "updatePaymentDescription": "Volte Ã s transcriÃ§Ãµes ilimitadas do Pro.",
+    "upgradeToPro": "Fazer upgrade para Pro",
+    "upgradeDescription": "TranscriÃ§Ãµes ilimitadas a partir de apenas $8/mÃªs.",
+    "useApiKey": "Use sua prÃ³pria chave API",
+    "useApiKeyDescription": "Traga sua prÃ³pria chave para uso ilimitado.",
+    "switchToLocal": "Mudar para local",
+    "switchToLocalDescription": "TranscriÃ§Ã£o offline. Sem limites.",
+    "rollingWeeklyLimit": "Limite semanal contÃ­nuo"
+  },
+  "windowControls": {
+    "minimize": "Minimizar",
+    "maximize": "Maximizar",
+    "restore": "Restaurar",
+    "close": "Fechar"
+  },
+  "referral": {
+    "modalTitle": "Indicar um amigo",
+    "title": "Indique e ganhe recompensas",
+    "subtitle": "DÃª um mÃªs. Ganhe um mÃªs.",
+    "tabs": {
+      "refer": "Indicar",
+      "pastInvites": "Convites anteriores"
+    },
+    "howItWorks": {
+      "shareLink": "Compartilhe seu link de convite",
+      "theySignUp": "A pessoa se cadastra e ganha um ",
+      "freeMonthOfPro": "mÃªs grÃ¡tis de Pro",
+      "youGet": "VocÃª ganha um ",
+      "freeMonth": "mÃªs grÃ¡tis",
+      "whenTheyDictate": " quando ela ditar 2.000 palavras"
+    },
+    "inviteLink": {
+      "title": "Seu link de convite",
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "sendInvites": {
+      "title": "Enviar convites",
+      "placeholder": "friend@example.com",
+      "send": "Enviar",
+      "sending": "Enviando"
+    },
+    "stats": {
+      "referred": "Indicados",
+      "converted": "Convertidos",
+      "monthsEarned": "Meses ganhos"
+    },
+    "status": {
+      "converted": "Convertido",
+      "opened": "Aberto",
+      "failed": "Falhou",
+      "sent": "Enviado"
+    },
+    "empty": {
+      "title": "Nenhum convite enviado ainda",
+      "description": "Compartilhe seu link ou envie um convite para comeÃ§ar"
+    },
+    "toasts": {
+      "copiedTitle": "Copiado!",
+      "copiedDescription": "Link de indicaÃ§Ã£o copiado para a Ã¡rea de transferÃªncia",
+      "copyFailedTitle": "Falha ao copiar",
+      "copyFailedDescription": "NÃ£o foi possÃ­vel copiar o link para a Ã¡rea de transferÃªncia",
+      "invalidEmailTitle": "E-mail invÃ¡lido",
+      "invalidEmailDescription": "Por favor, insira um endereÃ§o de e-mail vÃ¡lido",
+      "inviteSentTitle": "Convite enviado!",
+      "inviteSentDescription": "Convite enviado para {{email}}",
+      "sendFailedTitle": "Falha ao enviar",
+      "sendFailedDescription": "NÃ£o foi possÃ­vel enviar o convite. Por favor, tente novamente."
+    },
+    "errors": {
+      "unableToLoad": "NÃ£o foi possÃ­vel carregar os dados de indicaÃ§Ã£o",
+      "unableToLoadStats": "NÃ£o foi possÃ­vel carregar as estatÃ­sticas de indicaÃ§Ã£o. Por favor, tente novamente mais tarde."
+    },
+    "tryAgain": "Tentar novamente",
+    "card": {
+      "brand": "Dhwani",
+      "signalId": "Signal ID",
+      "audioSignature": "Sua assinatura de Ã¡udio",
+      "stop": "Parar",
+      "playSignal": "Reproduzir sinal"
+    },
+    "friends": {
+      "title": "Amigos",
+      "completed": "ConcluÃ­do",
+      "sentInvites": "Convites enviados"
+    }
+  },
+  "notes": {
+    "sidebar": {
+      "newNote": "Nova nota",
+      "searchNotes": "Pesquisar notas",
+      "actions": "AÃ§Ãµes"
+    },
+    "folders": {
+      "title": "Pastas",
+      "soon": "Em breve",
+      "folderName": "Nome da pasta",
+      "couldNotCreate": "NÃ£o foi possÃ­vel criar a pasta",
+      "couldNotRename": "NÃ£o foi possÃ­vel renomear a pasta",
+      "couldNotDelete": "NÃ£o foi possÃ­vel excluir a pasta",
+      "deleteTitle": "Excluir pasta?",
+      "deleteDescription": "Isso excluirÃ¡ permanentemente \"{{name}}\" e suas {{count}} nota(s). Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+      "deleteDescriptionEmpty": "Isso excluirÃ¡ permanentemente \"{{name}}\". Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+      "deleteConfirm": "Excluir pasta e notas"
+    },
+    "list": {
+      "title": "Notas",
+      "newNote": "Nova nota",
+      "untitled": "Sem tÃ­tulo",
+      "untitledNote": "Nota sem tÃ­tulo",
+      "timeNow": "Agora",
+      "minutesAgo": "{{count}}m",
+      "hoursAgo": "{{count}}h",
+      "daysAgo": "{{count}}d"
+    },
+    "editor": {
+      "untitled": "Sem tÃ­tulo",
+      "noteTitle": "TÃ­tulo da nota",
+      "stop": "Parar",
+      "transcribe": "Transcrever",
+      "processing": "Processando...",
+      "export": "Exportar",
+      "asMarkdown": "Como Markdown",
+      "asPlainText": "Como texto simples",
+      "asTranscriptText": "Como texto simples (.txt)",
+      "asSubtitles": "Como legendas (.srt)",
+      "asJson": "Como JSON (.json)",
+      "asTranscriptMarkdown": "Como Markdown (.md)",
+      "raw": "Original",
+      "enhanced": "Aprimorado",
+      "saving": "Salvando",
+      "startWriting": "Comece a escrever...",
+      "staleIndicator": "O conteÃºdo mudou desde o aprimoramento",
+      "live": "Ao vivo",
+      "transcript": "TranscriÃ§Ã£o",
+      "notes": "Notas",
+      "conversationWillAppear": "A conversa aparecerÃ¡ aqui...",
+      "linkedEvent": "Evento vinculado",
+      "noFolder": "Sem pasta",
+      "participants": "Participantes"
+    },
+    "participants": {
+      "attendee": "participante",
+      "attendees": "participantes",
+      "addAttendees": "Adicionar participantes",
+      "addPlaceholder": "Adicionar participantes...",
+      "typeEmail": "Digite um e-mail para adicionar...",
+      "me": "(eu)"
+    },
+    "upload": {
+      "title": "Enviar Ã¡udio",
+      "using": "Usando {{model}}",
+      "dropOrBrowse": "Arraste um arquivo de Ã¡udio ou clique para procurar",
+      "supportedFormats": "MP3, WAV, M4A, WebM, OGG, FLAC, AAC",
+      "dropToUpload": "Solte para enviar",
+      "transcribe": "Transcrever",
+      "cancel": "Cancelar",
+      "transcribingCloud": "Transcrevendo pela nuvem...",
+      "transcribingLocal": "Transcrevendo localmente...",
+      "transcribingProvider": "Transcrevendo via {{provider}}...",
+      "cancelTranscription": "Cancelar transcriÃ§Ã£o",
+      "transcriptionComplete": "TranscriÃ§Ã£o concluÃ­da",
+      "openNote": "Abrir nota",
+      "uploadAnother": "Enviar outro",
+      "retry": "Tentar novamente",
+      "startOver": "RecomeÃ§ar",
+      "newFolder": "Nova pasta",
+      "folderName": "Nome da pasta",
+      "create": "Criar",
+      "DhwaniCloud": "Dhwani Cloud",
+      "custom": "Personalizado",
+      "selectFolder": "Selecionar pasta",
+      "transcriptionFailed": "Falha na transcriÃ§Ã£o",
+      "errorOccurred": "Ocorreu um erro",
+      "noSpeechDetected": "Nenhuma fala detectada neste Ã¡udio.",
+      "noProviderTitle": "Nenhum provedor de transcriÃ§Ã£o configurado",
+      "noProviderDescription": "Adicione uma chave API ou baixe um modelo local para comeÃ§ar a transcrever.",
+      "noProviderAction": "Abrir configuraÃ§Ãµes de transcriÃ§Ã£o",
+      "fileTooLarge": "Este arquivo excede o limite de 500 MB.",
+      "largeFileNote": "Arquivos grandes sÃ£o divididos e transcritos em paralelo.",
+      "chunkProgress": "Transcrevendo parte {{completed}} de {{total}}...",
+      "paidPlanRequired": "A transcriÃ§Ã£o na nuvem para arquivos acima de 25 MB requer um plano pago. Arquivos grandes sÃ£o processados com o Dhwani Cloud para resultados confiÃ¡veis e de alta qualidade.",
+      "byokTooLarge": "Chaves API de terceiros suportam apenas arquivos de atÃ© 25 MB.",
+      "byokTooLargeDetail": "Para arquivos acima de 25 MB, o Dhwani Cloud cuida da divisÃ£o, processamento paralelo e remontagem — para resultados confiÃ¡veis sem depender dos limites de provedores de terceiros.",
+      "byokTooLargeNeedsAccount": "Crie uma conta e mude para um plano pago para transcrever arquivos maiores com o Dhwani Cloud.",
+      "byokTooLargeNeedsUpgrade": "Mude para um plano pago para transcrever arquivos maiores com o Dhwani Cloud.",
+      "switchToCloudForLargeFiles": "Mude para o Dhwani Cloud para transcrever este arquivo.",
+      "createAccount": "Criar conta",
+      "upgrade": "Fazer upgrade",
+      "switchToCloud": "Dhwani Cloud"
+    },
+    "meeting": {
+      "title": "Notas de reuniÃ£o",
+      "description": "TranscriÃ§Ãµes e resumos estruturados",
+      "comingSoon": "Em breve",
+      "back": "Voltar"
+    },
+    "meetingPill": {
+      "returnToNote": "Voltar Ã  gravaÃ§Ã£o"
+    },
+    "context": {
+      "moveToFolder": "Mover para pasta",
+      "delete": "Excluir",
+      "rename": "Renomear",
+      "searchFolders": "Pesquisar pastas...",
+      "noResults": "Nenhuma pasta encontrada",
+      "newFolder": "Nova pasta",
+      "showInFileManager": "Mostrar no {{manager}}"
+    },
+    "actions": {
+      "manage": "Gerenciar aÃ§Ãµes...",
+      "manageTitle": "AÃ§Ãµes personalizadas",
+      "addAction": "Nova aÃ§Ã£o",
+      "editAction": "Editar aÃ§Ã£o",
+      "namePlaceholder": "Nome da aÃ§Ã£o",
+      "descriptionPlaceholder": "DescriÃ§Ã£o breve (opcional)",
+      "promptPlaceholder": "O que a IA deve fazer com o conteÃºdo da nota?",
+      "builtIn": "Integrada",
+      "save": "Salvar",
+      "update": "Atualizar",
+      "cancel": "Cancelar",
+      "noActions": "Nenhuma aÃ§Ã£o personalizada ainda",
+      "promptLabel": "InstruÃ§Ã£o",
+      "emptyEditorTitle": "Selecionar aÃ§Ã£o",
+      "emptyEditorDescription": "Escolha uma aÃ§Ã£o da lista ou crie uma nova",
+      "runAction": "Executar {{name}}",
+      "selectAction": "Selecionar aÃ§Ã£o",
+      "done": "ConcluÃ­do",
+      "builtin": {
+        "generateNotes": {
+          "name": "Gerar notas",
+          "description": "Limpar, estruturar e aprimorar suas notas"
+        }
+      },
+      "errors": {
+        "noModel": "Nenhum modelo de IA selecionado. Configure um nas ConfiguraÃ§Ãµes.",
+        "actionFailed": "A aÃ§Ã£o falhou"
+      }
+    },
+    "empty": {
+      "title": "Ainda nÃ£o hÃ¡ notas aqui",
+      "description": "Crie sua primeira nota para comeÃ§ar a escrever",
+      "selectTitle": "Selecione uma nota",
+      "selectDescription": "Escolha uma nota na barra lateral",
+      "createNote": "Criar nota",
+      "emptyFolder": "Nenhuma nota nesta pasta"
+    },
+    "addToFolder": {
+      "title": "Adicionar notas",
+      "searchPlaceholder": "Pesquisar notas para adicionar...",
+      "addExisting": "Adicionar existentes",
+      "addCount": "Adicionar {{count}} notas",
+      "noResults": "Nenhuma nota encontrada",
+      "noNotesAvailable": "Nenhuma outra nota disponÃ­vel"
+    },
+    "onboarding": {
+      "llm": {
+        "title": "Configure um modelo de IA",
+        "description": "As aÃ§Ãµes usam IA para transformar suas notas. Configure um modelo de linguagem para comeÃ§ar.",
+        "configured": "Modelo de IA configurado"
+      },
+      "actions": {
+        "title": "AÃ§Ãµes com IA",
+        "description": "As aÃ§Ãµes transformam suas notas — limpam transcriÃ§Ãµes, resumem reuniÃµes e muito mais. Use aÃ§Ãµes integradas ou crie as suas.",
+        "builtInLabel": "Integrada",
+        "createTitle": "Crie sua prÃ³pria aÃ§Ã£o",
+        "createDescription": "Defina uma aÃ§Ã£o personalizada com seu prÃ³prio prompt de IA. VocÃª sempre pode editar ou adicionar mais nas configuraÃ§Ãµes.",
+        "created": "Criada!"
+      },
+      "getStarted": "ComeÃ§ar",
+      "systemAudio": {
+        "title": "Ãudio do sistema",
+        "description": "Capture o Ã¡udio de reuniÃµes e outros aplicativos junto com o microfone.",
+        "grant": "Conceder permissÃ£o",
+        "enabled": "Ativado"
+      }
+    },
+    "realtimeBanner": {
+      "message": "TranscriÃ§Ã£o em tempo real disponÃ­vel no Pro",
+      "upgrade": "Fazer upgrade"
+    },
+    "enhance": {
+      "title": "Erro de aprimoramento"
+    },
+    "speaker": {
+      "you": "VocÃª",
+      "them": "Outro",
+      "label": "Participante {{n}}",
+      "identifyingSpeakers": "Identificando participantes...",
+      "liveAccuracyHint": "Ainda identificando participantes. A precisÃ£o dos rÃ³tulos melhorarÃ¡ quando a chamada terminar.",
+      "speakersIdentified": "Participantes identificados",
+      "typeNamePlaceholder": "Digite um nome",
+      "knownSpeakers": "Falantes conhecidos",
+      "meetingAttendees": "Participantes da reuniÃ£o",
+      "assignName": "Atribuir nome",
+      "isThisPerson": "Ã‰ {{name}}?",
+      "selected": "{{n}} selecionado(s)",
+      "assignTo": "Atribuir aâ€¦",
+      "deselectAll": "Desmarcar tudo",
+      "confirmed": "Confirmado",
+      "nameAssigned": "Nome atribuÃ­do",
+      "state": {
+        "provisional": "ProvisÃ³rio",
+        "confirmed": "Confirmado",
+        "suggested": "Sugerido",
+        "locked": "Bloqueado"
+      },
+      "createNewPrefix": "Criar",
+      "emailPlaceholder": "nome@exemplo.com",
+      "nameOrEmailPlaceholder": "Digite um nome ou e-mail",
+      "addContact": "Adicionar contato",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "pill": {
+        "identifying": "Identificando participantes",
+        "notLabeled": "Participantes sem rÃ³tulo",
+        "finalizing": "Finalizando participantesâ€¦",
+        "justYou": "sÃ³ vocÃª",
+        "defaultingHint": "assumindo 1 outra pessoa",
+        "toggleAria": "Alternar identificaÃ§Ã£o de participantes para esta gravaÃ§Ã£o",
+        "incAria": "Aumentar nÃºmero esperado de participantes",
+        "decAria": "Diminuir nÃºmero esperado de participantes",
+        "othersInCall_one": "{{count}} outra pessoa na chamada",
+        "othersInCall_other": "{{count}} outras pessoas na chamada"
+      }
+    }
+  },
+  "dictionary": {
+    "addWord": "Adicionar palavra",
+    "removeWord": "Remover {{word}}",
+    "clearAll": "Limpar tudo",
+    "clearTitle": "Limpar o dicionÃ¡rio?",
+    "clearDescription": "Isso removerÃ¡ todas as palavras do seu dicionÃ¡rio personalizado. Esta aÃ§Ã£o nÃ£o pode ser desfeita.",
+    "addPlaceholder": "Adicione palavras separadas por vÃ­rgulas — Dhwani, Supabase, John Snow, ARR",
+    "add": "Adicionar",
+    "importWords": "Importar palavras",
+    "importPlaceholder": "Cole palavras separadas por vÃ­rgulas...",
+    "separateWithCommas": "Separe com vÃ­rgulas",
+    "wordsReady_one": "{{count}} palavra pronta",
+    "wordsReady_other": "{{count}} palavras prontas",
+    "import": "Importar",
+    "yourDictionary": "Seu dicionÃ¡rio",
+    "exportDictionary": "Exportar dicionÃ¡rio",
+    "exportFailed": "Falha ao exportar",
+    "editWord": "Editar {{word}}",
+    "noMatches": "Nenhuma correspondÃªncia — pressione Enter para adicionar \"{{word}}\"",
+    "tabDictionary": "DicionÃ¡rio",
+    "tabSnippets": "Snippets",
+    "snippets": {
+      "title": "Snippets",
+      "edit": "Editar {{trigger}}",
+      "remove": "Remover {{trigger}}",
+      "editTitle": "Editar snippet",
+      "dialogDescription": "Quando vocÃª falar o gatilho, ele serÃ¡ substituÃ­do pelo seu texto salvo.",
+      "triggerLabel": "Gatilho",
+      "triggerPlaceholder": "ex.: minha agenda",
+      "replacementLabel": "SubstituiÃ§Ã£o",
+      "replacementPlaceholder": "Texto a inserir quando vocÃª disser o gatilhoâ€¦",
+      "create": "Criar snippet",
+      "duplicate": "JÃ¡ existe um snippet com esse gatilho",
+      "emptyTitle": "O que vocÃª nÃ£o deveria ter que dizer",
+      "emptyTitleAccent": "duas vezes",
+      "emptyDescription": "Fale um gatilho e o Dhwani o substitui pelo que vocÃª salvou: URLs, introduÃ§Ãµes, assinaturas, prompts.",
+      "new": "Novo snippet",
+      "examples": {
+        "linkedinTrigger": "Meu LinkedIn",
+        "linkedinText": "linkedin.com/in/voce",
+        "rewriteTrigger": "Prompt de reescrita",
+        "rewriteText": "Reescreva isto para ficar mais conciso e profissional",
+        "introTrigger": "Email de apresentaÃ§Ã£o",
+        "introText": "OlÃ¡, adoraria encontrar um horÃ¡rio para conversar esta semanaâ€¦",
+        "signoffTrigger": "Assinatura",
+        "signoffText": "AbraÃ§os, Alex Â· alex@example.com"
+      },
+      "addPlaceholder": "Adicione uma frase-gatilho — \"minha agenda\", \"meu LinkedIn\""
+    },
+    "emptyTitle": "Seu dicionÃ¡rio estÃ¡ vazio",
+    "emptyDescription": "Adicione palavras que {{agentName}} deve sempre acertar: nomes, ferramentas, siglas.",
+    "addFirstWord": "Adicione sua primeira palavra",
+    "importList": "Importar uma lista",
+    "agentDefault": "Adicionado por padrÃ£o"
+  },
+  "sidebar": {
+    "home": "InÃ­cio",
+    "notes": "Notas",
+    "upload": "Enviar",
+    "dictionary": "DicionÃ¡rio",
+    "insights": "Estatísticas",
+    "referral": "Ganhe um mÃªs grÃ¡tis",
+    "settings": "ConfiguraÃ§Ãµes",
+    "support": "Suporte",
+    "limitReached": "Limite semanal atingido",
+    "limitReachedDescription": "FaÃ§a upgrade para Pro para transcriÃ§Ãµes ilimitadas.",
+    "viewPlans": "Ver planos",
+    "upgradeTitle": "Fazer upgrade para Pro",
+    "upgradeDescription": "TranscriÃ§Ãµes ilimitadas e recursos avanÃ§ados.",
+    "learnMore": "Saiba mais",
+    "integrations": "IntegraÃ§Ãµes",
+    "defaultUser": "UsuÃ¡rio",
+    "notSignedIn": "NÃ£o conectado",
+    "chat": "Chat",
+    "inviteTeammate": "Invitar compaÃ±ero",
+    "createWorkspace": "Crear espacio de trabajo"
+  },
+  "chat": {
+    "newChat": "Novo chat",
+    "search": "Pesquisar conversas...",
+    "archived": "Arquivadas",
+    "noConversations": "Inicie sua primeira conversa",
+    "selectChat": "Selecione uma conversa ou inicie uma nova",
+    "noResults": "Nenhuma conversa encontrada",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "previousWeek": "Ãšltimos 7 dias",
+    "older": "Mais antigas",
+    "archive": "Arquivar",
+    "unarchive": "Desarquivar",
+    "delete": "Excluir",
+    "deleteConfirm": "Esta conversa serÃ¡ excluÃ­da permanentemente. NÃ£o Ã© possÃ­vel desfazer.",
+    "editTitle": "Clique duplo para editar o tÃ­tulo",
+    "untitled": "Sem tÃ­tulo",
+    "searchChats": "Pesquisar chats",
+    "searchTitle": "Pesquisar conversas",
+    "searchDescription": "Pesquisar em todas as conversas",
+    "newChatEmpty": "Pergunte sobre suas notas, transcriÃ§Ãµes ou qualquer coisa"
+  },
+  "usage": {
+    "approachingLimit": "PrÃ³ximo do limite semanal",
+    "approachingLimitDescription": "VocÃª usou {{wordsUsed}} de {{limit}} palavras gratuitas esta semana.",
+    "yourPlan": "Seu plano",
+    "trial": "Teste ({{days}} dia restante)",
+    "trial_other": "Teste ({{days}} dias restantes)",
+    "pro": "Pro",
+    "business": "Business",
+    "unlimitedTrial": "TranscriÃ§Ãµes ilimitadas durante o seu perÃ­odo de teste",
+    "unlimited": "TranscriÃ§Ãµes ilimitadas",
+    "manageSubscription": "Gerenciar assinatura",
+    "weeklyUsage": "Uso semanal",
+    "limitReached": "Limite atingido",
+    "free": "GrÃ¡tis",
+    "wordsRemaining": "{{remaining}} palavras restantes",
+    "rollingLimit": "Limite semanal contÃ­nuo",
+    "upgradeToPro": "Fazer upgrade para Pro",
+    "useYourOwnKey": "Usar sua prÃ³pria chave API",
+    "upgradeUnlimited": "Fazer upgrade para Pro — transcriÃ§Ãµes ilimitadas"
+  },
+  "support": {
+    "documentation": "DocumentaÃ§Ã£o",
+    "joinDiscord": "Entrar no Discord",
+    "contactSupport": "Contatar suporte",
+    "submitBug": "Reportar um bug"
+  },
+  "postMigration": {
+    "title": "Bem-vindo de volta ao Dhwani",
+    "description": "Suas notas e configuraÃ§Ãµes foram mantidas da versÃ£o anterior. No entanto, o macOS trata isto como um novo app, entÃ£o algumas permissÃµes precisam ser concedidas novamente.",
+    "done": "ConcluÃ­do",
+    "remindLater": "Lembrar-me mais tarde"
+  },
+  "apiKeyInput": {
+    "placeholder": "Cole sua chave API",
+    "label": "Chave API",
+    "save": "Salvar",
+    "cancelEdit": "Cancelar ediÃ§Ã£o",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "editButton": "Editar",
+    "addButton": "Adicionar"
+  },
+  "gpu": {
+    "transcriptionBanner": "Acelere a transcriÃ§Ã£o com GPU",
+    "reasoningBanner": "Acelere o processamento de IA com GPU",
+    "enableButton": "Ativar GPU",
+    "active": "AceleraÃ§Ã£o GPU ativa",
+    "ready": "AceleraÃ§Ã£o GPU pronta",
+    "activating": "Ativando GPU...",
+    "activationFailed": "NÃ£o foi possÃ­vel ativar a GPU",
+    "retry": "Tentar novamente",
+    "remove": "Remover",
+    "dismiss": "Agora nÃ£o",
+    "cancel": "Cancelar"
+  },
+  "app": {
+    "toasts": {
+      "hotkeyChanged": {
+        "title": "Atalho alterado",
+        "description": "\"{{original}}\" nÃ£o estava disponÃ­vel. Usando \"{{fallback}}\" em vez disso. VocÃª pode alterar isso nas ConfiguraÃ§Ãµes."
+      },
+      "hotkeyUnavailable": {
+        "title": "Atalho indisponÃ­vel",
+        "description": "NÃ£o foi possÃ­vel registrar o atalho selecionado. Escolha outro nas configuraÃ§Ãµes."
+      },
+      "addedToDict": "{{words}} adicionado ao seu dicionÃ¡rio",
+      "undo": "Desfazer",
+      "accessibilityMissing": {
+        "title": "PermissÃµes de acessibilidade necessÃ¡rias",
+        "description": "O Dhwani precisa de permissÃµes de acessibilidade para detectar seu atalho e colar texto. Ative-as no Painel de Controle."
+      }
+    },
+    "mic": {
+      "hotkeyToSpeak": "{{hotkey}} para falar",
+      "recording": "Gravando...",
+      "processing": "Processando...",
+      "clickToSpeak": "Clique para falar",
+      "commandMode": "Modo Comando"
+    },
+    "buttons": {
+      "cancelRecording": "Cancelar gravaÃ§Ã£o",
+      "cancelProcessing": "Cancelar processamento"
+    },
+    "commandMenu": {
+      "stopListening": "Parar de ouvir",
+      "startListening": "ComeÃ§ar a ouvir",
+      "hideForNow": "Ocultar por agora"
+    }
+  },
+  "dictationAgent": {
+    "enabled": "Ativar agente de voz",
+    "enabledDescription": "Dite instruÃ§Ãµes para o seu agente. Ative dizendo \"{{agentName}}\". ConfigurÃ¡vel abaixo.",
+    "modes": {
+      "Dhwani": "Dhwani Cloud",
+      "DhwaniDesc": "Use o agente gerenciado pelo Dhwani, sem precisar de chave API.",
+      "providers": "Use sua prÃ³pria chave",
+      "providersDesc": "Conecte-se Ã  OpenAI, Anthropic, Gemini ou Groq com sua prÃ³pria chave API.",
+      "local": "Local",
+      "localDesc": "Rode um LLM local no seu dispositivo, totalmente privado.",
+      "selfHosted": "Auto-hospedado",
+      "selfHostedDesc": "Aponte para um endpoint compatÃ­vel com OpenAI auto-hospedado.",
+      "enterprise": "Corporativo",
+      "enterpriseDesc": "Use AWS Bedrock, Azure OpenAI ou Google Vertex."
+    },
+    "prompt": {
+      "title": "Prompt do agente",
+      "description": "O prompt de sistema usado quando a palavra de ativaÃ§Ã£o Ã© detectada. Recorre ao padrÃ£o integrado."
+    }
+  },
+  "agentMode": {
+    "settings": {
+      "hotkey": "Atalho do agente de chat",
+      "hotkeyDescription": "Abre e fecha a sobreposiÃ§Ã£o do agente de chat",
+      "model": "Modelo do Agente",
+      "modelDescription": "Modelo de IA usado para conversas do agente",
+      "systemPrompt": "Prompt do Sistema",
+      "systemPromptDescription": "InstruÃ§Ãµes personalizadas para o agente",
+      "systemPromptPlaceholder": "Digite um prompt de sistema personalizado...",
+      "modes": {
+        "Dhwani": "Dhwani Cloud",
+        "providers": "Provedores Cloud",
+        "local": "Local",
+        "selfHosted": "Auto-hospedado",
+        "DhwaniDesc": "Resultados confiÃ¡veis. Sem configuraÃ§Ã£o.",
+        "providersDesc": "Traga sua prÃ³pria chave API.",
+        "localDesc": "Modelos no dispositivo. Totalmente privado.",
+        "selfHostedDesc": "Seu prÃ³prio servidor na sua rede.",
+        "enterprise": "Corporativo",
+        "enterpriseDesc": "Use a conta de nuvem da sua organizaÃ§Ã£o (AWS, Azure, GCP)."
+      },
+      "DhwaniCloud": "Dhwani Cloud",
+      "DhwaniCloudDescription": "Resultados confiÃ¡veis. Sem configuraÃ§Ã£o.",
+      "customSetup": "ConfiguraÃ§Ã£o personalizada (BYOK)",
+      "customSetupDescription": "Use suas prÃ³prias chaves API e escolha seu modelo preferido"
+    },
+    "chat": {
+      "placeholder": "Pressione {{hotkey}} para falar",
+      "thinking": "Pensando...",
+      "transcribing": "Transcrevendo...",
+      "listening": "Ouvindo...",
+      "newConversation": "Novo",
+      "copyToClipboard": "Copiar para Ã¡rea de transferÃªncia",
+      "copied": "Copiado!",
+      "emptyState": "Pergunte-me qualquer coisa",
+      "errorPrefix": "Erro"
+    },
+    "titleBar": {
+      "label": "Agente",
+      "newChat": "Nova conversa",
+      "close": "Fechar"
+    },
+    "input": {
+      "holdToSpeak": "Segure para falar",
+      "toClose": "fechar",
+      "listening": "Ouvindo...",
+      "transcribing": "Transcrevendo...",
+      "thinking": "Pensando...",
+      "typeMessage": "Digite uma mensagem...",
+      "send": "Enviar"
+    },
+    "tools": {
+      "search_notesStatus": "Pesquisando notas...",
+      "web_searchStatus": "Pesquisando na web...",
+      "copy_to_clipboardStatus": "Copiando para a Ã¡rea de transferÃªncia...",
+      "get_calendar_eventsStatus": "Verificando calendÃ¡rio...",
+      "get_noteStatus": "Lendo nota...",
+      "create_noteStatus": "Criando nota...",
+      "update_noteStatus": "Atualizando nota...",
+      "copiedToClipboard": "Copiado para a Ã¡rea de transferÃªncia",
+      "foundNotes": "{{count}} nota encontrada",
+      "foundNotes_plural": "{{count}} notas encontradas",
+      "searchResults": "{{count}} resultado encontrado",
+      "searchResults_plural": "{{count}} resultados encontrados",
+      "openNote": "Abrir nota",
+      "calendarEvents": "{{count}} evento encontrado",
+      "calendarEvents_plural": "{{count}} eventos encontrados",
+      "noResults": "Nenhum resultado",
+      "error": "Erro de ferramenta",
+      "unknownTool": "Ferramenta desconhecida: {{name}}",
+      "invalidArgs": "Argumentos de ferramenta invÃ¡lidos para {{name}}"
+    }
+  },
+  "integrations": {
+    "title": "IntegraÃ§Ãµes",
+    "description": "Conecte serviÃ§os para turbinar seu fluxo de trabalho",
+    "googleCalendar": {
+      "title": "Google Calendar",
+      "optional": "Opcional",
+      "description": "Preencha automaticamente tÃ­tulos e participantes das reuniÃµes a partir do seu calendÃ¡rio.",
+      "connect": "Conectar Google Calendar",
+      "connecting": "Conectando...",
+      "connected": "Conectado",
+      "addAnother": "Adicionar outro calendÃ¡rio",
+      "primaryOnly": "Sincronizar apenas o calendÃ¡rio principal",
+      "primaryOnlyDescription": "Ignorar eventos de calendÃ¡rios compartilhados com vocÃª.",
+      "disconnect": "Desconectar",
+      "disconnectConfirm": "Desconectar {{email}}?",
+      "disconnectDescription": "As notas de reuniÃ£o nÃ£o serÃ£o mais gravadas deste calendÃ¡rio.",
+      "systemAudioRequired": "PermissÃ£o de Ãudio do Sistema NecessÃ¡ria",
+      "systemAudioDescription": "Para transcrever reuniÃµes, o Dhwani precisa da permissÃ£o de Ãudio do Sistema para capturar o Ã¡udio dos outros participantes. Nunca gravamos a sua tela. VocÃª serÃ¡ levado Ã s ConfiguraÃ§Ãµes do Sistema para ativÃ¡-la.",
+      "openSettings": "Abrir ConfiguraÃ§Ãµes do Sistema"
+    },
+    "sections": {
+      "calendar": "CalendÃ¡rio",
+      "api": "API",
+      "mcp": "MCP",
+      "cli": "CLI"
+    },
+    "api": {
+      "title": "Chaves de API",
+      "description": "Gerencie chaves de API para acesso programÃ¡tico",
+      "proRequired": "Atualize para um plano pago para acessar a API",
+      "manage": "Gerenciar chaves",
+      "viewPlans": "Ver planos",
+      "dialogTitle": "Chaves de API"
+    },
+    "mcp": {
+      "title": "Leve suas notas para suas ferramentas de IA",
+      "description": "Converse, pesquise e trabalhe com suas notas no Claude, ChatGPT e Cursor.",
+      "step1": "Na sua ferramenta de IA, adicione Dhwani MCP usando a URL pÃºblica",
+      "step2": "Crie uma chave de API acima com os escopos necessÃ¡rios.",
+      "step3": "Cole a chave como cabeÃ§alho Authorization para conectar.",
+      "learnMore": "Saiba mais",
+      "viewPlans": "Ver planos",
+      "copyUrl": "Copiar URL do MCP",
+      "proRequired": "Atualize para um plano pago para conectar o Dhwani ao Claude, ChatGPT e Cursor.",
+      "copied": "Copiado"
+    },
+    "cli": {
+      "title": "Acesso pela linha de comando",
+      "description": "DÃª ao seu agente acesso Ã s suas notas pelo terminal.",
+      "installLabel": "Instalar",
+      "learnMore": "Ler a documentaÃ§Ã£o",
+      "copyDocsLink": "Copiar link da documentaÃ§Ã£o",
+      "docsLinkCopied": "Link da documentaÃ§Ã£o copiado",
+      "viewPlans": "Ver planos",
+      "local": {
+        "label": "Local",
+        "freeBadge": "GrÃ¡tis",
+        "description": "Leia suas notas locais diretamente. Sem login ou chave de API — funciona enquanto o Dhwani estiver aberto."
+      },
+      "cloud": {
+        "label": "Nuvem",
+        "description": "Sincronize entre mÃ¡quinas usando sua chave de API.",
+        "proRequired": "Atualize para um plano pago para usar a CLI no modo nuvem."
+      }
+    },
+    "plan": {
+      "title": "Seu Plano",
+      "current": "Atual",
+      "free": "GrÃ¡tis",
+      "freeLimit": "5 reuniÃµes / mÃªs",
+      "essential": "Essential",
+      "essentialLimit": "20 reuniÃµes / mÃªs",
+      "pro": "Pro",
+      "proLimit": "Ilimitado",
+      "upgrade": "Atualizar"
+    },
+    "notABot": {
+      "title": "O Dhwani Ã© um gravador de reuniÃµes, nÃ£o um bot",
+      "description": "O Dhwani captura Ã¡udio diretamente do seu sistema — ele nunca entra nas suas reuniÃµes como participante. Basta conectar seu calendÃ¡rio e fazer anotaÃ§Ãµes normalmente."
+    }
+  },
+  "calendar": {
+    "title": "Google Agenda",
+    "status": "Status",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "notConnectedDescription": "Conectar para detectar e gravar reuniÃµes",
+    "connectCta": {
+      "title": "IntegraÃ§Ã£o de CalendÃ¡rio",
+      "description": "Detectar reuniÃµes automaticamente e gravar transcriÃ§Ãµes"
+    },
+    "connect": "Conectar Google Agenda",
+    "connecting": "Conectando...",
+    "disconnect": "Desconectar",
+    "disconnecting": "Desconectando...",
+    "sync": "Sincronizar",
+    "syncing": "Sincronizando...",
+    "calendarsTitle": "CalendÃ¡rios",
+    "upcomingTitle": "PrÃ³ximos",
+    "noUpcoming": "Nenhum evento prÃ³ximo",
+    "meetingStarting": "A reuniÃ£o comeÃ§a agora",
+    "today": "Hoje",
+    "tomorrow": "AmanhÃ£"
+  },
+  "upcoming": {
+    "title": "PrÃ³ximas reuniÃµes",
+    "transcriptions": "TranscriÃ§Ãµes",
+    "tomorrow": "AmanhÃ£",
+    "noMoreMeetings": "Sem mais reuniÃµes hoje",
+    "now": "Agora",
+    "join": "Entrar",
+    "untitledEvent": "Evento sem tÃ­tulo",
+    "systemAudioRequired": "A permissÃ£o de Ãudio do Sistema Ã© necessÃ¡ria para capturar o Ã¡udio dos outros participantes.",
+    "openSettings": "Abrir ConfiguraÃ§Ãµes do Sistema",
+    "signInRequired": "Entre na sua conta para gravar reuniÃµes",
+    "signInDescription": "Crie uma conta ou entre para gravar e transcrever reuniÃµes.",
+    "connectCalendar": "Conecte seu calendÃ¡rio",
+    "connectCalendarDescription": "Vincule seu Google Calendar para ver prÃ³ximas reuniÃµes e gravar notas automaticamente.",
+    "notABot": "O Dhwani grava usando o Ã¡udio do seu sistema — ele nunca entra nas reuniÃµes como um bot.",
+    "connectCalendarButton": "Conectar calendÃ¡rio"
+  },
+  "notesView": {
+    "searchPlaceholder": "Pesquisar notasâ€¦",
+    "newNote": "Nova nota",
+    "empty": {
+      "title": "Nenhuma nota ainda",
+      "description": "Crie sua primeira nota para comeÃ§ar."
+    },
+    "searchEmpty": {
+      "title": "Sem resultados",
+      "description": "Nenhuma nota encontrada para \"{{query}}\"."
+    },
+    "noteType": {
+      "personal": "pessoal",
+      "meeting": "reuniÃ£o",
+      "upload": "upload"
+    }
+  },
+  "noteEditor": {
+    "saved": "Salvo",
+    "deleteNote": "Excluir nota",
+    "deleteConfirmTitle": "Excluir nota?",
+    "deleteConfirmDescription": "Esta nota serÃ¡ excluÃ­da permanentemente e nÃ£o poderÃ¡ ser recuperada.",
+    "deleteConfirm": "Excluir",
+    "share": {
+      "button": "Compartilhar",
+      "dialog": {
+        "title": "Compartilhar nota",
+        "searchPlaceholder": "Adicione pessoas por e-mail",
+        "emailLabel": "E-mail do destinatÃ¡rio",
+        "shareButton": "Compartilhar",
+        "copyLink": "Copiar link",
+        "copied": "Copiado",
+        "owner": "ProprietÃ¡rio",
+        "pending": "Pendente",
+        "accepted": "Com acesso",
+        "resend": "Reenviar convite",
+        "revoke": "Remover",
+        "invitationActions": "AÃ§Ãµes do convite",
+        "permissionRequired": "Apenas o proprietÃ¡rio da nota pode alterar o compartilhamento.",
+        "visibility": {
+          "label": "Visibilidade",
+          "link": "Qualquer pessoa com o link",
+          "domain": "Todos em {{domain}} com o link",
+          "invited": "Apenas pessoas convidadas"
+        },
+        "error": {
+          "invalidEmail": "Digite um endereÃ§o de e-mail vÃ¡lido",
+          "alreadyInvited": "{{email}} jÃ¡ foi convidado",
+          "inviteFailed": "NÃ£o foi possÃ­vel enviar o convite. Tente novamente.",
+          "linkUnavailable": "Gere ou rotacione o link para copiÃ¡-lo"
+        }
+      }
+    }
+  },
+  "commandSearch": {
+    "title": "Pesquisar",
+    "description": "Pesquisar notas e transcriÃ§Ãµes",
+    "shortPlaceholder": "Pesquisar",
+    "placeholder": "Pesquisar notas e transcriÃ§Ãµesâ€¦",
+    "sections": {
+      "notes": "Notas",
+      "transcripts": "TranscriÃ§Ãµes"
+    },
+    "noResults": "Sem resultados",
+    "emptyState": "Comece a digitar para pesquisar",
+    "footer": {
+      "navigate": "Navegar",
+      "open": "Abrir",
+      "dismiss": "Fechar"
+    }
+  },
+  "updateNotification": {
+    "title": "AtualizaÃ§Ã£o do Dhwani disponÃ­vel",
+    "body": "A versÃ£o {{version}} estÃ¡ pronta para download",
+    "cta": "Atualizar agora"
+  },
+  "permissionsGate": {
+    "title": "PermissÃµes necessÃ¡rias",
+    "description": "O Dhwani precisa de algumas permissÃµes para funcionar neste computador.",
+    "continue": "Continuar"
+  },
+  "apiKeysSection": {
+    "title": "Chaves API",
+    "description": "Crie chaves para acessar a API do Dhwani programaticamente.",
+    "docsLink": "Docs da API",
+    "empty": "Nenhuma chave API ainda",
+    "createButton": "Criar chave API",
+    "create": {
+      "title": "Criar chave API",
+      "nameLabel": "Nome da chave",
+      "namePlaceholder": "ex. Minha IntegraÃ§Ã£o",
+      "scopesLabel": "PermissÃµes",
+      "expiryLabel": "ExpiraÃ§Ã£o",
+      "expiryOptions": {
+        "never": "Nunca expira",
+        "30days": "30 dias",
+        "60days": "60 dias",
+        "90days": "90 dias",
+        "1year": "1 ano"
+      },
+      "submit": "Criar",
+      "cancel": "Cancelar"
+    },
+    "created": {
+      "title": "Chave API criada",
+      "warning": "Copie esta chave agora. Ela nÃ£o serÃ¡ exibida novamente.",
+      "copied": "Copiado!",
+      "copyButton": "Copiar para a Ã¡rea de transferÃªncia",
+      "done": "ConcluÃ­do"
+    },
+    "scopes": {
+      "notesRead": "Ler notas",
+      "notesWrite": "Criar e editar notas",
+      "transcriptionsRead": "Ler transcriÃ§Ãµes"
+    },
+    "revoke": {
+      "button": "Revogar",
+      "confirm": "Revogar esta chave? As integraÃ§Ãµes que a utilizam deixarÃ£o de funcionar.",
+      "success": "Chave API revogada"
+    },
+    "neverUsed": "Nunca usada",
+    "lastUsed": "Ãšltimo uso {{time}}",
+    "maxKeysReached": "MÃ¡ximo de {{max}} chaves permitidas",
+    "errors": {
+      "loadFailed": "Falha ao carregar as chaves API",
+      "createFailed": "Falha ao criar a chave API",
+      "revokeFailed": "Falha ao revogar a chave API"
+    }
+  },
+  "embeddedChat": {
+    "askPlaceholder": "Pergunte algo...",
+    "send": "Enviar",
+    "title": "Chat",
+    "emptyState": "FaÃ§a uma pergunta sobre esta nota",
+    "dock": "Fixar na barra lateral",
+    "undock": "Desafixar da barra lateral",
+    "close": "Fechar chat",
+    "newChat": "Novo chat",
+    "conversationSelector": "Trocar conversa"
+  },
+  "transcriptionPreview": {
+    "label": "PrÃ©-visualizaÃ§Ã£o",
+    "listening": "Ouvindo...",
+    "polishing": "AperfeiÃ§oando...",
+    "ready": "Pronto",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "waitingForInput": "Diga algo..."
+  },
+  "transcript": {
+    "speaker": {
+      "you": "VocÃª",
+      "others": "Outros"
+    }
+  },
+  "workspaces": {
+    "switcher": {
+      "personal": "Personal",
+      "workspaces": "Espacios de trabajo",
+      "empty": "AÃºn no hay espacios de trabajo",
+      "create": "Crear espacio de trabajoâ€¦"
+    },
+    "create": {
+      "title": "Crear espacio de trabajo",
+      "description": "Los espacios de trabajo te permiten colaborar, compartir notas y administrar la facturaciÃ³n.",
+      "nameLabel": "Nombre del espacio de trabajo",
+      "namePlaceholder": "Acme Corp",
+      "submit": "Crear espacio de trabajo",
+      "submitting": "Creandoâ€¦",
+      "errorTitle": "No se pudo crear el espacio de trabajo"
+    },
+    "created": {
+      "title": "Espacio de trabajo creado",
+      "description": "Ahora eres el propietario de {{name}}."
+    },
+    "invite": {
+      "title": "Invitar a {{workspace}}",
+      "description": "Agrega compaÃ±eros por correo. RecibirÃ¡n un enlace para unirse.",
+      "emailLabel": "Correo electrÃ³nico",
+      "roleLabel": "Rol",
+      "teamsLabel": "Agregar a equipos",
+      "submit": "Enviar invitaciÃ³n",
+      "submitting": "Enviandoâ€¦",
+      "sentTitle": "InvitaciÃ³n enviada",
+      "sentDescription": "Enviamos una invitaciÃ³n a {{email}}.",
+      "errorTitle": "No se pudo enviar la invitaciÃ³n",
+      "role": {
+        "admin": "Administrador",
+        "member": "Miembro"
+      }
+    },
+    "accept": {
+      "title": "Unirse al espacio de trabajo",
+      "description": "{{inviter}} te invitÃ³ a unirte a {{workspace}} como {{role}}.",
+      "loading": "Cargando invitaciÃ³nâ€¦",
+      "accept": "Aceptar invitaciÃ³n",
+      "accepting": "Aceptandoâ€¦",
+      "signInToAccept": "Inicia sesiÃ³n para aceptar",
+      "successTitle": "Te uniste",
+      "successDescription": "Bienvenido a {{name}}.",
+      "errorTitle": "No se pudo aceptar la invitaciÃ³n"
+    }
+  },
+  "polish": {
+    "noSelection": "Selecione um texto primeiro",
+    "failed": "Falha no Polish"
+  },
+  "insights": {
+    "title": "Estatísticas",
+    "totalWords": "Total de palavras",
+    "totalDictations": "Total de ditados",
+    "averageWPM": "PPM médio",
+    "wordsToday": "Palavras hoje",
+    "wordsThisWeek": "Palavras esta semana",
+    "dayStreak": "Sequência de dias",
+    "wpmGauge": {
+      "title": "Palavras por minuto",
+      "best": "Melhor: {{value}}",
+      "pctOfBest": "{{pct}}% do seu melhor"
+    },
+    "fixes": {
+      "title": "Correções feitas",
+      "subtitle": "Corrigido automaticamente pelo Dhwani"
+    },
+    "totalWordsCard": {
+      "subtitle": "{{today}} hoje · {{week}} esta semana"
+    },
+    "streak": {
+      "title": "Sequência de {{count}} dias",
+      "longest": "Sequência mais longa: {{count}} dias",
+      "less": "Menos",
+      "more": "Mais"
+    },
+    "appUsage": {
+      "title": "Uso do desktop",
+      "totalApps": "{{count}} apps usados"
+    }
+  },
+  "modelRecommendation": {
+    "badge": "Recomendado para o seu sistema",
+    "reasons": {
+      "nvidiaGpu": "Sua GPU NVIDIA pode executar o modelo mais rápido e preciso",
+      "highRamManyCores": "Seu sistema tem memória e núcleos de CPU suficientes para maior precisão",
+      "moderateRam": "Uma escolha equilibrada para a memória disponível do seu sistema",
+      "lowRam": "A opção mais rápida para a memória disponível do seu sistema"
+    }
+  }
+}

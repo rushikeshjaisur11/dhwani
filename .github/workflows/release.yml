@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*" # Triggers on version tags like v1.0.0, v2.1.3, etc.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g., 1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write # Required for creating releases
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install platform-specific native binaries
+        run: npm install @rollup/rollup-win32-x64-msvc lightningcss-win32-x64-msvc @tailwindcss/oxide-win32-x64-msvc --no-save
+
+      - name: Cache native binaries
+        uses: actions/cache@v4
+        with:
+          path: resources/bin
+          key: windows-x64-bin-${{ hashFiles('scripts/download-*.js') }}
+
+      - name: Download whisper.cpp binaries
+        run: node scripts/download-whisper-cpp.js --current
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download llama-server binaries
+        run: node scripts/download-llama-server.js --current
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download sherpa-onnx binaries
+        run: node scripts/download-sherpa-onnx.js --current
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download Qdrant binary
+        run: node scripts/download-qdrant.js --current
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download meeting AEC helper
+        run: node scripts/download-meeting-aec-helper.js --current
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download nircmd.exe
+        run: node scripts/download-nircmd.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download windows-fast-paste.exe
+        run: node scripts/download-windows-fast-paste.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download windows-key-listener.exe
+        run: node scripts/download-windows-key-listener.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Download windows-mic-listener.exe
+        run: node scripts/download-windows-mic-listener.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: ~/AppData/Local/electron/Cache
+          key: windows-electron-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: windows-electron-
+
+      - name: Create runtime env
+        shell: bash
+        run: |
+          echo "GOOGLE_CALENDAR_CLIENT_ID=${{ secrets.GOOGLE_CALENDAR_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CALENDAR_CLIENT_SECRET=${{ secrets.GOOGLE_CALENDAR_CLIENT_SECRET }}" >> .env
+
+      - name: Decode Code Signing Cert
+        shell: pwsh
+        run: |
+          $pfxBytes = [System.Convert]::FromBase64String("${{ secrets.WINDOWS_CERTS_PFX_BASE64 }}")
+          [System.IO.File]::WriteAllBytes("local-cert.pfx", $pfxBytes)
+
+      - name: Build and Sign Application
+        run: npm run build:renderer ; npx electron-builder --win --config electron-builder.unsigned-win.json --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL }}
+          VITE_OPENWHISPR_API_URL: ${{ vars.VITE_OPENWHISPR_API_URL }}
+          VITE_OPENWHISPR_OAUTH_CALLBACK_URL: ${{ vars.VITE_OPENWHISPR_OAUTH_CALLBACK_URL }}
+          WIN_CSC_LINK: local-cert.pfx
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CERTS_PASSWORD }}
