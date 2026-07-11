@@ -118,9 +118,9 @@ export default function HistoryView({
   const userName = localStorage.getItem("userName") ?? "Rushikesh";
 
   return (
-    <div className="px-4 pt-4 pb-6">
+    <div className="px-3 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <div className="text-[clamp(10px,1.5vw,14px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-hidden">
+        <div className="text-[clamp(15px,2vw,16px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-hidden">
           <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
