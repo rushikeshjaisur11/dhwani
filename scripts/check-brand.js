@@ -41,12 +41,14 @@ const ALLOWED_PATTERNS = [
   /OpenWhispr API URL/, // error naming the upstream cloud env var's URL
   /openwhispr-api/, // upstream backend repo reference in sync comments
   /nixosModules/, // upstream Nix flake module instructions
-  /OpenWhispr\]\(https:\/\/github\.com\/OpenWhispr/, // CLAUDE.md fork-origin link
+  /OpenWhispr\]\(https:\/\/github\.com\/OpenWhispr/, // CLAUDE.md / README fork-origin link
   /"Kept OpenWhispr references"/, // CLAUDE.md section title/self-reference
+  /OpenWhispr → Dhwani rename record/, // docs/README.md's link description to REBRANDING.md
+  /legacy `OpenWhispr-\*`|legacy `~\/\.cache\/openwhispr`/, // architecture.md migration notes
 ];
 
 const out = execSync(
-  'git grep -Iin "openwhispr" -- src/ docs/ *.json *.html ":(exclude)docs/superpowers" ":(exclude)docs/network-allowlist.md" ":(exclude)docs/REBRANDING.md" || exit 0',
+  'git grep -Iin "openwhispr" -- src/ docs/ *.json *.html ":(exclude)docs/REBRANDING.md" || exit 0',
   { encoding: "utf8" }
 );
 

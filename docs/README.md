@@ -20,10 +20,7 @@ specific areas.
 
 - [REBRANDING.md](REBRANDING.md) — the OpenWhispr → Dhwani rename record (user-facing strings, paths, kept
   upstream identifiers)
-- [network-allowlist.md](network-allowlist.md) — outbound domains/ports the app contacts
 - [training/](training/) — background/learning notes (ASR fundamentals, etc.) — not API reference
-- [superpowers/](superpowers/) — historical planning docs for past feature work (live typing, phase 2/3,
-  vanilla strip). Point-in-time plans, not living documentation.
 
 ## Scope note
 
