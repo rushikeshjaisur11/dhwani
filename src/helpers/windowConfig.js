@@ -65,7 +65,7 @@ const MAIN_WINDOW_CONFIG = {
 const CONTROL_PANEL_CONFIG = {
   width: 1024,
   height: 768,
-  minWidth: 750,
+  minWidth: 950,
   minHeight: 500,
   backgroundColor: "#faf7f1",
   webPreferences: {
