@@ -148,11 +148,14 @@ export default function HistoryView({
             </button>
             <div className="relative z-[1] max-w-sm">
               <h3 className="text-white font-semibold text-xl mb-1.5">
-                {t("controlPanel.promo.title", { defaultValue: "Dictate anywhere, distraction-free" })}
+                {t("controlPanel.promo.title", {
+                  defaultValue: "Dictate anywhere, distraction-free",
+                })}
               </h3>
               <p className="text-white/70 text-sm mb-4 leading-relaxed">
                 {t("controlPanel.promo.description", {
-                  defaultValue: "Press your hotkey and start talking — Dhwani cleans it up for you.",
+                  defaultValue:
+                    "Press your hotkey and start talking — Dhwani cleans it up for you.",
                 })}
               </p>
               <Button variant="cta" onClick={() => onOpenSettings("general")}>

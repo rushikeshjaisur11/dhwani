@@ -38,58 +38,67 @@ export default function ContextPanel({ activeView }: ContextPanelProps) {
   );
 
   return (
-    <div className="w-64 shrink-0 hidden lg:block overflow-y-auto px-5 py-6">
-      <div className="sticky top-0 space-y-5">
-        <div className="space-y-3">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
-              {stats?.totalWords ?? "–"}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {t("controlPanel.stats.totalWords", { defaultValue: "total words" })}
-            </span>
+    <div className="w-68 shrink-0 hidden lg:block overflow-y-auto px-5 py-6 bg-transparent border-l border-border/10 dark:border-white/5">
+      <div className="sticky top-0 space-y-4">
+        {/* Unified Stats & Voice Profile Card */}
+        <div className="p-5 rounded-2xl bg-[#F9F9F8] dark:bg-[oklch(0.24_0.014_60)] border border-border/40 dark:border-white/5 shadow-sm space-y-5">
+          {/* Statistics Grid */}
+          <div className="space-y-4">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground tabular-nums leading-none">
+                {stats?.totalWords ?? "–"}
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">
+                {t("controlPanel.stats.totalWords", { defaultValue: "total words" })}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground tabular-nums leading-none">
+                {stats?.averageWPM ?? "–"}
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">
+                {t("controlPanel.stats.wpm", { defaultValue: "wpm" })}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-foreground tabular-nums leading-none">
+                {stats?.dayStreak ?? "–"}
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">
+                {t("controlPanel.stats.dayStreak", { defaultValue: "day streak" })}
+              </span>
+            </div>
           </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
-              {stats?.averageWPM ?? "–"}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {t("controlPanel.stats.wpm", { defaultValue: "wpm" })}
-            </span>
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
-              {stats?.dayStreak ?? "–"}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {t("controlPanel.stats.dayStreak", { defaultValue: "day streak" })}
-            </span>
+
+          <hr className="border-border/60 dark:border-white/10" />
+
+          {/* Voice Profile Progress */}
+          <div>
+            <p className="text-xs font-semibold text-foreground mb-0.5">
+              {t("insights.voiceProfile.title", { defaultValue: "Your Voice Profile" })}
+            </p>
+            <p className="text-[11px] text-muted-foreground mb-3 leading-snug">
+              {t("insights.voiceProfile.description", {
+                defaultValue: "Discover how you use your voice.",
+              })}
+            </p>
+            <div className="h-1.5 rounded-full bg-[var(--color-progress-track)] dark:bg-white/10 overflow-hidden mb-1.5">
+              <div
+                className="h-full rounded-full bg-[#6d4fe0] transition-[width] duration-500 ease-out"
+                style={{ width: `${voiceProfileProgress * 100}%` }}
+              />
+            </div>
+            <p className="text-[10px] text-right text-muted-foreground font-medium">
+              {voiceProfileWordsRemaining > 0
+                ? t("insights.voiceProfile.unlocksIn", {
+                    defaultValue: "Unlocks in {{count}} words",
+                    count: (voiceProfileWordsRemaining / 1000).toFixed(1) + "K words",
+                  })
+                : t("insights.voiceProfile.unlocked", { defaultValue: "Unlocked" })}
+            </p>
           </div>
         </div>
-        <div className="pt-4 border-t border-border">
-          <p className="text-sm font-semibold text-foreground mb-0.5">
-            {t("insights.voiceProfile.title", { defaultValue: "Your Voice Profile" })}
-          </p>
-          <p className="text-xs text-muted-foreground mb-2.5">
-            {t("insights.voiceProfile.description", {
-              defaultValue: "Discover how you use your voice.",
-            })}
-          </p>
-          <div className="h-1.5 rounded-full bg-[var(--color-progress-track)] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out"
-              style={{ width: `${voiceProfileProgress * 100}%` }}
-            />
-          </div>
-          <p className="text-[11px] text-muted-foreground mt-1.5">
-            {voiceProfileWordsRemaining > 0
-              ? t("insights.voiceProfile.unlocksIn", {
-                  defaultValue: "Unlocks in {{count}} words",
-                  count: voiceProfileWordsRemaining,
-                })
-              : t("insights.voiceProfile.unlocked", { defaultValue: "Unlocked" })}
-          </p>
-        </div>
+
         {isConnected && <UpcomingMeetings events={events} isLoading={eventsLoading} />}
       </div>
     </div>

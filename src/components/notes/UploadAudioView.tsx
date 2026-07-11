@@ -94,7 +94,6 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     cloudTranscriptionMode,
   } = useSettingsStore(useShallow(selectResolvedUploadTranscription));
 
-
   const cortiClientId = useSettingsStore((s) => s.cortiClientId);
   const cortiClientSecret = useSettingsStore((s) => s.cortiClientSecret);
   const cortiEnvironment = useSettingsStore((s) => s.cortiEnvironment);
