@@ -116,7 +116,7 @@ export default function HistoryView({
   return (
     <div className="px-4 pt-4 pb-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="text-xl font-bold text-foreground mb-4 flex items-center flex-nowrap gap-1.5 whitespace-nowrap overflow-hidden">
+        <h1 className="text-xl font-bold text-foreground mb-4 flex flex-wrap items-center gap-1.5 leading-tight">
           <span>
             {t("controlPanel.greeting", {
               defaultValue: "Hey {{name}}, get back into the flow with",
@@ -147,20 +147,37 @@ export default function HistoryView({
               <X size={14} />
             </button>
             <div className="relative z-[1] max-w-sm">
-              <h3 className="text-white font-semibold text-xl mb-1.5">
-                {t("controlPanel.promo.title", {
-                  defaultValue: "Dictate anywhere, distraction-free",
-                })}
+              <h3 className="text-white font-semibold text-xl mb-1.5 font-serif italic">
+                Transform works anywhere you write
               </h3>
               <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                {t("controlPanel.promo.description", {
-                  defaultValue:
-                    "Press your hotkey and start talking — Dhwani cleans it up for you.",
-                })}
+                Apply a Transform to rewrite, clean up, or restructure text after you dictate.
               </p>
-              <Button variant="cta" onClick={() => onOpenSettings("general")}>
-                {t("controlPanel.promo.cta", { defaultValue: "Show me how" })}
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button variant="cta" onClick={() => onOpenSettings("intelligence")}>
+                  Try it out
+                </Button>
+                <button
+                  onClick={() => {}}
+                  className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                >
+                  How it works
+                </button>
+              </div>
+            </div>
+            {/* Floating App Icons bubbles */}
+            <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
+              <div className="relative w-40 h-24">
+                <div className="absolute top-0 left-6 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">#</span>
+                </div>
+                <div className="absolute bottom-0 left-12 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">M</span>
+                </div>
+                <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/15 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                  <span className="text-[10px] text-white font-bold">in</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -332,7 +349,7 @@ export default function HistoryView({
               <div className="group">
                 {groupedHistory.map((group, index) => (
                   <div key={group.label} className={index > 0 ? "mt-4" : ""}>
-                    <div className="sticky -top-1 z-10 -mx-4 px-5 pt-2 pb-2 bg-background flex items-center justify-between">
+                    <div className="sticky -top-1 z-10 -mx-4 px-5 pt-2 pb-2 bg-white dark:bg-[oklch(0.22_0.014_60)] flex items-center justify-between">
                       <span className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wide">
                         {group.label}
                       </span>
@@ -349,7 +366,7 @@ export default function HistoryView({
                         </div>
                       )}
                     </div>
-                    <div className="space-y-1.5 relative z-0">
+                    <div className="divide-y divide-border/30 dark:divide-white/5 relative z-0">
                       {group.items.map((item) => (
                         <TranscriptionItem
                           key={item.id}

@@ -92,7 +92,7 @@ export default function ContextPanel({ activeView }: ContextPanelProps) {
               {voiceProfileWordsRemaining > 0
                 ? t("insights.voiceProfile.unlocksIn", {
                     defaultValue: "Unlocks in {{count}} words",
-                    count: (voiceProfileWordsRemaining / 1000).toFixed(1) + "K words",
+                    count: (voiceProfileWordsRemaining / 1000).toFixed(1) + "K",
                   })
                 : t("insights.voiceProfile.unlocked", { defaultValue: "Unlocked" })}
             </p>

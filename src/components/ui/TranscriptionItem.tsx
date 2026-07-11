@@ -54,10 +54,13 @@ export default function TranscriptionItem({
   const timestampDate = new Date(timestampSource);
   const formattedTime = Number.isNaN(timestampDate.getTime())
     ? ""
-    : timestampDate.toLocaleTimeString(i18n.language, {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+    : timestampDate
+        .toLocaleTimeString(i18n.language, {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        })
+        .toLowerCase();
 
   const handleRetry = async () => {
     if (isRetrying || !onRetryTranscription) return;
@@ -90,12 +93,8 @@ export default function TranscriptionItem({
   return (
     <div
       className={cn(
-        "group rounded-md border px-3 py-2.5 transition-colors duration-150",
-        isFailed
-          ? "border-destructive/30 bg-destructive/5 hover:bg-destructive/10"
-          : isDiscarded
-            ? "border-border/30 bg-muted/20 hover:bg-muted/30 opacity-80"
-            : "border-border/40 dark:border-border-subtle/60 bg-card/50 dark:bg-surface-2/60 hover:bg-muted/30 dark:hover:bg-surface-2/80"
+        "group py-3.5 transition-colors duration-150 bg-transparent",
+        isFailed ? "bg-destructive/5 px-2 rounded-lg" : isDiscarded ? "opacity-60" : ""
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
