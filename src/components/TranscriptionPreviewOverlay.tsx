@@ -2,9 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Copy, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-type PreviewPhase = "listening" | "live" | "cleanup" | "final";
+type PreviewPhase = "listening" | "live" | "cleanup" | "final" | "changes" | "transformProcessing";
 
 const FINAL_HIDE_DURATION_MS = 4000;
+const CHANGES_HIDE_DURATION_MS = 6000;
 const COPIED_RESET_MS = 1400;
 const HIDE_ANIMATION_MS = 220;
 const TARGET_WIDTH = 420;
@@ -18,6 +19,10 @@ export default function TranscriptionPreviewOverlay() {
   const [copied, setCopied] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [countdownKey, setCountdownKey] = useState(0);
+  const [changesName, setChangesName] = useState("");
+  const [changesBefore, setChangesBefore] = useState("");
+  const [changesAfter, setChangesAfter] = useState("");
+  const [processingName, setProcessingName] = useState("");
 
   const shellRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
@@ -59,10 +64,17 @@ export default function TranscriptionPreviewOverlay() {
     }, delayMs);
   }, []);
 
-  const activeText = phase === "final" ? finalText || rawText : rawText;
+  const activeText =
+    phase === "changes"
+      ? changesAfter
+      : phase === "transformProcessing"
+        ? ""
+        : phase === "final"
+          ? finalText || rawText
+          : rawText;
 
   useEffect(() => {
-    if (phase === "final") {
+    if (phase === "final" || phase === "changes") {
       setCountdownKey((k) => k + 1);
     }
   }, [phase]);
@@ -178,6 +190,32 @@ export default function TranscriptionPreviewOverlay() {
       }, HIDE_ANIMATION_MS);
     });
 
+    // Win+Alt+O: redisplay the most recent transform's before/after in this
+    // same overlay window instead of a new one.
+    const handleTransformChanges = window.electronAPI?.onTransformChanges?.((payload) => {
+      clearLifecycleTimers();
+      clearTimer(copiedTimerRef);
+      setChangesName(payload?.name || "");
+      setChangesBefore(payload?.before || "");
+      setChangesAfter(payload?.after || "");
+      setCopied(false);
+      setPhase("changes");
+      setIsVisible(true);
+      startHideTimer(CHANGES_HIDE_DURATION_MS);
+    });
+
+    // A transform's hotkey was pressed and its LLM call is running — no
+    // fixed duration (unlike final/changes), stays until the run finishes
+    // and either transform-changes or preview-hide replaces it.
+    const handleTransformProcessing = window.electronAPI?.onTransformProcessing?.((payload) => {
+      clearLifecycleTimers();
+      clearTimer(copiedTimerRef);
+      setProcessingName(payload?.name || "");
+      setCopied(false);
+      setPhase("transformProcessing");
+      setIsVisible(true);
+    });
+
     return () => {
       clearLifecycleTimers();
       clearTimer(copiedTimerRef);
@@ -186,8 +224,10 @@ export default function TranscriptionPreviewOverlay() {
       handlePreviewHold?.();
       handlePreviewResult?.();
       handlePreviewHide?.();
+      handleTransformChanges?.();
+      handleTransformProcessing?.();
     };
-  }, [clearLifecycleTimers, showFinalResult]);
+  }, [clearLifecycleTimers, showFinalResult, startHideTimer]);
 
   const handleCopy = useCallback(async () => {
     const textToCopy = activeText.trim();
@@ -207,8 +247,10 @@ export default function TranscriptionPreviewOverlay() {
 
     setCopied(true);
     resetCopyState();
-    if (phaseRef.current === "final") {
-      startHideTimer(FINAL_HIDE_DURATION_MS);
+    if (phaseRef.current === "final" || phaseRef.current === "changes") {
+      startHideTimer(
+        phaseRef.current === "changes" ? CHANGES_HIDE_DURATION_MS : FINAL_HIDE_DURATION_MS
+      );
       setCountdownKey((k) => k + 1);
     }
   }, [activeText, resetCopyState, startHideTimer]);
@@ -222,11 +264,21 @@ export default function TranscriptionPreviewOverlay() {
   }
 
   const statusLabel =
-    phase === "final"
-      ? t("transcriptionPreview.ready", { defaultValue: "Ready" })
-      : phase === "cleanup"
-        ? t("transcriptionPreview.polishing", { defaultValue: "Polishing..." })
-        : t("transcriptionPreview.listening", { defaultValue: "Listening..." });
+    phase === "changes"
+      ? t("transcriptionPreview.transformApplied", {
+          defaultValue: "{{name}} applied",
+          name: changesName,
+        })
+      : phase === "transformProcessing"
+        ? t("transcriptionPreview.transformProcessing", {
+            defaultValue: "{{name}}...",
+            name: processingName,
+          })
+        : phase === "final"
+          ? t("transcriptionPreview.ready", { defaultValue: "Ready" })
+          : phase === "cleanup"
+            ? t("transcriptionPreview.polishing", { defaultValue: "Polishing..." })
+            : t("transcriptionPreview.listening", { defaultValue: "Listening..." });
 
   return (
     <div className="meeting-notification-window h-full w-full bg-transparent p-2">
@@ -236,9 +288,9 @@ export default function TranscriptionPreviewOverlay() {
           "relative overflow-hidden rounded-xl border bg-card/92 p-3 backdrop-blur-xl",
           "shadow-[0_8px_24px_rgba(0,0,0,0.14)]",
           "dark:bg-surface-2/92",
-          phase === "final"
+          phase === "final" || phase === "changes"
             ? "border-emerald-500/18 dark:border-emerald-500/20"
-            : phase === "cleanup"
+            : phase === "cleanup" || phase === "transformProcessing"
               ? "border-accent/22 dark:border-accent/25"
               : "border-border/40 dark:border-border-subtle/45",
           "transition-all duration-200 ease-out",
@@ -249,9 +301,9 @@ export default function TranscriptionPreviewOverlay() {
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 min-w-0">
-            {phase === "final" ? (
+            {phase === "final" || phase === "changes" ? (
               <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500/70" />
-            ) : phase === "cleanup" ? (
+            ) : phase === "cleanup" || phase === "transformProcessing" ? (
               <div className="flex items-end gap-[2px] shrink-0 h-3.5">
                 {[5, 9, 7].map((h, i) => (
                   <span
@@ -305,28 +357,49 @@ export default function TranscriptionPreviewOverlay() {
           </div>
         </div>
 
-        {activeText && (
-          <div className="relative mt-2">
-            {hasOverflow && (
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-5 rounded-t-lg bg-gradient-to-b from-background/60 to-transparent dark:from-surface-2/60" />
-            )}
-
-            <div
-              ref={textRef}
-              className={[
-                "preview-text-scroll rounded-lg border px-2.5 py-2 max-h-[220px] overflow-y-auto",
-                phase === "final"
-                  ? "border-emerald-500/10 bg-emerald-500/[0.03]"
-                  : phase === "cleanup"
-                    ? "border-accent/12 bg-accent/[0.03]"
-                    : "border-border/25 bg-background/30",
-              ].join(" ")}
-            >
+        {phase === "changes" ? (
+          <div className="mt-2 space-y-2">
+            <div className="rounded-lg border border-border/25 bg-background/30 px-2.5 py-2">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/50 mb-1">
+                {t("transcriptionPreview.before", { defaultValue: "Before" })}
+              </p>
+              <p className="select-text text-[12px] leading-[1.5] text-muted-foreground line-clamp-3 whitespace-pre-wrap break-words">
+                {changesBefore}
+              </p>
+            </div>
+            <div className="rounded-lg border border-emerald-500/10 bg-emerald-500/[0.03] px-2.5 py-2 max-h-[180px] overflow-y-auto preview-text-scroll">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/50 mb-1">
+                {t("transcriptionPreview.after", { defaultValue: "After" })}
+              </p>
               <p className="select-text text-[13px] leading-[1.52] text-foreground whitespace-pre-wrap break-words [text-wrap:pretty]">
-                {activeText}
+                {changesAfter}
               </p>
             </div>
           </div>
+        ) : (
+          !!activeText && (
+            <div className="relative mt-2">
+              {hasOverflow && (
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-5 rounded-t-lg bg-gradient-to-b from-background/60 to-transparent dark:from-surface-2/60" />
+              )}
+
+              <div
+                ref={textRef}
+                className={[
+                  "preview-text-scroll rounded-lg border px-2.5 py-2 max-h-[220px] overflow-y-auto",
+                  phase === "final"
+                    ? "border-emerald-500/10 bg-emerald-500/[0.03]"
+                    : phase === "cleanup"
+                      ? "border-accent/12 bg-accent/[0.03]"
+                      : "border-border/25 bg-background/30",
+                ].join(" ")}
+              >
+                <p className="select-text text-[13px] leading-[1.52] text-foreground whitespace-pre-wrap break-words [text-wrap:pretty]">
+                  {activeText}
+                </p>
+              </div>
+            </div>
+          )
         )}
 
         {phase === "listening" && !rawText && (
@@ -350,12 +423,16 @@ export default function TranscriptionPreviewOverlay() {
           </div>
         )}
 
-        {phase === "final" && (
+        {(phase === "final" || phase === "changes") && (
           <div className="absolute bottom-0 inset-x-0 h-[2px] overflow-hidden rounded-b-xl">
             <div
               key={countdownKey}
               className="h-full rounded-b-xl bg-emerald-500/25"
-              style={{ animation: `preview-countdown ${FINAL_HIDE_DURATION_MS}ms linear forwards` }}
+              style={{
+                animation: `preview-countdown ${
+                  phase === "changes" ? CHANGES_HIDE_DURATION_MS : FINAL_HIDE_DURATION_MS
+                }ms linear forwards`,
+              }}
             />
           </div>
         )}

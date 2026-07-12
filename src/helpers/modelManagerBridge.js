@@ -394,6 +394,7 @@ class ModelManager {
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? 512,
         disableThinking: options.disableThinking,
+        stop: options.stop,
       });
 
       const totalTime = Date.now() - startTime;

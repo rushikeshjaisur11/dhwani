@@ -12,6 +12,8 @@ export interface ReasoningConfig {
   customApiKey?: string;
   provider?: string;
   disableThinking?: boolean;
+  /** Stop sequence(s) the model should halt generation at (local provider only). */
+  stop?: string[];
 }
 
 export abstract class BaseReasoningService {

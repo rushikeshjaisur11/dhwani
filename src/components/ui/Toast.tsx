@@ -275,7 +275,7 @@ const Toast: React.FC<
         </button>
       )}
 
-      {duration > 0 && !isExiting && (
+      {duration > 0 && (
         <div className="absolute bottom-0 left-0.5 right-0 h-px overflow-hidden">
           <div
             className={cn("h-full", config.progressClass)}

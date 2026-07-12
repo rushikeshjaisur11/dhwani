@@ -26,6 +26,8 @@ class WindowManager {
     this.notificationWindow = null;
     this._notificationTimeout = null;
     this.transcriptionPreviewWindow = null;
+    this.lastTransformChange = null; // { name, before, after } from the most recent transform run
+    this.transformSlotIds = new Set(); // hotkeyManager slot names ("transform:<id>") currently registered
     this.updateNotificationWindow = null;
     this._updateNotificationDismissed = false;
     this.notificationPrefs = {
@@ -471,6 +473,67 @@ class WindowManager {
     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
       this.mainWindow.webContents.send("trigger-polish");
     }
+  }
+
+  sendTriggerTransform(transformId) {
+    // Same rationale as sendTriggerPolish: transforms operate on the current
+    // selection in the target app, so capture its PID for paste refocus.
+    if (this.textEditMonitor) this.textEditMonitor.captureTargetPid();
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      this.mainWindow.webContents.send("trigger-transform", transformId);
+    }
+  }
+
+  // Shows a "running" state in the transcription preview overlay while a
+  // transform's LLM call is in flight, mirroring the existing dictation
+  // "cleanup" phase. Reuses the same window as showTransformChanges below.
+  async showTransformProcessing(name) {
+    await this.ensureTranscriptionPreviewWindow();
+    if (!this.transcriptionPreviewWindow || this.transcriptionPreviewWindow.isDestroyed()) return;
+
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      const mainBounds = this.mainWindow.getBounds();
+      const display = screen.getDisplayNearestPoint({ x: mainBounds.x, y: mainBounds.y });
+      const position = WindowPositionUtil.getTranscriptionPreviewPosition(display, mainBounds, {
+        width: this.transcriptionPreviewWindow.getBounds().width,
+        height: this.transcriptionPreviewWindow.getBounds().height,
+      });
+      this.transcriptionPreviewWindow.setBounds(position);
+    }
+
+    this.transcriptionPreviewWindow.webContents.send("transform-processing", { name });
+    this.transcriptionPreviewWindow.showInactive();
+    WindowPositionUtil.setupAlwaysOnTop(this.transcriptionPreviewWindow);
+  }
+
+  // Redisplays the most recent transform's before/after in the existing
+  // transcription preview overlay (Win+Alt+O). Reuses that window/IPC
+  // channel instead of standing up a new overlay window.
+  async showLastTransformChanges() {
+    if (!this.lastTransformChange) return;
+    await this.showTransformChanges(this.lastTransformChange);
+  }
+
+  async showTransformChanges({ name, before, after }) {
+    await this.ensureTranscriptionPreviewWindow();
+    if (!this.transcriptionPreviewWindow || this.transcriptionPreviewWindow.isDestroyed()) return;
+
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      const mainBounds = this.mainWindow.getBounds();
+      const display = screen.getDisplayNearestPoint({
+        x: mainBounds.x,
+        y: mainBounds.y,
+      });
+      const position = WindowPositionUtil.getTranscriptionPreviewPosition(display, mainBounds, {
+        width: this.transcriptionPreviewWindow.getBounds().width,
+        height: this.transcriptionPreviewWindow.getBounds().height,
+      });
+      this.transcriptionPreviewWindow.setBounds(position);
+    }
+
+    this.transcriptionPreviewWindow.webContents.send("transform-changes", { name, before, after });
+    this.transcriptionPreviewWindow.showInactive();
+    WindowPositionUtil.setupAlwaysOnTop(this.transcriptionPreviewWindow);
   }
 
   sendStartDictation() {

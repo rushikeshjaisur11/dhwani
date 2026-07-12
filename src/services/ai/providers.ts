@@ -20,7 +20,7 @@ export function getAIModel(
     case "openai":
       return createOpenAI({ apiKey })(model);
     case "groq":
-      return createGroq({ apiKey })(model);
+      return createGroq({ apiKey })(model) as unknown as LanguageModel;
     case "anthropic":
       return createAnthropic({ apiKey })(model);
     case "gemini":

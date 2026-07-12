@@ -43,6 +43,7 @@ const PERSISTED_KEYS = [
   "CHAT_AGENT_KEY",
   "VOICE_AGENT_KEY",
   "POLISH_KEY",
+  "TRANSFORM_VIEW_KEY",
   "MEETING_KEY",
   "PASTE_LAST_TRANSCRIPT_KEY",
   "ACTIVATION_MODE",
@@ -481,6 +482,16 @@ class EnvironmentManager {
 
   savePolishKey(key) {
     const result = this._saveKey("POLISH_KEY", key);
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
+  getTransformViewKey() {
+    return this._getKey("TRANSFORM_VIEW_KEY");
+  }
+
+  saveTransformViewKey(key) {
+    const result = this._saveKey("TRANSFORM_VIEW_KEY", key);
     this.saveAllKeysToEnvFile().catch(() => {});
     return result;
   }

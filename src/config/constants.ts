@@ -121,6 +121,13 @@ export const CACHE_CONFIG = {
 // OpenWhispr Cloud API
 export const OPENWHISPR_API_URL = (env.VITE_OPENWHISPR_API_URL as string) || "";
 
+// Static, hosted JSON of default Transforms — editing this file pushes new/
+// updated defaults to all users without an app release. Falls back to the
+// bundled defaults (src/config/transforms/defaults.ts) if unreachable.
+export const TRANSFORMS_DEFAULTS_URL =
+  (env.VITE_TRANSFORMS_DEFAULTS_URL as string) ||
+  "https://raw.githubusercontent.com/rushikeshjaisur11/dhwani/main/config/transforms-defaults.json";
+
 // Retry Configuration
 export const RETRY_CONFIG = {
   MAX_RETRIES: 3,

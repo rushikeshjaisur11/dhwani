@@ -128,6 +128,36 @@ const CODE_TO_KEY: Record<string, string> = {
   MediaTrackPrevious: "MediaPreviousTrack",
 };
 
+// Windows virtual-key codes for the final (non-modifier) key, used only by
+// the native-capture path below. Covers the realistic "final key" set for a
+// global hotkey — digits, letters, function keys — not the full DOM
+// CODE_TO_KEY table (punctuation/numpad/media aren't needed here since
+// those combos don't involve the Windows key and already work via DOM).
+const VK_TO_KEY: Record<number, string> = {};
+for (let i = 0; i <= 9; i++) VK_TO_KEY[0x30 + i] = String(i); // '0'-'9'
+for (let i = 0; i < 26; i++) VK_TO_KEY[0x41 + i] = String.fromCharCode(65 + i); // 'A'-'Z'
+for (let i = 1; i <= 12; i++) VK_TO_KEY[0x6f + i] = `F${i}`; // F1-F12 (VK_F1=0x70)
+for (let i = 13; i <= 24; i++) VK_TO_KEY[0x7b + i - 12] = `F${i}`; // F13-F24 (VK_F13=0x7C)
+
+const VK_MODIFIER_CODE: Record<number, string> = {
+  0xa2: "ControlLeft",
+  0xa3: "ControlRight",
+  0xa4: "AltLeft",
+  0xa5: "AltRight",
+  0xa0: "ShiftLeft",
+  0xa1: "ShiftRight",
+  0x5b: "MetaLeft", // VK_LWIN
+  0x5c: "MetaRight", // VK_RWIN
+};
+
+function vkModifierKind(code: string): "ctrl" | "alt" | "shift" | "meta" | null {
+  if (code.startsWith("Control")) return "ctrl";
+  if (code.startsWith("Alt")) return "alt";
+  if (code.startsWith("Shift")) return "shift";
+  if (code.startsWith("Meta")) return "meta";
+  return null;
+}
+
 const MODIFIER_CODES = new Set([
   "ShiftLeft",
   "ShiftRight",
@@ -470,6 +500,90 @@ export function HotkeyInput({
       disposeUp?.();
     };
   }, [isCapturing, isMac, finalizeCapture]);
+
+  // Windows: a bare Win keydown/keyup is consumed by the Start Menu shell
+  // hook before it reaches most apps' normal input path, so a physical
+  // Win+Alt+<digit> press can't be relied on to reach the DOM handlers
+  // above. Run the native low-level-hook capture in parallel — it reports
+  // every raw key event, including the Windows key, and feeds the same
+  // held-modifiers state / finalizeCapture path as the DOM handlers.
+  useEffect(() => {
+    if (!isCapturing || !isWindows) return;
+
+    window.electronAPI?.startHotkeyCapture?.();
+
+    const dispose = window.electronAPI?.onHotkeyCaptureEvent?.(({ type, vkCode }) => {
+      const modCode = VK_MODIFIER_CODE[vkCode];
+      if (modCode) {
+        const kind = vkModifierKind(modCode);
+        if (!kind) return;
+
+        if (type === "down") {
+          // Mirrors DOM handleKeyDown: a snapshot of held modifiers, only
+          // ever written on keydown (keyup below reads it, doesn't mutate
+          // it, matching the DOM path's "finalize on first release" model).
+          heldModifiersRef.current[kind] = true;
+          modifierCodesRef.current[kind] = modCode;
+          if (keyDownTimeRef.current === 0) keyDownTimeRef.current = Date.now();
+
+          const mods = new Set<string>();
+          if (heldModifiersRef.current.ctrl) mods.add("Ctrl");
+          if (heldModifiersRef.current.meta) mods.add("Win");
+          if (heldModifiersRef.current.alt) mods.add("Alt");
+          if (heldModifiersRef.current.shift) mods.add("Shift");
+          setActiveModifiers(mods);
+          return;
+        }
+
+        // keyup: mirrors DOM handleKeyUp exactly.
+        const wasHoldingModifiers =
+          heldModifiersRef.current.ctrl ||
+          heldModifiersRef.current.meta ||
+          heldModifiersRef.current.alt ||
+          heldModifiersRef.current.shift;
+
+        let attempted = false;
+        if (wasHoldingModifiers) {
+          const holdDuration = Date.now() - keyDownTimeRef.current;
+          if (holdDuration >= MODIFIER_HOLD_THRESHOLD_MS) {
+            const modifierHotkey = buildModifierOnlyHotkey(
+              heldModifiersRef.current,
+              modifierCodesRef.current
+            );
+            if (modifierHotkey) {
+              attempted = true;
+              finalizeCapture(modifierHotkey);
+            }
+          }
+        }
+
+        if (!attempted) {
+          heldModifiersRef.current = { ctrl: false, meta: false, alt: false, shift: false };
+          modifierCodesRef.current = {};
+          setActiveModifiers(new Set());
+          keyDownTimeRef.current = 0;
+        }
+        return;
+      }
+
+      if (type !== "down") return;
+      const baseKey = VK_TO_KEY[vkCode];
+      if (!baseKey) return;
+
+      const parts: string[] = [];
+      if (heldModifiersRef.current.ctrl) parts.push("Control");
+      if (heldModifiersRef.current.meta) parts.push("Super");
+      if (heldModifiersRef.current.alt) parts.push("Alt");
+      if (heldModifiersRef.current.shift) parts.push("Shift");
+      keyDownTimeRef.current = 0;
+      finalizeCapture(parts.length > 0 ? [...parts, baseKey].join("+") : baseKey);
+    });
+
+    return () => {
+      dispose?.();
+      window.electronAPI?.stopHotkeyCapture?.();
+    };
+  }, [isCapturing, isWindows, finalizeCapture, buildModifierOnlyHotkey]);
 
   const displayValue = formatHotkeyLabel(value);
   const isGlobe = isGlobeLikeHotkey(value);

@@ -8,6 +8,7 @@ interface LocalReasoningConfig {
   maxTokens?: number;
   temperature?: number;
   contextSize?: number;
+  systemPrompt?: string;
 }
 
 class LocalReasoningService extends BaseReasoningService {
@@ -63,6 +64,7 @@ class LocalReasoningService extends BaseReasoningService {
         maxTokens,
         temperature: config.temperature || inferenceOptions.temperature,
         contextSize: config.contextSize || TOKEN_LIMITS.REASONING_CONTEXT_SIZE,
+        systemPrompt: config.systemPrompt,
       });
 
       const processingTime = Date.now() - startTime;

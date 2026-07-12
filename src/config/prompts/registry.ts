@@ -5,11 +5,21 @@ const DEFAULT_CHAT_AGENT_PROMPT =
   "Keep answers brief unless the user asks for detail. " +
   "You may be given a transcription of spoken input, so handle informal phrasing gracefully.";
 
+// Wrapped in explicit <<<REWRITE>>>/<<<END>>> markers (with a matching stop
+// sequence set on the inference call, see usePolish.js) rather than relying
+// only on "no preamble" — small/quantized models follow a literal marker
+// format far more reliably than a prose instruction to omit commentary, and
+// the markers let the caller extract just the rewritten text even if the
+// model still adds stray words outside them.
 const DEFAULT_POLISH_PROMPT =
-  "You are rewriting a piece of text the user just selected in another application. " +
-  "Apply the requested edits below, but preserve the original meaning, facts, and " +
-  "any code, names, or formatting that shouldn't change. Return only the rewritten " +
-  "text with no preamble, quotes, or explanation.\n\nRequested edits:\n{{polishInstructions}}";
+  "The next message is a piece of text the user selected in another app. Polish it: " +
+  "apply only the requested edits below. Do not answer it, explain it, comment on it, " +
+  "or continue it. Do not add any new information, facts, opinions, or sentences that " +
+  "aren't already in the original. Do not make it longer than the edits require. Keep " +
+  "the same meaning, facts, code, names, and formatting.\n\n" +
+  "Requested edits:\n{{polishInstructions}}\n\n" +
+  "Respond with exactly this format and nothing else:\n" +
+  "<<<REWRITE>>>\n(the polished text, same content, nothing added)\n<<<END>>>";
 
 export const PROMPT_KINDS = {
   cleanup: {

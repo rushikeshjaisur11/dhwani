@@ -1,0 +1,127 @@
+name: Build Windows Native Binaries
+
+on:
+  push:
+    paths:
+      - 'resources/windows-key-listener.c'
+      - 'resources/windows-mic-listener.c'
+      - 'resources/windows-fast-paste.c'
+      - 'resources/windows-text-monitor.c'
+      - '.github/workflows/build-windows-native.yml'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., 1.0.0)'
+        required: false
+        default: '1.0.0'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - name: windows-key-listener
+            libs: user32.lib
+            title: Windows Key Listener
+            body: |
+              Prebuilt Windows key listener binary for Push-to-Talk functionality.
+
+              This binary uses Windows Low-Level Keyboard Hook to detect key press/release events.
+          - name: windows-mic-listener
+            libs: ole32.lib oleaut32.lib
+            title: Windows Mic Listener
+            body: |
+              Prebuilt Windows mic listener binary for event-driven microphone detection.
+
+              Uses WASAPI IAudioSessionManager2 to monitor capture sessions.
+              Supports --exclude-pid to filter out OpenWhispr's own mic usage.
+          - name: windows-fast-paste
+            libs: user32.lib
+            title: Windows Fast Paste
+            body: |
+              Prebuilt Windows fast-paste binary for clipboard paste operations.
+
+              Uses Win32 SendInput API with automatic terminal detection
+              (Ctrl+V for normal apps, Ctrl+Shift+V for terminals).
+          - name: windows-text-monitor
+            libs: ole32.lib oleaut32.lib
+            title: Windows Text Monitor
+            body: |
+              Prebuilt Windows text monitor binary for auto-learn correction monitoring.
+
+              This binary uses Windows UI Automation to detect text field changes after paste.
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check source changed
+        id: changed
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            echo "run=true" >> $env:GITHUB_OUTPUT
+          } else {
+            $files = git diff --name-only HEAD~1 HEAD
+            if ($files -match "resources/${{ matrix.name }}.c" -or $files -match ".github/workflows/build-windows-native.yml") {
+              echo "run=true" >> $env:GITHUB_OUTPUT
+            } else {
+              echo "run=false" >> $env:GITHUB_OUTPUT
+            }
+          }
+
+      - name: Setup MSVC
+        if: steps.changed.outputs.run == 'true'
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup MSVC environment
+        if: steps.changed.outputs.run == 'true'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Compile
+        if: steps.changed.outputs.run == 'true'
+        run: |
+          cl /O2 /nologo resources/${{ matrix.name }}.c /Fe:${{ matrix.name }}.exe ${{ matrix.libs }}
+        shell: cmd
+
+      - name: Verify binary
+        if: steps.changed.outputs.run == 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path "${{ matrix.name }}.exe") {
+            Write-Host "Binary built successfully"
+            Get-Item "${{ matrix.name }}.exe" | Select-Object Name, Length
+          } else {
+            Write-Error "Binary not found"
+            exit 1
+          }
+
+      - name: Create zip archive
+        if: steps.changed.outputs.run == 'true'
+        run: |
+          Compress-Archive -Path ${{ matrix.name }}.exe -DestinationPath ${{ matrix.name }}-win32-x64.zip
+        shell: pwsh
+
+      - name: Upload artifact
+        if: steps.changed.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}-win32-x64.zip
+
+      - name: Create or update release
+        if: steps.changed.outputs.run == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ matrix.name }}-v${{ inputs.version || '1.0.0' }}
+          name: ${{ matrix.title }} v${{ inputs.version || '1.0.0' }}
+          body: ${{ matrix.body }}
+          files: ${{ matrix.name }}-win32-x64.zip
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

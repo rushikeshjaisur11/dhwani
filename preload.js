@@ -29,6 +29,29 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onToggleDictation: registerListener("toggle-dictation", (callback) => () => callback()),
   onToggleVoiceAgent: registerListener("toggle-voice-agent", (callback) => () => callback()),
   onTriggerPolish: registerListener("trigger-polish", (callback) => () => callback()),
+  onTriggerTransform: registerListener(
+    "trigger-transform",
+    (callback) => (_event, transformId) => callback(transformId)
+  ),
+  onTransformChanges: registerListener(
+    "transform-changes",
+    (callback) => (_event, payload) => callback(payload)
+  ),
+  onTransformProcessing: registerListener(
+    "transform-processing",
+    (callback) => (_event, payload) => callback(payload)
+  ),
+  recordTransformResult: (payload) => ipcRenderer.invoke("record-transform-result", payload),
+  showTransformProcessing: (name) => ipcRenderer.invoke("show-transform-processing", name),
+  registerTransformHotkey: (id, hotkey) =>
+    ipcRenderer.invoke("register-transform-hotkey", { id, hotkey }),
+  syncTransformHotkeys: (list) => ipcRenderer.invoke("sync-transform-hotkeys", list),
+  startHotkeyCapture: () => ipcRenderer.invoke("start-hotkey-capture"),
+  stopHotkeyCapture: () => ipcRenderer.invoke("stop-hotkey-capture"),
+  onHotkeyCaptureEvent: registerListener(
+    "hotkey-capture-event",
+    (callback) => (_event, payload) => callback(payload)
+  ),
   onStartDictation: registerListener("start-dictation", (callback) => () => callback()),
   onStopDictation: registerListener("stop-dictation", (callback) => () => callback()),
 

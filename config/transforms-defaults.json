@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "builtin-polish",
+      "name": "Polish",
+      "prompt": "Rewrite the text to sound clearer and more polished, in the author's own voice. Make it more concise, improve clarity and flow, and preserve the original tone. Do not add new information.",
+      "shortcut": "Win+Alt+1",
+      "builtin": true
+    },
+    {
+      "id": "builtin-prompt-engineer",
+      "name": "Prompt Engineer",
+      "prompt": "Take the messy, spoken, unstructured text and convert it into a clean, optimized AI prompt with sections for Title, Role & stance, Task, Context, and Inputs available, as appropriate to the content.",
+      "shortcut": "Win+Alt+2",
+      "builtin": true
+    }
+  ]
+}
