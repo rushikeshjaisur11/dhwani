@@ -377,7 +377,7 @@ export default function TranscriptionPreviewOverlay() {
             </div>
           </div>
         ) : (
-          activeText && (
+          !!activeText && (
             <div className="relative mt-2">
               {hasOverflow && (
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-5 rounded-t-lg bg-gradient-to-b from-background/60 to-transparent dark:from-surface-2/60" />
