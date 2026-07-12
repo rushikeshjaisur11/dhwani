@@ -35,7 +35,7 @@ jobs:
 
               This binary uses Windows Low-Level Keyboard Hook to detect key press/release events.
           - name: windows-mic-listener
-            libs: ole32.lib oleaut32.lib
+            libs: ole32.lib oleaut32.lib uuid.lib
             title: Windows Mic Listener
             body: |
               Prebuilt Windows mic listener binary for event-driven microphone detection.
@@ -51,7 +51,7 @@ jobs:
               Uses Win32 SendInput API with automatic terminal detection
               (Ctrl+V for normal apps, Ctrl+Shift+V for terminals).
           - name: windows-text-monitor
-            libs: ole32.lib oleaut32.lib
+            libs: ole32.lib oleaut32.lib uuid.lib
             title: Windows Text Monitor
             body: |
               Prebuilt Windows text monitor binary for auto-learn correction monitoring.
