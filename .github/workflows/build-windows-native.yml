@@ -35,7 +35,7 @@ jobs:
 
               This binary uses Windows Low-Level Keyboard Hook to detect key press/release events.
           - name: windows-mic-listener
-            libs: ole32.lib oleaut32.lib uuid.lib
+            libs: ole32.lib oleaut32.lib uuid.lib user32.lib
             title: Windows Mic Listener
             body: |
               Prebuilt Windows mic listener binary for event-driven microphone detection.
