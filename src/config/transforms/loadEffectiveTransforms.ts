@@ -14,11 +14,18 @@ export interface Transform {
   builtin?: boolean;
 }
 
+// Polish isn't a real transform-pipeline entry — it's a UI mirror of the
+// pre-existing Settings Polish feature (same "polish" hotkey slot, same
+// settings, same usePolish.js execution), so users don't end up with two
+// separately-configured "Polish" hotkeys. Never registered via
+// registerTransformHotkey/syncTransformHotkeys.
+export const BUILTIN_POLISH_ID = "builtin-polish";
+
 export const DEFAULTS_VERSION = 1;
 
 export const BUNDLED_DEFAULTS: Transform[] = [
   {
-    id: "builtin-polish",
+    id: BUILTIN_POLISH_ID,
     name: "Polish",
     prompt:
       "Rewrite the text to sound clearer and more polished, in the author's own voice. Make it more concise, improve clarity and flow, and preserve the original tone. Do not add new information.",
@@ -37,13 +44,6 @@ export const BUNDLED_DEFAULTS: Transform[] = [
 
 const CACHE_KEY = "transformDefaultsCache";
 const CUSTOMS_KEY = "customTransforms";
-const HIDDEN_KEY = "hiddenTransformDefaults";
-// User-assigned shortcut overrides for builtin/default transforms, keyed by
-// id. Customs store their shortcut directly on the object (fully
-// user-owned), but defaults come from the bundled/remote source, so a
-// remote refresh must not clobber a user's own remap — kept as a separate
-// override layer instead.
-const SHORTCUT_OVERRIDES_KEY = "transformShortcutOverrides";
 const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000; // once/day
 
 interface DefaultsCache {
@@ -82,22 +82,11 @@ export function migrateLegacyCustoms(raw: unknown): Transform[] {
     }));
 }
 
-// Effective list = (defaults - hidden, with shortcut overrides applied) ++
-// customs. Pure so it's unit-testable.
-export function mergeTransforms(
-  defaults: Transform[],
-  hiddenDefaultIds: string[],
-  customs: Transform[],
-  shortcutOverrides: Record<string, string> = {}
-): Transform[] {
-  const visibleDefaults = defaults
-    .filter((d) => !hiddenDefaultIds.includes(d.id))
-    .map((d) =>
-      Object.prototype.hasOwnProperty.call(shortcutOverrides, d.id)
-        ? { ...d, shortcut: shortcutOverrides[d.id] || undefined }
-        : d
-    );
-  return [...visibleDefaults, ...customs];
+// Effective list = defaults ++ customs. Defaults are fixed (never removable,
+// never remappable) so no override/hidden-ids layer is needed here. Pure so
+// it's unit-testable.
+export function mergeTransforms(defaults: Transform[], customs: Transform[]): Transform[] {
+  return [...defaults, ...customs];
 }
 
 function readCache(): DefaultsCache | null {
@@ -155,48 +144,11 @@ export function saveCustoms(customs: Transform[]) {
   localStorage.setItem(CUSTOMS_KEY, JSON.stringify(customs));
 }
 
-export function loadHiddenDefaultIds(): string[] {
-  try {
-    const raw = localStorage.getItem(HIDDEN_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.filter((id) => typeof id === "string") : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveHiddenDefaultIds(ids: string[]) {
-  localStorage.setItem(HIDDEN_KEY, JSON.stringify(ids));
-}
-
-export function clearHiddenDefaultIds() {
-  localStorage.removeItem(HIDDEN_KEY);
-}
-
-export function loadShortcutOverrides(): Record<string, string> {
-  try {
-    const raw = localStorage.getItem(SHORTCUT_OVERRIDES_KEY);
-    const parsed = raw ? JSON.parse(raw) : {};
-    if (!parsed || typeof parsed !== "object") return {};
-    const result: Record<string, string> = {};
-    for (const [id, hotkey] of Object.entries(parsed)) {
-      if (typeof hotkey === "string") result[id] = hotkey;
-    }
-    return result;
-  } catch {
-    return {};
-  }
-}
-
-export function saveShortcutOverrides(overrides: Record<string, string>) {
-  localStorage.setItem(SHORTCUT_OVERRIDES_KEY, JSON.stringify(overrides));
-}
-
 // Synchronous variant for callers that can't await a network fetch (e.g. a
 // global-hotkey handler that must respond immediately). Uses whatever
 // defaults are already cached/bundled — never triggers a fetch itself.
 export function getEffectiveTransformsSync(): Transform[] {
   const cache = readCache();
   const defaults = cache?.items ?? BUNDLED_DEFAULTS;
-  return mergeTransforms(defaults, loadHiddenDefaultIds(), loadCustoms(), loadShortcutOverrides());
+  return mergeTransforms(defaults, loadCustoms());
 }

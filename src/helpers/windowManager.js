@@ -484,6 +484,28 @@ class WindowManager {
     }
   }
 
+  // Shows a "running" state in the transcription preview overlay while a
+  // transform's LLM call is in flight, mirroring the existing dictation
+  // "cleanup" phase. Reuses the same window as showTransformChanges below.
+  async showTransformProcessing(name) {
+    await this.ensureTranscriptionPreviewWindow();
+    if (!this.transcriptionPreviewWindow || this.transcriptionPreviewWindow.isDestroyed()) return;
+
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      const mainBounds = this.mainWindow.getBounds();
+      const display = screen.getDisplayNearestPoint({ x: mainBounds.x, y: mainBounds.y });
+      const position = WindowPositionUtil.getTranscriptionPreviewPosition(display, mainBounds, {
+        width: this.transcriptionPreviewWindow.getBounds().width,
+        height: this.transcriptionPreviewWindow.getBounds().height,
+      });
+      this.transcriptionPreviewWindow.setBounds(position);
+    }
+
+    this.transcriptionPreviewWindow.webContents.send("transform-processing", { name });
+    this.transcriptionPreviewWindow.showInactive();
+    WindowPositionUtil.setupAlwaysOnTop(this.transcriptionPreviewWindow);
+  }
+
   // Redisplays the most recent transform's before/after in the existing
   // transcription preview overlay (Win+Alt+O). Reuses that window/IPC
   // channel instead of standing up a new overlay window.

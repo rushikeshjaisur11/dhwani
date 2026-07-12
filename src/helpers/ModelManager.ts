@@ -216,7 +216,7 @@ class ModelManager {
 
     const config = inferenceConfig.getConfig();
     const finalOptions = { ...config, ...options };
-    const formattedPrompt = provider.formatPrompt(prompt, "");
+    const formattedPrompt = provider.formatPrompt(prompt, finalOptions.systemPrompt || "");
 
     const args = [
       "-m",

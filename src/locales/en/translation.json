@@ -3012,6 +3012,7 @@
     "copied": "Copied",
     "waitingForInput": "Say something...",
     "transformApplied": "{{name}} applied",
+    "transformProcessing": "{{name}}...",
     "before": "Before",
     "after": "After"
   },

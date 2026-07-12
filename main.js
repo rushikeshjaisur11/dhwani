@@ -1006,12 +1006,14 @@ async function startApp() {
   };
   windowManager._polishHotkeyCallback = polishHotkeyCallback;
 
-  const savedPolishKey = environmentManager.getPolishKey?.() || "";
-  if (savedPolishKey) {
-    const result = await hotkeyManager.registerSlot("polish", savedPolishKey, polishHotkeyCallback);
-    if (!result.success) {
-      debugLogger.warn("Failed to restore polish hotkey", { hotkey: savedPolishKey }, "hotkey");
-    }
+  // Defaults to Win+Alt+1 (matches the Transforms page's Polish card, which
+  // reuses this exact slot/settings rather than duplicating Polish as its
+  // own transform) when the user has never set — or explicitly cleared —
+  // their own Polish hotkey.
+  const savedPolishKey = environmentManager.getPolishKey?.() || "Super+Alt+1";
+  const polishResult = await hotkeyManager.registerSlot("polish", savedPolishKey, polishHotkeyCallback);
+  if (!polishResult.success) {
+    debugLogger.warn("Failed to register polish hotkey", { hotkey: savedPolishKey }, "hotkey");
   }
 
   ipcMain.handle("register-polish-hotkey", async (_event, hotkey) => {
@@ -1055,6 +1057,11 @@ async function startApp() {
       payload && typeof payload.before === "string" && typeof payload.after === "string"
         ? payload
         : null;
+    return { success: true };
+  });
+
+  ipcMain.handle("show-transform-processing", async (_event, name) => {
+    await windowManager.showTransformProcessing(typeof name === "string" ? name : "");
     return { success: true };
   });
 
@@ -1596,6 +1603,10 @@ async function startApp() {
       }
       if (key === hotkeyManager.getSlotHotkey("meeting")) {
         if (!hotkeyManager.isInListeningMode()) meetingDetectionEngine?.startManualMeeting();
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("polish")) {
+        if (!hotkeyManager.isInListeningMode()) windowManager.sendTriggerPolish();
         return;
       }
       // Per-transform hotkeys are dynamic (one slot per user-created

@@ -2071,6 +2071,11 @@ Would you like to open System Settings now?`;
     clipboard.writeText("");
 
     await new Promise((resolve) => {
+      // Leading {ESC} dismisses any lingering Alt-mnemonic/keytip overlay a
+      // preceding Alt-based global hotkey may have left the target app in
+      // (its resolving keypress was consumed by our hook, not delivered to
+      // the app) — without it, ^c can land mid-keytip-mode and get eaten
+      // instead of copying. Harmless no-op in a plain text field otherwise.
       const copyProcess = spawn("powershell.exe", [
         "-NoProfile",
         "-NonInteractive",
@@ -2079,7 +2084,7 @@ Would you like to open System Settings now?`;
         "-ExecutionPolicy",
         "Bypass",
         "-Command",
-        "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('^c')",
+        "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('{ESC}^c')",
       ]);
       copyProcess.on("close", () => resolve());
       copyProcess.on("error", () => resolve());

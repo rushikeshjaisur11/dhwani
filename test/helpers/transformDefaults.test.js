@@ -4,7 +4,7 @@ const assert = require("node:assert/strict");
 // Requires Node's native TypeScript type-stripping (Node >= 22.6 with
 // --experimental-strip-types, on by default in Node 23.6+/24). CI runs Node 24.
 
-test("mergeTransforms hides removed defaults but keeps user customs", async () => {
+test("mergeTransforms concatenates defaults and user customs, defaults never removed", async () => {
   const { mergeTransforms } = await import(
     "../../src/config/transforms/loadEffectiveTransforms.ts"
   );
@@ -15,11 +15,7 @@ test("mergeTransforms hides removed defaults but keeps user customs", async () =
   ];
   const customs = [{ id: "custom-1", name: "My Transform", prompt: "custom prompt", builtin: false }];
 
-  assert.deepEqual(mergeTransforms(defaults, [], customs), [...defaults, ...customs]);
-  assert.deepEqual(mergeTransforms(defaults, ["builtin-polish"], customs), [
-    defaults[1],
-    ...customs,
-  ]);
+  assert.deepEqual(mergeTransforms(defaults, customs), [...defaults, ...customs]);
 });
 
 test("migrateLegacyCustoms assigns ids to pre-existing {name, prompt} rows", async () => {

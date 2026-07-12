@@ -37,7 +37,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
     "transform-changes",
     (callback) => (_event, payload) => callback(payload)
   ),
+  onTransformProcessing: registerListener(
+    "transform-processing",
+    (callback) => (_event, payload) => callback(payload)
+  ),
   recordTransformResult: (payload) => ipcRenderer.invoke("record-transform-result", payload),
+  showTransformProcessing: (name) => ipcRenderer.invoke("show-transform-processing", name),
   registerTransformHotkey: (id, hotkey) =>
     ipcRenderer.invoke("register-transform-hotkey", { id, hotkey }),
   syncTransformHotkeys: (list) => ipcRenderer.invoke("sync-transform-hotkeys", list),

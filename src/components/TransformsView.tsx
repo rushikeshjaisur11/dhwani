@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, RotateCcw, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -11,18 +11,16 @@ import ToggleSwitch from "./ui/ToggleSwitch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
 import { useToast } from "./ui/useToast";
 import { useHotkeyRegistration } from "../hooks/useHotkeyRegistration";
+import { useSettingsStore } from "../stores/settingsStore";
+import { formatHotkeyLabel } from "../utils/hotkeys";
 import TransformPreviewDialog from "./TransformPreviewDialog";
 import { TRANSFORMS_DEFAULTS_URL } from "../config/constants";
 import {
   BUNDLED_DEFAULTS,
+  BUILTIN_POLISH_ID,
   resolveDefaults,
   loadCustoms,
   saveCustoms,
-  loadHiddenDefaultIds,
-  saveHiddenDefaultIds,
-  clearHiddenDefaultIds,
-  loadShortcutOverrides,
-  saveShortcutOverrides,
   mergeTransforms,
   type Transform,
 } from "../config/transforms/loadEffectiveTransforms";
@@ -36,20 +34,29 @@ interface TransformCardProps {
   onOpenPreview: () => void;
 }
 
-// Its own component so each card can independently call useHotkeyRegistration
-// (a per-transform hotkey needs a per-transform hook instance) — hooks can't
-// be called conditionally inside the parent's .map().
+// Its own component so each custom card can independently call
+// useHotkeyRegistration (a per-transform hotkey needs a per-transform hook
+// instance) — hooks can't be called conditionally inside the parent's .map().
 function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }: TransformCardProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  // Polish mirrors the existing Settings Polish hotkey rather than owning
+  // its own; the other builtin (Prompt Engineer) is fixed at Win+Alt+2 —
+  // neither is customizable here, only user-created transforms are.
+  const polishKey = useSettingsStore((s) => s.polishKey);
 
   const { registerHotkey, isRegistering } = useHotkeyRegistration({
     onSuccess: (hotkey) => onShortcutChange(transform, hotkey),
     showSuccessToast: false,
     showErrorToast: true,
     showAlert: (opts) => toast(opts),
-    registerFn: (hotkey) => window.electronAPI?.registerTransformHotkey?.(transform.id, hotkey) ?? Promise.resolve({ success: false }),
+    registerFn: (hotkey) =>
+      window.electronAPI?.registerTransformHotkey?.(transform.id, hotkey) ??
+      Promise.resolve({ success: false }),
   });
+
+  const displayShortcut =
+    transform.id === BUILTIN_POLISH_ID ? polishKey || transform.shortcut || "" : transform.shortcut || "";
 
   return (
     <div
@@ -59,29 +66,45 @@ function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }:
       onKeyDown={(e) => e.key === "Enter" && onOpenPreview()}
       className="group relative rounded-xl border border-border bg-card p-4 flex flex-col gap-2 text-left cursor-pointer hover:bg-muted/40 transition-colors"
     >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove(transform);
-        }}
-        aria-label={t("transforms.remove", { name: transform.name })}
-        className="absolute top-3 right-3 p-1 text-foreground/25 hover:text-destructive/70 transition-colors opacity-0 group-hover:opacity-100"
-      >
-        <Trash2 size={12} />
-      </button>
+      {!transform.builtin && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(transform);
+          }}
+          aria-label={t("transforms.remove", { name: transform.name })}
+          className="absolute top-3 right-3 p-1 text-foreground/25 hover:text-destructive/70 transition-colors opacity-0 group-hover:opacity-100"
+        >
+          <Trash2 size={12} />
+        </button>
+      )}
       <p className="text-sm font-semibold text-foreground pr-5">{transform.name}</p>
       <p className="text-xs text-muted-foreground line-clamp-2">{transform.prompt}</p>
-      <div onClick={(e) => e.stopPropagation()} className="mt-1 w-[150px]">
-        <HotkeyInput
-          value={transform.shortcut || ""}
-          onChange={(hotkey) => void registerHotkey(hotkey)}
-          onClear={() => {
-            window.electronAPI?.registerTransformHotkey?.(transform.id, "");
-            onShortcutChange(transform, "");
-          }}
-          disabled={isRegistering}
-        />
-      </div>
+      {transform.builtin ? (
+        displayShortcut && (
+          <div className="flex items-center gap-1 mt-1">
+            {formatHotkeyLabel(displayShortcut)
+              .split("+")
+              .map((key) => (
+                <Kbd key={key} className="text-[10px] px-1.5 py-0.5">
+                  {key}
+                </Kbd>
+              ))}
+          </div>
+        )
+      ) : (
+        <div onClick={(e) => e.stopPropagation()} className="mt-1 w-[150px]">
+          <HotkeyInput
+            value={transform.shortcut || ""}
+            onChange={(hotkey) => void registerHotkey(hotkey)}
+            onClear={() => {
+              window.electronAPI?.registerTransformHotkey?.(transform.id, "");
+              onShortcutChange(transform, "");
+            }}
+            disabled={isRegistering}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -90,10 +113,6 @@ export default function TransformsView() {
   const { t } = useTranslation();
   const [defaults, setDefaults] = useState<Transform[]>(BUNDLED_DEFAULTS);
   const [customs, setCustoms] = useState<Transform[]>(loadCustoms);
-  const [hiddenDefaultIds, setHiddenDefaultIds] = useState<string[]>(loadHiddenDefaultIds);
-  const [shortcutOverrides, setShortcutOverrides] = useState<Record<string, string>>(
-    loadShortcutOverrides
-  );
   const [optIn, setOptIn] = useState(() => localStorage.getItem(OPT_IN_KEY) === "true");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -115,10 +134,7 @@ export default function TransformsView() {
     localStorage.setItem(OPT_IN_KEY, String(optIn));
   }, [optIn]);
 
-  const transforms = useMemo(
-    () => mergeTransforms(defaults, hiddenDefaultIds, customs, shortcutOverrides),
-    [defaults, hiddenDefaultIds, customs, shortcutOverrides]
-  );
+  const transforms = useMemo(() => mergeTransforms(defaults, customs), [defaults, customs]);
 
   const canCreate = name.trim() && prompt.trim();
 
@@ -133,37 +149,17 @@ export default function TransformsView() {
     setDialogOpen(false);
   };
 
+  // Defaults (Polish, Prompt Engineer) aren't removable — only customs reach
+  // this handler (their card is the only one with a remove button).
   const handleRemove = (tr: Transform) => {
     if (tr.shortcut) window.electronAPI?.registerTransformHotkey?.(tr.id, "");
-    if (tr.builtin) {
-      const next = [...hiddenDefaultIds, tr.id];
-      setHiddenDefaultIds(next);
-      saveHiddenDefaultIds(next);
-    } else {
-      setCustoms(customs.filter((c) => c.id !== tr.id));
-    }
+    setCustoms(customs.filter((c) => c.id !== tr.id));
   };
 
-  // Un-hides any removed defaults; keeps user-created transforms so a
-  // defaults refresh (or reset) never loses the user's own work.
-  const handleReset = () => {
-    clearHiddenDefaultIds();
-    setHiddenDefaultIds([]);
-  };
-
-  // Builtins get their remap stored in the override layer (their own
-  // `shortcut` field comes from the bundled/remote defaults and shouldn't be
-  // mutated); customs own their `shortcut` field directly.
+  // Only reached for customs (builtins render a static Kbd display, not a
+  // HotkeyInput, so onShortcutChange never fires for them).
   const handleShortcutChange = (tr: Transform, hotkey: string) => {
-    if (tr.builtin) {
-      const next = { ...shortcutOverrides };
-      if (hotkey) next[tr.id] = hotkey;
-      else delete next[tr.id];
-      setShortcutOverrides(next);
-      saveShortcutOverrides(next);
-    } else {
-      setCustoms(customs.map((c) => (c.id === tr.id ? { ...c, shortcut: hotkey || undefined } : c)));
-    }
+    setCustoms(customs.map((c) => (c.id === tr.id ? { ...c, shortcut: hotkey || undefined } : c)));
   };
 
   return (
@@ -227,18 +223,9 @@ export default function TransformsView() {
 
       <div className="flex items-center justify-between">
         <h3 className="font-serif text-lg text-foreground">{t("transforms.myTransforms")}</h3>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <RotateCcw size={11} />
-            {t("transforms.resetToDefaults")}
-          </button>
-          <Button size="sm" onClick={() => setDialogOpen(true)}>
-            {t("transforms.createNew")}
-          </Button>
-        </div>
+        <Button size="sm" onClick={() => setDialogOpen(true)}>
+          {t("transforms.createNew")}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

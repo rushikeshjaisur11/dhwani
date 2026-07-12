@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Copy, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-type PreviewPhase = "listening" | "live" | "cleanup" | "final" | "changes";
+type PreviewPhase = "listening" | "live" | "cleanup" | "final" | "changes" | "transformProcessing";
 
 const FINAL_HIDE_DURATION_MS = 4000;
 const CHANGES_HIDE_DURATION_MS = 6000;
@@ -22,6 +22,7 @@ export default function TranscriptionPreviewOverlay() {
   const [changesName, setChangesName] = useState("");
   const [changesBefore, setChangesBefore] = useState("");
   const [changesAfter, setChangesAfter] = useState("");
+  const [processingName, setProcessingName] = useState("");
 
   const shellRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
@@ -64,7 +65,13 @@ export default function TranscriptionPreviewOverlay() {
   }, []);
 
   const activeText =
-    phase === "changes" ? changesAfter : phase === "final" ? finalText || rawText : rawText;
+    phase === "changes"
+      ? changesAfter
+      : phase === "transformProcessing"
+        ? ""
+        : phase === "final"
+          ? finalText || rawText
+          : rawText;
 
   useEffect(() => {
     if (phase === "final" || phase === "changes") {
@@ -197,6 +204,18 @@ export default function TranscriptionPreviewOverlay() {
       startHideTimer(CHANGES_HIDE_DURATION_MS);
     });
 
+    // A transform's hotkey was pressed and its LLM call is running — no
+    // fixed duration (unlike final/changes), stays until the run finishes
+    // and either transform-changes or preview-hide replaces it.
+    const handleTransformProcessing = window.electronAPI?.onTransformProcessing?.((payload) => {
+      clearLifecycleTimers();
+      clearTimer(copiedTimerRef);
+      setProcessingName(payload?.name || "");
+      setCopied(false);
+      setPhase("transformProcessing");
+      setIsVisible(true);
+    });
+
     return () => {
       clearLifecycleTimers();
       clearTimer(copiedTimerRef);
@@ -206,6 +225,7 @@ export default function TranscriptionPreviewOverlay() {
       handlePreviewResult?.();
       handlePreviewHide?.();
       handleTransformChanges?.();
+      handleTransformProcessing?.();
     };
   }, [clearLifecycleTimers, showFinalResult, startHideTimer]);
 
@@ -249,11 +269,16 @@ export default function TranscriptionPreviewOverlay() {
           defaultValue: "{{name}} applied",
           name: changesName,
         })
-      : phase === "final"
-        ? t("transcriptionPreview.ready", { defaultValue: "Ready" })
-        : phase === "cleanup"
-          ? t("transcriptionPreview.polishing", { defaultValue: "Polishing..." })
-          : t("transcriptionPreview.listening", { defaultValue: "Listening..." });
+      : phase === "transformProcessing"
+        ? t("transcriptionPreview.transformProcessing", {
+            defaultValue: "{{name}}...",
+            name: processingName,
+          })
+        : phase === "final"
+          ? t("transcriptionPreview.ready", { defaultValue: "Ready" })
+          : phase === "cleanup"
+            ? t("transcriptionPreview.polishing", { defaultValue: "Polishing..." })
+            : t("transcriptionPreview.listening", { defaultValue: "Listening..." });
 
   return (
     <div className="meeting-notification-window h-full w-full bg-transparent p-2">
@@ -265,7 +290,7 @@ export default function TranscriptionPreviewOverlay() {
           "dark:bg-surface-2/92",
           phase === "final" || phase === "changes"
             ? "border-emerald-500/18 dark:border-emerald-500/20"
-            : phase === "cleanup"
+            : phase === "cleanup" || phase === "transformProcessing"
               ? "border-accent/22 dark:border-accent/25"
               : "border-border/40 dark:border-border-subtle/45",
           "transition-all duration-200 ease-out",
@@ -278,7 +303,7 @@ export default function TranscriptionPreviewOverlay() {
           <div className="flex items-center gap-1.5 min-w-0">
             {phase === "final" || phase === "changes" ? (
               <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500/70" />
-            ) : phase === "cleanup" ? (
+            ) : phase === "cleanup" || phase === "transformProcessing" ? (
               <div className="flex items-end gap-[2px] shrink-0 h-3.5">
                 {[5, 9, 7].map((h, i) => (
                   <span

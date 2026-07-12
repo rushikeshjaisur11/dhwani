@@ -493,11 +493,13 @@ declare global {
       onTransformChanges?: (
         callback: (payload: { name: string; before: string; after: string }) => void
       ) => () => void;
+      onTransformProcessing?: (callback: (payload: { name: string }) => void) => () => void;
       recordTransformResult?: (payload: {
         name: string;
         before: string;
         after: string;
       }) => Promise<{ success: boolean }>;
+      showTransformProcessing?: (name: string) => Promise<{ success: boolean }>;
       registerTransformHotkey?: (
         id: string,
         hotkey: string

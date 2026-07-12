@@ -445,6 +445,10 @@ class LlamaServerManager {
       stream: false,
     };
 
+    if (Array.isArray(options.stop) && options.stop.length > 0) {
+      requestBody.stop = options.stop;
+    }
+
     // Without this, Qwen chat templates leave `message.content` empty and
     // route output into `reasoning_content`. Non-Qwen templates ignore it.
     if (options.disableThinking !== false) {

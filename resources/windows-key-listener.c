@@ -260,20 +260,29 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
         // Check for the target key
         if (kbd->vkCode == g_targetVk) {
+            BOOL modsSatisfied = AreRequiredModifiersPressed();
             if (isKeyDown) {
                 // Only trigger if modifiers are satisfied and not already down
-                if (!g_isKeyDown && AreRequiredModifiersPressed()) {
+                if (!g_isKeyDown && modsSatisfied) {
                     g_isKeyDown = TRUE;
                     printf("KEY_DOWN\n");
                     fflush(stdout);
                 }
+                // Consume the event so the OS/shell never sees it — this is
+                // what actually overrides shell-reserved combos like
+                // Win+Alt+<digit> (jump list). Only suppresses when our
+                // modifiers are held, so an unmodified press of the same
+                // key elsewhere is untouched.
+                if (modsSatisfied) return 1;
             } else if (isKeyUp) {
                 // Target key released
+                BOOL wasOurs = g_isKeyDown;
                 if (g_isKeyDown) {
                     g_isKeyDown = FALSE;
                     printf("KEY_UP\n");
                     fflush(stdout);
                 }
+                if (wasOurs || modsSatisfied) return 1;
             }
         }
     }
