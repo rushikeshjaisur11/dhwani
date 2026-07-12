@@ -561,7 +561,7 @@ Detects meetings via three independent sources, orchestrated by `MeetingDetectio
 
 - macOS: Compiled from Swift source via `scripts/build-macos-mic-listener.js` during `compile:native`
 - Windows: Prebuilt binary downloaded via `scripts/download-windows-mic-listener.js` during `prebuild:win`
-- CI workflow: `.github/workflows/build-windows-mic-listener.yml` auto-builds on push to main
+- CI workflow: `.github/workflows/build-windows-native.yml` (matrix build, all 4 Windows native binaries) auto-builds on push to main
 
 **Calendar Sync Resilience**:
 
@@ -685,7 +685,7 @@ const { t } = useTranslation();
    - Prebuilt binary downloaded automatically on Windows during build
    - If download fails, push-to-talk falls back to tap mode
    - To compile locally: install Visual Studio Build Tools or MinGW-w64
-   - CI workflow (`.github/workflows/build-windows-key-listener.yml`) auto-builds on push to main
+   - CI workflow (`.github/workflows/build-windows-native.yml`, matrix build) auto-builds on push to main
 
 6. **Meeting Detection Not Working**:
    - Check debug logs for "event-driven" vs "polling" mode
