@@ -1,6 +1,6 @@
 {
   "name": "dhwani",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Dhwani - on-device multilingual voice dictation with its own fine-tuned STT model family",
   "main": "main.js",
   "private": true,

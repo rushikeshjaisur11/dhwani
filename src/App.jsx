@@ -9,6 +9,7 @@ import { useWindowDrag } from "./hooks/useWindowDrag";
 import { useAudioRecording } from "./hooks/useAudioRecording";
 import { useMicLevel } from "./hooks/useMicLevel";
 import { usePolish } from "./hooks/usePolish";
+import { useTransform } from "./hooks/useTransform";
 import { useSettingsStore } from "./stores/settingsStore";
 
 // Sound Wave Icon Component (for idle/hover states)
@@ -224,6 +225,7 @@ export default function App() {
   }, [isCommandMenuOpen, toastCount, isRecording, isProcessing]);
 
   usePolish(toast, t);
+  useTransform(toast, t);
 
   // Sync auto-hide from main process — setState directly to avoid IPC echo
   useEffect(() => {

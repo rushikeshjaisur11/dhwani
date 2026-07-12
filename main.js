@@ -785,6 +785,105 @@ async function startApp() {
   registerSidecars();
   startAuthBridgeServer();
 
+  // Per-transform hotkeys: each transform the user creates can have its own
+  // global shortcut, applying that transform to the current selection
+  // (mirroring the Polish hotkey below). Win+Alt+O (fixed, not per-transform)
+  // redisplays the most recent transform's before/after.
+  //
+  // Transform data (and each transform's chosen shortcut) lives in renderer
+  // localStorage, not main-process env vars, so main has no persisted
+  // memory of the mapping across restarts. The always-mounted main-window
+  // renderer (useTransform.js) pushes the current {id, hotkey} list via
+  // sync-transform-hotkeys on mount and whenever the list changes — hence
+  // these handlers must exist before the main window can start loading.
+  const transformHotkeyCallback = (transformId) => () => {
+    if (hotkeyManager.isInListeningMode()) return;
+    windowManager.sendTriggerTransform(transformId);
+  };
+
+  const transformSlotName = (id) => `transform:${id}`;
+
+  ipcMain.handle("register-transform-hotkey", async (_event, { id, hotkey } = {}) => {
+    if (!id) return { success: false, message: "Missing transform id" };
+    const slotName = transformSlotName(id);
+    if (!hotkey) {
+      hotkeyManager.unregisterSlot(slotName);
+      windowManager.transformSlotIds.delete(slotName);
+      windowManager.reconcileNativeKeyListeners();
+      return { success: true };
+    }
+    const result = await hotkeyManager.registerSlot(slotName, hotkey, transformHotkeyCallback(id));
+    if (result.success) {
+      windowManager.transformSlotIds.add(slotName);
+      windowManager.reconcileNativeKeyListeners();
+      return { success: true };
+    }
+    return { success: false, message: result.error };
+  });
+
+  ipcMain.handle("sync-transform-hotkeys", async (_event, list) => {
+    const desired = new Map(
+      (Array.isArray(list) ? list : [])
+        .filter((entry) => entry && typeof entry.id === "string" && typeof entry.hotkey === "string")
+        .map((entry) => [transformSlotName(entry.id), entry])
+    );
+
+    for (const slotName of [...windowManager.transformSlotIds]) {
+      if (!desired.has(slotName)) {
+        hotkeyManager.unregisterSlot(slotName);
+        windowManager.transformSlotIds.delete(slotName);
+      }
+    }
+
+    for (const [slotName, entry] of desired) {
+      const result = await hotkeyManager.registerSlot(
+        slotName,
+        entry.hotkey,
+        transformHotkeyCallback(entry.id)
+      );
+      if (result.success) {
+        windowManager.transformSlotIds.add(slotName);
+      } else {
+        debugLogger.warn(
+          "Failed to register transform hotkey",
+          { id: entry.id, hotkey: entry.hotkey },
+          "hotkey"
+        );
+      }
+    }
+
+    windowManager.reconcileNativeKeyListeners();
+    return { success: true };
+  });
+
+  // Raw key capture for the hotkey-recording UI (Windows only): a bare Win
+  // keydown/keyup is consumed by the Start Menu shell hook before it reaches
+  // most apps' normal input path, so the DOM-based capture used on
+  // mac/Linux can't see it reliably. windowsKeyManager's low-level hook
+  // still does, so forward its raw events to whichever window is recording.
+  let hotkeyCaptureSender = null;
+  if (process.platform === "win32" && windowsKeyManager) {
+    windowsKeyManager.on("capture-event", (payload) => {
+      if (hotkeyCaptureSender && !hotkeyCaptureSender.isDestroyed()) {
+        hotkeyCaptureSender.webContents.send("hotkey-capture-event", payload);
+      }
+    });
+  }
+
+  ipcMain.handle("start-hotkey-capture", async (event) => {
+    if (process.platform !== "win32" || !windowsKeyManager) return { success: false };
+    hotkeyCaptureSender = BrowserWindow.fromWebContents(event.sender);
+    windowsKeyManager.startCapture();
+    return { success: true };
+  });
+
+  ipcMain.handle("stop-hotkey-capture", async () => {
+    if (process.platform !== "win32" || !windowsKeyManager) return { success: false };
+    windowsKeyManager.stopCapture();
+    hotkeyCaptureSender = null;
+    return { success: true };
+  });
+
   cliBridge = new CliBridge(ipcHandlers);
   cliBridge.start().catch((err) => {
     debugLogger.error("CLI bridge failed to start", { error: err.message });
@@ -932,6 +1031,31 @@ async function startApp() {
 
   ipcMain.handle("get-polish-key", async () => {
     return environmentManager.getPolishKey?.() || "";
+  });
+
+  const transformViewKey = environmentManager.getTransformViewKey?.() || "Super+Alt+O";
+  const transformViewResult = await hotkeyManager.registerSlot(
+    "transformView",
+    transformViewKey,
+    () => {
+      if (hotkeyManager.isInListeningMode()) return;
+      windowManager.showLastTransformChanges();
+    }
+  );
+  if (!transformViewResult.success) {
+    debugLogger.warn(
+      "Failed to register transformView hotkey",
+      { hotkey: transformViewKey },
+      "hotkey"
+    );
+  }
+
+  ipcMain.handle("record-transform-result", async (_event, payload) => {
+    windowManager.lastTransformChange =
+      payload && typeof payload.before === "string" && typeof payload.after === "string"
+        ? payload
+        : null;
+    return { success: true };
   });
 
   // Set up meeting mode hotkey
@@ -1464,10 +1588,27 @@ async function startApp() {
       }
       if (key === hotkeyManager.getSlotHotkey("voiceAgent")) {
         windowManager.sendToggleVoiceAgent();
-      } else if (key === hotkeyManager.getSlotHotkey("agent")) {
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("agent")) {
         if (!hotkeyManager.isInListeningMode()) windowManager.toggleAgentOverlay();
-      } else if (key === hotkeyManager.getSlotHotkey("meeting")) {
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("meeting")) {
         if (!hotkeyManager.isInListeningMode()) meetingDetectionEngine?.startManualMeeting();
+        return;
+      }
+      // Per-transform hotkeys are dynamic (one slot per user-created
+      // transform, named "transform:<id>"), so this can't be a fixed
+      // else-if branch like the slots above — look up whichever registered
+      // transform slot this key belongs to.
+      if (!hotkeyManager.isInListeningMode()) {
+        for (const slotName of windowManager.transformSlotIds) {
+          if (key === hotkeyManager.getSlotHotkey(slotName)) {
+            windowManager.sendTriggerTransform(slotName.slice("transform:".length));
+            return;
+          }
+        }
       }
     };
 

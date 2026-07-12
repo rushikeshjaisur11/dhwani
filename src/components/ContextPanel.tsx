@@ -4,10 +4,9 @@ import { useUpcomingEvents } from "../hooks/useUpcomingEvents";
 import { useInsightsStats } from "../hooks/useInsightsStats";
 import type { ControlPanelView } from "./ControlPanelSidebar";
 
-// ponytail: same stats card content on both "home" and "insights" — a
-// distinct insights-only widget can be split out later if the content needs
-// to diverge; today they'd just duplicate each other.
-const VIEWS_WITH_STATS: ControlPanelView[] = ["home", "insights"];
+// Stats panel is home-only by design — other screens (including insights)
+// get their own content instead of this right-hand rail.
+const VIEWS_WITH_STATS: ControlPanelView[] = ["home"];
 
 const VOICE_PROFILE_MILESTONE_WORDS = 5000;
 

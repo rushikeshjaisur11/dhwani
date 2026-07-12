@@ -18,6 +18,12 @@
 static HHOOK g_hook = NULL;
 static DWORD g_targetVk = 0;
 static BOOL g_isKeyDown = FALSE;
+// Capture mode: report every raw key event instead of matching a fixed
+// combo, for interactive hotkey-recording UI (the Windows key can't be
+// reliably captured any other way — the Start Menu shell hook consumes a
+// bare Win keydown/keyup before it reaches most apps' normal input path,
+// but a WH_KEYBOARD_LL hook still sees it).
+static BOOL g_captureMode = FALSE;
 
 // Modifier key requirements
 static BOOL g_requireCtrl = FALSE;
@@ -197,6 +203,17 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
         if (kbd->flags & LLKHF_INJECTED) {
             return CallNextHookEx(g_hook, nCode, wParam, lParam);
         }
+
+        if (g_captureMode) {
+            BOOL captureDown = (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN);
+            BOOL captureUp = (wParam == WM_KEYUP || wParam == WM_SYSKEYUP);
+            if (captureDown || captureUp) {
+                printf("EVENT %s %lu\n", captureDown ? "DOWN" : "UP", (unsigned long)kbd->vkCode);
+                fflush(stdout);
+            }
+            return CallNextHookEx(g_hook, nCode, wParam, lParam);
+        }
+
         BOOL isKeyDown = (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN);
         BOOL isKeyUp = (wParam == WM_KEYUP || wParam == WM_SYSKEYUP);
         BOOL isModifierEvent = IsCtrlVk(kbd->vkCode) || IsAltVk(kbd->vkCode) ||
@@ -328,29 +345,35 @@ DWORD ParseCompoundHotkey(const char* hotkey) {
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        fprintf(stderr, "Usage: %s <key>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <key>|--capture\n", argv[0]);
         fprintf(stderr, "Examples:\n");
         fprintf(stderr, "  %s `                        (backtick)\n", argv[0]);
         fprintf(stderr, "  %s F8                       (function key F1-F12)\n", argv[0]);
         fprintf(stderr, "  %s F13                      (extended function key F13-F24)\n", argv[0]);
         fprintf(stderr, "  %s CommandOrControl+F11     (with modifier)\n", argv[0]);
         fprintf(stderr, "  %s Ctrl+Shift+Space         (multiple modifiers)\n", argv[0]);
+        fprintf(stderr, "  %s --capture                (report every raw key event)\n", argv[0]);
         return 1;
     }
 
-    g_targetVk = ParseCompoundHotkey(argv[1]);
-    if (g_targetVk == 0 && (g_requireCtrl || g_requireAlt || g_requireShift || g_requireWin)) {
-        g_useModifiersOnly = TRUE;
-    }
+    if (strcmp(argv[1], "--capture") == 0) {
+        g_captureMode = TRUE;
+        fprintf(stderr, "Listening in capture mode (all keys)\n");
+    } else {
+        g_targetVk = ParseCompoundHotkey(argv[1]);
+        if (g_targetVk == 0 && (g_requireCtrl || g_requireAlt || g_requireShift || g_requireWin)) {
+            g_useModifiersOnly = TRUE;
+        }
 
-    if (g_targetVk == 0 && !g_useModifiersOnly) {
-        fprintf(stderr, "Error: Invalid key '%s'\n", argv[1]);
-        return 1;
-    }
+        if (g_targetVk == 0 && !g_useModifiersOnly) {
+            fprintf(stderr, "Error: Invalid key '%s'\n", argv[1]);
+            return 1;
+        }
 
-    // Log what we're listening for
-    fprintf(stderr, "Listening for: %s (VK=0x%02X, Ctrl=%d, Alt=%d, Shift=%d, Win=%d, ModOnly=%d)\n",
-            argv[1], g_targetVk, g_requireCtrl, g_requireAlt, g_requireShift, g_requireWin, g_useModifiersOnly);
+        // Log what we're listening for
+        fprintf(stderr, "Listening for: %s (VK=0x%02X, Ctrl=%d, Alt=%d, Shift=%d, Win=%d, ModOnly=%d)\n",
+                argv[1], g_targetVk, g_requireCtrl, g_requireAlt, g_requireShift, g_requireWin, g_useModifiersOnly);
+    }
 
     // Set up console handler for clean shutdown
     SetConsoleCtrlHandler(ConsoleHandler, TRUE);

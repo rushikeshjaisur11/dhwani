@@ -19,6 +19,18 @@ const DEFAULT_HOTKEY = "Control+Super";
 // Temporary slots like "cancel" stay on globalShortcut.
 const GNOME_NATIVE_SLOTS = new Set(["agent", "meeting", "voiceAgent"]);
 
+// Windows reserves Win+Alt+<digit> to open the taskbar jump list for the app
+// pinned in that position. RegisterHotKey — what globalShortcut.register
+// uses — can never claim a reserved combo, no matter which app asks, so any
+// hotkey matching this pattern (e.g. a user-assigned per-transform shortcut)
+// must route through the native low-level keyboard hook instead, same as
+// push-to-talk/modifier-only combos.
+const WIN_ALT_DIGIT_PATTERN = /^(?:(?:Super|Win)\+Alt|Alt\+(?:Super|Win))\+[0-9]$/i;
+
+function isWindowsReservedHotkey(hotkey) {
+  return process.platform === "win32" && WIN_ALT_DIGIT_PATTERN.test(hotkey || "");
+}
+
 // KDE registration failure reasons — reuse existing i18n keys
 const KDE_FAILURE_REASONS = {
   conflict: (hotkey) => i18nMain.t("hotkey.errors.alreadyRegistered", { hotkey }),
@@ -311,6 +323,8 @@ class HotkeyManager extends EventEmitter {
    * register through globalShortcut, and in push-to-talk mode dictation also needs
    * raw key-down/key-up events. Only the dictation slot supports push-to-talk;
    * every other slot is tap-to-toggle. Globe/mouse hotkeys are macOS-only.
+   * Any hotkey matching isWindowsReservedHotkey is forced native regardless
+   * of which slot it belongs to (see its definition).
    */
   getNativeListenerKeys(activationMode) {
     const keys = [];
@@ -318,7 +332,12 @@ class HotkeyManager extends EventEmitter {
       const hotkey = slot.hotkey;
       if (!hotkey || isGlobeLikeHotkey(hotkey) || isMouseButtonHotkey(hotkey)) continue;
       const pushToTalk = slotName === "dictation" && activationMode === "push";
-      if (pushToTalk || isModifierOnlyHotkey(hotkey) || isRightSideModifier(hotkey)) {
+      if (
+        pushToTalk ||
+        isModifierOnlyHotkey(hotkey) ||
+        isRightSideModifier(hotkey) ||
+        isWindowsReservedHotkey(hotkey)
+      ) {
         keys.push(hotkey);
       }
     }
@@ -420,6 +439,15 @@ class HotkeyManager extends EventEmitter {
         slot.accelerator = null;
         debugLogger.log(
           `[HotkeyManager] Modifier-only "${hotkey}" set - using Windows native listener`
+        );
+        return { success: true, hotkey };
+      }
+
+      if (isWindowsReservedHotkey(hotkey)) {
+        slot.hotkey = hotkey;
+        slot.accelerator = null;
+        debugLogger.log(
+          `[HotkeyManager] "${hotkey}" set for slot "${slotName}" - using Windows native listener (Win+Alt+digit is shell-reserved)`
         );
         return { success: true, hotkey };
       }

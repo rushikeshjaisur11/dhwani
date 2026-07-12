@@ -22,6 +22,7 @@ interface HistoryViewProps {
   deleteTranscription: (id: number) => void;
   clearAllTranscriptions: () => void;
   onOpenSettings: (section?: string) => void;
+  onOpenSearch: () => void;
   onShowAudioInFolder: (id: number) => void;
   onRetryTranscription: (id: number, options?: { isRecover?: boolean }) => Promise<void>;
   showDiscarded: boolean;
@@ -39,6 +40,7 @@ export default function HistoryView({
   deleteTranscription,
   clearAllTranscriptions,
   onOpenSettings,
+  onOpenSearch,
   onShowAudioInFolder,
   onRetryTranscription,
   showDiscarded,
@@ -372,7 +374,7 @@ export default function HistoryView({
                       </span>
                       {index === 0 && (
                         <button
-                          onClick={() => onOpenSettings("general")}
+                          onClick={onOpenSearch}
                           className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/50 hover:text-foreground transition-colors cursor-pointer"
                         >
                           <Search size={14} strokeWidth={2.5} />

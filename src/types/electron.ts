@@ -489,6 +489,27 @@ declare global {
       onToggleDictation: (callback: () => void) => () => void;
       onToggleVoiceAgent?: (callback: () => void) => () => void;
       onTriggerPolish?: (callback: () => void) => () => void;
+      onTriggerTransform?: (callback: (transformId: string) => void) => () => void;
+      onTransformChanges?: (
+        callback: (payload: { name: string; before: string; after: string }) => void
+      ) => () => void;
+      recordTransformResult?: (payload: {
+        name: string;
+        before: string;
+        after: string;
+      }) => Promise<{ success: boolean }>;
+      registerTransformHotkey?: (
+        id: string,
+        hotkey: string
+      ) => Promise<{ success: boolean; message?: string }>;
+      syncTransformHotkeys?: (
+        list: { id: string; hotkey: string }[]
+      ) => Promise<{ success: boolean }>;
+      startHotkeyCapture?: () => Promise<{ success: boolean }>;
+      stopHotkeyCapture?: () => Promise<{ success: boolean }>;
+      onHotkeyCaptureEvent?: (
+        callback: (payload: { type: "down" | "up"; vkCode: number }) => void
+      ) => () => void;
       onStartDictation?: (callback: () => void) => () => void;
       onStopDictation?: (callback: () => void) => () => void;
 

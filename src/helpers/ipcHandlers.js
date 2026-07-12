@@ -2229,8 +2229,24 @@ class IPCHandlers {
       ipcMain.emit("hotkey-listening-mode-changed", null, enabled);
       const hotkeyManager = this.windowManager.hotkeyManager;
 
-      // When exiting capture mode with a new hotkey, use that to avoid reading stale state
-      const effectiveHotkey = !enabled && newHotkey ? newHotkey : hotkeyManager.getCurrentHotkey();
+      // newHotkey is whatever the HotkeyInput that just blurred captured — it's
+      // only meaningful here when that HotkeyInput was recording the dictation
+      // slot (this reconciliation is dictation-specific: "use that to avoid
+      // reading stale state" while its own registration IPC is still in
+      // flight). Every other HotkeyInput (polish/agent/meeting/transforms/...)
+      // shares this same channel and blurs with its own captured hotkey too,
+      // so treat newHotkey as untrustworthy if it's already the current
+      // hotkey of some other slot — otherwise this would try to register that
+      // slot's hotkey as dictation's.
+      const newHotkeyBelongsElsewhere =
+        newHotkey &&
+        [...hotkeyManager.slots.entries()].some(
+          ([slotName, info]) => slotName !== "dictation" && info?.hotkey === newHotkey
+        );
+      const effectiveHotkey =
+        !enabled && newHotkey && !newHotkeyBelongsElsewhere
+          ? newHotkey
+          : hotkeyManager.getCurrentHotkey();
 
       const {
         isGlobeLikeHotkey,

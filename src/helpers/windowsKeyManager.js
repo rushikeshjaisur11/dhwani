@@ -21,6 +21,77 @@ class WindowsKeyManager extends EventEmitter {
     this.hasReportedError = false;
     this.hasReportedUnavailable = false;
     this.listeners = new Map(); // key string -> child process
+    this.captureProcess = null; // dedicated "--capture" child, for interactive hotkey-recording UI
+  }
+
+  /**
+   * Start reporting every raw key event (down/up + VK code) instead of
+   * watching for one fixed combo. Used by the hotkey-recording UI so the
+   * Windows key can be captured reliably — the Start Menu shell hook
+   * consumes a bare Win keydown/keyup before it reaches most apps' normal
+   * input path, but this same low-level hook technique still sees it.
+   * Idempotent — safe to call while already capturing.
+   */
+  startCapture() {
+    if (!this.isSupported || this.captureProcess) return;
+
+    const listenerPath = this.resolveListenerBinary();
+    if (!listenerPath) {
+      if (!this.hasReportedUnavailable) {
+        this.hasReportedUnavailable = true;
+        this.emit("unavailable", new Error("Windows key listener binary not found"));
+      }
+      return;
+    }
+
+    let child;
+    try {
+      child = spawn(listenerPath, ["--capture"], {
+        stdio: ["ignore", "pipe", "pipe"],
+        windowsHide: true,
+      });
+    } catch (error) {
+      debugLogger.error("[WindowsKeyManager] Failed to spawn capture process", {
+        error: error.message,
+      });
+      this.reportError(error);
+      return;
+    }
+
+    this.captureProcess = child;
+
+    let lineBuffer = "";
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => {
+      lineBuffer += chunk;
+      const lines = lineBuffer.split(/\r?\n/);
+      lineBuffer = lines.pop();
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (!line || line === "READY") continue;
+        const match = /^EVENT (DOWN|UP) (\d+)$/.exec(line);
+        if (match) {
+          this.emit("capture-event", { type: match[1] === "DOWN" ? "down" : "up", vkCode: Number(match[2]) });
+        }
+      }
+    });
+
+    child.stderr.setEncoding("utf8");
+    child.stderr.on("data", () => {});
+
+    child.on("exit", () => {
+      if (this.captureProcess === child) this.captureProcess = null;
+    });
+  }
+
+  stopCapture() {
+    if (!this.captureProcess) return;
+    try {
+      this.captureProcess.kill();
+    } catch {
+      // Already gone
+    }
+    this.captureProcess = null;
   }
 
   /**
@@ -155,6 +226,7 @@ class WindowsKeyManager extends EventEmitter {
    */
   stop() {
     for (const key of [...this.listeners.keys()]) this._stopKey(key);
+    this.stopCapture();
   }
 
   /**

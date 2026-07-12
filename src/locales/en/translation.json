@@ -2599,7 +2599,15 @@
     "resetToDefaults": "Reset to defaults",
     "createNew": "Create New",
     "createYourOwn": "Create your own",
-    "uploadYourOwn": "Upload your own prompt"
+    "uploadYourOwn": "Upload your own prompt",
+    "noSelection": "Select some text first",
+    "failed": "Transform failed",
+    "preview": {
+      "title": "Transform your text to sound however you want",
+      "original": "Original",
+      "exampleText": "make a blog post about our new cold brew coffee, mention its smooth and less acidic, keep it casual and fun",
+      "tryItOut": "Try it out"
+    }
   },
   "dictionary": {
     "bannerTitle": "Dhwani spells the way you do.",
@@ -3002,7 +3010,10 @@
     "ready": "Ready",
     "copy": "Copy",
     "copied": "Copied",
-    "waitingForInput": "Say something..."
+    "waitingForInput": "Say something...",
+    "transformApplied": "{{name}} applied",
+    "before": "Before",
+    "after": "After"
   },
   "transcript": {
     "speaker": {

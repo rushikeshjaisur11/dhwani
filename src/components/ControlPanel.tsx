@@ -872,6 +872,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                   setSettingsSection(section);
                   setShowSettings(true);
                 }}
+                onOpenSearch={() => setShowSearch(true)}
               />
             )}
             {activeView === "chat" && (
