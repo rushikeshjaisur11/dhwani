@@ -256,8 +256,12 @@ class UpdateManager {
 
       const { app, BrowserWindow } = require("electron");
 
-      // Set windowManager.isQuitting before removing close listeners
-      app.emit("before-quit");
+      // Mark windowManager as quitting directly instead of emitting "before-quit" —
+      // that global event also triggers main.js's real quit-teardown handler
+      // (app.exit(0) after sidecar shutdown), which races with quitAndInstall below.
+      if (this.windowManager) {
+        this.windowManager.isQuitting = true;
+      }
       app.removeAllListeners("window-all-closed");
       BrowserWindow.getAllWindows().forEach((win) => {
         win.removeAllListeners("close");
