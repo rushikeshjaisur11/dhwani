@@ -68,7 +68,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = "${{ matrix.name }}-v${{ inputs.version || '1.0.0' }}"
+          $version = "${{ inputs.version }}"
+          if (-not $version) {
+            $version = (Get-Content package.json | ConvertFrom-Json).version
+          }
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          $tag = "${{ matrix.name }}-v$version"
           $releaseExists = $false
           try {
             gh release view $tag 2>$null
@@ -134,8 +139,8 @@ jobs:
         if: steps.changed.outputs.run == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ matrix.name }}-v${{ inputs.version || '1.0.0' }}
-          name: ${{ matrix.title }} v${{ inputs.version || '1.0.0' }}
+          tag_name: ${{ matrix.name }}-v${{ steps.changed.outputs.version }}
+          name: ${{ matrix.title }} v${{ steps.changed.outputs.version }}
           body: ${{ matrix.body }}
           files: ${{ matrix.name }}-win32-x64.zip
           make_latest: false
