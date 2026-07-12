@@ -59,6 +59,8 @@ jobs:
               This binary uses Windows UI Automation to detect text field changes after paste.
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Check source changed
         id: changed
@@ -86,7 +88,7 @@ jobs:
       - name: Compile
         if: steps.changed.outputs.run == 'true'
         run: |
-          cl /O2 /nologo resources/${{ matrix.name }}.c /Fe:${{ matrix.name }}.exe ${{ matrix.libs }}
+          cl /std:c11 /O2 /nologo resources/${{ matrix.name }}.c /Fe:${{ matrix.name }}.exe ${{ matrix.libs }}
         shell: cmd
 
       - name: Verify binary
