@@ -333,6 +333,16 @@
       "installButton": "Installer la mise Ã  jour",
       "availableButton": "Mise Ã  jour disponible"
     },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "Aucune nouvelle notification",
+      "updateAvailableTitle": "Mise à jour disponible",
+      "updateAvailableDescription": "Une nouvelle version de Dhwani est prête à être téléchargée.",
+      "updateDownloadedTitle": "Mise à jour prête à installer",
+      "updateDownloadedDescription": "Redémarrez Dhwani pour terminer la mise à jour.",
+      "downloadAction": "Télécharger",
+      "installAction": "Installer"
+    },
     "limit": {
       "weeklyTitle": "Limite hebdomadaire atteinte",
       "weeklyDescription": "Votre limite se renouvelle de maniÃ¨re glissante. Passez Ã  Pro ou utilisez votre propre clÃ© API pour un usage illimitÃ©."

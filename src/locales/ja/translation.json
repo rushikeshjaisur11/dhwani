@@ -333,6 +333,16 @@
       "installButton": "ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«",
       "availableButton": "ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã‚ã‚Š"
     },
+    "notifications": {
+      "title": "通知",
+      "empty": "新しい通知はありません",
+      "updateAvailableTitle": "アップデートがあります",
+      "updateAvailableDescription": "Dhwani の新しいバージョンをダウンロードできます。",
+      "updateDownloadedTitle": "アップデートの準備ができました",
+      "updateDownloadedDescription": "Dhwani を再起動してアップデートを完了してください。",
+      "downloadAction": "ダウンロード",
+      "installAction": "インストール"
+    },
     "limit": {
       "weeklyTitle": "é€±é–“ã®åˆ©ç”¨ä¸Šé™ã«é”ã—ã¾ã—ãŸ",
       "weeklyDescription": "åˆ©ç”¨ä¸Šé™ã¯ãƒ­ãƒ¼ãƒªãƒ³ã‚°æ–¹å¼ã§ãƒªã‚»ãƒƒãƒˆã•ã‚Œã¾ã™ã€‚Pro ã«ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰ã™ã‚‹ã‹ã€è‡ªåˆ†ã® API ã‚­ãƒ¼ã‚’ä½¿ç”¨ã—ã¦ç„¡åˆ¶é™ã«ã”åˆ©ç”¨ãã ã•ã„ã€‚"

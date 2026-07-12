@@ -333,6 +333,16 @@
       "installButton": "Update installieren",
       "availableButton": "Update verfÃ¼gbar"
     },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "empty": "Keine neuen Benachrichtigungen",
+      "updateAvailableTitle": "Update verfügbar",
+      "updateAvailableDescription": "Eine neue Version von Dhwani steht zum Download bereit.",
+      "updateDownloadedTitle": "Update bereit zur Installation",
+      "updateDownloadedDescription": "Starte Dhwani neu, um das Update abzuschließen.",
+      "downloadAction": "Herunterladen",
+      "installAction": "Installieren"
+    },
     "limit": {
       "weeklyTitle": "Wochenlimit erreicht",
       "weeklyDescription": "Ihr Limit setzt sich rollierend zurÃ¼ck. Upgraden Sie auf Pro oder nutzen Sie Ihren eigenen API-SchlÃ¼ssel fÃ¼r unbegrenzte Nutzung."
