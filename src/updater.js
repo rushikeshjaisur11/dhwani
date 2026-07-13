@@ -1,4 +1,5 @@
 const { autoUpdater } = require("electron-updater");
+const debugLogger = require("./helpers/debugLogger");
 
 class UpdateManager {
   constructor() {
@@ -70,7 +71,7 @@ class UpdateManager {
 
     autoUpdater.autoDownload = false;
     autoUpdater.autoInstallOnAppQuit = true;
-    autoUpdater.logger = console;
+    autoUpdater.logger = debugLogger;
 
     this.setupEventHandlers();
   }
@@ -96,7 +97,7 @@ class UpdateManager {
           nPrefs.notificationsEnabled !== false && nPrefs.notifyUpdates !== false;
         if (this.windowManager && info && !this._suppressNotification && notifAllowed) {
           this.windowManager.showUpdateNotification(info).catch((err) => {
-            console.error("Failed to show update notification:", err);
+            debugLogger.error("Failed to show update notification:", err);
           });
         }
         this._suppressNotification = false;
@@ -111,19 +112,19 @@ class UpdateManager {
         this.notifyRenderers("update-not-available", info);
       },
       error: (err) => {
-        console.error("❌ Auto-updater error:", err);
+        debugLogger.error("❌ Auto-updater error:", err);
         this._suppressNotification = false;
         this.isDownloading = false;
         this.notifyRenderers("update-error", err);
       },
       "download-progress": (progressObj) => {
-        console.log(
+        debugLogger.debug(
           `📥 Download progress: ${progressObj.percent.toFixed(2)}% (${(progressObj.transferred / 1024 / 1024).toFixed(2)}MB / ${(progressObj.total / 1024 / 1024).toFixed(2)}MB)`
         );
         this.notifyRenderers("update-download-progress", progressObj);
       },
       "update-downloaded": (info) => {
-        console.log("✅ Update downloaded successfully:", info?.version);
+        debugLogger.info("✅ Update downloaded successfully:", info?.version);
         this.updateDownloaded = true;
         this.isDownloading = false;
         if (info) {
@@ -166,12 +167,12 @@ class UpdateManager {
         };
       }
 
-      console.log("🔍 Checking for updates...");
+      debugLogger.info("🔍 Checking for updates...");
       this._suppressNotification = true;
       const result = await autoUpdater.checkForUpdates();
 
       if (result?.isUpdateAvailable && result?.updateInfo) {
-        console.log("📋 Update available:", result.updateInfo.version);
+        debugLogger.info("📋 Update available:", result.updateInfo.version);
         return {
           updateAvailable: true,
           version: result.updateInfo.version,
@@ -180,14 +181,14 @@ class UpdateManager {
           releaseNotes: result.updateInfo.releaseNotes,
         };
       } else {
-        console.log("✅ Already on latest version");
+        debugLogger.info("✅ Already on latest version");
         return {
           updateAvailable: false,
           message: "You are running the latest version",
         };
       }
     } catch (error) {
-      console.error("❌ Update check error:", error);
+      debugLogger.error("❌ Update check error:", error);
       throw error;
     }
   }
@@ -216,14 +217,14 @@ class UpdateManager {
       }
 
       this.isDownloading = true;
-      console.log("📥 Starting update download...");
+      debugLogger.info("📥 Starting update download...");
       await autoUpdater.downloadUpdate();
-      console.log("📥 Download initiated successfully");
+      debugLogger.info("📥 Download initiated successfully");
 
       return { success: true, message: "Update download started" };
     } catch (error) {
       this.isDownloading = false;
-      console.error("❌ Update download error:", error);
+      debugLogger.error("❌ Update download error:", error);
       throw error;
     }
   }
@@ -252,7 +253,7 @@ class UpdateManager {
       }
 
       this.isInstalling = true;
-      console.log("🔄 Installing update and restarting...");
+      debugLogger.info("🔄 Installing update and restarting...");
 
       const { app, BrowserWindow } = require("electron");
 
@@ -273,7 +274,7 @@ class UpdateManager {
       return { success: true, message: "Update installation started" };
     } catch (error) {
       this.isInstalling = false;
-      console.error("❌ Update installation error:", error);
+      debugLogger.error("❌ Update installation error:", error);
       throw error;
     }
   }

@@ -40,13 +40,8 @@ Dhwani-specific features kept below the fold rather than removed.
 - **Snippets** (`SnippetsView.tsx`) — say a trigger word, it's replaced with saved text (a URL, an intro,
   a prompt). Backed by `useSettings().snippets`, fully wired into the dictation expansion path
   (`src/utils/snippets.ts`).
-- **Style** (`StyleView.tsx`) — per-context (personal/work/email/other) tone presets (Formal/Casual/Very
-  casual). **Storage-only today**: selection persists to `localStorage`, but isn't yet read by the cleanup
-  prompt pipeline (`audioManager.js` / `ReasoningService.ts`) — wiring that read is the next step.
-- **Transforms** (`TransformsView.tsx`) — save reusable rewrite prompts. **CRUD-only today**: creating and
-  listing transforms works; there's no "apply to text" action yet because that needs a new generic
-  "run arbitrary prompt over text" IPC channel that doesn't exist (`ReasoningService` currently only runs
-  the four fixed scopes — dictationCleanup, dictationAgent, noteFormatting, chatIntelligence).
+- **Style** (`StyleView.tsx`) — per-context (personal/work/email/other) tone presets (Formal/Casual/Very casual). Fully integrated into the cleanup prompt pipeline via `resolveStyleInstruction` in `appCategory.js` and parsed in `audioManager.js`.
+- **Transforms** (`TransformsView.tsx`) — save reusable rewrite prompts. Fully integrated into the application: users can map custom hotkeys to specific transforms, which captures selected text, runs it through the reasoning model, and pastes the result back.
 - **Scratchpad** (`ScratchpadView.tsx`) — one persistent scratch note, autosaved to `localStorage`. Not
   wired into the multi-note system (`PersonalNotesView.tsx`) — intentionally simpler, matching what Wispr's
   Scratchpad actually is (a single always-available pad, not a notes app).

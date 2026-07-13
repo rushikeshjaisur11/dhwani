@@ -1936,7 +1936,9 @@ if (gotSingleInstanceLock) {
     
     if (updateManager && updateManager.isInstalling) {
       sidecarRegistry.shutdownAll().finally(() => {
-        app.quit();
+        const { autoUpdater } = require("electron-updater");
+        const isSilent = process.platform === "win32";
+        autoUpdater.quitAndInstall(isSilent, true);
       });
       return;
     }
