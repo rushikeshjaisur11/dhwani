@@ -8,7 +8,7 @@ import type {
   InferenceMode,
 } from "../types/electron";
 import { Button } from "./ui/button";
-import { Cloud, Lock, Zap } from "lucide-react";
+import { Cloud, Lock, Zap, Sparkles } from "lucide-react";
 import ApiKeyInput from "./ui/ApiKeyInput";
 import ModelCardList from "./ui/ModelCardList";
 import LocalModelPicker, { type LocalProvider } from "./LocalModelPicker";
@@ -323,6 +323,15 @@ export default function ReasoningModelSelector({
   const [selectedMode, setSelectedMode] = useState<"cloud" | "local">(mode || "cloud");
   const [selectedCloudProvider, setSelectedCloudProvider] = useState("openai");
   const [selectedLocalProvider, setSelectedLocalProvider] = useState("qwen");
+  const [recommendedReasoning, setRecommendedReasoning] = useState<{
+    modelId: string | null;
+    isCloud: boolean;
+    reason: string;
+  } | null>(null);
+
+  useEffect(() => {
+    window.electronAPI?.getRecommendedReasoningModel?.().then(setRecommendedReasoning);
+  }, []);
 
   const effectiveMode = mode || selectedMode;
 
@@ -350,6 +359,15 @@ export default function ReasoningModelSelector({
       })),
     }));
   }, []);
+
+  const recommendedReasoningName = useMemo(() => {
+    if (!recommendedReasoning?.modelId) return null;
+    for (const provider of localProviders) {
+      const match = provider.models.find((m) => m.id === recommendedReasoning.modelId);
+      if (match) return match.name;
+    }
+    return null;
+  }, [recommendedReasoning, localProviders]);
 
   const openaiModelOptions = useMemo<CloudModelOption[]>(() => {
     const iconUrl = getProviderIcon("openai");
@@ -507,6 +525,12 @@ export default function ReasoningModelSelector({
 
       {effectiveMode === "cloud" && (
         <div className="space-y-2">
+          {recommendedReasoning?.isCloud && (
+            <div className="rounded-md border border-border bg-surface-1 p-2.5 flex items-start gap-2.5">
+              <Sparkles size={13} className="text-primary shrink-0 mt-0.5" />
+              <p className="text-xs text-foreground">{t(recommendedReasoning.reason)}</p>
+            </div>
+          )}
           <ProviderTabs
             providers={cloudProviders}
             selectedId={selectedCloudProvider}
@@ -642,6 +666,17 @@ export default function ReasoningModelSelector({
 
       {effectiveMode === "local" && (
         <>
+          {recommendedReasoningName && recommendedReasoning?.modelId !== reasoningModel && (
+            <div className="rounded-md border border-border bg-surface-1 p-2.5 flex items-start gap-2.5">
+              <Zap size={13} className="text-primary shrink-0 mt-0.5" />
+              <p className="text-xs text-foreground">
+                <span className="font-medium">{t("modelRecommendation.badge")}: </span>
+                {recommendedReasoningName}
+                {" — "}
+                {t(recommendedReasoning!.reason)}
+              </p>
+            </div>
+          )}
           <LocalModelPicker
             providers={localProviders}
             selectedModel={reasoningModel}
@@ -651,6 +686,7 @@ export default function ReasoningModelSelector({
             modelType="llm"
             colorScheme="purple"
             onDownloadComplete={loadDownloadedModels}
+            recommendedModelId={recommendedReasoning?.modelId}
           />
           <GpuStatusBadge />
         </>

@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import "./index.css";
-import { X } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  Loader2,
+  Mic,
+  Settings,
+  Sparkles,
+  SquarePen,
+  X,
+} from "lucide-react";
 import { useToast } from "./components/ui/useToast";
 import { useHotkey } from "./hooks/useHotkey";
 import { formatHotkeyLabel } from "./utils/hotkeys";
@@ -11,83 +20,46 @@ import { useMicLevel } from "./hooks/useMicLevel";
 import { usePolish } from "./hooks/usePolish";
 import { useTransform } from "./hooks/useTransform";
 import { useSettingsStore } from "./stores/settingsStore";
+import { getEffectiveTransformsSync } from "./config/transforms/loadEffectiveTransforms";
+import { Toggle } from "./components/ui/toggle";
 
-// Sound Wave Icon Component (for idle/hover states)
-const SoundWaveIcon = ({ size = 16 }) => {
-  return (
-    <div className="flex items-center justify-center gap-1">
-      <div
-        className={`bg-white rounded-full`}
-        style={{ width: size * 0.25, height: size * 0.6 }}
-      ></div>
-      <div className={`bg-white rounded-full`} style={{ width: size * 0.25, height: size }}></div>
-      <div
-        className={`bg-white rounded-full`}
-        style={{ width: size * 0.25, height: size * 0.6 }}
-      ></div>
-    </div>
-  );
-};
-
-// Voice Wave Animation Component (for processing state)
-const VoiceWaveIndicator = ({ isListening }) => {
-  return (
-    <div className="flex items-center justify-center gap-0.5">
-      {[...Array(4)].map((_, i) => (
-        <div
-          key={i}
-          className={`w-0.5 bg-white rounded-full transition-[height] duration-150 ${
-            isListening ? "animate-pulse h-4" : "h-2"
-          }`}
-          style={{
-            animationDelay: isListening ? `${i * 0.1}s` : "0s",
-            animationDuration: isListening ? `${0.6 + i * 0.1}s` : "0s",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Live waveform bars driven by real mic amplitude (recording state)
+// Live waveform bars driven by real mic amplitude (recording state).
+// Vertical orientation: horizontal bars stacked top-to-bottom, widths follow
+// the mic level — matches the vertical pill.
 const LiveWaveform = ({ levels }) => {
   return (
-    <div className="flex items-center justify-center gap-[3px] h-full px-1">
+    <div className="flex flex-col items-center justify-center gap-[3px] w-full py-1">
       {levels.map((level, i) => (
         <div
           key={i}
-          className="w-[3px] rounded-full bg-white/90 transition-[height] duration-75 ease-out"
-          style={{ height: `${8 + level * 20}px` }}
+          className="h-[3px] rounded-full bg-white/90 transition-[width] duration-75 ease-out"
+          style={{ width: `${6 + level * 18}px` }}
         />
       ))}
     </div>
   );
 };
 
-// Tooltip Component
-const Tooltip = ({ children, content, emoji, align = "center" }) => {
+// White pill tooltip opening to the left of a dock icon (Wispr style):
+// "Dictate **Ctrl + Win**", "Scratchpad", "Polish **Win Alt 1**".
+const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const alignClass =
-    align === "right" ? "right-0" : align === "left" ? "left-0" : "left-1/2 -translate-x-1/2";
-
-  const arrowClass =
-    align === "right" ? "right-3" : align === "left" ? "left-3" : "left-1/2 -translate-x-1/2";
-
   return (
-    <div className="relative inline-block">
-      <div onMouseEnter={() => setIsVisible(true)} onMouseLeave={() => setIsVisible(false)}>
+    <div className="relative">
+      <div
+        onMouseEnter={() => enabled && setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+      >
         {children}
       </div>
       {isVisible && (
         <div
-          className={`absolute bottom-full ${alignClass} mb-2 px-1.5 py-1 text-[10px] text-popover-foreground bg-popover border border-border rounded-md z-10 shadow-lg transition-opacity duration-150 whitespace-nowrap`}
+          className="flow-tooltip-pill absolute right-full top-1/2 -translate-y-1/2 z-10 max-w-[190px] truncate"
+          style={{ marginRight: offset }}
         >
-          {emoji && <span className="mr-1">{emoji}</span>}
-          {content}
-          <div
-            className={`absolute top-full ${arrowClass} w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-popover`}
-          ></div>
+          {label}
+          {hotkey ? <span className="font-semibold"> {hotkey}</span> : null}
         </div>
       )}
     </div>
@@ -96,9 +68,22 @@ const Tooltip = ({ children, content, emoji, align = "center" }) => {
 
 export default function App() {
   const [isHovered, setIsHovered] = useState(false);
-  const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
-  const commandMenuRef = useRef(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  // The dock's native window resize (isExpanded -> resizeMainWindow IPC) is
+  // async and not instant — a fast mouse can reach the sparkle/arrow's
+  // screen position before the window has actually widened to STACK, and
+  // since Electron clips content to the window's real bounds, that content
+  // gets hard-clipped at the (still narrow) edge — looks like it "vanishes",
+  // but it's really just rendered outside the window's current canvas. Delay
+  // the finer hover-reveal content (tooltip, transform-menu arrow) briefly
+  // after expanding so the resize has time to land first.
+  const [dockReady, setDockReady] = useState(false);
+  const [isTransformMenuOpen, setIsTransformMenuOpen] = useState(false);
+  // { mode: "processing", name } | { mode: "done" } | null — transform runs
+  const [transformStatus, setTransformStatus] = useState(null);
+  const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const sparkleRef = useRef(null);
   const { toast, dismiss, toastCount } = useToast();
   const { t } = useTranslation();
   const { hotkey } = useHotkey();
@@ -107,9 +92,22 @@ export default function App() {
   const [dragStartPos, setDragStartPos] = useState(null);
   const [hasDragged, setHasDragged] = useState(false);
 
+  // Overlay transform menu state (localStorage-backed, shared with
+  // useAudioRecording's Auto Apply step and the settings window).
+  const [autoApply, setAutoApply] = useState(
+    () => localStorage.getItem("autoApplyAfterDictation") === "true"
+  );
+  const [autoApplyTransformId, setAutoApplyTransformId] = useState(
+    () => localStorage.getItem("autoApplyTransformId") || "builtin-polish"
+  );
+  const [scratchpadInFlowBar, setScratchpadInFlowBar] = useState(
+    () => localStorage.getItem("scratchpadAddToFlowBar") === "true"
+  );
+  const [transforms, setTransforms] = useState(() => getEffectiveTransformsSync());
+
   // Floating icon auto-hide setting (read from store, synced via IPC)
   const floatingIconAutoHide = useSettingsStore((s) => s.floatingIconAutoHide);
-  const panelStartPosition = useSettingsStore((s) => s.panelStartPosition);
+  const polishKey = useSettingsStore((s) => s.polishKey);
   const prevAutoHideRef = useRef(floatingIconAutoHide);
 
   const setWindowInteractivity = React.useCallback((shouldCapture) => {
@@ -120,6 +118,41 @@ export default function App() {
     setWindowInteractivity(false);
     return () => setWindowInteractivity(false);
   }, [setWindowInteractivity]);
+
+  // "Add to Flow Bar" is toggled in the settings window — sync via the
+  // cross-window storage event (same pattern as useTransform's hotkey sync).
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === "scratchpadAddToFlowBar") {
+        setScratchpadInFlowBar(event.newValue === "true");
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  // Transform run status → pill states (spinner / "Done. See changes").
+  useEffect(() => {
+    const disposeProcessing = window.electronAPI?.onTransformProcessing?.((payload) => {
+      setTransformStatus(payload?.name ? { mode: "processing", name: payload.name } : null);
+    });
+    const disposeDone = window.electronAPI?.onTransformDone?.(() => {
+      setTransformStatus({ mode: "done" });
+    });
+    return () => {
+      disposeProcessing?.();
+      disposeDone?.();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!transformStatus) return;
+    // Done fades after a few seconds; processing has a stale-guard so a hung
+    // LLM call can't wedge the pill forever.
+    const delay = transformStatus.mode === "done" ? 6000 : 120000;
+    const timer = setTimeout(() => setTransformStatus(null), delay);
+    return () => clearTimeout(timer);
+  }, [transformStatus]);
 
   useEffect(() => {
     const unsubscribeFallback = window.electronAPI?.onHotkeyFallbackUsed?.((data) => {
@@ -143,7 +176,7 @@ export default function App() {
 
     const unsubscribeCorrections = window.electronAPI?.onCorrectionsLearned?.((words) => {
       if (words && words.length > 0) {
-        const wordList = words.map((w) => `\u201c${w}\u201d`).join(", ");
+        const wordList = words.map((w) => `“${w}”`).join(", ");
         let toastId;
         toastId = toast({
           title: t("app.toasts.addedToDict", { words: wordList }),
@@ -182,15 +215,15 @@ export default function App() {
   }, [toast, dismiss, t]);
 
   useEffect(() => {
-    if (isCommandMenuOpen || toastCount > 0) {
+    if (isTransformMenuOpen || toastCount > 0 || transformStatus) {
       setWindowInteractivity(true);
     } else if (!isHovered) {
       setWindowInteractivity(false);
     }
-  }, [isCommandMenuOpen, isHovered, toastCount, setWindowInteractivity]);
+  }, [isTransformMenuOpen, isHovered, toastCount, transformStatus, setWindowInteractivity]);
 
   const handleDictationToggle = React.useCallback(() => {
-    setIsCommandMenuOpen(false);
+    setIsTransformMenuOpen(false);
     setWindowInteractivity(false);
   }, [setWindowInteractivity]);
 
@@ -207,22 +240,53 @@ export default function App() {
 
   const micLevels = useMicLevel(isRecording);
 
+  // Horizontal status pill (spinner / Done): transform runs and the
+  // dictation cleanup phase share the same visual.
+  const statusPill = React.useMemo(
+    () => transformStatus || (isProcessing ? { mode: "processing" } : null),
+    [transformStatus, isProcessing]
+  );
+
+  // Expand the dock while anything needs it; collapse shortly after the
+  // pointer leaves (delay avoids resize/hover flicker loops).
+  useEffect(() => {
+    if (isHovered || isTransformMenuOpen || isRecording || toastCount > 0) {
+      setIsExpanded(true);
+      return;
+    }
+    const timer = setTimeout(() => setIsExpanded(false), 300);
+    return () => clearTimeout(timer);
+  }, [isHovered, isTransformMenuOpen, isRecording, toastCount]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      setDockReady(false);
+      return;
+    }
+    const timer = setTimeout(() => setDockReady(true), 120);
+    return () => clearTimeout(timer);
+  }, [isExpanded]);
+
   useEffect(() => {
     const resizeWindow = () => {
-      if (isCommandMenuOpen && toastCount > 0) {
+      if (isTransformMenuOpen && toastCount > 0) {
         window.electronAPI?.resizeMainWindow?.("EXPANDED");
-      } else if (isCommandMenuOpen) {
+      } else if (isTransformMenuOpen) {
         window.electronAPI?.resizeMainWindow?.("WITH_MENU");
       } else if (toastCount > 0) {
         window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
-      } else if (isRecording || isProcessing) {
+      } else if (statusPill) {
+        window.electronAPI?.resizeMainWindow?.("WIDE");
+      } else if (isRecording) {
         window.electronAPI?.resizeMainWindow?.("RECORDING");
+      } else if (isExpanded) {
+        window.electronAPI?.resizeMainWindow?.("STACK");
       } else {
         window.electronAPI?.resizeMainWindow?.("BASE");
       }
     };
     resizeWindow();
-  }, [isCommandMenuOpen, toastCount, isRecording, isProcessing]);
+  }, [isTransformMenuOpen, toastCount, isRecording, statusPill, isExpanded]);
 
   usePolish(toast, t);
   useTransform(toast, t);
@@ -270,31 +334,40 @@ export default function App() {
     window.electronAPI.hideWindow();
   };
 
+  // Clicks outside the Electron window never reach this renderer, so the
+  // click-outside handler below can't see them — close the menu shortly
+  // after the pointer leaves the dock instead.
   useEffect(() => {
-    if (!isCommandMenuOpen) {
+    if (!isTransformMenuOpen || isHovered) return;
+    const timer = setTimeout(() => setIsTransformMenuOpen(false), 600);
+    return () => clearTimeout(timer);
+  }, [isTransformMenuOpen, isHovered]);
+
+  useEffect(() => {
+    if (!isTransformMenuOpen) {
       return;
     }
 
     const handleClickOutside = (event) => {
       if (
-        commandMenuRef.current &&
-        !commandMenuRef.current.contains(event.target) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target)
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        sparkleRef.current &&
+        !sparkleRef.current.contains(event.target)
       ) {
-        setIsCommandMenuOpen(false);
+        setIsTransformMenuOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isCommandMenuOpen]);
+  }, [isTransformMenuOpen]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.key === "Escape") {
-        if (isCommandMenuOpen) {
-          setIsCommandMenuOpen(false);
+        if (isTransformMenuOpen) {
+          setIsTransformMenuOpen(false);
         } else {
           handleClose();
         }
@@ -303,235 +376,271 @@ export default function App() {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [isCommandMenuOpen]);
+  }, [isTransformMenuOpen]);
 
-  // Determine current mic state
-  const getMicState = () => {
-    if (isRecording) return isCommandMode ? "command" : "recording";
-    if (isProcessing) return isCommandMode ? "command-processing" : "processing";
-    if (isHovered && !isRecording && !isProcessing) return "hover";
-    return "idle";
+  const toggleTransformMenu = () => {
+    setIsTransformMenuOpen((prev) => {
+      if (!prev) setTransforms(getEffectiveTransformsSync());
+      return !prev;
+    });
   };
 
-  const micState = getMicState();
-
-  const getMicButtonProps = () => {
-    const baseClasses =
-      "flow-bar-pill flex items-center justify-center relative overflow-hidden cursor-pointer";
-    const expandedClasses = `${baseClasses} flow-bar-pill--expanded`;
-
-    switch (micState) {
-      case "idle":
-      case "hover":
-        return {
-          className: `${baseClasses} flow-bar-pill--idle cursor-pointer`,
-          tooltip: formatHotkeyLabel(hotkey),
-        };
-      case "recording":
-        return {
-          className: `${expandedClasses} flow-bar-pill--listening cursor-pointer`,
-          tooltip: t("app.mic.recording"),
-        };
-      case "command":
-        return {
-          className: `${expandedClasses} flow-bar-pill--command cursor-pointer`,
-          tooltip: t("app.mic.commandMode", { defaultValue: "Command Mode" }),
-        };
-      case "processing":
-        return {
-          className: `${expandedClasses} flow-bar-pill--processing cursor-not-allowed`,
-          tooltip: t("app.mic.processing"),
-        };
-      case "command-processing":
-        return {
-          className: `${expandedClasses} flow-bar-pill--command cursor-not-allowed`,
-          tooltip: t("app.mic.processing"),
-        };
-      default:
-        return {
-          className: `${baseClasses} flow-bar-pill--idle cursor-pointer`,
-          style: { transform: "scale(0.8)" },
-          tooltip: t("app.mic.clickToSpeak"),
-        };
-    }
+  const setAutoApplyEnabled = (checked) => {
+    localStorage.setItem("autoApplyAfterDictation", String(checked));
+    setAutoApply(checked);
   };
 
-  const micProps = getMicButtonProps();
+  const selectAutoApplyTransform = (id) => {
+    localStorage.setItem("autoApplyTransformId", id);
+    setAutoApplyTransformId(id);
+  };
+
+  const handleSeeChanges = () => {
+    void window.electronAPI?.showLastTransformChanges?.();
+    setTransformStatus(null);
+  };
+
+  // Sparkle tooltip: the selected transform's name + hotkey ("Polish Win Alt 1").
+  const selectedTransform =
+    transforms.find((tr) => tr.id === autoApplyTransformId) || transforms[0];
+  const selectedShortcut =
+    selectedTransform?.id === "builtin-polish"
+      ? polishKey || selectedTransform?.shortcut || ""
+      : selectedTransform?.shortcut || "";
+
+  const micState = isRecording ? (isCommandMode ? "command" : "recording") : "idle";
+  const micStateClass =
+    micState === "recording"
+      ? "flow-bar-pill--listening"
+      : micState === "command"
+        ? "flow-bar-pill--command"
+        : "";
 
   return (
     <div className="dictation-window">
-      {/* Voice button - position determined by panelStartPosition setting */}
+      {/* Right-edge dock: collapsed handle -> icon panel -> menu / status pill */}
       <div
-        className={`fixed bottom-1 z-50 ${
-          panelStartPosition === "bottom-left"
-            ? "left-1"
-            : panelStartPosition === "center"
-              ? "left-1/2 -translate-x-1/2"
-              : "right-1"
-        }`}
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-end"
+        onMouseEnter={() => {
+          setIsHovered(true);
+          setWindowInteractivity(true);
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          if (!isTransformMenuOpen) {
+            setWindowInteractivity(false);
+          }
+        }}
       >
-        <div
-          className="relative flex items-center gap-2"
-          onMouseEnter={() => {
-            setIsHovered(true);
-            setWindowInteractivity(true);
-          }}
-          onMouseLeave={() => {
-            setIsHovered(false);
-            if (!isCommandMenuOpen) {
-              setWindowInteractivity(false);
-            }
-          }}
-        >
-          {(isRecording || isProcessing) && isHovered && (
-            <button
-              aria-label={
-                isRecording ? t("app.buttons.cancelRecording") : t("app.buttons.cancelProcessing")
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                isRecording ? cancelRecording() : cancelProcessing();
-              }}
-              className="group/cancel w-5 h-5 rounded-full bg-surface-2/90 hover:bg-destructive border border-border hover:border-destructive/70 flex items-center justify-center transition-colors duration-150 shadow-sm backdrop-blur-sm"
-            >
-              <X
-                size={10}
-                strokeWidth={2.5}
-                className="text-foreground group-hover/cancel:text-destructive-foreground transition-colors duration-150"
-              />
-            </button>
-          )}
-          <Tooltip
-            content={micProps.tooltip}
-            align={
-              panelStartPosition === "bottom-left"
-                ? "left"
-                : panelStartPosition === "center"
-                  ? "center"
-                  : "right"
-            }
-          >
-            <button
-              ref={buttonRef}
-              onMouseDown={(e) => {
-                setIsCommandMenuOpen(false);
-                setDragStartPos({ x: e.clientX, y: e.clientY });
-                setHasDragged(false);
-                handleMouseDown(e);
-              }}
-              onMouseMove={(e) => {
-                if (dragStartPos && !hasDragged) {
-                  const distance = Math.sqrt(
-                    Math.pow(e.clientX - dragStartPos.x, 2) +
-                      Math.pow(e.clientY - dragStartPos.y, 2)
-                  );
-                  if (distance > 5) {
-                    // 5px threshold for drag
-                    setHasDragged(true);
-                  }
-                }
-              }}
-              onMouseUp={(e) => {
-                handleMouseUp(e);
-                setDragStartPos(null);
-              }}
-              onClick={(e) => {
-                if (!hasDragged) {
-                  setIsCommandMenuOpen(false);
-                  toggleListening();
-                }
-                e.preventDefault();
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                if (!hasDragged) {
-                  setWindowInteractivity(true);
-                  setIsCommandMenuOpen((prev) => !prev);
-                }
-              }}
-              onFocus={() => setIsHovered(true)}
-              onBlur={() => setIsHovered(false)}
-              className={micProps.className}
-              style={{
-                ...micProps.style,
-                cursor:
-                  micState === "processing" || micState === "command-processing"
-                    ? "not-allowed !important"
-                    : isDragging
-                      ? "grabbing !important"
-                      : "pointer !important",
-                transition: `transform 320ms var(--flow-spring-easing), background 280ms ease-out`,
-              }}
-            >
-              {/* Background effects */}
-              <div
-                className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent transition-opacity duration-150"
-                style={{ opacity: micState === "hover" ? 0.8 : 0 }}
-              ></div>
-              <div
-                className="absolute inset-0 transition-colors duration-150"
-                style={{
-                  backgroundColor: micState === "hover" ? "rgba(0,0,0,0.1)" : "transparent",
-                }}
-              ></div>
-
-              {/* Dynamic content based on state */}
-              {micState === "idle" || micState === "hover" ? (
-                <SoundWaveIcon size={micState === "idle" ? 12 : 14} />
-              ) : micState === "recording" || micState === "command" ? (
+        {statusPill ? (
+          <div className="flow-pill-h mr-1.5">
+            {statusPill.mode === "processing" ? (
+              <>
+                <Loader2 size={15} className="animate-spin opacity-80" />
+                {statusPill.name && (
+                  <span className="text-[12px] opacity-80">{statusPill.name}…</span>
+                )}
+                {isProcessing && !transformStatus && (
+                  <button
+                    aria-label={t("app.buttons.cancelProcessing")}
+                    onClick={cancelProcessing}
+                    className="ml-1 flex h-5 w-5 items-center justify-center rounded-full opacity-50 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10"
+                  >
+                    <X size={11} />
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <span className="text-[13px] font-medium">
+                  {t("app.pill.done", { defaultValue: "Done." })}
+                </span>
+                <button
+                  onClick={handleSeeChanges}
+                  className="text-[13px] font-medium text-fuchsia-600 hover:text-fuchsia-500 dark:text-fuchsia-300 dark:hover:text-fuchsia-200"
+                >
+                  {t("app.pill.seeChanges", { defaultValue: "See changes" })}
+                </button>
+              </>
+            )}
+          </div>
+        ) : !isExpanded ? (
+          <div
+            className="flow-dock-handle"
+            role="button"
+            aria-label={t("app.dock.expand", { defaultValue: "Expand Flow Bar" })}
+            onClick={() => setIsExpanded(true)}
+          />
+        ) : (
+          <div className="relative mr-1 flex flex-col items-end">
+            {isRecording ? (
+              /* Recording: the waveform IS the pill — no other options. Click stops. */
+              <button
+                onClick={toggleListening}
+                aria-label={t("app.mic.recording")}
+                className={`flow-dock-mic flow-dock-mic--recording ${micStateClass}`}
+              >
                 <LiveWaveform levels={micLevels} />
-              ) : micState === "processing" || micState === "command-processing" ? (
-                <VoiceWaveIndicator isListening={true} />
-              ) : null}
-
-              {/* Listening ring — animated gradient sweep + slow rotation, Flow Bar style */}
-              {(micState === "recording" || micState === "command") && (
                 <span className="flow-bar-ring flow-bar-ring--listening" aria-hidden="true" />
+              </button>
+            ) : (
+            <div className="flow-dock-panel">
+              <Tooltip
+                label={t("app.dock.dictate", { defaultValue: "Dictate" })}
+                hotkey={formatHotkeyLabel(hotkey)}
+              >
+                <button
+                  ref={buttonRef}
+                  onMouseDown={(e) => {
+                    setIsTransformMenuOpen(false);
+                    setDragStartPos({ x: e.clientX, y: e.clientY });
+                    setHasDragged(false);
+                    handleMouseDown(e);
+                  }}
+                  onMouseMove={(e) => {
+                    if (dragStartPos && !hasDragged) {
+                      const distance = Math.sqrt(
+                        Math.pow(e.clientX - dragStartPos.x, 2) +
+                          Math.pow(e.clientY - dragStartPos.y, 2)
+                      );
+                      if (distance > 5) {
+                        // 5px threshold for drag
+                        setHasDragged(true);
+                      }
+                    }
+                  }}
+                  onMouseUp={(e) => {
+                    handleMouseUp(e);
+                    setDragStartPos(null);
+                  }}
+                  onClick={(e) => {
+                    if (!hasDragged) {
+                      setIsTransformMenuOpen(false);
+                      toggleListening();
+                    }
+                    e.preventDefault();
+                  }}
+                  className="flow-dock-mic"
+                  style={{ cursor: isDragging ? "grabbing" : "pointer" }}
+                >
+                  <Mic size={16} className="opacity-90" />
+                </button>
+              </Tooltip>
+
+              {scratchpadInFlowBar && (
+                <Tooltip label={t("app.dock.scratchpad", { defaultValue: "Scratchpad" })}>
+                  <button
+                    onClick={() => {
+                      void window.electronAPI?.openScratchpadOverlay?.();
+                    }}
+                    className="flow-dock-icon"
+                  >
+                    <SquarePen size={15} />
+                  </button>
+                </Tooltip>
               )}
 
-              {/* Processing ring — shimmer sweep across the pill */}
-              {(micState === "processing" || micState === "command-processing") && (
-                <span className="flow-bar-ring flow-bar-ring--processing" aria-hidden="true" />
-              )}
-            </button>
-          </Tooltip>
-          {isCommandMenuOpen && (
-            <div
-              ref={commandMenuRef}
-              className="absolute bottom-full right-0 mb-3 w-48 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg backdrop-blur-sm"
-              onMouseEnter={() => {
-                setWindowInteractivity(true);
-              }}
-              onMouseLeave={() => {
-                if (!isHovered) {
-                  setWindowInteractivity(false);
-                }
-              }}
-            >
-              <button
-                className="w-full px-3 py-2 text-left text-sm font-medium hover:bg-muted focus:bg-muted focus:outline-none"
-                onClick={() => {
-                  toggleListening();
-                }}
-              >
-                {isRecording
-                  ? t("app.commandMenu.stopListening")
-                  : t("app.commandMenu.startListening")}
-              </button>
-              <div className="h-px bg-border" />
-              <button
-                className="w-full px-3 py-2 text-left text-sm hover:bg-muted focus:bg-muted focus:outline-none"
-                onClick={() => {
-                  setIsCommandMenuOpen(false);
-                  setWindowInteractivity(false);
-                  handleClose();
-                }}
-              >
-                {t("app.commandMenu.hideForNow")}
-              </button>
+              <Tooltip
+                  label={selectedTransform?.name || t("app.dock.transforms", { defaultValue: "Transforms" })}
+                  hotkey={selectedShortcut ? formatHotkeyLabel(selectedShortcut) : undefined}
+                  offset={40}
+                  enabled={dockReady}
+                >
+                  <div ref={sparkleRef} className="group relative flex items-center">
+                    {/* Left arrow — floats outside the panel, appears only on
+                        hover of this row, opens the transform menu. Gated
+                        behind dockReady (not just group-hover) so it can't
+                        render/become interactive until ~120ms after the panel
+                        expanded — long enough for the async native window
+                        resize to actually land. Rendering it before that
+                        landed meant it was drawn past the still-narrow
+                        window's real edge and hard-clipped there, which read
+                        as "disappearing" when reached for. */}
+                    <div
+                      className={`absolute top-1/2 -translate-y-1/2 pr-2 opacity-0 pointer-events-none transition-opacity duration-150 ${
+                        dockReady ? "group-hover:opacity-100 group-hover:pointer-events-auto" : ""
+                      }`}
+                      style={{ right: "calc(100% - 4px)" }}
+                    >
+                      <button
+                        onClick={() => {
+                          setWindowInteractivity(true);
+                          toggleTransformMenu();
+                        }}
+                        aria-label={t("app.dock.transformMenu", {
+                          defaultValue: "Transform menu",
+                        })}
+                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float"
+                      >
+                        <ChevronLeft size={13} />
+                      </button>
+                    </div>
+                    {/* Sparkle — runs the selected transform on the current selection */}
+                    <button
+                      onClick={() => {
+                        setIsTransformMenuOpen(false);
+                        if (selectedTransform) {
+                          void window.electronAPI?.runTransform?.({ id: selectedTransform.id });
+                        }
+                      }}
+                      className="flow-dock-icon"
+                    >
+                      <Sparkles size={15} />
+                    </button>
+                  </div>
+                </Tooltip>
             </div>
-          )}
-        </div>
+            )}
+
+            {isTransformMenuOpen && (
+              <div
+                ref={menuRef}
+                className="absolute right-full bottom-0 mr-2 w-60 rounded-2xl bg-white py-1.5 text-neutral-900 shadow-xl dark:bg-neutral-900 dark:text-neutral-100"
+                onMouseEnter={() => {
+                  setWindowInteractivity(true);
+                }}
+                onMouseLeave={() => {
+                  if (!isHovered) {
+                    setWindowInteractivity(false);
+                  }
+                }}
+              >
+                <div className="flex items-center justify-between gap-3 px-4 py-2.5">
+                  <span className="text-[13px] font-medium">
+                    {t("app.transformMenu.autoApply", {
+                      defaultValue: "Auto Apply After Dictation",
+                    })}
+                  </span>
+                  <Toggle checked={autoApply} onChange={setAutoApplyEnabled} />
+                </div>
+                <div className="h-px bg-neutral-200 dark:bg-neutral-700" />
+                {transforms.map((tr) => (
+                  <button
+                    key={tr.id}
+                    onClick={() => selectAutoApplyTransform(tr.id)}
+                    className="flex w-full items-center justify-between px-4 py-2.5 text-left text-[13px] hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10"
+                  >
+                    <span className="truncate">{tr.name}</span>
+                    {autoApplyTransformId === tr.id && (
+                      <Check size={14} className="shrink-0 text-neutral-700 dark:text-neutral-200" />
+                    )}
+                  </button>
+                ))}
+                <div className="h-px bg-neutral-200 dark:bg-neutral-700" />
+                <button
+                  onClick={() => {
+                    setIsTransformMenuOpen(false);
+                    void window.electronAPI?.openTransformsView?.();
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[13px] hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10"
+                >
+                  <Settings size={14} className="shrink-0 text-neutral-600 dark:text-neutral-300" />
+                  {t("app.transformMenu.configure", { defaultValue: "Configure transforms" })}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

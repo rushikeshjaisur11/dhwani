@@ -31,8 +31,10 @@ once a release is tagged, signed `.exe`/NSIS installers will publish to this rep
 - **Voice dictation** — global hotkey to dictate into any app with automatic pasting
 - **AI agent** — talk to GPT-5, Claude, Gemini, Groq, or local models with a named voice assistant
 - **Voice agent hotkey** — dedicated hotkey that sends your dictation straight to your AI agent as a command, no wake word needed and no cleanup pass
-- **Flow Bar overlay** — restyled dictation pill with distinct idle/listening/processing/command visual states
-- **Polish** — select text in any app and rewrite it in place (concise, clarity, tone, structure) via a dedicated hotkey
+- **Flow Bar overlay** — right-edge docked strip that expands into an icon stack (mic, scratchpad, transforms) with a transform menu and functional Auto Apply After Dictation toggle
+- **Polish** — select text in any app and rewrite it in place (concise, clarity, readability, structure) via a dedicated hotkey; results show as an inline word-level diff card (Win+Alt+O to replay) with copy/feedback/retry actions
+- **Transforms** — Polish and Prompt Engineer with full config pages (custom shortcuts, Polish rule toggles, editable Prompt Engineer prompt), plus user-created transforms
+- **Scratchpad** — floating always-on-top quick-note overlay backed by the notes DB, openable from the Flow Bar, settings, or its own hotkey
 - **Command Mode** — a hotkey that treats your speech as an instruction rather than dictation
 - **Snippets & Dictionary** — trigger→expansion text snippets and a custom vocabulary that biases transcription and survives cleanup
 - **Insights** — total words, dictations, average WPM, and day streak computed from your local history

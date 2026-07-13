@@ -1,7 +1,18 @@
 import React, { Suspense, useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
-import { Download, RefreshCw, Loader2, AlertTriangle, Zap, ChevronLeft, Bell } from "lucide-react";
+import {
+  Download,
+  RefreshCw,
+  Loader2,
+  AlertTriangle,
+  Zap,
+  ChevronLeft,
+  Bell,
+  Sun,
+  Moon,
+  Monitor,
+} from "lucide-react";
 import PostMigrationOnboarding from "./PostMigrationOnboarding";
 import { ConfirmDialog, AlertDialog } from "./ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -84,6 +95,15 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   const [aiCTADismissed, setAiCTADismissed] = useState(
     () => localStorage.getItem("aiCTADismissed") === "true"
   );
+  const theme = useSettingsStore((s) => s.theme);
+  const setTheme = useSettingsStore((s) => s.setTheme);
+  const THEME_CYCLE = ["light", "dark", "auto"] as const;
+  const themeIcon = { light: Sun, dark: Moon, auto: Monitor } as const;
+  const ThemeIcon = themeIcon[theme];
+  const cycleTheme = () => {
+    const next = THEME_CYCLE[(THEME_CYCLE.indexOf(theme) + 1) % THEME_CYCLE.length];
+    setTheme(next);
+  };
   const [invitationToken, setInvitationToken] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -118,6 +138,22 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
     return window.electronAPI.onOpenSettingsSection?.((section) => {
       setSettingsSection(section);
       setShowSettings(true);
+    });
+  }, []);
+
+  // "Configure Polish" / "Configure transforms" deep links from the overlay.
+  useEffect(() => {
+    return window.electronAPI.onOpenTransformsView?.(() => {
+      setShowSettings(false);
+      setActiveView("transforms");
+    });
+  }, []);
+
+  // Expand button in the scratchpad overlay.
+  useEffect(() => {
+    return window.electronAPI.onOpenScratchpadView?.(() => {
+      setShowSettings(false);
+      setActiveView("scratchpad");
     });
   }, []);
   const {
@@ -740,6 +776,15 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
           className="flex items-center gap-2.5"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
+          {/* Theme switcher */}
+          <button
+            onClick={cycleTheme}
+            className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground transition-colors cursor-pointer"
+            title={t("settingsPage.general.appearance.theme")}
+          >
+            <ThemeIcon size={15} />
+          </button>
+
           {/* Notification Bell */}
           <Popover open={showNotifications} onOpenChange={setShowNotifications}>
             <PopoverTrigger asChild>

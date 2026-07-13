@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Check, Copy, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Check, Copy, RotateCcw, ThumbsDown, ThumbsUp, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { wordDiff } from "../utils/wordDiff";
 
 type PreviewPhase = "listening" | "live" | "cleanup" | "final" | "changes" | "transformProcessing";
 
@@ -8,7 +9,7 @@ const FINAL_HIDE_DURATION_MS = 4000;
 const CHANGES_HIDE_DURATION_MS = 6000;
 const COPIED_RESET_MS = 1400;
 const HIDE_ANIMATION_MS = 220;
-const TARGET_WIDTH = 420;
+const TARGET_WIDTH = 520;
 
 export default function TranscriptionPreviewOverlay() {
   const { t } = useTranslation();
@@ -19,9 +20,11 @@ export default function TranscriptionPreviewOverlay() {
   const [copied, setCopied] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [countdownKey, setCountdownKey] = useState(0);
+  const [changesId, setChangesId] = useState("");
   const [changesName, setChangesName] = useState("");
   const [changesBefore, setChangesBefore] = useState("");
   const [changesAfter, setChangesAfter] = useState("");
+  const [vote, setVote] = useState<"up" | "down" | null>(null);
   const [processingName, setProcessingName] = useState("");
 
   const shellRef = useRef<HTMLDivElement | null>(null);
@@ -195,9 +198,11 @@ export default function TranscriptionPreviewOverlay() {
     const handleTransformChanges = window.electronAPI?.onTransformChanges?.((payload) => {
       clearLifecycleTimers();
       clearTimer(copiedTimerRef);
+      setChangesId(payload?.id || "");
       setChangesName(payload?.name || "");
       setChangesBefore(payload?.before || "");
       setChangesAfter(payload?.after || "");
+      setVote(null);
       setCopied(false);
       setPhase("changes");
       setIsVisible(true);
@@ -259,49 +264,97 @@ export default function TranscriptionPreviewOverlay() {
     window.electronAPI?.dismissDictationPreview?.();
   }, []);
 
+  const diff = useMemo(() => wordDiff(changesBefore, changesAfter), [changesBefore, changesAfter]);
+
+  const handleVote = useCallback(
+    (nextVote: "up" | "down") => {
+      setVote(nextVote);
+      // Best-effort local feedback log (localStorage is user-mutable, so parse defensively).
+      try {
+        const parsed = JSON.parse(localStorage.getItem("transformFeedback") || "[]");
+        const list = Array.isArray(parsed) ? parsed : [];
+        list.push({
+          ts: Date.now(),
+          name: changesName,
+          before: changesBefore,
+          after: changesAfter,
+          vote: nextVote,
+        });
+        localStorage.setItem("transformFeedback", JSON.stringify(list.slice(-100)));
+      } catch {
+        // ignore — feedback must never break the card
+      }
+    },
+    [changesName, changesBefore, changesAfter]
+  );
+
+  const handleRetry = useCallback(() => {
+    if (!changesId || !changesBefore.trim()) return;
+    void window.electronAPI?.retryTransform?.({ id: changesId, text: changesBefore });
+  }, [changesId, changesBefore]);
+
+  const handleConfigure = useCallback(() => {
+    void window.electronAPI?.openTransformsView?.();
+  }, []);
+
+  const suspendAutoHide = useCallback(() => {
+    if (phaseRef.current === "changes") clearTimer(hideTimerRef);
+  }, []);
+
+  const resumeAutoHide = useCallback(() => {
+    if (phaseRef.current === "changes") {
+      startHideTimer(CHANGES_HIDE_DURATION_MS);
+      setCountdownKey((k) => k + 1);
+    }
+  }, [startHideTimer]);
+
   if (!isVisible) {
     return <div className="h-full w-full bg-transparent" />;
   }
 
+  // The changes phase renders its own header ("N Changes"), so no status
+  // label case for it here.
   const statusLabel =
-    phase === "changes"
-      ? t("transcriptionPreview.transformApplied", {
-          defaultValue: "{{name}} applied",
-          name: changesName,
+    phase === "transformProcessing"
+      ? t("transcriptionPreview.transformProcessing", {
+          defaultValue: "{{name}}...",
+          name: processingName,
         })
-      : phase === "transformProcessing"
-        ? t("transcriptionPreview.transformProcessing", {
-            defaultValue: "{{name}}...",
-            name: processingName,
-          })
-        : phase === "final"
-          ? t("transcriptionPreview.ready", { defaultValue: "Ready" })
-          : phase === "cleanup"
-            ? t("transcriptionPreview.polishing", { defaultValue: "Polishing..." })
-            : t("transcriptionPreview.listening", { defaultValue: "Listening..." });
+      : phase === "final"
+        ? t("transcriptionPreview.ready", { defaultValue: "Ready" })
+        : phase === "cleanup"
+          ? t("transcriptionPreview.polishing", { defaultValue: "Polishing..." })
+          : t("transcriptionPreview.listening", { defaultValue: "Listening..." });
 
   return (
     <div className="meeting-notification-window h-full w-full bg-transparent p-2">
       <div
         ref={shellRef}
+        onMouseEnter={suspendAutoHide}
+        onMouseLeave={resumeAutoHide}
         className={[
-          "relative overflow-hidden rounded-xl border bg-card/92 p-3 backdrop-blur-xl",
+          "relative overflow-hidden rounded-xl border p-3 backdrop-blur-xl",
           "shadow-[0_8px_24px_rgba(0,0,0,0.14)]",
-          "dark:bg-surface-2/92",
-          phase === "final" || phase === "changes"
+          phase === "changes"
+            ? "border-white/10 bg-[#1c1a17]/95"
+            : "bg-card/92 dark:bg-surface-2/92",
+          phase === "final"
             ? "border-emerald-500/18 dark:border-emerald-500/20"
             : phase === "cleanup" || phase === "transformProcessing"
               ? "border-accent/22 dark:border-accent/25"
-              : "border-border/40 dark:border-border-subtle/45",
+              : phase === "changes"
+                ? ""
+                : "border-border/40 dark:border-border-subtle/45",
           "transition-all duration-200 ease-out",
           isVisible
             ? "translate-y-0 opacity-100 scale-100"
             : "translate-y-4 opacity-0 scale-[0.97]",
         ].join(" ")}
       >
+        {phase !== "changes" && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 min-w-0">
-            {phase === "final" || phase === "changes" ? (
+            {phase === "final" ? (
               <Check className="h-3.5 w-3.5 shrink-0 text-emerald-500/70" />
             ) : phase === "cleanup" || phase === "transformProcessing" ? (
               <div className="flex items-end gap-[2px] shrink-0 h-3.5">
@@ -356,24 +409,81 @@ export default function TranscriptionPreviewOverlay() {
             </button>
           </div>
         </div>
+        )}
 
         {phase === "changes" ? (
-          <div className="mt-2 space-y-2">
-            <div className="rounded-lg border border-border/25 bg-background/30 px-2.5 py-2">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/50 mb-1">
-                {t("transcriptionPreview.before", { defaultValue: "Before" })}
-              </p>
-              <p className="select-text text-[12px] leading-[1.5] text-muted-foreground line-clamp-3 whitespace-pre-wrap break-words">
-                {changesBefore}
-              </p>
+          <div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[13px] font-semibold text-white">
+                {t("transcriptionPreview.changesCount", {
+                  defaultValue: "{{count}} Changes",
+                  count: diff.changeCount,
+                })}
+              </span>
+              <button
+                onClick={handleConfigure}
+                className="shrink-0 text-[12px] font-medium text-white/85 transition-colors hover:text-white"
+              >
+                {t("transcriptionPreview.configureTransform", {
+                  defaultValue: "Configure {{name}}",
+                  name: changesName,
+                })}
+              </button>
             </div>
-            <div className="rounded-lg border border-emerald-500/10 bg-emerald-500/[0.03] px-2.5 py-2 max-h-[180px] overflow-y-auto preview-text-scroll">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/50 mb-1">
-                {t("transcriptionPreview.after", { defaultValue: "After" })}
-              </p>
-              <p className="select-text text-[13px] leading-[1.52] text-foreground whitespace-pre-wrap break-words [text-wrap:pretty]">
-                {changesAfter}
-              </p>
+
+            <div className="preview-text-scroll mt-3 max-h-[180px] select-text overflow-y-auto text-[13px] leading-[2] text-white/90 break-words [text-wrap:pretty]">
+              {diff.ops.map((op, i) =>
+                op.type === "same" ? (
+                  <span key={i}>{op.text} </span>
+                ) : op.type === "del" ? (
+                  <span key={i} className="text-white/35 line-through decoration-white/35">
+                    {op.text}{" "}
+                  </span>
+                ) : (
+                  <span key={i} className="rounded bg-emerald-400/20 px-1 py-0.5 text-emerald-200">
+                    {op.text}{" "}
+                  </span>
+                )
+              )}
+            </div>
+
+            <div className="mt-3 flex items-center gap-1">
+              <button
+                onClick={handleCopy}
+                title={t("transcriptionPreview.copy", { defaultValue: "Copy" })}
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              </button>
+              <button
+                onClick={() => handleVote("up")}
+                title={t("transcriptionPreview.goodResult", { defaultValue: "Good result" })}
+                className={[
+                  "inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-white/10",
+                  vote === "up" ? "text-emerald-300" : "text-white/55 hover:text-white",
+                ].join(" ")}
+              >
+                <ThumbsUp className="h-3.5 w-3.5" />
+              </button>
+              <button
+                onClick={() => handleVote("down")}
+                title={t("transcriptionPreview.badResult", { defaultValue: "Bad result" })}
+                className={[
+                  "inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-white/10",
+                  vote === "down" ? "text-red-300" : "text-white/55 hover:text-white",
+                ].join(" ")}
+              >
+                <ThumbsDown className="h-3.5 w-3.5" />
+              </button>
+              {!!changesId && (
+                <button
+                  onClick={handleRetry}
+                  title={t("transcriptionPreview.retry", { defaultValue: "Retry" })}
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           </div>
         ) : (

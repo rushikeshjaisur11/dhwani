@@ -15,6 +15,7 @@ export interface ModelCardOption {
   isDownloaded?: boolean;
   isDownloading?: boolean;
   recommended?: boolean;
+  systemRecommended?: boolean;
 }
 
 interface ModelCardListProps {
@@ -166,6 +167,11 @@ export default function ModelCardList({
               {model.recommended && (
                 <span className="text-xs font-medium text-primary px-1.5 py-0.5 bg-primary/10 rounded-sm shrink-0">
                   {t("common.recommended")}
+                </span>
+              )}
+              {model.systemRecommended && (
+                <span className="text-xs font-medium text-primary px-1.5 py-0.5 bg-primary/10 rounded-sm shrink-0">
+                  {t("modelRecommendation.badge")}
                 </span>
               )}
 

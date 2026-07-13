@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CornerDownLeft, Mic, Pencil, Plus, X } from "lucide-react";
+import { ArrowRight, CornerDownLeft, Pencil, Plus, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -148,6 +148,12 @@ export default function SnippetsView() {
     setPanelOpen(true);
   };
 
+  const openPanelWithExample = (key: (typeof EXAMPLE_KEYS)[number]) => {
+    setTrigger(t(`dictionary.snippets.examples.${key}Trigger`));
+    setExpansion(t(`dictionary.snippets.examples.${key}Text`));
+    setPanelOpen(true);
+  };
+
   const closePanel = () => {
     setPanelOpen(false);
     setExpansion("");
@@ -193,9 +199,31 @@ export default function SnippetsView() {
         <PromoBanner
           title={t("dictionary.snippets.bannerTitle")}
           description={t("dictionary.snippets.bannerDescription")}
+          primaryAction={{
+            label: t("dictionary.snippets.new"),
+            onClick: () => triggerInputRef.current?.focus(),
+          }}
           onDismiss={dismissBanner}
           className="mb-1"
-        />
+        >
+          <div className="mb-4 flex flex-col gap-2">
+            {EXAMPLE_KEYS.map((key) => (
+              <button
+                key={key}
+                onClick={() => openPanelWithExample(key)}
+                className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-left hover:bg-white/15 transition-colors"
+              >
+                <span className="shrink-0 rounded-md bg-white/15 px-2 py-1 text-xs text-white">
+                  {t(`dictionary.snippets.examples.${key}Trigger`)}
+                </span>
+                <ArrowRight size={12} className="shrink-0 text-white/40" />
+                <span className="min-w-0 flex-1 truncate text-xs text-white/60">
+                  {t(`dictionary.snippets.examples.${key}Text`)}
+                </span>
+              </button>
+            ))}
+          </div>
+        </PromoBanner>
       )}
 
       {/* ─── Add snippet ─── */}
@@ -275,34 +303,18 @@ export default function SnippetsView() {
         )}
 
         {snippets.length === 0 ? (
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-5 px-2 py-6">
-            <div className="flex-1 min-w-[220px]">
-              <h4 className="text-sm font-semibold text-foreground leading-snug">
-                {t("dictionary.snippets.emptyTitle")}{" "}
-                <span className="text-primary">{t("dictionary.snippets.emptyTitleAccent")}</span>
-              </h4>
-              <p className="mt-1.5 text-xs text-foreground/30 leading-relaxed">
-                {t("dictionary.snippets.emptyDescription")}
-              </p>
-              <Button size="sm" className="mt-4" onClick={() => triggerInputRef.current?.focus()}>
-                <Plus size={12} />
-                {t("dictionary.snippets.new")}
-              </Button>
-            </div>
-            <div className="flex-1 min-w-[260px] rounded-md border border-foreground/8 dark:border-white/6 bg-foreground/[0.02] dark:bg-white/[0.03] px-3.5 py-3 flex flex-col gap-2.5">
-              {EXAMPLE_KEYS.map((key) => (
-                <div key={key} className="flex items-start gap-2">
-                  <span className="shrink-0 inline-flex items-center gap-1 rounded-[5px] bg-primary/10 dark:bg-primary/15 border border-primary/15 dark:border-primary/20 px-1.5 py-0.5 text-xs text-primary">
-                    <Mic size={9} />
-                    {t(`dictionary.snippets.examples.${key}Trigger`)}
-                  </span>
-                  <span className="shrink-0 text-xs text-foreground/20 mt-0.5">→</span>
-                  <span className="min-w-0 text-xs text-foreground/40 leading-relaxed">
-                    {t(`dictionary.snippets.examples.${key}Text`)}
-                  </span>
-                </div>
-              ))}
-            </div>
+          <div className="px-2 py-6">
+            <h4 className="text-sm font-semibold text-foreground leading-snug">
+              {t("dictionary.snippets.emptyTitle")}{" "}
+              <span className="text-primary">{t("dictionary.snippets.emptyTitleAccent")}</span>
+            </h4>
+            <p className="mt-1.5 text-xs text-foreground/30 leading-relaxed">
+              {t("dictionary.snippets.emptyDescription")}
+            </p>
+            <Button size="sm" className="mt-4" onClick={() => triggerInputRef.current?.focus()}>
+              <Plus size={12} />
+              {t("dictionary.snippets.new")}
+            </Button>
           </div>
         ) : visibleSnippets.length === 0 ? (
           <p className="py-6 text-xs text-foreground/20 text-center">

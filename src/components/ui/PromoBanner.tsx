@@ -8,6 +8,7 @@ interface PromoBannerProps {
   secondaryAction?: { label: string; onClick: () => void };
   onDismiss?: () => void;
   className?: string;
+  children?: React.ReactNode;
 }
 
 // ponytail: no licensed photography bundled — uses a dark gradient mesh
@@ -20,6 +21,7 @@ export default function PromoBanner({
   secondaryAction,
   onDismiss,
   className,
+  children,
 }: PromoBannerProps) {
   return (
     <div
@@ -41,6 +43,7 @@ export default function PromoBanner({
       <div className="relative z-[1] max-w-md">
         <h3 className="font-serif italic text-white text-2xl mb-1.5 leading-snug">{title}</h3>
         <p className="text-white/65 text-sm mb-4 leading-relaxed">{description}</p>
+        {children}
         {(primaryAction || secondaryAction) && (
           <div className="flex items-center gap-4">
             {primaryAction && (

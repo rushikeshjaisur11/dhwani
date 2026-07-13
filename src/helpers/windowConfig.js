@@ -28,10 +28,16 @@ const FLOATING_OVERLAY_TYPE =
         : "toolbar"
       : "normal";
 
+// Right-edge dock sizes: BASE is the collapsed handle, STACK the hover icon
+// panel (wide enough for the white tooltip pills opening leftward), WIDE the
+// horizontal status pill (spinner / "Done. See changes"), WITH_MENU adds the
+// transform menu opening leftward.
 const WINDOW_SIZES = {
-  BASE: { width: 96, height: 96 },
-  RECORDING: { width: 176, height: 64 },
-  WITH_MENU: { width: 240, height: 280 },
+  BASE: { width: 28, height: 96 },
+  STACK: { width: 300, height: 240 },
+  RECORDING: { width: 110, height: 170 },
+  WIDE: { width: 250, height: 72 },
+  WITH_MENU: { width: 340, height: 340 },
   WITH_TOAST: { width: 400, height: 500 },
   EXPANDED: { width: 400, height: 500 },
 };
@@ -125,11 +131,11 @@ const NOTIFICATION_WINDOW_CONFIG = {
 
 const TRANSCRIPTION_PREVIEW_SIZE_LIMITS = {
   minWidth: 400,
-  defaultWidth: 460,
-  maxWidth: 640,
+  defaultWidth: 520,
+  maxWidth: 560,
   minHeight: 96,
   defaultHeight: 132,
-  maxHeight: 520,
+  maxHeight: 640,
 };
 
 const TRANSCRIPTION_PREVIEW_CONFIG = {
@@ -155,23 +161,16 @@ const TRANSCRIPTION_PREVIEW_CONFIG = {
 };
 
 class WindowPositionUtil {
-  static getMainWindowPosition(display, customSize = null, position = "bottom-right") {
+  static getMainWindowPosition(display, customSize = null, _position = "bottom-right") {
     const { width, height } = customSize || WINDOW_SIZES.BASE;
-    const MARGIN = 4;
     const workArea = display.workArea || display.bounds;
 
-    let x, y;
-    if (position === "bottom-left") {
-      x = workArea.x + MARGIN;
-      y = Math.max(0, workArea.y + workArea.height - height - MARGIN);
-    } else if (position === "center") {
-      x = Math.round(workArea.x + (workArea.width - width) / 2);
-      y = Math.max(0, workArea.y + workArea.height - height - MARGIN);
-    } else {
-      // bottom-right (default)
-      x = Math.max(0, workArea.x + workArea.width - width - MARGIN);
-      y = Math.max(0, workArea.y + workArea.height - height - MARGIN);
-    }
+    // ponytail: the dock is always flush to the right edge, vertically
+    // centered (Wispr-Flow style). The panelStartPosition setting is
+    // intentionally ignored here — it stays in Settings for the day a
+    // left-edge dock is wanted.
+    const x = workArea.x + workArea.width - width;
+    const y = Math.max(workArea.y, Math.round(workArea.y + (workArea.height - height) / 2));
 
     return { x, y, width, height };
   }
@@ -241,6 +240,16 @@ const AGENT_OVERLAY_CONFIG = {
   frame: false,
   alwaysOnTop: true,
   transparent: true,
+  // Explicit ARGB transparent background — Windows paints transparent windows
+  // solid black instead of compositing them without this, especially around
+  // resize.
+  backgroundColor: "#00000000",
+  // WS_THICKFRAME (Electron's default) draws a visible native frame outline
+  // around frameless Windows windows even when transparent — that's the
+  // stray border around the rounded scratchpad/agent overlay. Disabling it
+  // also drops native shadow/animations, which we don't rely on (hasShadow
+  // is already false; all motion is CSS-driven).
+  thickFrame: false,
   show: false,
   skipTaskbar: true,
   hasShadow: false,
@@ -261,10 +270,24 @@ const AGENT_OVERLAY_CONFIG = {
   },
 };
 
+// Scratchpad floating note overlay — small always-on-top notes window
+// (sidebar + editor), cloned from the agent overlay shell.
+const SCRATCHPAD_OVERLAY_CONFIG = {
+  ...AGENT_OVERLAY_CONFIG,
+  width: 560,
+  height: 470,
+  minWidth: 420,
+  minHeight: 320,
+  maxWidth: 1200,
+  maxHeight: 900,
+  resizable: true,
+};
+
 module.exports = {
   MAIN_WINDOW_CONFIG,
   CONTROL_PANEL_CONFIG,
   AGENT_OVERLAY_CONFIG,
+  SCRATCHPAD_OVERLAY_CONFIG,
   NOTIFICATION_WINDOW_CONFIG,
   TRANSCRIPTION_PREVIEW_CONFIG,
   TRANSCRIPTION_PREVIEW_SIZE_LIMITS,

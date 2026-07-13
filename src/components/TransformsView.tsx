@@ -7,13 +7,14 @@ import { Textarea } from "./ui/textarea";
 import { Kbd } from "./ui/Kbd";
 import HotkeyInput from "./ui/HotkeyInput";
 import PromoBanner, { BetaBadge } from "./ui/PromoBanner";
-import ToggleSwitch from "./ui/ToggleSwitch";
+import { Toggle } from "./ui/toggle";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
 import { useToast } from "./ui/useToast";
 import { useHotkeyRegistration } from "../hooks/useHotkeyRegistration";
 import { useSettingsStore } from "../stores/settingsStore";
 import { formatHotkeyLabel } from "../utils/hotkeys";
 import TransformPreviewDialog from "./TransformPreviewDialog";
+import TransformDetailView from "./TransformDetailView";
 import { TRANSFORMS_DEFAULTS_URL } from "../config/constants";
 import {
   BUNDLED_DEFAULTS,
@@ -22,6 +23,7 @@ import {
   loadCustoms,
   saveCustoms,
   mergeTransforms,
+  applyBuiltinOverrides,
   type Transform,
 } from "../config/transforms/loadEffectiveTransforms";
 
@@ -116,6 +118,7 @@ export default function TransformsView() {
   const [optIn, setOptIn] = useState(() => localStorage.getItem(OPT_IN_KEY) === "true");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
 
@@ -134,7 +137,12 @@ export default function TransformsView() {
     localStorage.setItem(OPT_IN_KEY, String(optIn));
   }, [optIn]);
 
-  const transforms = useMemo(() => mergeTransforms(defaults, customs), [defaults, customs]);
+  // detailId in deps: re-apply overrides after the detail page edits them.
+  const transforms = useMemo(
+    () => mergeTransforms(applyBuiltinOverrides(defaults), customs),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [defaults, customs, detailId]
+  );
 
   const canCreate = name.trim() && prompt.trim();
 
@@ -161,6 +169,12 @@ export default function TransformsView() {
   const handleShortcutChange = (tr: Transform, hotkey: string) => {
     setCustoms(customs.map((c) => (c.id === tr.id ? { ...c, shortcut: hotkey || undefined } : c)));
   };
+
+  // Builtin detail page (Polish / Prompt Engineer) replaces the grid.
+  const detailTransform = detailId ? (defaults.find((d) => d.id === detailId) ?? null) : null;
+  if (detailTransform) {
+    return <TransformDetailView transform={detailTransform} onBack={() => setDetailId(null)} />;
+  }
 
   return (
     <div className="px-5 py-4 flex flex-col gap-5">
@@ -204,7 +218,7 @@ export default function TransformsView() {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground">{t("transforms.optIn")}</span>
-          <ToggleSwitch checked={optIn} onChange={setOptIn} ariaLabel={t("transforms.optIn")} />
+          <Toggle checked={optIn} onChange={setOptIn} />
           <div className="flex items-center gap-1 h-7 px-2.5 rounded-md border border-border bg-muted/50 text-xs text-muted-foreground">
             <Kbd className="text-[10px] px-1.5 py-0.5">Win</Kbd>
             <Kbd className="text-[10px] px-1.5 py-0.5">Alt</Kbd>
@@ -235,7 +249,12 @@ export default function TransformsView() {
             transform={tr}
             onShortcutChange={handleShortcutChange}
             onRemove={handleRemove}
-            onOpenPreview={() => setPreviewOpen(true)}
+            onOpenPreview={() => {
+              // Builtins open their full config page; customs keep the
+              // static preview dialog.
+              if (tr.builtin) setDetailId(tr.id);
+              else setPreviewOpen(true);
+            }}
           />
         ))}
         <button

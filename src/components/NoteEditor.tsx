@@ -11,6 +11,7 @@ const NOTE_TYPE_COLORS: Record<NoteItem["note_type"], string> = {
   personal: "bg-foreground/5 text-foreground/50",
   meeting: "bg-blue-500/8 text-blue-500/60 dark:bg-blue-400/10 dark:text-blue-400/60",
   upload: "bg-amber-500/8 text-amber-600/60 dark:bg-amber-400/10 dark:text-amber-400/60",
+  scratchpad: "bg-emerald-500/8 text-emerald-600/60 dark:bg-emerald-400/10 dark:text-emerald-400/60",
 };
 
 type SaveState = "idle" | "saving" | "saved";

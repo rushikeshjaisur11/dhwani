@@ -2928,7 +2928,9 @@
       "nvidiaGpu": "Ihre NVIDIA-GPU kann das schnellste, genaueste Modell ausführen",
       "highRamManyCores": "Ihr System hat genug Arbeitsspeicher und CPU-Kerne für höhere Genauigkeit",
       "moderateRam": "Eine ausgewogene Wahl für den verfügbaren Speicher Ihres Systems",
-      "lowRam": "Die schnellste Option für den verfügbaren Speicher Ihres Systems"
+      "lowRam": "Die schnellste Option für den verfügbaren Speicher Ihres Systems",
+      "nvidiaGpuLarge": "Ihre NVIDIA-GPU hat genug VRAM für ein größeres, leistungsfähigeres lokales Modell",
+      "weakHardwareCloud": "Die Hardware Ihres Systems ist für lokale KI-Modelle eingeschränkt – ein Cloud-Anbieter läuft schneller und zuverlässiger"
     }
   }
 }

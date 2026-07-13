@@ -580,26 +580,7 @@ a:hover {
   border: 1px solid var(--glass-border);
 }
 
-/* Flow Bar dictation pill (App.jsx SoundWaveIcon button) */
-.flow-bar-pill {
-  width: 64px;
-  height: 36px;
-  border-radius: 999px;
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-  transition:
-    width 320ms var(--flow-spring-easing),
-    height 320ms var(--flow-spring-easing),
-    border-radius 320ms var(--flow-spring-easing);
-}
-
-/* Recording/processing pill — grows into a horizontal bar so the live
-   waveform has room, instead of staying a fixed 40px circle. */
-.flow-bar-pill--expanded {
-  width: 96px;
-  height: 36px;
-  border-radius: 999px;
-}
-
+/* Flow Bar mic button state backgrounds (App.jsx dock mic button) */
 .flow-bar-pill--idle {
   background: var(--color-flow-ink);
 }
@@ -654,6 +635,188 @@ a:hover {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
   mix-blend-mode: overlay;
   animation: flow-shimmer-sweep 4s ease-in-out infinite;
+}
+
+/* Flow Dock — right-edge collapsed handle + vertical icon panel (App.jsx,
+   Wispr reference). Theme-aware: light defaults, .dark overrides. */
+.flow-dock-handle {
+  width: 7px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  margin-right: 4px;
+  cursor: pointer;
+  transition:
+    height 200ms var(--flow-spring-easing),
+    border-color 200ms ease-out;
+}
+
+.flow-dock-handle:hover {
+  height: 46px;
+  border-color: rgba(0, 0, 0, 0.6);
+}
+
+.dark .flow-dock-handle {
+  background: rgba(16, 16, 18, 0.75);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.dark .flow-dock-handle:hover {
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+/* Rounded vertical panel holding the mic / scratchpad / transforms icons. */
+.flow-dock-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1a1a1a;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+  animation: flow-dock-in 180ms var(--flow-spring-easing);
+}
+
+.dark .flow-dock-panel {
+  background: rgba(14, 14, 16, 0.92);
+  color: #fff;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+@keyframes flow-dock-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Mic — larger circle; recording backgrounds come from flow-bar-pill--* variants. */
+.flow-dock-mic {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
+  color: #1a1a1a;
+  transition: background 200ms ease-out;
+}
+
+.flow-dock-mic:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.dark .flow-dock-mic {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.dark .flow-dock-mic:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Recording: the waveform fills the whole vertical pill (gradient bg from
+   flow-bar-pill--listening/--command, white bars). */
+.flow-dock-mic--recording {
+  width: 44px;
+  height: 128px;
+  color: #fff;
+  animation: flow-dock-in 180ms var(--flow-spring-easing);
+}
+
+/* Secondary icons (scratchpad / chevron / sparkles) — flat, no circles. */
+.flow-dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition:
+    color 150ms ease-out,
+    background 150ms ease-out;
+}
+
+.flow-dock-icon:hover {
+  color: #000;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.dark .flow-dock-icon {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .flow-dock-icon:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.flow-dock-icon--small {
+  width: 24px;
+  height: 24px;
+}
+
+/* Floating variant (the hover-revealed menu arrow) — solid panel background
+   so it reads outside the panel. */
+.flow-dock-icon--float {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dark .flow-dock-icon--float {
+  background: rgba(14, 14, 16, 0.92);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* Horizontal status pill — spinner while a transform runs, then
+   "Done. See changes". */
+.flow-pill-h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1a1a1a;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+  animation: flow-dock-in 180ms var(--flow-spring-easing);
+}
+
+.dark .flow-pill-h {
+  background: rgba(14, 14, 16, 0.94);
+  color: #fff;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* Label pill shown to the left of a dock icon on hover — inverted vs the
+   panel for contrast. */
+.flow-tooltip-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.dark .flow-tooltip-pill {
+  background: #fff;
+  color: #1a1a1a;
 }
 
 @keyframes waveform-bar {

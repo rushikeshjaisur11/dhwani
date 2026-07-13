@@ -1057,7 +1057,114 @@ async function startApp() {
       payload && typeof payload.before === "string" && typeof payload.after === "string"
         ? payload
         : null;
+    if (windowManager.lastTransformChange) {
+      const preview = windowManager.transcriptionPreviewWindow;
+      if (preview && !preview.isDestroyed() && preview.isVisible()) {
+        // Card already on screen (retry from it) — refresh in place.
+        await windowManager.showLastTransformChanges();
+      } else {
+        // Otherwise show "Done. See changes" in the pill; the card opens on click.
+        windowManager.sendTransformDone();
+      }
+    }
     return { success: true };
+  });
+
+  ipcMain.handle("show-last-transform-changes", async () => {
+    await windowManager.showLastTransformChanges();
+    return { success: true };
+  });
+
+  // Run a transform on the current selection (sparkle click in the pill) —
+  // same path as the hotkeys, including target-PID capture for paste refocus.
+  ipcMain.handle("run-transform", async (_event, { id } = {}) => {
+    if (id === "builtin-polish") {
+      windowManager.sendTriggerPolish();
+    } else if (typeof id === "string" && id) {
+      windowManager.sendTriggerTransform(id);
+    } else {
+      return { success: false };
+    }
+    return { success: true };
+  });
+
+  // Retry from the changes card: re-run the transform on the original text
+  // (no selection capture, no paste — the refreshed card is the output).
+  ipcMain.handle("retry-transform", async (_event, { id, text } = {}) => {
+    if (typeof text !== "string" || !text.trim()) return { success: false };
+    if (id === "builtin-polish") {
+      windowManager.sendTriggerPolish({ text });
+    } else if (typeof id === "string" && id) {
+      windowManager.sendTriggerTransform(id, { text });
+    } else {
+      return { success: false };
+    }
+    return { success: true };
+  });
+
+  ipcMain.handle("open-transforms-view", async () => {
+    await windowManager.openTransformsView();
+    return { success: true };
+  });
+
+  // Scratchpad floating note overlay + its optional user-assigned hotkey
+  // (no default key — mirrors the voiceAgent opt-in pattern).
+  ipcMain.handle("open-scratchpad-overlay", async (_event, payload) => {
+    await windowManager.openScratchpadOverlay(payload || undefined);
+    return { success: true };
+  });
+
+  ipcMain.handle("open-scratchpad-view", async () => {
+    await windowManager.openScratchpadView();
+    return { success: true };
+  });
+
+  ipcMain.handle("set-scratchpad-pinned", async (_event, pinned) => {
+    const win = windowManager.scratchpadWindow;
+    if (win && !win.isDestroyed()) {
+      win.setAlwaysOnTop(!!pinned);
+    }
+    return { success: true };
+  });
+
+  const scratchpadHotkeyCallback = () => {
+    if (hotkeyManager.isInListeningMode()) return;
+    void windowManager.toggleScratchpadOverlay();
+  };
+
+  const savedScratchpadKey = environmentManager.getScratchpadKey?.() || "";
+  if (savedScratchpadKey) {
+    const scratchpadResult = await hotkeyManager.registerSlot(
+      "scratchpad",
+      savedScratchpadKey,
+      scratchpadHotkeyCallback
+    );
+    if (!scratchpadResult.success) {
+      debugLogger.warn(
+        "Failed to register scratchpad hotkey",
+        { hotkey: savedScratchpadKey },
+        "hotkey"
+      );
+    }
+  }
+
+  ipcMain.handle("register-scratchpad-hotkey", async (_event, hotkey) => {
+    if (hotkey) {
+      const result = await hotkeyManager.registerSlot("scratchpad", hotkey, scratchpadHotkeyCallback);
+      if (result.success) {
+        environmentManager.saveScratchpadKey(hotkey);
+        return { success: true };
+      }
+      return { success: false, message: result.error };
+    } else {
+      hotkeyManager.unregisterSlot("scratchpad");
+      environmentManager.saveScratchpadKey("");
+      return { success: true };
+    }
+  });
+
+  ipcMain.handle("get-scratchpad-key", async () => {
+    return environmentManager.getScratchpadKey?.() || "";
   });
 
   ipcMain.handle("show-transform-processing", async (_event, name) => {

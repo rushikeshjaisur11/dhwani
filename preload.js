@@ -28,10 +28,13 @@ contextBridge.exposeInMainWorld("electronAPI", {
   showDictationPanel: () => ipcRenderer.invoke("show-dictation-panel"),
   onToggleDictation: registerListener("toggle-dictation", (callback) => () => callback()),
   onToggleVoiceAgent: registerListener("toggle-voice-agent", (callback) => () => callback()),
-  onTriggerPolish: registerListener("trigger-polish", (callback) => () => callback()),
+  onTriggerPolish: registerListener(
+    "trigger-polish",
+    (callback) => (_event, payload) => callback(payload)
+  ),
   onTriggerTransform: registerListener(
     "trigger-transform",
-    (callback) => (_event, transformId) => callback(transformId)
+    (callback) => (_event, transformId, payload) => callback(transformId, payload)
   ),
   onTransformChanges: registerListener(
     "transform-changes",
@@ -43,6 +46,22 @@ contextBridge.exposeInMainWorld("electronAPI", {
   ),
   recordTransformResult: (payload) => ipcRenderer.invoke("record-transform-result", payload),
   showTransformProcessing: (name) => ipcRenderer.invoke("show-transform-processing", name),
+  retryTransform: (payload) => ipcRenderer.invoke("retry-transform", payload),
+  onTransformDone: registerListener("transform-done", (callback) => () => callback()),
+  showLastTransformChanges: () => ipcRenderer.invoke("show-last-transform-changes"),
+  runTransform: (payload) => ipcRenderer.invoke("run-transform", payload),
+  setScratchpadPinned: (pinned) => ipcRenderer.invoke("set-scratchpad-pinned", pinned),
+  openTransformsView: () => ipcRenderer.invoke("open-transforms-view"),
+  onOpenTransformsView: registerListener("open-transforms-view", (callback) => () => callback()),
+  openScratchpadOverlay: (payload) => ipcRenderer.invoke("open-scratchpad-overlay", payload),
+  onScratchpadOpenNote: registerListener(
+    "scratchpad-open-note",
+    (callback) => (_event, payload) => callback(payload)
+  ),
+  registerScratchpadHotkey: (hotkey) => ipcRenderer.invoke("register-scratchpad-hotkey", hotkey),
+  getScratchpadKey: () => ipcRenderer.invoke("get-scratchpad-key"),
+  openScratchpadView: () => ipcRenderer.invoke("open-scratchpad-view"),
+  onOpenScratchpadView: registerListener("open-scratchpad-view", (callback) => () => callback()),
   registerTransformHotkey: (id, hotkey) =>
     ipcRenderer.invoke("register-transform-hotkey", { id, hotkey }),
   syncTransformHotkeys: (list) => ipcRenderer.invoke("sync-transform-hotkeys", list),
@@ -270,6 +289,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getGpuDeviceIndex: (purpose) => ipcRenderer.invoke("get-gpu-device-index", purpose),
   detectGpu: () => ipcRenderer.invoke("detect-gpu"),
   getRecommendedModel: () => ipcRenderer.invoke("get-recommended-model"),
+  getRecommendedReasoningModel: () => ipcRenderer.invoke("get-recommended-reasoning-model"),
   getCudaWhisperStatus: () => ipcRenderer.invoke("get-cuda-whisper-status"),
   downloadCudaWhisperBinary: () => ipcRenderer.invoke("download-cuda-whisper-binary"),
   cancelCudaWhisperDownload: () => ipcRenderer.invoke("cancel-cuda-whisper-download"),

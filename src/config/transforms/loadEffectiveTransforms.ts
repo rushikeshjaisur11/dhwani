@@ -44,7 +44,39 @@ export const BUNDLED_DEFAULTS: Transform[] = [
 
 const CACHE_KEY = "transformDefaultsCache";
 const CUSTOMS_KEY = "customTransforms";
+const BUILTIN_OVERRIDES_KEY = "builtinTransformOverrides";
 const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000; // once/day
+
+// User customizations of builtin transforms (detail pages): shortcut and/or
+// prompt. Stored separately from customs so defaults refresh cleanly.
+export interface BuiltinOverride {
+  shortcut?: string;
+  prompt?: string;
+}
+
+export function loadBuiltinOverrides(): Record<string, BuiltinOverride> {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(BUILTIN_OVERRIDES_KEY) || "{}");
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveBuiltinOverride(id: string, override: BuiltinOverride | null) {
+  const all = loadBuiltinOverrides();
+  if (override && Object.keys(override).length > 0) {
+    all[id] = override;
+  } else {
+    delete all[id];
+  }
+  localStorage.setItem(BUILTIN_OVERRIDES_KEY, JSON.stringify(all));
+}
+
+export function applyBuiltinOverrides(defaults: Transform[]): Transform[] {
+  const overrides = loadBuiltinOverrides();
+  return defaults.map((d) => (overrides[d.id] ? { ...d, ...overrides[d.id] } : d));
+}
 
 interface DefaultsCache {
   version: number;
@@ -82,9 +114,9 @@ export function migrateLegacyCustoms(raw: unknown): Transform[] {
     }));
 }
 
-// Effective list = defaults ++ customs. Defaults are fixed (never removable,
-// never remappable) so no override/hidden-ids layer is needed here. Pure so
-// it's unit-testable.
+// Effective list = defaults ++ customs. Defaults are never removable; their
+// shortcut/prompt can be overridden via builtinTransformOverrides (callers
+// apply applyBuiltinOverrides before merging). Pure so it's unit-testable.
 export function mergeTransforms(defaults: Transform[], customs: Transform[]): Transform[] {
   return [...defaults, ...customs];
 }
@@ -150,5 +182,5 @@ export function saveCustoms(customs: Transform[]) {
 export function getEffectiveTransformsSync(): Transform[] {
   const cache = readCache();
   const defaults = cache?.items ?? BUNDLED_DEFAULTS;
-  return mergeTransforms(defaults, loadCustoms());
+  return mergeTransforms(applyBuiltinOverrides(defaults), loadCustoms());
 }

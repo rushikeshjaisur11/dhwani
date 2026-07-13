@@ -9,6 +9,7 @@ import { useTheme } from "./hooks/useTheme";
 const ControlPanel = React.lazy(() => import("./components/ControlPanel.tsx"));
 const OnboardingFlow = React.lazy(() => import("./components/OnboardingFlow.tsx"));
 const AgentOverlay = React.lazy(() => import("./components/AgentOverlay.tsx"));
+const ScratchpadOverlay = React.lazy(() => import("./components/ScratchpadOverlay.tsx"));
 
 export default function AppRouter() {
   useTheme();
@@ -24,6 +25,14 @@ export default function AppRouter() {
 
   if (params.includes("transcription-preview=true")) {
     return <TranscriptionPreviewOverlay />;
+  }
+
+  if (params.includes("scratchpad=true")) {
+    return (
+      <Suspense fallback={null}>
+        <ScratchpadOverlay />
+      </Suspense>
+    );
   }
 
   return <MainApp />;

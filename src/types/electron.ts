@@ -46,7 +46,7 @@ export interface NoteItem {
   enhanced_content: string | null;
   enhancement_prompt: string | null;
   enhanced_at_content_hash: string | null;
-  note_type: "personal" | "meeting" | "upload";
+  note_type: "personal" | "meeting" | "upload" | "scratchpad";
   source_file: string | null;
   audio_duration_seconds: number | null;
   folder_id: number | null;
@@ -488,18 +488,41 @@ declare global {
       showDictationPanel: () => Promise<void>;
       onToggleDictation: (callback: () => void) => () => void;
       onToggleVoiceAgent?: (callback: () => void) => () => void;
-      onTriggerPolish?: (callback: () => void) => () => void;
-      onTriggerTransform?: (callback: (transformId: string) => void) => () => void;
+      onTriggerPolish?: (callback: (payload?: { text?: string }) => void) => () => void;
+      onTriggerTransform?: (
+        callback: (transformId: string, payload?: { text?: string }) => void
+      ) => () => void;
       onTransformChanges?: (
-        callback: (payload: { name: string; before: string; after: string }) => void
+        callback: (payload: { id?: string; name: string; before: string; after: string }) => void
       ) => () => void;
       onTransformProcessing?: (callback: (payload: { name: string }) => void) => () => void;
       recordTransformResult?: (payload: {
+        id?: string;
         name: string;
         before: string;
         after: string;
       }) => Promise<{ success: boolean }>;
       showTransformProcessing?: (name: string) => Promise<{ success: boolean }>;
+      retryTransform?: (payload: { id: string; text: string }) => Promise<{ success: boolean }>;
+      onTransformDone?: (callback: () => void) => () => void;
+      showLastTransformChanges?: () => Promise<{ success: boolean }>;
+      runTransform?: (payload: { id: string }) => Promise<{ success: boolean }>;
+      setScratchpadPinned?: (pinned: boolean) => Promise<{ success: boolean }>;
+      openTransformsView?: () => Promise<{ success: boolean }>;
+      onOpenTransformsView?: (callback: () => void) => () => void;
+      openScratchpadOverlay?: (payload?: {
+        noteId?: number;
+        newNote?: boolean;
+      }) => Promise<{ success: boolean }>;
+      onScratchpadOpenNote?: (
+        callback: (payload?: { noteId?: number; newNote?: boolean }) => void
+      ) => () => void;
+      registerScratchpadHotkey?: (
+        hotkey: string
+      ) => Promise<{ success: boolean; message?: string }>;
+      getScratchpadKey?: () => Promise<string>;
+      openScratchpadView?: () => Promise<{ success: boolean }>;
+      onOpenScratchpadView?: (callback: () => void) => () => void;
       registerTransformHotkey?: (
         id: string,
         hotkey: string
@@ -813,6 +836,18 @@ declare global {
       detectGpu: () => Promise<GpuInfo>;
       getRecommendedModel: () => Promise<{
         modelId: string;
+        reason: string;
+        profile: {
+          totalMemGb: number;
+          cpuCores: number;
+          platform: string;
+          hasNvidiaGpu: boolean;
+          vramMb: number;
+        };
+      }>;
+      getRecommendedReasoningModel: () => Promise<{
+        modelId: string | null;
+        isCloud: boolean;
         reason: string;
         profile: {
           totalMemGb: number;

@@ -2547,7 +2547,9 @@
       "nvidiaGpu": "Your NVIDIA GPU can run the fastest, most accurate model",
       "highRamManyCores": "Your system has enough memory and CPU cores for higher accuracy",
       "moderateRam": "A balanced choice for your system's available memory",
-      "lowRam": "The fastest option for your system's available memory"
+      "lowRam": "The fastest option for your system's available memory",
+      "nvidiaGpuLarge": "Your NVIDIA GPU has enough VRAM for a larger, more capable local model",
+      "weakHardwareCloud": "Your system's hardware is limited for local AI models — a cloud provider will run faster and more reliably"
     }
   },
   "scratchpad": {
@@ -2561,7 +2563,59 @@
     "bannerDescription": "Drop a to-do list, polish a message before you send it, brain dump an idea. Scratchpad is your safe space to save, create, and explore.",
     "startNewNote": "Start new note",
     "recents": "Recents",
-    "noNotesFound": "No notes found"
+    "noNotesFound": "No notes found",
+    "searchPlaceholder": "Search notes...",
+    "refresh": "Refresh"
+  },
+  "scratchpadOverlay": {
+    "toggleSidebar": "Toggle notes",
+    "closeNote": "Close note",
+    "newNote": "New note",
+    "expand": "Open in app",
+    "close": "Close",
+    "collapseNotes": "Collapse Notes",
+    "searchNotes": "Search notes...",
+    "noNotesYet": "No notes yet",
+    "transforms": "Transforms",
+    "formatting": "Formatting",
+    "copy": "Copy",
+    "copied": "Copied",
+    "pin": "Pin on top",
+    "unpin": "Unpin from top",
+    "deleteNote": "Delete note",
+    "undo": "Undo last change",
+    "followUp": "Follow up or ask a question",
+    "pressEnter": "Press Enter or",
+    "chips": {
+      "concise": "More concise",
+      "professional": "More professional",
+      "casual": "More casual",
+      "bullets": "Bullet points",
+      "numbered": "Numbered list",
+      "paragraphs": "Clean paragraphs"
+    }
+  },
+  "transformDetail": {
+    "back": "Back",
+    "autosaveOn": "Autosave On",
+    "reset": "Reset",
+    "toUse": "to use",
+    "polishDescription": "Polish rewrites your text to sound clearer, in your voice.",
+    "promptEngineerDescription": "Prompt Engineer takes messy, spoken, unstructured thoughts and converts them into a clean, optimized AI prompt.",
+    "exampleTitle": "Example of transformed text",
+    "polishExample": "hey so about the deck i added some slides but im not sure if they go with your part. it seems kinda long maybe we should remove the market trends thing? i can look at it again tonight if u want. also the pricing slide might be wrong cuz the data changed. we should check before sending to the board",
+    "promptEngineerExampleBefore": "I need help writing product descriptions for a skincare brand. The AI should be warm, aspirational, and concise",
+    "promptEngineerExampleTitle": "Skincare Product Descriptions",
+    "promptEngineerExampleRole": "You are a copywriter for a skincare brand, adopting a warm, aspirational, and concise tone.",
+    "chooseShortcut": "Choose a keyboard shortcut",
+    "selectRules": "Select rules for Polish",
+    "customizePrompt": "Customize prompt. (This is what the final output of the prompt will look like)",
+    "rules": {
+      "concise": "Make more concise",
+      "clarity": "Reword for clarity",
+      "reorder": "Reorder for readability",
+      "structure": "Add structure for readability"
+    }
   },
   "style": {
     "title": "Style",
@@ -2745,6 +2799,22 @@
       "stopListening": "Stop listening",
       "startListening": "Start listening",
       "hideForNow": "Hide for now"
+    },
+    "dock": {
+      "expand": "Expand Flow Bar",
+      "collapse": "Collapse",
+      "dictate": "Dictate",
+      "scratchpad": "Scratchpad",
+      "transforms": "Transforms",
+      "transformMenu": "Transform menu"
+    },
+    "pill": {
+      "done": "Done.",
+      "seeChanges": "See changes"
+    },
+    "transformMenu": {
+      "autoApply": "Auto Apply After Dictation",
+      "configure": "Configure transforms"
     }
   },
   "dictationAgent": {
@@ -3024,7 +3094,12 @@
     "transformApplied": "{{name}} applied",
     "transformProcessing": "{{name}}...",
     "before": "Before",
-    "after": "After"
+    "after": "After",
+    "changesCount": "{{count}} Changes",
+    "configureTransform": "Configure {{name}}",
+    "goodResult": "Good result",
+    "badResult": "Bad result",
+    "retry": "Retry"
   },
   "transcript": {
     "speaker": {

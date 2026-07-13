@@ -11,6 +11,7 @@ const {
   MAIN_WINDOW_CONFIG,
   CONTROL_PANEL_CONFIG,
   AGENT_OVERLAY_CONFIG,
+  SCRATCHPAD_OVERLAY_CONFIG,
   NOTIFICATION_WINDOW_CONFIG,
   TRANSCRIPTION_PREVIEW_CONFIG,
   TRANSCRIPTION_PREVIEW_SIZE_LIMITS,
@@ -26,7 +27,8 @@ class WindowManager {
     this.notificationWindow = null;
     this._notificationTimeout = null;
     this.transcriptionPreviewWindow = null;
-    this.lastTransformChange = null; // { name, before, after } from the most recent transform run
+    this.scratchpadWindow = null;
+    this.lastTransformChange = null; // { id, name, before, after } from the most recent transform run
     this.transformSlotIds = new Set(); // hotkeyManager slot names ("transform:<id>") currently registered
     this.updateNotificationWindow = null;
     this._updateNotificationDismissed = false;
@@ -145,7 +147,6 @@ class WindowManager {
 
     const newSize = WINDOW_SIZES[sizeKey] || WINDOW_SIZES.BASE;
     const currentBounds = this.mainWindow.getBounds();
-    const position = this._panelStartPosition;
 
     const display = screen.getDisplayNearestPoint({
       x: currentBounds.x + currentBounds.width / 2,
@@ -153,23 +154,10 @@ class WindowManager {
     });
     const workArea = display.workArea || display.bounds;
 
-    let newX, newY;
-
-    if (position === "bottom-left") {
-      // Anchor bottom-left corner: keep x, expand rightward and upward
-      newX = currentBounds.x;
-      newY = currentBounds.y + currentBounds.height - newSize.height;
-    } else if (position === "center") {
-      // Anchor bottom-center: expand symmetrically and upward
-      const centerX = currentBounds.x + currentBounds.width / 2;
-      newX = centerX - newSize.width / 2;
-      newY = currentBounds.y + currentBounds.height - newSize.height;
-    } else {
-      // bottom-right (default): anchor bottom-right corner, expand leftward and upward
-      const bottomRightX = currentBounds.x + currentBounds.width;
-      newX = bottomRightX - newSize.width;
-      newY = currentBounds.y + currentBounds.height - newSize.height;
-    }
+    // Right-edge dock: stay flush to the right edge, keep the vertical
+    // center where it is (drag preserved), so expansion grows leftward.
+    let newX = workArea.x + workArea.width - newSize.width;
+    let newY = Math.round(currentBounds.y + currentBounds.height / 2 - newSize.height / 2);
 
     // Clamp to work area
     newX = Math.max(workArea.x, Math.min(newX, workArea.x + workArea.width - newSize.width));
@@ -466,44 +454,39 @@ class WindowManager {
     this._sendDictationToggle("toggle-voice-agent");
   }
 
-  sendTriggerPolish() {
+  sendTriggerPolish(payload) {
     // Polish operates on the current selection in the target app, not the
     // dictation window, so capture its PID for paste refocus like voiceAgent.
+    // `payload.text` (retry runs) skips capture/paste in the renderer.
     if (this.textEditMonitor) this.textEditMonitor.captureTargetPid();
     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-      this.mainWindow.webContents.send("trigger-polish");
+      this.mainWindow.webContents.send("trigger-polish", payload);
     }
   }
 
-  sendTriggerTransform(transformId) {
+  sendTriggerTransform(transformId, payload) {
     // Same rationale as sendTriggerPolish: transforms operate on the current
     // selection in the target app, so capture its PID for paste refocus.
     if (this.textEditMonitor) this.textEditMonitor.captureTargetPid();
     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-      this.mainWindow.webContents.send("trigger-transform", transformId);
+      this.mainWindow.webContents.send("trigger-transform", transformId, payload);
     }
   }
 
-  // Shows a "running" state in the transcription preview overlay while a
-  // transform's LLM call is in flight, mirroring the existing dictation
-  // "cleanup" phase. Reuses the same window as showTransformChanges below.
+  // Shows a "running" spinner state in the Flow Bar pill while a transform's
+  // LLM call is in flight (Wispr-style). An empty name clears the status
+  // (failure/empty-result paths).
   async showTransformProcessing(name) {
-    await this.ensureTranscriptionPreviewWindow();
-    if (!this.transcriptionPreviewWindow || this.transcriptionPreviewWindow.isDestroyed()) return;
-
     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-      const mainBounds = this.mainWindow.getBounds();
-      const display = screen.getDisplayNearestPoint({ x: mainBounds.x, y: mainBounds.y });
-      const position = WindowPositionUtil.getTranscriptionPreviewPosition(display, mainBounds, {
-        width: this.transcriptionPreviewWindow.getBounds().width,
-        height: this.transcriptionPreviewWindow.getBounds().height,
-      });
-      this.transcriptionPreviewWindow.setBounds(position);
+      this.mainWindow.webContents.send("transform-processing", { name });
     }
+  }
 
-    this.transcriptionPreviewWindow.webContents.send("transform-processing", { name });
-    this.transcriptionPreviewWindow.showInactive();
-    WindowPositionUtil.setupAlwaysOnTop(this.transcriptionPreviewWindow);
+  // "Done. See changes" state in the Flow Bar pill after a transform lands.
+  sendTransformDone() {
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+      this.mainWindow.webContents.send("transform-done");
+    }
   }
 
   // Redisplays the most recent transform's before/after in the existing
@@ -514,7 +497,7 @@ class WindowManager {
     await this.showTransformChanges(this.lastTransformChange);
   }
 
-  async showTransformChanges({ name, before, after }) {
+  async showTransformChanges({ id, name, before, after }) {
     await this.ensureTranscriptionPreviewWindow();
     if (!this.transcriptionPreviewWindow || this.transcriptionPreviewWindow.isDestroyed()) return;
 
@@ -531,7 +514,12 @@ class WindowManager {
       this.transcriptionPreviewWindow.setBounds(position);
     }
 
-    this.transcriptionPreviewWindow.webContents.send("transform-changes", { name, before, after });
+    this.transcriptionPreviewWindow.webContents.send("transform-changes", {
+      id,
+      name,
+      before,
+      after,
+    });
     this.transcriptionPreviewWindow.showInactive();
     WindowPositionUtil.setupAlwaysOnTop(this.transcriptionPreviewWindow);
   }
@@ -861,6 +849,77 @@ class WindowManager {
     this._clearAgentAnimation();
     this.agentWindow.webContents.send("agent-stop-recording");
     this.agentWindow.hide();
+  }
+
+  // Scratchpad floating note overlay (opened from the Flow Bar dock, the
+  // Scratchpad settings view, or its optional hotkey).
+  async createScratchpadWindow() {
+    if (this.scratchpadWindow && !this.scratchpadWindow.isDestroyed()) {
+      return;
+    }
+
+    this.scratchpadWindow = new BrowserWindow(SCRATCHPAD_OVERLAY_CONFIG);
+
+    this.scratchpadWindow.once("ready-to-show", () => {
+      WindowPositionUtil.setupAlwaysOnTop(this.scratchpadWindow);
+    });
+
+    this.scratchpadWindow.on("closed", () => {
+      this.scratchpadWindow = null;
+    });
+
+    if (process.env.NODE_ENV === "development") {
+      await DevServerManager.waitForDevServer();
+      await this.scratchpadWindow.loadURL(`${DevServerManager.DEV_SERVER_URL}?scratchpad=true`);
+    } else {
+      const fileInfo = DevServerManager.getAppFilePath(false);
+      await this.scratchpadWindow.loadFile(fileInfo.path, {
+        query: { ...fileInfo.query, scratchpad: "true" },
+      });
+    }
+  }
+
+  async openScratchpadOverlay(payload) {
+    await this.createScratchpadWindow();
+    if (!this.scratchpadWindow || this.scratchpadWindow.isDestroyed()) return;
+
+    if (!this.scratchpadWindow.isVisible()) {
+      // Bottom-right, above the dock strip.
+      const mainBounds =
+        this.mainWindow && !this.mainWindow.isDestroyed() ? this.mainWindow.getBounds() : null;
+      const refPoint = mainBounds || { x: 0, y: 0 };
+      const display = screen.getDisplayNearestPoint({ x: refPoint.x, y: refPoint.y });
+      const workArea = display.workArea || display.bounds;
+      const { width, height } = this.scratchpadWindow.getBounds();
+      this.scratchpadWindow.setBounds({
+        x: workArea.x + workArea.width - width - 48,
+        y: Math.round(workArea.y + (workArea.height - height) / 2),
+        width,
+        height,
+      });
+      WindowPositionUtil.setupAlwaysOnTop(this.scratchpadWindow);
+      this.scratchpadWindow.show();
+    } else {
+      this.scratchpadWindow.focus();
+    }
+
+    if (payload) {
+      this.scratchpadWindow.webContents.send("scratchpad-open-note", payload);
+    }
+  }
+
+  toggleScratchpadOverlay() {
+    if (this.scratchpadWindow && !this.scratchpadWindow.isDestroyed() && this.scratchpadWindow.isVisible()) {
+      this.scratchpadWindow.hide();
+      return Promise.resolve();
+    }
+    return this.openScratchpadOverlay();
+  }
+
+  hideScratchpadOverlay() {
+    if (this.scratchpadWindow && !this.scratchpadWindow.isDestroyed()) {
+      this.scratchpadWindow.hide();
+    }
   }
 
   async ensureTranscriptionPreviewWindow() {
@@ -1470,6 +1529,24 @@ class WindowManager {
     await this.createControlPanelWindow();
     if (this.controlPanelWindow && !this.controlPanelWindow.isDestroyed()) {
       this.controlPanelWindow.webContents.send("show-settings");
+    }
+  }
+
+  // Opens the control panel focused on the Transforms view ("Configure
+  // Polish" link in the changes card / overlay transform menu).
+  async openTransformsView() {
+    await this.createControlPanelWindow();
+    if (this.controlPanelWindow && !this.controlPanelWindow.isDestroyed()) {
+      this.controlPanelWindow.webContents.send("open-transforms-view");
+    }
+  }
+
+  // Opens the control panel focused on the Scratchpad view (expand button
+  // in the scratchpad overlay).
+  async openScratchpadView() {
+    await this.createControlPanelWindow();
+    if (this.controlPanelWindow && !this.controlPanelWindow.isDestroyed()) {
+      this.controlPanelWindow.webContents.send("open-scratchpad-view");
     }
   }
 

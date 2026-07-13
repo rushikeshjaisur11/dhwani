@@ -6,7 +6,7 @@ interface NoteInput {
   content?: string;
   enhanced_content?: string | null;
   enhancement_prompt?: string | null;
-  note_type?: "personal" | "meeting" | "upload";
+  note_type?: "personal" | "meeting" | "upload" | "scratchpad";
   source_file?: string | null;
   audio_duration_seconds?: number | null;
   participants?: string | null;

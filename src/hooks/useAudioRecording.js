@@ -7,6 +7,12 @@ import { getSettings } from "../stores/settingsStore";
 import { expandSnippets } from "../utils/snippets";
 import { getRecordingErrorTitle, getRecordingErrorDescription } from "../utils/recordingErrors";
 import { isAccessibilitySkipped } from "../utils/permissions";
+import { applyPolishToText } from "./usePolish";
+import { applyTransformToText } from "./useTransform";
+import {
+  getEffectiveTransformsSync,
+  BUILTIN_POLISH_ID,
+} from "../config/transforms/loadEffectiveTransforms";
 
 export const useAudioRecording = (toast, options = {}) => {
   const { t } = useTranslation();
@@ -139,6 +145,28 @@ export const useAudioRecording = (toast, options = {}) => {
           }
 
           result.text = expandSnippets(result.text, getSettings().snippets);
+
+          // Auto Apply After Dictation (overlay transform menu): run the
+          // selected transform on the transcript before pasting. Any failure
+          // keeps the raw transcript.
+          if (
+            localStorage.getItem("autoApplyAfterDictation") === "true" &&
+            localStorage.getItem("transformsOptIn") === "true"
+          ) {
+            const selectedId = localStorage.getItem("autoApplyTransformId") || BUILTIN_POLISH_ID;
+            try {
+              let transformed;
+              if (selectedId === BUILTIN_POLISH_ID) {
+                transformed = await applyPolishToText(result.text);
+              } else {
+                const transform = getEffectiveTransformsSync().find((tr) => tr.id === selectedId);
+                if (transform) transformed = await applyTransformToText(result.text, transform);
+              }
+              if (transformed) result.text = transformed;
+            } catch (error) {
+              logger.warn("Auto apply transform failed", { error: error?.message }, "transform");
+            }
+          }
 
           setTranscript(result.text);
           window.electronAPI?.completeDictationPreview?.({ text: result.text });

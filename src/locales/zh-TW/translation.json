@@ -2923,7 +2923,9 @@
       "nvidiaGpu": "您的 NVIDIA GPU 可以運行最快、最準確的模型",
       "highRamManyCores": "您的系統有足夠的記憶體和 CPU 核心以獲得更高準確度",
       "moderateRam": "適合您系統可用記憶體的均衡選擇",
-      "lowRam": "適合您系統可用記憶體的最快選項"
+      "lowRam": "適合您系統可用記憶體的最快選項",
+      "nvidiaGpuLarge": "您的 NVIDIA GPU 有足夠的顯存運行更大、更強的本地模型",
+      "weakHardwareCloud": "您系統的硬體對本地 AI 模型來說較為有限——使用雲端服務商速度更快、更穩定"
     }
   }
 }

@@ -38,6 +38,7 @@ interface LocalModelPickerProps {
   colorScheme?: Exclude<ColorScheme, "blue">;
   className?: string;
   onDownloadComplete?: () => void;
+  recommendedModelId?: string | null;
 }
 
 export default function LocalModelPicker({
@@ -50,6 +51,7 @@ export default function LocalModelPicker({
   colorScheme = "purple",
   className = "",
   onDownloadComplete,
+  recommendedModelId,
 }: LocalModelPickerProps) {
   const { t } = useTranslation();
   const [downloadedModels, setDownloadedModels] = useState<Set<string>>(new Set());
@@ -180,6 +182,7 @@ export default function LocalModelPicker({
               icon: getProviderIcon(selectedProvider),
               invertInDark: isMonochromeProvider(selectedProvider),
               recommended: model.recommended,
+              systemRecommended: recommendedModelId === model.id,
               isDownloaded:
                 downloadedModels.has(model.id) || model.isDownloaded || model.downloaded,
               isDownloading: isDownloadingModel(model.id),

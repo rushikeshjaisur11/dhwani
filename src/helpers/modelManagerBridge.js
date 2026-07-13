@@ -377,10 +377,17 @@ class ModelManager {
       });
     }
 
-    // Build messages for chat completion
+    // Build messages for chat completion.
+    // ponytail: always merge the system prompt into the user turn — Gemma-family
+    // GGUF chat templates have no system role and llama-server silently drops a
+    // system message, so the model would see only the raw text and answer it.
+    // A single user message renders correctly under every chat template (same
+    // merge the registry promptTemplates do: "{system}\n\n{user}").
     const messages = [
-      { role: "system", content: options.systemPrompt || "" },
-      { role: "user", content: prompt },
+      {
+        role: "user",
+        content: options.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt,
+      },
     ];
 
     debugLogger.logReasoning("INFERENCE_SENDING_REQUEST", {

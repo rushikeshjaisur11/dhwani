@@ -1812,6 +1812,13 @@ class IPCHandlers {
       return { ...recommendWhisperModel(profile), profile };
     });
 
+    ipcMain.handle("get-recommended-reasoning-model", async () => {
+      const { getSystemProfile } = require("../utils/systemProfile");
+      const { recommendReasoningModel } = require("../utils/modelRecommender");
+      const profile = await getSystemProfile();
+      return { ...recommendReasoningModel(profile), profile };
+    });
+
     ipcMain.handle("set-gpu-device-index", async (_event, purpose, uuid) => {
       if (purpose !== "transcription" && purpose !== "intelligence") {
         return { success: false };
