@@ -1931,7 +1931,16 @@ if (gotSingleInstanceLock) {
     if (isShuttingDown) return;
     isShuttingDown = true;
     event.preventDefault();
+    
     performSyncTeardown();
+    
+    if (updateManager && updateManager.isInstalling) {
+      sidecarRegistry.shutdownAll().finally(() => {
+        app.quit();
+      });
+      return;
+    }
+
     sidecarRegistry.shutdownAll().finally(() => app.exit(0));
   });
 }

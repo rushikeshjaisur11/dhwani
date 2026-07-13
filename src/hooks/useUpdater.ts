@@ -216,7 +216,7 @@ export function useUpdater() {
             ),
           });
         }
-      }, 10000);
+      }, 15000);
     } catch (error) {
       isInstallingRef.current = false;
       updateGlobalState({
