@@ -1563,7 +1563,15 @@
         "light": "Light",
         "theme": "Theme",
         "themeDescription": "Choose light, dark, or match your system",
-        "title": "Appearance"
+        "title": "Appearance",
+        "palette": "Color Palette",
+        "paletteDefault": "Default",
+        "paletteNord": "Nord",
+        "paletteDracula": "Dracula",
+        "paletteSolarized": "Solarized",
+        "paletteRose": "Rose",
+        "accentColor": "Accent Color",
+        "resetAccent": "Reset to palette default"
       },
       "floatingIcon": {
         "autoHide": "Auto-hide when idle",

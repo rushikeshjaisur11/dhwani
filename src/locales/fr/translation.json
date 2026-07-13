@@ -1423,7 +1423,15 @@
         "light": "Clair",
         "theme": "ThÃ¨me",
         "themeDescription": "Choisissez clair, sombre ou suivre le systÃ¨me",
-        "title": "Apparence"
+        "title": "Apparence",
+        "palette": "Color Palette",
+        "paletteDefault": "Default",
+        "paletteNord": "Nord",
+        "paletteDracula": "Dracula",
+        "paletteSolarized": "Solarized",
+        "paletteRose": "Rose",
+        "accentColor": "Accent Color",
+        "resetAccent": "Reset to palette default"
       },
       "floatingIcon": {
         "autoHide": "Masquer automatiquement au repos",

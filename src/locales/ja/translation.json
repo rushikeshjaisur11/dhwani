@@ -1375,7 +1375,15 @@
         "light": "ãƒ©ã‚¤ãƒˆ",
         "theme": "ãƒ†ãƒ¼ãƒž",
         "themeDescription": "ãƒ©ã‚¤ãƒˆã€ãƒ€ãƒ¼ã‚¯ã€ã¾ãŸã¯ã‚·ã‚¹ãƒ†ãƒ ã«åˆã‚ã›ã‚‹",
-        "title": "å¤–è¦³"
+        "title": "å¤–è¦³",
+        "palette": "Color Palette",
+        "paletteDefault": "Default",
+        "paletteNord": "Nord",
+        "paletteDracula": "Dracula",
+        "paletteSolarized": "Solarized",
+        "paletteRose": "Rose",
+        "accentColor": "Accent Color",
+        "resetAccent": "Reset to palette default"
       },
       "floatingIcon": {
         "autoHide": "ä½¿ç”¨ã—ã¦ã„ãªã„ã¨ãã«è‡ªå‹•ã§éžè¡¨ç¤º",

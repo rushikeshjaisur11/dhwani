@@ -1186,7 +1186,12 @@
           "annualEquivalent": "$16.67",
           "includesPrefix": "æ‰€æœ‰ Pro åŠŸèƒ½ +",
           "badge": "æœ€å—æ¬¢è¿Ž",
-          "features": ["æ— é™ä¼šè®®å½•åˆ¶", "ä»£ç†æ¨¡å¼", "ä¸Žæ‚¨çš„æ•°æ®å¯¹è¯", "ä¼˜å…ˆæ”¯æŒ"],
+          "features": [
+            "æ— é™ä¼šè®®å½•åˆ¶",
+            "ä»£ç†æ¨¡å¼",
+            "ä¸Žæ‚¨çš„æ•°æ®å¯¹è¯",
+            "ä¼˜å…ˆæ”¯æŒ"
+          ],
           "cta": "å¼€å§‹ä½¿ç”¨",
           "switchToAnnual": "åˆ‡æ¢ä¸ºå¹´ä»˜"
         },
@@ -1370,7 +1375,15 @@
         "light": "æµ…è‰²",
         "theme": "ä¸»é¢˜",
         "themeDescription": "é€‰æ‹©æµ…è‰²ã€æ·±è‰²æˆ–è·Ÿéšç³»ç»Ÿ",
-        "title": "å¤–è§‚"
+        "title": "å¤–è§‚",
+        "palette": "Color Palette",
+        "paletteDefault": "Default",
+        "paletteNord": "Nord",
+        "paletteDracula": "Dracula",
+        "paletteSolarized": "Solarized",
+        "paletteRose": "Rose",
+        "accentColor": "Accent Color",
+        "resetAccent": "Reset to palette default"
       },
       "floatingIcon": {
         "autoHide": "ç©ºé—²æ—¶è‡ªåŠ¨éšè—",

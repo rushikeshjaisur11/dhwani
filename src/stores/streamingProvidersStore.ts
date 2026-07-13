@@ -30,8 +30,12 @@ export async function fetchProviders(): Promise<NoteRecordingProvider[] | null> 
   inFlight = (async () => {
     try {
       const data = await window.electronAPI.getNoteRecordingConfig!();
-      if (!data?.success) {
-        throw new Error("Note recording config unavailable");
+      if (!data) {
+        logger.debug("Note recording config response was empty (likely unauthenticated)");
+        return null;
+      }
+      if (!data.success) {
+        throw new Error(data.error || "Note recording config unavailable");
       }
       const providers = Array.isArray(data.providers) ? data.providers : [];
       useStreamingProvidersStore.setState({ providers });

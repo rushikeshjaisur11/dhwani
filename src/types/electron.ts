@@ -567,6 +567,8 @@ declare global {
           name: string;
           models: Array<{ id: string; name: string; default?: boolean }>;
         }>;
+        error?: string;
+        code?: string;
       } | null>;
 
       // Database operations

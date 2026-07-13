@@ -895,6 +895,39 @@ export default function SettingsPage({
   }, [refreshYdotoolStatus]);
 
   const { theme, setTheme } = useTheme();
+  const palette = useSettingsStore((s) => s.palette);
+  const setPalette = useSettingsStore((s) => s.setPalette);
+  const accentColor = useSettingsStore((s) => s.accentColor);
+  const setAccentColor = useSettingsStore((s) => s.setAccentColor);
+
+  const colorInputRef = useRef<HTMLInputElement>(null);
+  const localAccentTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (colorInputRef.current) {
+      colorInputRef.current.value = accentColor || "#6d4fe0";
+    }
+  }, [accentColor]);
+
+  const handleAccentColorChange = useCallback((newColor: string) => {
+    const root = document.documentElement;
+    root.style.setProperty("--color-primary", newColor);
+    root.style.setProperty("--color-ring", newColor);
+    root.style.setProperty("--color-accent", newColor);
+    document.body.style.setProperty("--color-primary", newColor);
+    document.body.style.setProperty("--color-ring", newColor);
+    document.body.style.setProperty("--color-accent", newColor);
+
+    if (localAccentTimeoutRef.current) clearTimeout(localAccentTimeoutRef.current);
+    localAccentTimeoutRef.current = setTimeout(() => {
+      setAccentColor(newColor);
+    }, 150);
+  }, [setAccentColor]);
+
+  const handleAccentColorReset = useCallback(() => {
+    if (localAccentTimeoutRef.current) clearTimeout(localAccentTimeoutRef.current);
+    setAccentColor(null);
+  }, [setAccentColor]);
 
   const installTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -1479,6 +1512,97 @@ export default function SettingsPage({
                           </button>
                         );
                       })}
+                    </div>
+                  </SettingsRow>
+                </SettingsPanelRow>
+                <SettingsPanelRow>
+                  <SettingsRow
+                    label={t("settingsPage.general.appearance.palette")}
+                  >
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center gap-3">
+                        {(
+                          [
+                            { id: "default", name: t("settingsPage.general.appearance.paletteDefault"), colors: { bg: "#faf7f1", bgDark: "#000000", primary: "#6d4fe0", primaryDark: "#856ceb", card: "#ffffff", cardDark: "#1a1a1a" } },
+                            { id: "nord", name: t("settingsPage.general.appearance.paletteNord"), colors: { bg: "#eceff4", bgDark: "#2e3440", primary: "#5e81ac", primaryDark: "#81a1c1", card: "#ffffff", cardDark: "#3b4252" } },
+                            { id: "dracula", name: t("settingsPage.general.appearance.paletteDracula"), colors: { bg: "#f8f8f2", bgDark: "#282a36", primary: "#bd93f9", primaryDark: "#bd93f9", card: "#ffffff", cardDark: "#44475a" } },
+                            { id: "solarized", name: t("settingsPage.general.appearance.paletteSolarized"), colors: { bg: "#fdf6e3", bgDark: "#002b36", primary: "#268bd2", primaryDark: "#268bd2", card: "#eee8d5", cardDark: "#073642" } },
+                            { id: "rose", name: t("settingsPage.general.appearance.paletteRose"), colors: { bg: "#faf4ed", bgDark: "#191724", primary: "#d7827e", primaryDark: "#ebbcba", card: "#fffaf3", cardDark: "#1f1d2e" } },
+                          ] as const
+                        ).map((p) => {
+                          const isSelected = palette === p.id;
+                          return (
+                            <button
+                              key={p.id}
+                              onClick={() => setPalette(p.id)}
+                              className={`
+                                flex flex-col items-center gap-1.5 group outline-none
+                              `}
+                            >
+                              <div className={`
+                                w-14 h-10 rounded-lg border-[1.5px] overflow-hidden flex transition-all duration-200 shadow-sm
+                                ${isSelected ? "border-primary scale-[1.05] ring-2 ring-primary/20" : "border-border hover:border-border-hover scale-100"}
+                              `}>
+                                {/* Light side */}
+                                <div className="flex-1 h-full flex flex-col" style={{ backgroundColor: p.colors.bg }}>
+                                  <div className="h-2.5 w-full flex items-center px-0.5 gap-[1px]" style={{ backgroundColor: p.colors.card }}>
+                                    <div className="w-[3px] h-[3px] rounded-full bg-red-400/80" />
+                                    <div className="w-[3px] h-[3px] rounded-full bg-amber-400/80" />
+                                    <div className="w-[3px] h-[3px] rounded-full bg-green-400/80" />
+                                  </div>
+                                  <div className="flex-1 p-[3px] flex flex-col gap-[2px]">
+                                    <div className="w-full h-[3px] rounded-[1px]" style={{ backgroundColor: p.colors.primary }} />
+                                    <div className="w-3/4 h-[3px] rounded-[1px] opacity-60" style={{ backgroundColor: p.colors.primary }} />
+                                  </div>
+                                </div>
+                                {/* Dark side */}
+                                <div className="flex-1 h-full flex flex-col border-l border-black/10 dark:border-white/10" style={{ backgroundColor: p.colors.bgDark }}>
+                                  <div className="h-2.5 w-full flex justify-end items-center px-1" style={{ backgroundColor: p.colors.cardDark }}>
+                                     <div className="w-3 h-[2px] rounded-full bg-white/20" />
+                                  </div>
+                                  <div className="flex-1 p-[3px] flex flex-col gap-[2px] items-end">
+                                    <div className="w-full h-[3px] rounded-[1px]" style={{ backgroundColor: p.colors.primaryDark }} />
+                                    <div className="w-3/4 h-[3px] rounded-[1px] opacity-60" style={{ backgroundColor: p.colors.primaryDark }} />
+                                  </div>
+                                </div>
+                              </div>
+                              <span className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>
+                                {p.name}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="flex items-center gap-4 pt-3 mt-1 border-t border-border-subtle">
+                        <div className="flex items-center gap-2.5">
+                          <label className="relative w-6 h-6 rounded-full shadow-sm transition-transform hover:scale-110 ring-1 ring-black/10 dark:ring-white/10 cursor-pointer flex items-center justify-center overflow-hidden"
+                                 style={{ backgroundColor: "var(--color-primary)" }}
+                                 title={t("settingsPage.general.appearance.accentColor")}>
+                            <input
+                              ref={colorInputRef}
+                              type="color"
+                              defaultValue={accentColor || "#6d4fe0"}
+                              onChange={(e) => handleAccentColorChange(e.target.value)}
+                              className="absolute opacity-0 w-[200%] h-[200%] cursor-pointer"
+                            />
+                          </label>
+                          <label className="text-xs font-medium text-foreground cursor-pointer" onClick={() => colorInputRef.current?.click()}>
+                            {t("settingsPage.general.appearance.accentColor")}
+                          </label>
+                        </div>
+                        {accentColor && (
+                          <div className="h-3 w-[1px] bg-border" />
+                        )}
+                        {accentColor && (
+                          <button
+                            onClick={handleAccentColorReset}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {t("settingsPage.general.appearance.resetAccent")}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </SettingsRow>
                 </SettingsPanelRow>

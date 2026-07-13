@@ -1423,7 +1423,15 @@
         "light": "Claro",
         "theme": "Tema",
         "themeDescription": "Elige claro, oscuro o segÃºn tu sistema",
-        "title": "Apariencia"
+        "title": "Apariencia",
+        "palette": "Color Palette",
+        "paletteDefault": "Default",
+        "paletteNord": "Nord",
+        "paletteDracula": "Dracula",
+        "paletteSolarized": "Solarized",
+        "paletteRose": "Rose",
+        "accentColor": "Accent Color",
+        "resetAccent": "Reset to palette default"
       },
       "floatingIcon": {
         "autoHide": "Ocultar automÃ¡ticamente cuando estÃ¡ inactivo",

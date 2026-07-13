@@ -81,6 +81,8 @@ export interface PrivacySettings {
 
 export interface ThemeSettings {
   theme: "light" | "dark" | "auto";
+  palette: "default" | "nord" | "dracula" | "solarized" | "rose";
+  accentColor: string | null;
 }
 
 export interface ChatAgentSettings {
@@ -238,6 +240,8 @@ function useSettingsInternal() {
     meetingHotkeyLayoutMode: store.meetingHotkeyLayoutMode,
     setMeetingHotkeyLayoutMode: store.setMeetingHotkeyLayoutMode,
     theme: store.theme,
+    palette: store.palette,
+    accentColor: store.accentColor,
     setUseLocalWhisper: store.setUseLocalWhisper,
     setWhisperModel: store.setWhisperModel,
     setUiLanguage: store.setUiLanguage,
@@ -280,6 +284,8 @@ function useSettingsInternal() {
     onboardingUseCaseNote: store.onboardingUseCaseNote,
     setOnboardingUseCaseNote: store.setOnboardingUseCaseNote,
     setTheme: store.setTheme,
+    setPalette: store.setPalette,
+    setAccentColor: store.setAccentColor,
     activationMode: store.activationMode,
     setActivationMode: store.setActivationMode,
     notificationsEnabled: store.notificationsEnabled,

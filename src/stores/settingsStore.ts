@@ -646,6 +646,8 @@ export interface SettingsState
   setSelectedMicDeviceId: (value: string) => void;
 
   setTheme: (value: "light" | "dark" | "auto") => void;
+  setPalette: (value: "default" | "nord" | "dracula" | "solarized" | "rose") => void;
+  setAccentColor: (value: string | null) => void;
   setCloudBackupEnabled: (value: boolean) => void;
   setTelemetryEnabled: (value: boolean) => void;
   setAudioRetentionDays: (days: number) => void;
@@ -944,6 +946,15 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     const v = readString("theme", "auto");
     if (v === "light" || v === "dark" || v === "auto") return v;
     return "auto" as const;
+  })(),
+  palette: (() => {
+    const v = readString("palette", "default");
+    if (v === "nord" || v === "dracula" || v === "solarized" || v === "rose") return v as "nord" | "dracula" | "solarized" | "rose";
+    return "default" as const;
+  })(),
+  accentColor: (() => {
+    const v = readString("accentColor", "");
+    return v ? v : null;
   })(),
   cloudBackupEnabled: readBoolean("cloudBackupEnabled", false),
   telemetryEnabled: readBoolean("telemetryEnabled", false),
@@ -1482,6 +1493,27 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setTheme: (value: "light" | "dark" | "auto") => {
     if (isBrowser) localStorage.setItem("theme", value);
     set({ theme: value });
+  },
+
+  setPalette: (value: "default" | "nord" | "dracula" | "solarized" | "rose") => {
+    if (isBrowser) localStorage.setItem("palette", value);
+    set({ palette: value });
+  },
+
+  setAccentColor: (value: string | null) => {
+    set({ accentColor: value });
+    if (isBrowser) {
+      if ((window as any).__accentColorTimeout) {
+        clearTimeout((window as any).__accentColorTimeout);
+      }
+      (window as any).__accentColorTimeout = setTimeout(() => {
+        if (value) {
+          localStorage.setItem("accentColor", value);
+        } else {
+          localStorage.removeItem("accentColor");
+        }
+      }, 500);
+    }
   },
 
   setCloudBackupEnabled: createBooleanSetter("cloudBackupEnabled"),

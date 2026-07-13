@@ -1375,7 +1375,15 @@
         "light": "Ð¡Ð²ÐµÑ‚Ð»Ð°Ñ",
         "theme": "Ð¢ÐµÐ¼Ð°",
         "themeDescription": "Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ ÑÐ²ÐµÑ‚Ð»ÑƒÑŽ, Ñ‚Ñ‘Ð¼Ð½ÑƒÑŽ Ñ‚ÐµÐ¼Ñƒ Ð¸Ð»Ð¸ ÑÐ»ÐµÐ´ÑƒÐ¹Ñ‚Ðµ ÑÐ¸ÑÑ‚ÐµÐ¼Ð½Ñ‹Ð¼ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ°Ð¼",
-        "title": "Ð’Ð½ÐµÑˆÐ½Ð¸Ð¹ Ð²Ð¸Ð´"
+        "title": "Ð’Ð½ÐµÑˆÐ½Ð¸Ð¹ Ð²Ð¸Ð´",
+        "palette": "Color Palette",
+        "paletteDefault": "Default",
+        "paletteNord": "Nord",
+        "paletteDracula": "Dracula",
+        "paletteSolarized": "Solarized",
+        "paletteRose": "Rose",
+        "accentColor": "Accent Color",
+        "resetAccent": "Reset to palette default"
       },
       "floatingIcon": {
         "autoHide": "Ð¡ÐºÑ€Ñ‹Ð²Ð°Ñ‚ÑŒ Ð¿Ñ€Ð¸ Ð±ÐµÐ·Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ð¸",
