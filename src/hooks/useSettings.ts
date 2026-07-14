@@ -83,6 +83,7 @@ export interface ThemeSettings {
   theme: "light" | "dark" | "auto";
   palette: "default" | "nord" | "dracula" | "solarized" | "rose";
   accentColor: string | null;
+  voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
 }
 
 export interface ChatAgentSettings {
@@ -286,6 +287,8 @@ function useSettingsInternal() {
     setTheme: store.setTheme,
     setPalette: store.setPalette,
     setAccentColor: store.setAccentColor,
+    voiceVisualizerStyle: store.voiceVisualizerStyle,
+    setVoiceVisualizerStyle: store.setVoiceVisualizerStyle,
     activationMode: store.activationMode,
     setActivationMode: store.setActivationMode,
     notificationsEnabled: store.notificationsEnabled,

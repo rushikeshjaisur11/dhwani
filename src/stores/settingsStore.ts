@@ -648,6 +648,8 @@ export interface SettingsState
   setTheme: (value: "light" | "dark" | "auto") => void;
   setPalette: (value: "default" | "nord" | "dracula" | "solarized" | "rose") => void;
   setAccentColor: (value: string | null) => void;
+  voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
+  setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles") => void;
   setCloudBackupEnabled: (value: boolean) => void;
   setTelemetryEnabled: (value: boolean) => void;
   setAudioRetentionDays: (days: number) => void;
@@ -949,8 +951,16 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   })(),
   palette: (() => {
     const v = readString("palette", "default");
-    if (v === "nord" || v === "dracula" || v === "solarized" || v === "rose") return v as "nord" | "dracula" | "solarized" | "rose";
-    return "default" as const;
+    return (["default", "nord", "dracula", "solarized", "rose"].includes(v) ? v : "default") as
+      | "default"
+      | "nord"
+      | "dracula"
+      | "solarized"
+      | "rose";
+  })(),
+  voiceVisualizerStyle: (() => {
+    const v = readString("voiceVisualizerStyle", "plasma");
+    return (["plasma", "bars"].includes(v) ? v : "plasma") as "plasma" | "bars";
   })(),
   accentColor: (() => {
     const v = readString("accentColor", "");
@@ -1498,6 +1508,10 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setPalette: (value: "default" | "nord" | "dracula" | "solarized" | "rose") => {
     if (isBrowser) localStorage.setItem("palette", value);
     set({ palette: value });
+  },
+  setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles") => {
+    if (isBrowser) localStorage.setItem("voiceVisualizerStyle", style);
+    set({ voiceVisualizerStyle: style });
   },
 
   setAccentColor: (value: string | null) => {

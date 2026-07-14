@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, Copy, RotateCcw, ThumbsDown, ThumbsUp, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { wordDiff } from "../utils/wordDiff";
+import { useMicLevel } from "../hooks/useMicLevel";
 
 type PreviewPhase = "listening" | "live" | "cleanup" | "final" | "changes" | "transformProcessing";
 
@@ -26,6 +27,87 @@ export default function TranscriptionPreviewOverlay() {
   const [changesAfter, setChangesAfter] = useState("");
   const [vote, setVote] = useState<"up" | "down" | null>(null);
   const [processingName, setProcessingName] = useState("");
+
+  const isRecording = phase === "listening" || phase === "live";
+  const levels = useMicLevel(isRecording);
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    if (!isRecording) return;
+    let frameId;
+    const tick = () => {
+      setTime((t) => (t + 0.15) % (Math.PI * 2));
+      frameId = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, [isRecording]);
+
+  const wavePaths = useMemo(() => {
+    if (!isRecording) return [];
+    
+    const width = 180;
+    const height = 32;
+    const midY = height / 2;
+    
+    const waves = [
+      { phase: 0, amp: 1.0, opacity: 0.6, strokeWidth: 1.5 },
+      { phase: Math.PI / 3, amp: 0.75, opacity: 0.35, strokeWidth: 1.2 },
+      { phase: (2 * Math.PI) / 3, amp: 0.45, opacity: 0.15, strokeWidth: 1.0 },
+    ];
+    
+    return waves.map((w) => {
+      const points = [];
+      const numPoints = 8;
+      const step = width / (numPoints - 1);
+      
+      for (let i = 0; i < numPoints; i++) {
+        const x = i * step;
+        const lvlIdx = Math.min(levels.length - 1, Math.floor((i / numPoints) * levels.length));
+        const rawLevel = levels[lvlIdx] || 0.15;
+        const angle = time + i * 0.8 + w.phase;
+        const amplitude = (rawLevel - 0.12) * (height / 2) * w.amp;
+        const y = midY + Math.sin(angle) * Math.max(1.5, amplitude);
+        
+        points.push({ x, y });
+      }
+      
+      let pathStr = `M 0,${midY}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i];
+        const p1 = points[i + 1];
+        const cpX = (p0.x + p1.x) / 2;
+        pathStr += ` Q ${p0.x},${p0.y} ${cpX},${(p0.y + p1.y) / 2}`;
+      }
+      pathStr += ` T ${width},${midY}`;
+      
+      return { path: pathStr, opacity: w.opacity, strokeWidth: w.strokeWidth };
+    });
+  }, [levels, time, isRecording]);
+
+  const renderWave = useCallback(() => {
+    if (!isRecording) return null;
+    return (
+      <div className="flex items-center justify-center h-8 my-1 overflow-hidden w-full select-none pointer-events-none">
+        <svg width="180" height="32" viewBox="0 0 180 32" className="overflow-visible">
+          {wavePaths.map((w, idx) => (
+            <path
+              key={idx}
+              d={w.path}
+              fill="none"
+              stroke="var(--color-primary)"
+              strokeWidth={w.strokeWidth}
+              strokeLinecap="round"
+              opacity={w.opacity}
+              className="transition-all duration-75"
+            />
+          ))}
+        </svg>
+      </div>
+    );
+  }, [isRecording, wavePaths]);
 
   const shellRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
@@ -308,7 +390,8 @@ export default function TranscriptionPreviewOverlay() {
     }
   }, [startHideTimer]);
 
-  if (!isVisible) {
+  const hasContent = rawText || finalText || phase === "changes" || phase === "transformProcessing";
+  if (!hasContent && !isVisible) {
     return <div className="h-full w-full bg-transparent" />;
   }
 
@@ -333,22 +416,15 @@ export default function TranscriptionPreviewOverlay() {
         onMouseEnter={suspendAutoHide}
         onMouseLeave={resumeAutoHide}
         className={[
-          "relative overflow-hidden rounded-xl border p-3 backdrop-blur-xl",
-          "shadow-[0_8px_24px_rgba(0,0,0,0.14)]",
+          "relative overflow-hidden rounded-xl border p-3 glassmorphic-card",
           phase === "changes"
             ? "border-white/10 bg-[#1c1a17]/95"
-            : "bg-card/92 dark:bg-surface-2/92",
-          phase === "final"
-            ? "border-emerald-500/18 dark:border-emerald-500/20"
-            : phase === "cleanup" || phase === "transformProcessing"
-              ? "border-accent/22 dark:border-accent/25"
-              : phase === "changes"
-                ? ""
-                : "border-border/40 dark:border-border-subtle/45",
-          "transition-all duration-200 ease-out",
-          isVisible
-            ? "translate-y-0 opacity-100 scale-100"
-            : "translate-y-4 opacity-0 scale-[0.97]",
+            : phase === "final"
+              ? "border-emerald-500/22 shadow-[0_0_15px_rgba(16,185,129,0.06)]"
+              : phase === "cleanup" || phase === "transformProcessing" || isRecording
+                ? "border-accent-glowing animate-glow-pulse"
+                : "border-border/35",
+          isVisible ? "animate-spring-up" : "animate-spring-down"
         ].join(" ")}
       >
         {phase !== "changes" && (
@@ -508,27 +584,20 @@ export default function TranscriptionPreviewOverlay() {
                   {activeText}
                 </p>
               </div>
+              {phase === "live" && (
+                <div className="mt-2.5 flex justify-center">
+                  {renderWave()}
+                </div>
+              )}
             </div>
           )
         )}
 
         {phase === "listening" && !rawText && (
-          <div className="mt-2 flex items-center gap-2 px-1 py-1">
-            <div className="flex items-end gap-[3px]">
-              {[8, 13, 10].map((h, i) => (
-                <span
-                  key={i}
-                  className="w-[2px] rounded-full bg-primary/35"
-                  style={{
-                    height: h,
-                    animation: "preview-bars 0.9s ease-in-out infinite",
-                    animationDelay: `${i * 0.12}s`,
-                  }}
-                />
-              ))}
-            </div>
-            <span className="text-[11px] text-muted-foreground/45">
-              {t("transcriptionPreview.waitingForInput", { defaultValue: "Say something..." })}
+          <div className="mt-4 flex flex-col items-center justify-center gap-3 py-4 select-none pointer-events-none">
+            {renderWave()}
+            <span className="text-[12px] font-medium text-muted-foreground/50 tracking-wide animate-pulse">
+              {t("transcriptionPreview.waitingForInput", { defaultValue: "Listening for voice..." })}
             </span>
           </div>
         )}
@@ -549,9 +618,78 @@ export default function TranscriptionPreviewOverlay() {
       </div>
 
       <style>{`
-        @keyframes preview-bars {
-          0%, 100% { transform: scaleY(0.7); opacity: 0.6; }
-          50% { transform: scaleY(1.3); opacity: 1; }
+        .glassmorphic-card {
+          --shadow-base: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+          --border-glow-inset: rgba(255, 255, 255, 0.3);
+          --glow-intensity-base: 6%;
+          --glow-intensity-pulse: 22%;
+          opacity: 0;
+          transform: translateY(18px) scale(0.94);
+          background: rgba(255, 255, 255, 0.45);
+          backdrop-filter: blur(28px) saturate(140%);
+          -webkit-backdrop-filter: blur(28px) saturate(140%);
+          border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+          box-shadow: var(--shadow-base), 
+                      0 0 1px 0 var(--border-glow-inset) inset,
+                      0 0 12px 0 color-mix(in srgb, var(--color-primary) var(--glow-intensity-base), transparent);
+        }
+        .dark .glassmorphic-card {
+          --shadow-base: 0 8px 32px 0 rgba(0, 0, 0, 0.24);
+          --border-glow-inset: rgba(255, 255, 255, 0.1);
+          --glow-intensity-base: 10%;
+          --glow-intensity-pulse: 32%;
+          background: rgba(18, 17, 16, 0.55);
+          backdrop-filter: blur(28px) saturate(130%);
+          -webkit-backdrop-filter: blur(28px) saturate(130%);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glassmorphic-card.border-accent-glowing {
+          border-color: var(--color-primary);
+        }
+        @keyframes glow-pulse {
+          0%, 100% {
+            box-shadow: var(--shadow-base),
+                        0 0 1px 0 var(--border-glow-inset) inset,
+                        0 0 12px 0 color-mix(in srgb, var(--color-primary) var(--glow-intensity-base), transparent);
+          }
+          50% {
+            box-shadow: var(--shadow-base),
+                        0 0 1px 0 var(--border-glow-inset) inset,
+                        0 0 20px 3px color-mix(in srgb, var(--color-primary) var(--glow-intensity-pulse), transparent);
+          }
+        }
+        .animate-glow-pulse {
+          animation: glow-pulse 2.2s ease-in-out infinite;
+        }
+        @keyframes spring-up {
+          0% {
+            transform: translateY(18px) scale(0.94);
+            opacity: 0;
+          }
+          70% {
+            transform: translateY(-2px) scale(1.005);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+          }
+        }
+        @keyframes spring-down {
+          0% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(14px) scale(0.95);
+            opacity: 0;
+          }
+        }
+        .animate-spring-up {
+          animation: spring-up 0.42s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+        .animate-spring-down {
+          animation: spring-down 0.18s cubic-bezier(0.3, 0, 0.8, 0.15) forwards;
         }
         @keyframes preview-countdown {
           from { width: 100%; }

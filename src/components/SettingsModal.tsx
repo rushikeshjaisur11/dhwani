@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Sliders, Mic, Brain, Wrench, Keyboard, Shield, Users } from "lucide-react";
+import { Sliders, Palette, Mic, Brain, Wrench, Keyboard, Shield, Users } from "lucide-react";
 import SidebarModal, { type SidebarItem } from "./ui/SidebarModal";
 import SettingsPage, { SettingsSectionType } from "./SettingsPage";
 import { WORKSPACES_ENABLED } from "../lib/features";
@@ -62,6 +62,13 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
         label: t("settingsModal.sections.general.label"),
         icon: Sliders,
         description: t("settingsModal.sections.general.description"),
+        group: t("settingsModal.groups.app"),
+      },
+      {
+        id: "appearance",
+        label: t("settingsModal.sections.appearance.label", { defaultValue: "Appearance" }),
+        icon: Palette,
+        description: t("settingsModal.sections.appearance.description", { defaultValue: "Customize themes and overlays" }),
         group: t("settingsModal.groups.app"),
       },
       {

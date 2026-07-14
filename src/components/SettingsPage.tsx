@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
+import { LiquidPlasmaVisualizer, LiveWaveform, SiriOrbVisualizer, RippleWaveVisualizer, NeonPulseVisualizer, ParticleSwarmVisualizer } from "../App";
 import {
   RefreshCw,
   Download,
@@ -104,6 +105,7 @@ import { WORKSPACES_ENABLED } from "../lib/features";
 export type SettingsSectionType =
   | "workspace"
   | "general"
+  | "appearance"
   | "hotkeys"
   | "speechToText"
   | "llms"
@@ -782,6 +784,8 @@ export default function SettingsPage({
     setWhisperVadSpeechPadMs,
     whisperVadSamplesOverlap,
     setWhisperVadSamplesOverlap,
+    voiceVisualizerStyle,
+    setVoiceVisualizerStyle,
   } = useSettings();
 
   const chatAgentKey = useSettingsStore((s) => s.chatAgentKey);
@@ -909,20 +913,23 @@ export default function SettingsPage({
     }
   }, [accentColor]);
 
-  const handleAccentColorChange = useCallback((newColor: string) => {
-    const root = document.documentElement;
-    root.style.setProperty("--color-primary", newColor);
-    root.style.setProperty("--color-ring", newColor);
-    root.style.setProperty("--color-accent", newColor);
-    document.body.style.setProperty("--color-primary", newColor);
-    document.body.style.setProperty("--color-ring", newColor);
-    document.body.style.setProperty("--color-accent", newColor);
+  const handleAccentColorChange = useCallback(
+    (newColor: string) => {
+      const root = document.documentElement;
+      root.style.setProperty("--color-primary", newColor);
+      root.style.setProperty("--color-ring", newColor);
+      root.style.setProperty("--color-accent", newColor);
+      document.body.style.setProperty("--color-primary", newColor);
+      document.body.style.setProperty("--color-ring", newColor);
+      document.body.style.setProperty("--color-accent", newColor);
 
-    if (localAccentTimeoutRef.current) clearTimeout(localAccentTimeoutRef.current);
-    localAccentTimeoutRef.current = setTimeout(() => {
-      setAccentColor(newColor);
-    }, 150);
-  }, [setAccentColor]);
+      if (localAccentTimeoutRef.current) clearTimeout(localAccentTimeoutRef.current);
+      localAccentTimeoutRef.current = setTimeout(() => {
+        setAccentColor(newColor);
+      }, 150);
+    },
+    [setAccentColor]
+  );
 
   const handleAccentColorReset = useCallback(() => {
     if (localAccentTimeoutRef.current) clearTimeout(localAccentTimeoutRef.current);
@@ -1456,7 +1463,7 @@ export default function SettingsPage({
       case "workspace":
         return WORKSPACES_ENABLED ? <WorkspaceSection initialSubTab={initialSubTab} /> : null;
 
-      case "general":
+      case "appearance":
         return (
           <div className="space-y-6">
             {/* Appearance */}
@@ -1516,18 +1523,71 @@ export default function SettingsPage({
                   </SettingsRow>
                 </SettingsPanelRow>
                 <SettingsPanelRow>
-                  <SettingsRow
-                    label={t("settingsPage.general.appearance.palette")}
-                  >
+                  <SettingsRow label={t("settingsPage.general.appearance.palette")}>
                     <div className="flex flex-col gap-4">
                       <div className="flex items-center gap-3">
                         {(
                           [
-                            { id: "default", name: t("settingsPage.general.appearance.paletteDefault"), colors: { bg: "#faf7f1", bgDark: "#000000", primary: "#6d4fe0", primaryDark: "#856ceb", card: "#ffffff", cardDark: "#1a1a1a" } },
-                            { id: "nord", name: t("settingsPage.general.appearance.paletteNord"), colors: { bg: "#eceff4", bgDark: "#2e3440", primary: "#5e81ac", primaryDark: "#81a1c1", card: "#ffffff", cardDark: "#3b4252" } },
-                            { id: "dracula", name: t("settingsPage.general.appearance.paletteDracula"), colors: { bg: "#f8f8f2", bgDark: "#282a36", primary: "#bd93f9", primaryDark: "#bd93f9", card: "#ffffff", cardDark: "#44475a" } },
-                            { id: "solarized", name: t("settingsPage.general.appearance.paletteSolarized"), colors: { bg: "#fdf6e3", bgDark: "#002b36", primary: "#268bd2", primaryDark: "#268bd2", card: "#eee8d5", cardDark: "#073642" } },
-                            { id: "rose", name: t("settingsPage.general.appearance.paletteRose"), colors: { bg: "#faf4ed", bgDark: "#191724", primary: "#d7827e", primaryDark: "#ebbcba", card: "#fffaf3", cardDark: "#1f1d2e" } },
+                            {
+                              id: "default",
+                              name: t("settingsPage.general.appearance.paletteDefault"),
+                              colors: {
+                                bg: "#faf7f1",
+                                bgDark: "#000000",
+                                primary: "#6d4fe0",
+                                primaryDark: "#856ceb",
+                                card: "#ffffff",
+                                cardDark: "#1a1a1a",
+                              },
+                            },
+                            {
+                              id: "nord",
+                              name: t("settingsPage.general.appearance.paletteNord"),
+                              colors: {
+                                bg: "#eceff4",
+                                bgDark: "#2e3440",
+                                primary: "#5e81ac",
+                                primaryDark: "#81a1c1",
+                                card: "#ffffff",
+                                cardDark: "#3b4252",
+                              },
+                            },
+                            {
+                              id: "dracula",
+                              name: t("settingsPage.general.appearance.paletteDracula"),
+                              colors: {
+                                bg: "#f8f8f2",
+                                bgDark: "#282a36",
+                                primary: "#bd93f9",
+                                primaryDark: "#bd93f9",
+                                card: "#ffffff",
+                                cardDark: "#44475a",
+                              },
+                            },
+                            {
+                              id: "solarized",
+                              name: t("settingsPage.general.appearance.paletteSolarized"),
+                              colors: {
+                                bg: "#fdf6e3",
+                                bgDark: "#002b36",
+                                primary: "#268bd2",
+                                primaryDark: "#268bd2",
+                                card: "#eee8d5",
+                                cardDark: "#073642",
+                              },
+                            },
+                            {
+                              id: "rose",
+                              name: t("settingsPage.general.appearance.paletteRose"),
+                              colors: {
+                                bg: "#faf4ed",
+                                bgDark: "#191724",
+                                primary: "#d7827e",
+                                primaryDark: "#ebbcba",
+                                card: "#fffaf3",
+                                cardDark: "#1f1d2e",
+                              },
+                            },
                           ] as const
                         ).map((p) => {
                           const isSelected = palette === p.id;
@@ -1539,34 +1599,62 @@ export default function SettingsPage({
                                 flex flex-col items-center gap-1.5 group outline-none
                               `}
                             >
-                              <div className={`
+                              <div
+                                className={`
                                 w-14 h-10 rounded-lg border-[1.5px] overflow-hidden flex transition-all duration-200 shadow-sm
                                 ${isSelected ? "border-primary scale-[1.05] ring-2 ring-primary/20" : "border-border hover:border-border-hover scale-100"}
-                              `}>
+                              `}
+                              >
                                 {/* Light side */}
-                                <div className="flex-1 h-full flex flex-col" style={{ backgroundColor: p.colors.bg }}>
-                                  <div className="h-2.5 w-full flex items-center px-0.5 gap-[1px]" style={{ backgroundColor: p.colors.card }}>
+                                <div
+                                  className="flex-1 h-full flex flex-col"
+                                  style={{ backgroundColor: p.colors.bg }}
+                                >
+                                  <div
+                                    className="h-2.5 w-full flex items-center px-0.5 gap-[1px]"
+                                    style={{ backgroundColor: p.colors.card }}
+                                  >
                                     <div className="w-[3px] h-[3px] rounded-full bg-red-400/80" />
                                     <div className="w-[3px] h-[3px] rounded-full bg-amber-400/80" />
                                     <div className="w-[3px] h-[3px] rounded-full bg-green-400/80" />
                                   </div>
                                   <div className="flex-1 p-[3px] flex flex-col gap-[2px]">
-                                    <div className="w-full h-[3px] rounded-[1px]" style={{ backgroundColor: p.colors.primary }} />
-                                    <div className="w-3/4 h-[3px] rounded-[1px] opacity-60" style={{ backgroundColor: p.colors.primary }} />
+                                    <div
+                                      className="w-full h-[3px] rounded-[1px]"
+                                      style={{ backgroundColor: p.colors.primary }}
+                                    />
+                                    <div
+                                      className="w-3/4 h-[3px] rounded-[1px] opacity-60"
+                                      style={{ backgroundColor: p.colors.primary }}
+                                    />
                                   </div>
                                 </div>
                                 {/* Dark side */}
-                                <div className="flex-1 h-full flex flex-col border-l border-black/10 dark:border-white/10" style={{ backgroundColor: p.colors.bgDark }}>
-                                  <div className="h-2.5 w-full flex justify-end items-center px-1" style={{ backgroundColor: p.colors.cardDark }}>
-                                     <div className="w-3 h-[2px] rounded-full bg-white/20" />
+                                <div
+                                  className="flex-1 h-full flex flex-col border-l border-black/10 dark:border-white/10"
+                                  style={{ backgroundColor: p.colors.bgDark }}
+                                >
+                                  <div
+                                    className="h-2.5 w-full flex justify-end items-center px-1"
+                                    style={{ backgroundColor: p.colors.cardDark }}
+                                  >
+                                    <div className="w-3 h-[2px] rounded-full bg-white/20" />
                                   </div>
                                   <div className="flex-1 p-[3px] flex flex-col gap-[2px] items-end">
-                                    <div className="w-full h-[3px] rounded-[1px]" style={{ backgroundColor: p.colors.primaryDark }} />
-                                    <div className="w-3/4 h-[3px] rounded-[1px] opacity-60" style={{ backgroundColor: p.colors.primaryDark }} />
+                                    <div
+                                      className="w-full h-[3px] rounded-[1px]"
+                                      style={{ backgroundColor: p.colors.primaryDark }}
+                                    />
+                                    <div
+                                      className="w-3/4 h-[3px] rounded-[1px] opacity-60"
+                                      style={{ backgroundColor: p.colors.primaryDark }}
+                                    />
                                   </div>
                                 </div>
                               </div>
-                              <span className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>
+                              <span
+                                className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}
+                              >
                                 {p.name}
                               </span>
                             </button>
@@ -1576,9 +1664,11 @@ export default function SettingsPage({
 
                       <div className="flex items-center gap-4 pt-3 mt-1 border-t border-border-subtle">
                         <div className="flex items-center gap-2.5">
-                          <label className="relative w-6 h-6 rounded-full shadow-sm transition-transform hover:scale-110 ring-1 ring-black/10 dark:ring-white/10 cursor-pointer flex items-center justify-center overflow-hidden"
-                                 style={{ backgroundColor: "var(--color-primary)" }}
-                                 title={t("settingsPage.general.appearance.accentColor")}>
+                          <label
+                            className="relative w-6 h-6 rounded-full shadow-sm transition-transform hover:scale-110 ring-1 ring-black/10 dark:ring-white/10 cursor-pointer flex items-center justify-center overflow-hidden"
+                            style={{ backgroundColor: "var(--color-primary)" }}
+                            title={t("settingsPage.general.appearance.accentColor")}
+                          >
                             <input
                               ref={colorInputRef}
                               type="color"
@@ -1587,13 +1677,14 @@ export default function SettingsPage({
                               className="absolute opacity-0 w-[200%] h-[200%] cursor-pointer"
                             />
                           </label>
-                          <label className="text-xs font-medium text-foreground cursor-pointer" onClick={() => colorInputRef.current?.click()}>
+                          <label
+                            className="text-xs font-medium text-foreground cursor-pointer"
+                            onClick={() => colorInputRef.current?.click()}
+                          >
                             {t("settingsPage.general.appearance.accentColor")}
                           </label>
                         </div>
-                        {accentColor && (
-                          <div className="h-3 w-[1px] bg-border" />
-                        )}
+                        {accentColor && <div className="h-3 w-[1px] bg-border" />}
                         {accentColor && (
                           <button
                             onClick={handleAccentColorReset}
@@ -1609,7 +1700,74 @@ export default function SettingsPage({
               </SettingsPanel>
             </div>
 
-            {/* Sound Effects */}
+            {/* Voice Overlay Settings */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.appearance.voiceOverlay.title", {
+                  defaultValue: "Voice Overlay Pill",
+                })}
+                description={t("settingsPage.appearance.voiceOverlay.description", {
+                  defaultValue: "Customize the floating dictation pill",
+                })}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <SettingsRow
+                    label={t("settingsPage.appearance.voiceOverlay.style", {
+                      defaultValue: "Visualizer Style",
+                    })}
+                    description={t("settingsPage.appearance.voiceOverlay.styleDesc", {
+                      defaultValue: "Choose how your voice is animated while dictating",
+                    })}
+                  >
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 w-full mt-3">
+                      {(
+                        [
+                          { id: "plasma", name: "Liquid Plasma", Component: LiquidPlasmaVisualizer },
+                          { id: "bars", name: "Equalizer Bars", Component: LiveWaveform },
+                          { id: "siri", name: "Orb", Component: SiriOrbVisualizer },
+                          { id: "ripple", name: "Ripple Waves", Component: RippleWaveVisualizer },
+                          { id: "neon", name: "Neon Pulse", Component: NeonPulseVisualizer },
+                          { id: "particles", name: "Particle Swarm", Component: ParticleSwarmVisualizer }
+                        ] as const
+                      ).map(style => {
+                        const isSelected = voiceVisualizerStyle === style.id;
+                        const mockLevels = [0.4, 0.7, 0.9, 0.5, 0.3, 0.6, 0.8, 0.4, 0.2, 0.5, 0.8, 0.4, 0.2, 0.5, 0.8];
+                        return (
+                          <button
+                            key={style.id}
+                            onClick={() => setVoiceVisualizerStyle(style.id)}
+                            className={`flex flex-col items-center justify-center p-3 rounded-xl border-[1.5px] transition-all duration-200 shadow-sm outline-none group ${
+                              isSelected
+                                ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.02]"
+                                : "border-border hover:border-border-hover bg-card scale-100"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center h-[90px] w-full mb-2 pointer-events-none">
+                               <div className="relative flex items-center justify-center overflow-hidden bg-black/80 dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-sm transition-all w-[38px] h-[85px]">
+                                 <style.Component levels={mockLevels} isCommandMode={false} />
+                                 <svg className="w-4 h-4 text-white/90 z-10 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]" fill="currentColor" viewBox="0 0 24 24">
+                                   <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                                 </svg>
+                               </div>
+                            </div>
+                            <span className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>
+                              {style.name}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </SettingsRow>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
+          </div>
+        );
+
+      case "general":
+        return (
+          <div className="space-y-6">
             <div>
               <SectionHeader title={t("settingsPage.general.soundEffects.title")} />
               <SettingsPanel>

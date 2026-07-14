@@ -136,7 +136,6 @@
     "hardenedRuntime": true,
     "entitlements": "resources/mac/entitlements.mac.plist",
     "entitlementsInherit": "resources/mac/entitlements.mac.plist",
-    "identity": "Gizmo Labs Inc. (T832773L2J)",
     "notarize": true,
     "extraResources": [
       {
@@ -155,6 +154,7 @@
   "win": {
     "target": ["nsis", "zip"],
     "icon": "src/assets/icon.ico",
+    "verifyUpdateCodeSignature": false,
     "extraResources": [
       {
         "from": "resources/bin/nircmd.exe",

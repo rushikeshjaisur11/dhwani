@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const BAR_COUNT = 5;
+const BAR_COUNT = 14;
 
 // ponytail: separate lightweight getUserMedia + AnalyserNode purely for the
 // pill's waveform visual, independent of AudioManager's actual recording

@@ -23,19 +23,187 @@ import { useSettingsStore } from "./stores/settingsStore";
 import { getEffectiveTransformsSync } from "./config/transforms/loadEffectiveTransforms";
 import { Toggle } from "./components/ui/toggle";
 
-// Live waveform bars driven by real mic amplitude (recording state).
-// Vertical orientation: horizontal bars stacked top-to-bottom, widths follow
-// the mic level — matches the vertical pill.
-const LiveWaveform = ({ levels }) => {
+export const LiveWaveform = ({ levels, isCommandMode }) => {
+  const shadowColor = isCommandMode
+    ? "rgba(251, 191, 36, 0.65)"
+    : "rgba(139, 110, 240, 0.65)";
+
   return (
-    <div className="flex flex-col items-center justify-center gap-[3px] w-full py-1">
+    <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-[3px] py-0.5">
       {levels.map((level, i) => (
         <div
           key={i}
-          className="h-[3px] rounded-full bg-white/90 transition-[width] duration-75 ease-out"
-          style={{ width: `${6 + level * 18}px` }}
+          className="h-[2.5px] rounded-full transition-[width] duration-75 bg-gradient-to-r from-white/30 via-white to-white/30"
+          style={{
+            width: `${5 + level * 16}px`,
+            boxShadow: `0 0 6px 1px ${shadowColor}`,
+            transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
         />
       ))}
+    </div>
+  );
+};
+
+export const SiriOrbVisualizer = ({ levels, isCommandMode }) => {
+  const getBand = (start, end) => {
+    let sum = 0;
+    for (let i = start; i < end; i++) sum += levels[i] || 0;
+    return sum / (end - start);
+  };
+
+  const scale = 1 + getBand(0, 4) * 0.4;
+  const morphX = 1 + getBand(4, 8) * 0.2;
+  const morphY = 1 + getBand(8, 12) * 0.2;
+
+  const coreColor = isCommandMode ? "rgba(251, 191, 36, 1)" : "rgba(167, 139, 250, 1)";
+  const auraColor = isCommandMode ? "rgba(245, 158, 11, 0.6)" : "rgba(139, 110, 240, 0.6)";
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full pointer-events-none">
+      <div 
+        className="absolute transition-transform duration-100 ease-out"
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle at center, ${coreColor} 0%, ${auraColor} 60%, transparent 100%)`,
+          boxShadow: `0 0 20px 5px ${auraColor}, 0 0 40px 10px ${coreColor}40`,
+          transform: `scale(${scale}) scaleX(${morphX}) scaleY(${morphY})`,
+          filter: 'blur(2px)'
+        }}
+      />
+    </div>
+  );
+};
+
+export const NeonPulseVisualizer = ({ levels, isCommandMode }) => {
+  const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
+  const pulseColor = isCommandMode ? "rgba(251, 191, 36, 1)" : "rgba(139, 110, 240, 1)";
+  const shadowColor = isCommandMode ? "rgba(251, 191, 36, 0.7)" : "rgba(139, 110, 240, 0.7)";
+  
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none rounded-[24px]">
+      <div 
+        className="absolute inset-0 rounded-[24px] border-[2.5px] transition-all duration-75"
+        style={{
+          borderColor: pulseColor,
+          boxShadow: `0 0 ${10 + avgLevel * 30}px ${shadowColor}, inset 0 0 ${5 + avgLevel * 15}px ${shadowColor}`,
+          opacity: 0.3 + avgLevel * 0.7,
+          transform: `scale(${1 + avgLevel * 0.05})`
+        }}
+      />
+    </div>
+  );
+};
+
+export const ParticleSwarmVisualizer = ({ levels, isCommandMode }) => {
+  const particleColor = isCommandMode ? "rgba(251, 191, 36, 0.9)" : "rgba(139, 110, 240, 0.9)";
+  const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
+  
+  return (
+    <div className="absolute inset-0 overflow-hidden rounded-[24px] pointer-events-none">
+      {levels.slice(0, 12).map((level, i) => {
+        const xOffset = ((i % 4) - 1.5) * 10;
+        const yOffset = ((Math.floor(i / 4)) - 1) * 20 * (1 + level);
+        const scale = 0.5 + level * 1.5;
+        
+        return (
+          <div
+            key={i}
+            className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full transition-transform duration-100 ease-out"
+            style={{
+              backgroundColor: particleColor,
+              boxShadow: `0 0 6px ${particleColor}`,
+              transform: `translate(calc(-50% + ${xOffset}px), calc(-50% + ${yOffset}px)) scale(${scale})`,
+              opacity: 0.2 + level * 0.8
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+export const RippleWaveVisualizer = ({ levels, isCommandMode }) => {
+  const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
+  const rippleColor = isCommandMode ? "rgba(251, 191, 36, 0.4)" : "rgba(139, 110, 240, 0.4)";
+  
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
+      <div 
+        className="absolute rounded-full border border-white/20 transition-transform duration-200 ease-out"
+        style={{
+          width: '100%',
+          height: '100%',
+          transform: `scale(${1 + avgLevel * 0.5})`,
+          opacity: 1 - avgLevel,
+          backgroundColor: rippleColor
+        }}
+      />
+      <div 
+        className="absolute rounded-full border border-white/40 transition-transform duration-100 ease-out"
+        style={{
+          width: '60%',
+          height: '60%',
+          transform: `scale(${1 + avgLevel * 0.8})`,
+          opacity: 1 - avgLevel * 0.5,
+          backgroundColor: rippleColor
+        }}
+      />
+    </div>
+  );
+};
+
+export const LiquidPlasmaVisualizer = ({ levels, isCommandMode }) => {
+  const getBand = (start, end) => {
+    let sum = 0;
+    for (let i = start; i < end; i++) sum += levels[i] || 0.15;
+    return Math.max(0, (sum / (end - start)) - 0.15); 
+  };
+
+  const b1 = getBand(0, 3) * 1.5;
+  const b2 = getBand(3, 7) * 1.5;
+  const b3 = getBand(7, 11) * 1.5;
+  const b4 = getBand(11, 14) * 1.5;
+
+  const colors = isCommandMode
+    ? ["bg-amber-300", "bg-orange-500", "bg-rose-500", "bg-yellow-400"]
+    : ["bg-cyan-300", "bg-indigo-500", "bg-fuchsia-500", "bg-violet-400"];
+
+  const blobClass = "absolute rounded-full mix-blend-screen transition-all duration-75 ease-out opacity-90";
+
+  return (
+    <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none flex items-center justify-center">
+      <div
+        className={`${blobClass} ${colors[0]}`}
+        style={{
+          top: '-10%', left: '10%', width: '36px', height: '36px', filter: 'blur(10px)',
+          transform: `scale(${1 + b1 * 1.5}) translateY(${b1 * 10}px)`,
+        }}
+      />
+      <div
+        className={`${blobClass} ${colors[1]}`}
+        style={{
+          top: '20%', left: '-10%', width: '44px', height: '44px', filter: 'blur(12px)',
+          transform: `scale(${1 + b2 * 1.5}) translateY(${b2 * -5}px)`,
+        }}
+      />
+      <div
+        className={`${blobClass} ${colors[2]}`}
+        style={{
+          top: '45%', left: '15%', width: '44px', height: '44px', filter: 'blur(12px)',
+          transform: `scale(${1 + b3 * 1.5}) translateY(${b3 * 5}px)`,
+        }}
+      />
+      <div
+        className={`${blobClass} ${colors[3]}`}
+        style={{
+          top: '70%', left: '-5%', width: '36px', height: '36px', filter: 'blur(10px)',
+          transform: `scale(${1 + b4 * 1.5}) translateY(${b4 * -10}px)`,
+        }}
+      />
+      <div className="absolute inset-0 rounded-full border border-white/20 shadow-[inset_0_4px_16px_rgba(255,255,255,0.25)]" />
     </div>
   );
 };
@@ -107,6 +275,7 @@ export default function App() {
 
   // Floating icon auto-hide setting (read from store, synced via IPC)
   const floatingIconAutoHide = useSettingsStore((s) => s.floatingIconAutoHide);
+  const voiceVisualizerStyle = useSettingsStore((s) => s.voiceVisualizerStyle);
   const polishKey = useSettingsStore((s) => s.polishKey);
   const prevAutoHideRef = useRef(floatingIconAutoHide);
 
@@ -474,13 +643,32 @@ export default function App() {
         ) : (
           <div className="relative mr-1 flex flex-col items-end">
             {isRecording ? (
-              /* Recording: the waveform IS the pill — no other options. Click stops. */
+              /* Recording: Fluid Plasma Capsule */
               <button
                 onClick={toggleListening}
                 aria-label={t("app.mic.recording")}
-                className={`flow-dock-mic flow-dock-mic--recording ${micStateClass}`}
+                className={`flow-dock-mic flow-dock-mic--recording ${micStateClass} relative flex items-center justify-center`}
               >
-                <LiveWaveform levels={micLevels} />
+                {/* Visualizers */}
+                {voiceVisualizerStyle === "bars" ? (
+                  <LiveWaveform levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "siri" ? (
+                  <SiriOrbVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "ripple" ? (
+                  <RippleWaveVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "neon" ? (
+                  <NeonPulseVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "particles" ? (
+                  <ParticleSwarmVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : (
+                  <LiquidPlasmaVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                )}
+
+                {/* Central Mic Icon (Crisp, above the liquid) */}
+                <svg className="w-5 h-5 text-white/90 z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                </svg>
+
                 <span className="flow-bar-ring flow-bar-ring--listening" aria-hidden="true" />
               </button>
             ) : (
