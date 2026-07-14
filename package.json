@@ -1,7 +1,8 @@
 {
   "name": "dhwani",
-  "version": "0.3.1",
-  "description": "Dhwani - on-device multilingual voice dictation with its own fine-tuned STT model family",
+  "productName": "Dhwani",
+  "version": "0.3.3",
+  "description": "Cross-platform voice dictation and chat client",
   "main": "main.js",
   "private": true,
   "engines": {
@@ -71,7 +72,10 @@
     "format:check": "eslint . && cd src && eslint . && prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "lint": "eslint . && cd src && eslint .",
     "typecheck": "cd src && tsc --noEmit",
-    "test": "node --test",
+    "test": "npm run test:ui && npm run test:main",
+    "test:ui": "cd src && vitest run",
+    "test:main": "node --test \"test/**/*.test.js\"",
+    "test:watch": "cd src && vitest",
     "quality-check": "npm run format:check && npm run typecheck",
     "i18n:check": "node scripts/check-i18n.js",
     "preview": "cd src && vite preview",
@@ -94,6 +98,8 @@
     "@electron/notarize": "^3.0.1",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^6.0.1",
@@ -106,12 +112,14 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "17.5.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.16",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.1.10",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.1",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.10"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^4.0.93",
