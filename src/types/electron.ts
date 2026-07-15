@@ -2012,10 +2012,12 @@ declare global {
       hardDeleteDictionary?: (id: number) => Promise<{ success: boolean; id: number }>;
       clearDictionaryCloudId?: (id: number) => Promise<{ success: boolean }>;
       broadcastDictionaryUpdated?: () => Promise<{ success: boolean }>;
+      showSettingsWindow?: () => Promise<void>;
     };
 
     api?: {
       sendDebugLog: (message: string) => void;
+      electronIpcSend?: (channel: string, ...args: any[]) => void;
     };
   }
 }

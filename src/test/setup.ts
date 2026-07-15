@@ -13,13 +13,13 @@ window.api = {
   isMac: false,
   isWindows: true,
   isLinux: false,
-};
+} as any;
 
 window.electronAPI = {
   getSttConfig: vi.fn().mockResolvedValue({ success: true }),
   openExternal: vi.fn(),
   showSettingsWindow: vi.fn(),
-};
+} as any;
 
 // Mock other typical browser globals that might be missing in jsdom or need mocking
 Object.defineProperty(window, 'matchMedia', {
