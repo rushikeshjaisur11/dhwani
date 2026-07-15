@@ -193,14 +193,24 @@ class WindowPositionUtil {
       size.height ||
       TRANSCRIPTION_PREVIEW_CONFIG.height ||
       TRANSCRIPTION_PREVIEW_SIZE_LIMITS.defaultHeight;
+    const MARGIN = 16;
     const GAP = 8;
     const workArea = display.workArea || display.bounds;
 
-    let x = Math.round(mainWindowBounds.x + (mainWindowBounds.width - width) / 2);
-    let y = mainWindowBounds.y - height - GAP;
+    let x;
+    let y;
+    if (mainWindowBounds) {
+      // Directly above the pill, horizontally centered over it.
+      x = Math.round(mainWindowBounds.x + (mainWindowBounds.width - width) / 2);
+      y = mainWindowBounds.y - height + GAP;
+    } else {
+      x = Math.round(workArea.x + (workArea.width - width) / 2);
+      y = workArea.y + MARGIN;
+    }
 
-    x = Math.max(workArea.x, Math.min(x, workArea.x + workArea.width - width));
-    y = Math.max(workArea.y, Math.min(y, workArea.y + workArea.height - height));
+    // Keep it fully inside the work area regardless of which branch was taken.
+    x = Math.min(Math.max(x, workArea.x), workArea.x + workArea.width - width);
+    y = Math.min(Math.max(y, workArea.y), workArea.y + workArea.height - height);
 
     return { x, y, width, height };
   }

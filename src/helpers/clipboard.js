@@ -332,6 +332,15 @@ class ClipboardManager {
     );
   }
 
+  resolveWindowsCopySelectionBinary() {
+    return this._resolveNativeBinary(
+      "windows-copy-selection.exe",
+      "win32",
+      "winCopySelectionChecked",
+      "winCopySelectionPath"
+    );
+  }
+
   resolveLinuxFastPasteBinary() {
     return this._resolveNativeBinary(
       "linux-fast-paste",
@@ -2070,25 +2079,37 @@ Would you like to open System Settings now?`;
     // stays empty) apart from "selection matches previous clipboard contents".
     clipboard.writeText("");
 
-    await new Promise((resolve) => {
-      // Leading {ESC} dismisses any lingering Alt-mnemonic/keytip overlay a
-      // preceding Alt-based global hotkey may have left the target app in
-      // (its resolving keypress was consumed by our hook, not delivered to
-      // the app) — without it, ^c can land mid-keytip-mode and get eaten
-      // instead of copying. Harmless no-op in a plain text field otherwise.
-      const copyProcess = spawn("powershell.exe", [
-        "-NoProfile",
-        "-NonInteractive",
-        "-WindowStyle",
-        "Hidden",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-Command",
-        "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('{ESC}^c')",
-      ]);
-      copyProcess.on("close", () => resolve());
-      copyProcess.on("error", () => resolve());
-    });
+    const copyBinary = this.resolveWindowsCopySelectionBinary();
+    if (copyBinary) {
+      debugLogger.debug(`[Clipboard] Using native copy helper: ${copyBinary}`);
+      await new Promise((resolve) => {
+        // Run with --esc to dismiss any lingering Alt-mnemonic/keytip overlay
+        const copyProcess = spawn(copyBinary, ["--esc"]);
+        copyProcess.on("close", () => resolve());
+        copyProcess.on("error", () => resolve());
+      });
+    } else {
+      debugLogger.warn("[Clipboard] Native copy helper not found, falling back to PowerShell");
+      await new Promise((resolve) => {
+        // Leading {ESC} dismisses any lingering Alt-mnemonic/keytip overlay a
+        // preceding Alt-based global hotkey may have left the target app in
+        // (its resolving keypress was consumed by our hook, not delivered to
+        // the app) — without it, ^c can land mid-keytip-mode and get eaten
+        // instead of copying. Harmless no-op in a plain text field otherwise.
+        const copyProcess = spawn("powershell.exe", [
+          "-NoProfile",
+          "-NonInteractive",
+          "-WindowStyle",
+          "Hidden",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command",
+          "[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('{ESC}^c')",
+        ]);
+        copyProcess.on("close", () => resolve());
+        copyProcess.on("error", () => resolve());
+      });
+    }
 
     // Give the target app time to populate the clipboard after Ctrl+C.
     await new Promise((resolve) => setTimeout(resolve, 150));

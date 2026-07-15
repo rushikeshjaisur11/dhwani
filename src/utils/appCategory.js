@@ -40,11 +40,13 @@ export function categorizeApp(activeApp) {
 }
 
 const TONE_INSTRUCTIONS = {
-  casual: "Adjust tone to be casual and conversational.",
-  formal: "Adjust tone to be formal and professional.",
+  casual: "CRITICAL INSTRUCTION: You MUST actively rewrite the output to be highly casual and conversational.",
+  veryCasual: "CRITICAL INSTRUCTION: You MUST heavily rewrite the text to sound extremely casual, relaxed, and informal (like texting a close friend).",
+  formal: "CRITICAL INSTRUCTION: You MUST heavily rewrite the text to sound extremely formal, professional, and corporate.",
 };
 
 export function resolveStyleInstruction(activeApp, settings) {
+  if (!settings.enableVoiceStyles) return undefined;
   const category = categorizeApp(activeApp);
   const tone = {
     work: settings.styleToneWork,

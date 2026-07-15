@@ -4,14 +4,19 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import RadialGauge from "./ui/RadialGauge";
 import StreakHeatmap from "./ui/StreakHeatmap";
 import { useInsightsStats } from "../hooks/useInsightsStats";
+import { Area, AreaChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from "recharts";
+import { useTheme } from "../hooks/useTheme";
 
 export default function InsightsView() {
   const { t } = useTranslation();
   const { stats } = useInsightsStats();
+  const { theme } = useTheme();
 
   const wpm = stats?.averageWPM ?? 0;
   const best = Math.max(stats?.personalBestWPM ?? 0, wpm);
   const pctOfBest = best > 0 ? Math.round((wpm / best) * 100) : 0;
+
+  const chartColor = theme === "dark" ? "#60a5fa" : "#3b82f6"; // primary blue color
 
   return (
     <div className="px-5 py-4">
@@ -33,11 +38,11 @@ export default function InsightsView() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="usage" className="mt-5 space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="rounded-xl border border-border bg-card p-4 flex flex-col items-center gap-1">
+        <TabsContent value="usage" className="mt-5 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 flex flex-col items-center gap-1 shadow-sm transition-all hover:bg-card/80">
               <RadialGauge value={wpm} max={best || 1} />
-              <span className="text-3xl font-bold text-foreground tabular-nums leading-none -mt-1">
+              <span className="text-3xl font-bold text-foreground tabular-nums leading-none -mt-1 drop-shadow-sm">
                 {wpm}
               </span>
               <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -53,8 +58,8 @@ export default function InsightsView() {
               </span>
             </div>
 
-            <div className="rounded-xl border border-border bg-card p-4 flex flex-col gap-1.5 justify-center">
-              <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
+            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 flex flex-col gap-1.5 justify-center shadow-sm transition-all hover:bg-card/80">
+              <span className="text-3xl font-bold text-foreground tabular-nums leading-none drop-shadow-sm">
                 {stats?.fixesMade ?? "–"}
               </span>
               <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -67,8 +72,8 @@ export default function InsightsView() {
               </span>
             </div>
 
-            <div className="rounded-xl border border-border bg-card p-4 flex flex-col gap-1.5 justify-center">
-              <span className="text-3xl font-bold text-foreground tabular-nums leading-none">
+            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 flex flex-col gap-1.5 justify-center shadow-sm transition-all hover:bg-card/80">
+              <span className="text-3xl font-bold text-foreground tabular-nums leading-none drop-shadow-sm">
                 {stats?.totalWords ?? "–"}
               </span>
               <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -84,11 +89,11 @@ export default function InsightsView() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="rounded-xl border border-border bg-card p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                  <Flame className="w-3.5 h-3.5" />
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5 drop-shadow-sm">
+                  <Flame className="w-3.5 h-3.5 text-orange-500" />
                   {t("insights.streak.title", {
                     defaultValue: "{{count}} day streak",
                     count: stats?.dayStreak ?? 0,
@@ -105,9 +110,9 @@ export default function InsightsView() {
             </div>
 
             {stats && stats.appUsage.length > 0 && (
-              <div className="rounded-xl border border-border bg-card p-4">
+              <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-foreground">
+                  <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
                     {t("insights.appUsage.title", { defaultValue: "Desktop usage" })}
                   </h3>
                   <span className="text-[11px] text-muted-foreground uppercase tracking-wide">
@@ -138,6 +143,47 @@ export default function InsightsView() {
               </div>
             )}
           </div>
+
+          {stats && stats.dailyActivity.length > 0 && (
+            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm h-64 mt-4">
+              <h3 className="text-sm font-semibold text-foreground mb-4 drop-shadow-sm">
+                {t("insights.dailyWords.title", { defaultValue: "Words Dictated Over Time" })}
+              </h3>
+              <ResponsiveContainer width="100%" height="85%">
+                <AreaChart data={stats.dailyActivity}>
+                  <defs>
+                    <linearGradient id="colorWords" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                      <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="var(--color-border)" 
+                    fontSize={10} 
+                    tickFormatter={(val) => {
+                      const d = new Date(val);
+                      return `${d.getMonth() + 1}/${d.getDate()}`;
+                    }}
+                    minTickGap={20}
+                  />
+                  <YAxis stroke="var(--color-border)" fontSize={10} />
+                  <RechartsTooltip 
+                    contentStyle={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)', borderRadius: '0.5rem', fontSize: '12px' }}
+                    itemStyle={{ color: 'var(--color-foreground)' }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="words" 
+                    stroke={chartColor} 
+                    strokeWidth={2}
+                    fillOpacity={1} 
+                    fill="url(#colorWords)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="voice" className="mt-5">

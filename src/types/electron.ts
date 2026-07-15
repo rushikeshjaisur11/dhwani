@@ -36,6 +36,7 @@ export interface TranscriptionItem {
   client_transcription_id: string;
   cloud_id: string | null;
   sync_status: "synced" | "pending" | "error";
+  target_app: string | null;
   deleted_at: string | null;
 }
 
@@ -475,6 +476,7 @@ export interface ReferralItem {
 declare global {
   interface Window {
     electronAPI: {
+      getUserName: () => string;
       // Basic window operations
       pasteText: (
         text: string,
@@ -492,10 +494,11 @@ declare global {
       onTriggerTransform?: (
         callback: (transformId: string, payload?: { text?: string }) => void
       ) => () => void;
-      onTransformChanges?: (
-        callback: (payload: { id?: string; name: string; before: string; after: string }) => void
-      ) => () => void;
+
       onTransformProcessing?: (callback: (payload: { name: string }) => void) => () => void;
+      onTransformChanges?: (
+        callback: (payload: { id: string | number; name: string; before: string; after: string }) => void
+      ) => () => void;
       recordTransformResult?: (payload: {
         id?: string;
         name: string;
@@ -506,6 +509,8 @@ declare global {
       retryTransform?: (payload: { id: string; text: string }) => Promise<{ success: boolean }>;
       onTransformDone?: (callback: () => void) => () => void;
       showLastTransformChanges?: () => Promise<{ success: boolean }>;
+      hideTranscriptionPreview?: () => Promise<{ success: boolean }>;
+
       runTransform?: (payload: { id: string }) => Promise<{ success: boolean }>;
       setScratchpadPinned?: (pinned: boolean) => Promise<{ success: boolean }>;
       openTransformsView?: () => Promise<{ success: boolean }>;
@@ -2012,10 +2017,12 @@ declare global {
       hardDeleteDictionary?: (id: number) => Promise<{ success: boolean; id: number }>;
       clearDictionaryCloudId?: (id: number) => Promise<{ success: boolean }>;
       broadcastDictionaryUpdated?: () => Promise<{ success: boolean }>;
+      showSettingsWindow?: () => Promise<void>;
     };
 
     api?: {
       sendDebugLog: (message: string) => void;
+      electronIpcSend?: (channel: string, ...args: any[]) => void;
     };
   }
 }

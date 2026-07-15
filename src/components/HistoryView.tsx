@@ -1,8 +1,10 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Loader2, Sparkles, X, Mic, Trash2, Archive, Search } from "lucide-react";
 import TranscriptionItem from "./ui/TranscriptionItem";
+import TranscriptDetailView from "./ui/TranscriptDetailView";
 import { Kbd } from "./ui/Kbd";
 import type { TranscriptionItem as TranscriptionItemType } from "../types/electron";
 import { formatHotkeyLabel } from "../utils/hotkeys";
@@ -49,30 +51,84 @@ export default function HistoryView({
   const { t } = useTranslation();
   const dataRetentionEnabled = useSettingsStore((s) => s.dataRetentionEnabled);
   const { isConnected } = useUpcomingEvents();
+  const [selectedTranscript, setSelectedTranscript] = useState<TranscriptionItemType | null>(null);
 
   useEffect(() => {
     localStorage.removeItem("promoBannerDismissed");
   }, []);
 
-  const groupedHistory = useMemo(() => {
-    if (history.length === 0) return [];
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
-    const groups: { label: string; items: TranscriptionItemType[] }[] = [];
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        setIsSearchExpanded(true);
+        // Small delay to allow the input to mount/expand before focusing
+        setTimeout(() => searchInputRef.current?.focus(), 50);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredHistory = useMemo(() => {
+    if (!searchQuery.trim()) return history;
+    const lowerQuery = searchQuery.toLowerCase();
+    return history.filter((item) => {
+      const textMatch = item.text?.toLowerCase().includes(lowerQuery);
+      const appMatch = item.target_app?.toLowerCase().includes(lowerQuery);
+      return textMatch || appMatch;
+    });
+  }, [history, searchQuery]);
+
+  const flattenedHistory = useMemo(() => {
+    if (filteredHistory.length === 0) return [];
+    
+    type FlatItem = 
+      | { type: "header"; id: string; label: string; isFirstGroup: boolean }
+      | { type: "item"; id: string; item: TranscriptionItemType; isFirstInGroup: boolean; isLastInGroup: boolean; isSingleItem: boolean };
+
+    const items: FlatItem[] = [];
     let currentLabel: string | null = null;
+    let groupStartIndex = -1;
 
-    for (const item of history) {
+    for (let i = 0; i < filteredHistory.length; i++) {
+      const item = filteredHistory[i];
       const label = formatDateGroup(item.timestamp, t);
 
       if (label !== currentLabel) {
-        groups.push({ label, items: [item] });
+        if (groupStartIndex !== -1) {
+           (items[items.length - 1] as any).isLastInGroup = true;
+        }
+        items.push({ type: "header", id: `header-${label}`, label, isFirstGroup: items.length === 0 });
         currentLabel = label;
-      } else {
-        groups[groups.length - 1].items.push(item);
+        groupStartIndex = items.length;
       }
+      
+      items.push({
+        type: "item",
+        id: `item-${item.id}`,
+        item,
+        isFirstInGroup: items.length === groupStartIndex,
+        isLastInGroup: false,
+        isSingleItem: false,
+      });
+    }
+    
+    if (items.length > 0) {
+      (items[items.length - 1] as any).isLastInGroup = true;
+    }
+    
+    for (const row of items) {
+       if (row.type === "item" && row.isFirstInGroup && row.isLastInGroup) row.isSingleItem = true;
     }
 
-    return groups;
-  }, [history, t]);
+    return items;
+  }, [filteredHistory, t]);
 
   const discardedToggle = (
     <button
@@ -100,6 +156,24 @@ export default function HistoryView({
     }, 180);
   };
 
+  const scrollElementRef = useRef<Element | null>(null);
+  const [scrollElementReady, setScrollElementReady] = useState(false);
+
+  useEffect(() => {
+    const el = document.getElementById("main-scroll-container");
+    if (el) {
+      scrollElementRef.current = el;
+      setScrollElementReady(true);
+    }
+  }, []);
+
+  const rowVirtualizer = useVirtualizer({
+    count: scrollElementReady ? flattenedHistory.length : 0,
+    getScrollElement: () => scrollElementRef.current,
+    estimateSize: (i) => (flattenedHistory[i]?.type === "header" ? 44 : 85),
+    overscan: 5,
+  });
+
   const [aiCtaClosing, setAiCtaClosing] = useState(false);
   const dismissAiCta = () => {
     setAiCtaClosing(true);
@@ -120,30 +194,33 @@ export default function HistoryView({
   const userName = localStorage.getItem("userName") ?? "Rushikesh";
 
   return (
-    <div className="px-3 pt-4 pb-6">
-      <div className="mx-auto max-w-5xl @container">
-        <div className="text-[clamp(14px,3.5cqw,24px)] font-medium text-foreground/70 mb-6 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-visible">
-          <span className="shrink-0 min-w-max">
-            {t("controlPanel.greeting", {
-              defaultValue: "Hey {{name}}, get back into the flow with",
-              name: userName,
-            })}
-          </span>
-          {hotkeyParts.map((part, i) => (
-            <span key={i} className="flex items-center gap-1 shrink-0">
-              <Kbd className="text-xs font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-md select-none h-6 flex items-center justify-center font-sans">
-                {part}
-              </Kbd>
-              {i < hotkeyParts.length - 1 && (
-                <span className="text-muted-foreground font-bold px-0.5">+</span>
-              )}
+    <div className="px-3 pb-6 flex flex-col relative min-h-full">
+      <div className="sticky top-0 z-20 bg-card pt-4 pb-2">
+        <div className="mx-auto max-w-5xl @container">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="text-[clamp(14px,3.5cqw,24px)] font-medium text-foreground/70 flex flex-nowrap items-center gap-1.5 leading-tight whitespace-nowrap shrink-0 overflow-visible">
+            <span className="shrink-0 min-w-max">
+              {t("controlPanel.greeting", {
+                defaultValue: "Hey {{name}}, get back into the flow with",
+                name: userName,
+              })}
             </span>
-          ))}
+            {hotkeyParts.map((part, i) => (
+              <span key={i} className="flex items-center gap-1 shrink-0">
+                <Kbd className="text-xs font-bold px-1.5 py-0.5 bg-[#f5a94a] text-black border border-black rounded-md select-none h-6 flex items-center justify-center font-sans">
+                  {part}
+                </Kbd>
+                {i < hotkeyParts.length - 1 && (
+                  <span className="text-muted-foreground font-bold px-0.5">+</span>
+                )}
+              </span>
+            ))}
+          </div>
         </div>
         {!promoDismissed && (
           <div
             className={cn(
-              "mb-6 relative rounded-[24px] overflow-hidden p-8 shadow-md bg-gradient-to-r from-[#1c2226] via-[#2f2824] to-[#1c201a]",
+              "mb-4 relative rounded-[24px] overflow-hidden p-8 shadow-md bg-gradient-to-r from-[#1c2226] via-[#2f2824] to-[#1c201a]",
               "transition-[opacity,transform] duration-200 ease-in",
               promoClosing ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
             )}
@@ -240,6 +317,82 @@ export default function HistoryView({
           </div>
         )}
 
+        <div className="w-full flex items-center justify-between mb-2 relative px-1 group">
+          <h2 className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest pl-1">
+            Recent Transcriptions
+          </h2>
+          <div 
+            className={cn(
+              "relative flex items-center h-8 rounded-full transition-all duration-300 ease-out border overflow-hidden",
+              isSearchExpanded || searchQuery 
+                ? "w-48 sm:w-64 bg-black/5 dark:bg-white/5 border-transparent focus-within:border-primary/50 focus-within:bg-transparent" 
+                : "w-8 bg-transparent border-transparent hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
+            )}
+            onClick={() => {
+              if (!isSearchExpanded) {
+                setIsSearchExpanded(true);
+                setTimeout(() => searchInputRef.current?.focus(), 50);
+              }
+            }}
+          >
+            <div className={cn("absolute left-0 flex items-center justify-center h-8 w-8 text-muted-foreground transition-all duration-300", isSearchExpanded || searchQuery ? "text-foreground" : "")}>
+              <Search className="h-3.5 w-3.5" strokeWidth={2} />
+            </div>
+            
+            <input 
+              ref={searchInputRef}
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setSearchQuery("");
+                  setIsSearchExpanded(false);
+                  searchInputRef.current?.blur();
+                }
+              }}
+              onBlur={() => {
+                if (!searchQuery) setIsSearchExpanded(false);
+              }}
+              placeholder={t("common.search", "Search...")}
+              className={cn(
+                "w-full h-full bg-transparent border-none outline-none text-xs placeholder:text-muted-foreground text-foreground py-1 pl-8 transition-opacity duration-300",
+                isSearchExpanded || searchQuery ? "opacity-100 pr-8" : "opacity-0 pr-0 pointer-events-none"
+              )}
+            />
+
+            {(isSearchExpanded || searchQuery) && (
+              <button
+                onMouseDown={(e) => {
+                  e.preventDefault(); // Prevent blur when clicking clear
+                  setSearchQuery("");
+                  searchInputRef.current?.focus();
+                }}
+                className={cn(
+                  "absolute right-0 h-8 w-8 flex items-center justify-center text-muted-foreground/50 hover:text-foreground transition-all duration-300",
+                  searchQuery ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"
+                )}
+              >
+                <div className="bg-black/10 dark:bg-white/10 rounded-full p-0.5 hover:bg-black/20 dark:hover:bg-white/20 transition-colors">
+                  <X size={10} strokeWidth={2.5} />
+                </div>
+              </button>
+            )}
+            
+            {(!searchQuery && isSearchExpanded) && (
+              <div className="absolute right-2 flex items-center justify-center pointer-events-none transition-opacity duration-300">
+                <Kbd className="text-[9px] font-sans px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5 text-muted-foreground border-none shadow-none tracking-wider font-medium">
+                  {navigator.platform.includes("Mac") ? "⌘F" : "Ctrl F"}
+                </Kbd>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
+      </div>
+
+      <div className="mx-auto max-w-5xl @container w-full flex-1">
         <div className="flex gap-6">
           <div className="min-w-0 flex-1">
             {isConnected && (
@@ -366,41 +519,92 @@ export default function HistoryView({
               </div>
             ) : (
               <div className="group pb-8">
-                {groupedHistory.map((group, index) => (
-                  <div key={group.label} className={index > 0 ? "mt-8" : ""}>
-                    <div className="flex items-center justify-between mb-3 px-1">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                        {group.label}
-                      </span>
-                      {index === 0 && (
-                        <button
-                          onClick={onOpenSearch}
-                          className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/50 hover:text-foreground transition-colors cursor-pointer"
+                <div
+                  style={{
+                    height: `${rowVirtualizer.getTotalSize()}px`,
+                    width: '100%',
+                    position: 'relative',
+                  }}
+                >
+                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                    const row = flattenedHistory[virtualRow.index];
+
+                    if (row.type === "header") {
+                      return (
+                        <div
+                          key={virtualRow.index}
+                          ref={rowVirtualizer.measureElement}
+                          data-index={virtualRow.index}
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            transform: `translateY(${virtualRow.start}px)`,
+                          }}
+                          className={!row.isFirstGroup ? "pt-8" : ""}
                         >
-                          <Search size={14} strokeWidth={2.5} />
-                        </button>
-                      )}
-                    </div>
-                    <div className="border border-border/40 dark:border-white/10 rounded-[16px] bg-transparent divide-y divide-border/30 dark:divide-white/5 overflow-hidden shadow-sm">
-                      {group.items.map((item) => (
-                        <TranscriptionItem
-                          key={item.id}
-                          item={item}
-                          onCopy={copyToClipboard}
-                          onDelete={deleteTranscription}
-                          onShowAudioInFolder={onShowAudioInFolder}
-                          onRetryTranscription={onRetryTranscription}
-                          onOpenSettings={() => onOpenSettings("transcription")}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                          <div className="flex items-center justify-between mb-3 px-1">
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                              {row.label}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={virtualRow.index}
+                        ref={rowVirtualizer.measureElement}
+                        data-index={virtualRow.index}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                        className={row.isLastInGroup ? "pb-8" : ""}
+                      >
+                        <div
+                          className={cn(
+                            "border-x border-border/40 dark:border-white/10 bg-transparent overflow-hidden",
+                            row.isFirstInGroup && "border-t rounded-t-[16px] shadow-sm",
+                            row.isLastInGroup && "border-b rounded-b-[16px] shadow-sm",
+                            !row.isFirstInGroup && "border-t border-border/30 dark:border-white/5"
+                          )}
+                        >
+                          <TranscriptionItem
+                            item={row.item}
+                            onCopy={copyToClipboard}
+                            onDelete={deleteTranscription}
+                            onShowAudioInFolder={onShowAudioInFolder}
+                            onRetryTranscription={onRetryTranscription}
+                            onOpenSettings={() => onOpenSettings("transcription")}
+                            onSelect={() => setSelectedTranscript(row.item)}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
+      {selectedTranscript && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-2xl bg-card border border-border shadow-2xl rounded-2xl overflow-hidden max-h-[90vh] flex flex-col">
+             <TranscriptDetailView 
+               transcript={selectedTranscript} 
+               onClose={() => setSelectedTranscript(null)} 
+               t={t} 
+             />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

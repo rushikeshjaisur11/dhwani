@@ -9,7 +9,8 @@ const { ensureWindowsBinary } = require("./lib/ensure-windows-binary");
 
 ensureWindowsBinary({
   name: "windows-fast-paste",
-  order: "download-first",
+  order: "compile-first",
+  noDownloadFallback: true,
   msvcLibs: ["user32.lib"],
   gnuLibs: ["-luser32"],
   fallbackMessage: "Windows paste will use nircmd/PowerShell fallback.",

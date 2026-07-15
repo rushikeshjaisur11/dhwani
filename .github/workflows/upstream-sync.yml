@@ -6,18 +6,25 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   check:
-    name: Diff tracked paths against OpenWhispr upstream
+    name: Auto-merge OpenWhispr upstream while preserving Dhwani custom features
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Add upstream remote
         run: git remote add upstream https://github.com/OpenWhispr/openwhispr.git
@@ -25,48 +32,58 @@ jobs:
       - name: Fetch upstream
         run: git fetch upstream main
 
-      - name: Diff tracked paths
-        id: diff
+      - name: Create Sync Branch and Merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PATHS="resources native src/locales src/config/languageRegistry.json src/models/modelRegistryData.json scripts/download-whisper-cpp.js scripts/download-llama-server.js scripts/download-sherpa-onnx.js scripts/download-nircmd.js scripts/download-windows-fast-paste.js scripts/download-windows-key-listener.js scripts/download-windows-mic-listener.js scripts/download-meeting-aec-helper.js scripts/download-qdrant.js scripts/download-minilm.js scripts/download-diarization-models.js scripts/download-whisper-vad-model.js"
-          DIFF=$(git diff --stat main upstream/main -- $PATHS)
-          if [ -z "$DIFF" ]; then
-            echo "has_diff=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_diff=true" >> "$GITHUB_OUTPUT"
-            {
-              echo "diff<<EOF"
-              echo "$DIFF"
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
+          # Fetch origin main to ensure we are up to date
+          git checkout main
+          git pull origin main
+          
+          # Delete local and remote upstream-sync branch if they exist
+          git branch -D upstream-sync || true
+          
+          # Create and checkout a new upstream-sync branch
+          git checkout -b upstream-sync
+          
+          # Selectively checkout ONLY the core dictation resources, native code, and helper scripts
+          # This replaces git merge entirely and leaves all frontend/main/preload files untouched.
+          git checkout upstream/main -- resources native src/config/languageRegistry.json src/models/modelRegistryData.json scripts
+          
+          # Force checkout our versions for key listener and paste files
+          # to ensure they are never broken by upstream changes.
+          PROTECTED_FILES="resources/windows-key-listener.c resources/windows-fast-paste.c scripts/build-windows-key-listener.js scripts/build-windows-fast-paste.js"
+          for file in $PROTECTED_FILES; do
+            if git show main:$file >/dev/null 2>&1; then
+              git checkout main -- $file
+            fi
+          done
+
+          # Check if there are actual changes compared to main
+          CHANGES=$(git status --porcelain)
+          if [ -z "$CHANGES" ]; then
+            echo "No new changes to sync from upstream."
+            exit 0
           fi
 
-      - name: Open/update tracking issue
-        if: steps.diff.outputs.has_diff == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const body = "OpenWhispr upstream has changes in paths Dhwani tracks (resources/, native/, src/locales/, model registry, language registry, download scripts).\n\n```\n" + `${{ steps.diff.outputs.diff }}` + "\n```\n\nReview with:\n```\ngit fetch upstream main\ngit diff main upstream/main -- resources native src/locales src/config/languageRegistry.json src/models/modelRegistryData.json scripts/download-*.js\n```\nCherry-pick relevant changes manually, then re-run `node scripts/check-brand.js`.";
-            const title = "Upstream sync: OpenWhispr changes in tracked paths";
-            const { data: existing } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: "open",
-              labels: ["upstream-sync"],
-            });
-            if (existing.length > 0) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing[0].number,
-                body,
-              });
-            } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-                labels: ["upstream-sync"],
-              });
-            }
+          # Run brand check
+          node scripts/check-brand.js
+
+          # Commit the sync
+          git commit -m "Sync core dictation resources and scripts from upstream OpenWhispr"
+          
+          # Force push to origin
+          git push origin upstream-sync --force
+
+          # Check if a PR already exists, if not create one
+          PR_EXISTS=$(gh pr list --head upstream-sync --base main --state open --json number -q '.[0].number')
+          if [ -z "$PR_EXISTS" ]; then
+            gh pr create \
+              --title "Upstream Sync: Update core dictation resources" \
+              --body "Automated PR to sync latest core dictation resources (resources/, native/, download scripts, and model/language registries) from upstream OpenWhisper. All custom Dhwani keyboard handlers and features have been preserved." \
+              --head upstream-sync \
+              --base main
+            echo "Created a new Pull Request."
+          else
+            echo "PR #$PR_EXISTS already exists. Updated the branch."
+          fi

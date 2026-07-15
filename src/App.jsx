@@ -4,6 +4,7 @@ import "./index.css";
 import {
   Check,
   ChevronLeft,
+  ChevronRight,
   Loader2,
   Mic,
   Settings,
@@ -273,11 +274,12 @@ export default function App() {
   );
   const [transforms, setTransforms] = useState(() => getEffectiveTransformsSync());
 
-  // Floating icon auto-hide setting (read from store, synced via IPC)
   const floatingIconAutoHide = useSettingsStore((s) => s.floatingIconAutoHide);
   const voiceVisualizerStyle = useSettingsStore((s) => s.voiceVisualizerStyle);
   const polishKey = useSettingsStore((s) => s.polishKey);
   const prevAutoHideRef = useRef(floatingIconAutoHide);
+  const showStreamingPreview = useSettingsStore((s) => s.showStreamingPreview);
+  const autoPasteEnabled = useSettingsStore((s) => s.autoPasteEnabled);
 
   const setWindowInteractivity = React.useCallback((shouldCapture) => {
     window.electronAPI?.setMainWindowInteractivity?.(shouldCapture);
@@ -288,8 +290,6 @@ export default function App() {
     return () => setWindowInteractivity(false);
   }, [setWindowInteractivity]);
 
-  // "Add to Flow Bar" is toggled in the settings window — sync via the
-  // cross-window storage event (same pattern as useTransform's hotkey sync).
   useEffect(() => {
     const handleStorage = (event) => {
       if (event.key === "scratchpadAddToFlowBar") {
@@ -300,7 +300,6 @@ export default function App() {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  // Transform run status → pill states (spinner / "Done. See changes").
   useEffect(() => {
     const disposeProcessing = window.electronAPI?.onTransformProcessing?.((payload) => {
       setTransformStatus(payload?.name ? { mode: "processing", name: payload.name } : null);
@@ -316,8 +315,6 @@ export default function App() {
 
   useEffect(() => {
     if (!transformStatus) return;
-    // Done fades after a few seconds; processing has a stale-guard so a hung
-    // LLM call can't wedge the pill forever.
     const delay = transformStatus.mode === "done" ? 6000 : 120000;
     const timer = setTimeout(() => setTransformStatus(null), delay);
     return () => clearTimeout(timer);
@@ -360,7 +357,6 @@ export default function App() {
                     dismiss(toastId);
                   }
                 } catch {
-                  // silently fail — word stays in dictionary
                 }
               }}
               className="text-[10px] font-medium px-2.5 py-1 rounded-sm whitespace-nowrap
@@ -403,21 +399,20 @@ export default function App() {
     toggleListening,
     cancelRecording,
     cancelProcessing,
+    isStreaming,
+    transcript,
+    partialTranscript,
   } = useAudioRecording(toast, {
     onToggle: handleDictationToggle,
   });
 
   const micLevels = useMicLevel(isRecording);
 
-  // Horizontal status pill (spinner / Done): transform runs and the
-  // dictation cleanup phase share the same visual.
   const statusPill = React.useMemo(
     () => transformStatus || (isProcessing ? { mode: "processing" } : null),
     [transformStatus, isProcessing]
   );
 
-  // Expand the dock while anything needs it; collapse shortly after the
-  // pointer leaves (delay avoids resize/hover flicker loops).
   useEffect(() => {
     if (isHovered || isTransformMenuOpen || isRecording || toastCount > 0) {
       setIsExpanded(true);
@@ -460,7 +455,6 @@ export default function App() {
   usePolish(toast, t);
   useTransform(toast, t);
 
-  // Sync auto-hide from main process — setState directly to avoid IPC echo
   useEffect(() => {
     const unsubscribe = window.electronAPI?.onFloatingIconAutoHideChanged?.((enabled) => {
       localStorage.setItem("floatingIconAutoHide", String(enabled));
@@ -482,12 +476,10 @@ export default function App() {
     return () => unsubscribe?.();
   }, [cancelRecording]);
 
-  // Auto-hide the floating icon when idle (setting enabled or dictation cycle completed)
   useEffect(() => {
     let hideTimeout;
 
     if (floatingIconAutoHide && !isRecording && !isProcessing && toastCount === 0) {
-      // Delay briefly so processing can start after recording stops without a flash
       hideTimeout = setTimeout(() => {
         window.electronAPI?.hideWindow?.();
       }, 500);
@@ -503,9 +495,6 @@ export default function App() {
     window.electronAPI.hideWindow();
   };
 
-  // Clicks outside the Electron window never reach this renderer, so the
-  // click-outside handler below can't see them — close the menu shortly
-  // after the pointer leaves the dock instead.
   useEffect(() => {
     if (!isTransformMenuOpen || isHovered) return;
     const timer = setTimeout(() => setIsTransformMenuOpen(false), 600);
@@ -564,12 +553,21 @@ export default function App() {
     setAutoApplyTransformId(id);
   };
 
-  const handleSeeChanges = () => {
-    void window.electronAPI?.showLastTransformChanges?.();
+  const handleSeeChanges = async () => {
+    // Wait for the changes card to read the pill's current bounds before
+    // clearing transformStatus — that clear triggers a separate
+    // resizeMainWindow IPC (see the effect above) that shrinks the pill,
+    // which raced against the position calc and made this land in a
+    // different spot than Win+Alt+O (which never touches transformStatus).
+    await window.electronAPI?.showLastTransformChanges?.();
     setTransformStatus(null);
+    // Without this, the mouse is still hovering the pill when transformStatus
+    // clears, so the hover-expand effect picks the STACK size instead of
+    // BASE — the pill grows instead of shrinking. Force collapse; it'll
+    // re-expand normally on the next fresh hover.
+    setIsExpanded(false);
   };
 
-  // Sparkle tooltip: the selected transform's name + hotkey ("Polish Win Alt 1").
   const selectedTransform =
     transforms.find((tr) => tr.id === autoApplyTransformId) || transforms[0];
   const selectedShortcut =
@@ -587,7 +585,6 @@ export default function App() {
 
   return (
     <div className="dictation-window">
-      {/* Right-edge dock: collapsed handle -> icon panel -> menu / status pill */}
       <div
         className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-end"
         onMouseEnter={() => {
@@ -641,15 +638,32 @@ export default function App() {
             onClick={() => setIsExpanded(true)}
           />
         ) : (
-          <div className="relative mr-1 flex flex-col items-end">
+          <div 
+            className={`relative mr-1 flex flex-col items-end transition-all duration-300 ease-out origin-right ${
+              (isHovered || isTransformMenuOpen || isRecording || toastCount > 0) 
+                ? "opacity-100 scale-100 translate-x-0" 
+                : "opacity-0 scale-95 translate-x-2 pointer-events-none"
+            }`}
+          >
+            {showStreamingPreview && isStreaming && (
+              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-72 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900/90 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-right-4 duration-300 z-50">
+                <div className="flex items-center gap-2 mb-2">
+                  <Loader2 size={12} className="animate-spin text-neutral-500" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
+                    Live Streaming
+                  </span>
+                </div>
+                <div className="text-sm leading-relaxed text-neutral-800 dark:text-neutral-200">
+                  {transcript || partialTranscript || "Listening..."}
+                </div>
+              </div>
+            )}
             {isRecording ? (
-              /* Recording: Fluid Plasma Capsule */
               <button
                 onClick={toggleListening}
                 aria-label={t("app.mic.recording")}
                 className={`flow-dock-mic flow-dock-mic--recording ${micStateClass} relative flex items-center justify-center`}
               >
-                {/* Visualizers */}
                 {voiceVisualizerStyle === "bars" ? (
                   <LiveWaveform levels={micLevels} isCommandMode={isCommandMode} />
                 ) : voiceVisualizerStyle === "siri" ? (
@@ -664,7 +678,6 @@ export default function App() {
                   <LiquidPlasmaVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 )}
 
-                {/* Central Mic Icon (Crisp, above the liquid) */}
                 <svg className="w-5 h-5 text-white/90 z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                 </svg>
@@ -673,6 +686,7 @@ export default function App() {
               </button>
             ) : (
             <div className="flow-dock-panel">
+
               <Tooltip
                 label={t("app.dock.dictate", { defaultValue: "Dictate" })}
                 hotkey={formatHotkeyLabel(hotkey)}
@@ -692,7 +706,6 @@ export default function App() {
                           Math.pow(e.clientY - dragStartPos.y, 2)
                       );
                       if (distance > 5) {
-                        // 5px threshold for drag
                         setHasDragged(true);
                       }
                     }
@@ -735,32 +748,32 @@ export default function App() {
                   enabled={dockReady}
                 >
                   <div ref={sparkleRef} className="group relative flex items-center">
-                    {/* Left arrow — floats outside the panel, appears only on
-                        hover of this row, opens the transform menu. Gated
-                        behind dockReady (not just group-hover) so it can't
-                        render/become interactive until ~120ms after the panel
-                        expanded — long enough for the async native window
-                        resize to actually land. Rendering it before that
-                        landed meant it was drawn past the still-narrow
-                        window's real edge and hard-clipped there, which read
-                        as "disappearing" when reached for. */}
                     <div
-                      className={`absolute top-1/2 -translate-y-1/2 pr-2 opacity-0 pointer-events-none transition-opacity duration-150 ${
-                        dockReady ? "group-hover:opacity-100 group-hover:pointer-events-auto" : ""
+                      className={`absolute inset-y-0 right-full flex items-center pr-1 transition-all duration-200 ${
+                        isTransformMenuOpen
+                          ? "opacity-100 pointer-events-auto scale-100 translate-x-0"
+                          : dockReady 
+                            ? "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 translate-x-1 group-hover:translate-x-0" 
+                            : "opacity-0 pointer-events-none"
                       }`}
-                      style={{ right: "calc(100% - 4px)" }}
                     >
                       <button
-                        onClick={() => {
-                          setWindowInteractivity(true);
-                          toggleTransformMenu();
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isTransformMenuOpen) {
+                            setIsTransformMenuOpen(false);
+                            setWindowInteractivity(false);
+                          } else {
+                            setWindowInteractivity(true);
+                            toggleTransformMenu();
+                          }
                         }}
                         aria-label={t("app.dock.transformMenu", {
                           defaultValue: "Transform menu",
                         })}
-                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float"
+                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float bg-white/40 dark:bg-black/20 backdrop-blur-md shadow-sm border border-black/5 dark:border-white/10"
                       >
-                        <ChevronLeft size={13} />
+                        {isTransformMenuOpen ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
                       </button>
                     </div>
                     {/* Sparkle — runs the selected transform on the current selection */}
@@ -783,7 +796,7 @@ export default function App() {
             {isTransformMenuOpen && (
               <div
                 ref={menuRef}
-                className="absolute right-full bottom-0 mr-2 w-60 rounded-2xl bg-white py-1.5 text-neutral-900 shadow-xl dark:bg-neutral-900 dark:text-neutral-100"
+                className="absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900/90 dark:border-white/10 dark:text-neutral-100 animate-menu-in"
                 onMouseEnter={() => {
                   setWindowInteractivity(true);
                 }}
@@ -793,7 +806,24 @@ export default function App() {
                   }
                 }}
               >
-                <div className="flex items-center justify-between gap-3 px-4 py-2.5">
+                {/* Header with Close Button */}
+                <div className="flex items-center justify-between px-3 pt-3 pb-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 pl-1">
+                    Transform Options
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsTransformMenuOpen(false);
+                      setWindowInteractivity(false);
+                    }}
+                    className="p-1.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-black/5 dark:text-neutral-400 dark:hover:text-neutral-100 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+                
+                <div className="flex items-center justify-between gap-3 px-3 py-2 mx-2 mb-1 rounded-xl bg-black/5 dark:bg-white/5">
                   <span className="text-[13px] font-medium">
                     {t("app.transformMenu.autoApply", {
                       defaultValue: "Auto Apply After Dictation",
@@ -801,30 +831,34 @@ export default function App() {
                   </span>
                   <Toggle checked={autoApply} onChange={setAutoApplyEnabled} />
                 </div>
-                <div className="h-px bg-neutral-200 dark:bg-neutral-700" />
-                {transforms.map((tr) => (
+                <div className="mx-4 my-1 h-px bg-neutral-200/50 dark:bg-neutral-700/50" />
+                <div className="px-1">
+                  {transforms.map((tr) => (
+                    <button
+                      key={tr.id}
+                      onClick={() => selectAutoApplyTransform(tr.id)}
+                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 focus:bg-black/5 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10 transition-colors"
+                    >
+                      <span className="truncate">{tr.name}</span>
+                      {autoApplyTransformId === tr.id && (
+                        <Check size={14} className="shrink-0 text-neutral-700 dark:text-neutral-200" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div className="mx-4 my-1 h-px bg-neutral-200/50 dark:bg-neutral-700/50" />
+                <div className="px-1">
                   <button
-                    key={tr.id}
-                    onClick={() => selectAutoApplyTransform(tr.id)}
-                    className="flex w-full items-center justify-between px-4 py-2.5 text-left text-[13px] hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10"
+                    onClick={() => {
+                      setIsTransformMenuOpen(false);
+                      void window.electronAPI?.openTransformsView?.();
+                    }}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 focus:bg-black/5 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10 transition-colors"
                   >
-                    <span className="truncate">{tr.name}</span>
-                    {autoApplyTransformId === tr.id && (
-                      <Check size={14} className="shrink-0 text-neutral-700 dark:text-neutral-200" />
-                    )}
+                    <Settings size={14} className="shrink-0 text-neutral-600 dark:text-neutral-300" />
+                    {t("app.transformMenu.configure", { defaultValue: "Configure transforms" })}
                   </button>
-                ))}
-                <div className="h-px bg-neutral-200 dark:bg-neutral-700" />
-                <button
-                  onClick={() => {
-                    setIsTransformMenuOpen(false);
-                    void window.electronAPI?.openTransformsView?.();
-                  }}
-                  className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[13px] hover:bg-neutral-100 focus:bg-neutral-100 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10"
-                >
-                  <Settings size={14} className="shrink-0 text-neutral-600 dark:text-neutral-300" />
-                  {t("app.transformMenu.configure", { defaultValue: "Configure transforms" })}
-                </button>
+                </div>
               </div>
             )}
           </div>

@@ -7,7 +7,7 @@ import { getSettings } from "../stores/settingsStore";
 import { expandSnippets } from "../utils/snippets";
 import { getRecordingErrorTitle, getRecordingErrorDescription } from "../utils/recordingErrors";
 import { isAccessibilitySkipped } from "../utils/permissions";
-import { applyPolishToText } from "./usePolish";
+import { applyPolishToText, applyPipelinedPolishToText } from "./usePolish";
 import { applyTransformToText } from "./useTransform";
 import {
   getEffectiveTransformsSync,
@@ -20,8 +20,12 @@ export const useAudioRecording = (toast, options = {}) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isCommandMode, setIsCommandMode] = useState(false);
+  const isCommandModeRef = useRef(false);
   const [transcript, setTranscript] = useState("");
   const [partialTranscript, setPartialTranscript] = useState("");
+  const [pipelinedChunks, setPipelinedChunks] = useState([]);
+  const [isPipelining, setIsPipelining] = useState(false);
+  const pipelinedChunksRef = useRef([]);
   const audioManagerRef = useRef(null);
   const startLockRef = useRef(false);
   const stopLockRef = useRef(false);
@@ -38,6 +42,7 @@ export const useAudioRecording = (toast, options = {}) => {
 
       audioManagerRef.current.setVoiceAgentRequested(voiceAgentRequested);
       setIsCommandMode(voiceAgentRequested);
+      isCommandModeRef.current = voiceAgentRequested;
 
       // Retry STT config fetch if it wasn't loaded on mount (e.g. auth wasn't ready)
       if (!audioManagerRef.current.sttConfig) {
@@ -102,9 +107,15 @@ export const useAudioRecording = (toast, options = {}) => {
         setIsRecording(isRecording);
         setIsProcessing(isProcessing);
         setIsStreaming(isStreaming ?? false);
-        if (!isRecording && !isProcessing) setIsCommandMode(false);
+        if (!isRecording && !isProcessing) {
+          setIsCommandMode(false);
+          isCommandModeRef.current = false;
+        }
         if (!isStreaming) {
           setPartialTranscript("");
+          setIsPipelining(false);
+          setPipelinedChunks([]);
+          pipelinedChunksRef.current = [];
         }
       },
       onError: (error) => {
@@ -126,6 +137,51 @@ export const useAudioRecording = (toast, options = {}) => {
       onPartialTranscript: (text) => {
         setPartialTranscript(text);
       },
+      onStreamingCommit: async (chunkText) => {
+        if (!chunkText || !chunkText.trim()) return;
+
+        const settings = getSettings();
+        const isAutoApply = localStorage.getItem("autoApplyAfterDictation") === "true" && localStorage.getItem("transformsOptIn") === "true";
+        const selectedId = localStorage.getItem("autoApplyTransformId") || BUILTIN_POLISH_ID;
+        const isLinearTransform = selectedId === BUILTIN_POLISH_ID;
+        const hasBackendStyling = settings.useCleanupModel;
+
+        // If backend styling is on, OR (linear transform and auto-apply enabled), we can pipeline!
+        if ((hasBackendStyling || (isAutoApply && isLinearTransform)) && !isCommandModeRef.current) {
+          setIsPipelining(true);
+          
+          const rawChunk = chunkText.trim();
+          const chunkId = Date.now().toString();
+          
+          // 1. Queue the raw chunk
+          pipelinedChunksRef.current = [...pipelinedChunksRef.current, { id: chunkId, raw: rawChunk, polished: null }];
+          setPipelinedChunks([...pipelinedChunksRef.current]);
+          
+          try {
+            // 2. Fetch past polished text as context
+            const pastContext = pipelinedChunksRef.current
+                .filter(c => c.id !== chunkId && c.polished)
+                .map(c => c.polished);
+            
+            // 3. Process this chunk using the backend reasoning service
+            const polishedResult = await applyPipelinedPolishToText(rawChunk, pastContext, settings);
+            
+            // 4. Update the queue with the polished text
+            pipelinedChunksRef.current = pipelinedChunksRef.current.map(c => 
+                c.id === chunkId ? { ...c, polished: polishedResult } : c
+            );
+            setPipelinedChunks([...pipelinedChunksRef.current]);
+
+          } catch (err) {
+            logger.warn("Pipeline chunk processing failed", err);
+            // Fallback: use raw text if LLM fails
+            pipelinedChunksRef.current = pipelinedChunksRef.current.map(c => 
+                c.id === chunkId ? { ...c, polished: rawChunk } : c
+            );
+            setPipelinedChunks([...pipelinedChunksRef.current]);
+          }
+        }
+      },
       onTranscriptionComplete: async (result) => {
         if (getSettings().pauseMediaOnDictation) {
           window.electronAPI?.resumeMediaPlayback?.();
@@ -146,10 +202,22 @@ export const useAudioRecording = (toast, options = {}) => {
 
           result.text = expandSnippets(result.text, getSettings().snippets);
 
+          let pipelinedResult = null;
+          if (pipelinedChunksRef.current.length > 0) {
+            pipelinedResult = pipelinedChunksRef.current.map(c => c.polished || c.raw).join(" ");
+            const rawPipelined = pipelinedChunksRef.current.map(c => c.raw).join(" ");
+            if (result.text.length > rawPipelined.length) {
+               const tail = result.text.slice(rawPipelined.length).trim();
+               if (tail) pipelinedResult += " " + tail;
+            }
+            result.text = pipelinedResult.trim();
+          }
+
           // Auto Apply After Dictation (overlay transform menu): run the
           // selected transform on the transcript before pasting. Any failure
           // keeps the raw transcript.
           if (
+            !pipelinedResult &&
             localStorage.getItem("autoApplyAfterDictation") === "true" &&
             localStorage.getItem("transformsOptIn") === "true"
           ) {

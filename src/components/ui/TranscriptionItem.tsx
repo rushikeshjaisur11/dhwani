@@ -37,6 +37,7 @@ interface TranscriptionItemProps {
   onShowAudioInFolder?: (id: number) => void;
   onRetryTranscription?: (id: number, options?: { isRecover?: boolean }) => Promise<void>;
   onOpenSettings?: () => void;
+  onSelect?: () => void;
 }
 
 export default function TranscriptionItem({
@@ -46,6 +47,7 @@ export default function TranscriptionItem({
   onShowAudioInFolder,
   onRetryTranscription,
   onOpenSettings,
+  onSelect,
 }: TranscriptionItemProps) {
   const { t, i18n } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
@@ -96,10 +98,12 @@ export default function TranscriptionItem({
     <div
       className={cn(
         "group px-5 py-4 transition-colors duration-150 bg-transparent hover:bg-muted/50 dark:hover:bg-white/5 hover:rounded-lg",
-        isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : ""
+        isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : "",
+        onSelect ? "cursor-pointer" : ""
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onSelect?.()}
     >
       <div className="flex items-start gap-3">
         {formattedTime && (
@@ -178,6 +182,7 @@ export default function TranscriptionItem({
             "flex items-center gap-0.5 shrink-0 transition-opacity duration-150",
             isFailed || isDiscarded ? "opacity-100" : isHovered ? "opacity-100" : "opacity-0"
           )}
+          onClick={(e) => e.stopPropagation()}
         >
           {isDiscarded && hasAudio && (
             <Tooltip content={t("controlPanel.history.discarded.recover")}>

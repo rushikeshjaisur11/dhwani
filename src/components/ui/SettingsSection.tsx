@@ -97,7 +97,7 @@ export function SettingsPanel({
 }) {
   return (
     <div
-      className={`rounded-lg border border-border/50 dark:border-border-subtle/70 bg-card/50 dark:bg-surface-2/50 backdrop-blur-sm divide-y divide-border/30 dark:divide-border-subtle/50 ${className}`}
+      className={`space-y-2 ${className}`}
     >
       {children}
     </div>
@@ -114,7 +114,9 @@ export function SettingsPanelRow({
   const { isCompact } = useSettingsLayout();
 
   return (
-    <div className={`${isCompact ? "px-3 py-2.5" : "px-4 py-3"} ${className}`}>{children}</div>
+    <div className={`rounded-xl border border-border/50 dark:border-border-subtle/70 bg-card/50 dark:bg-surface-2/50 backdrop-blur-sm transition-all duration-200 hover:bg-foreground/5 dark:hover:bg-white/5 hover:border-border/80 dark:hover:border-white/10 ${isCompact ? "px-3 py-2.5" : "px-4 py-3"} ${className}`}>
+      {children}
+    </div>
   );
 }
 

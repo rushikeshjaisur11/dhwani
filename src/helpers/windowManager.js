@@ -507,9 +507,13 @@ class WindowManager {
         x: mainBounds.x,
         y: mainBounds.y,
       });
+      // Initial guess before the renderer reports its real content height via
+      // resizeTranscriptionPreviewWindow (see below) — bigger than the
+      // single-line preview default (520x132) since this shows a full
+      // before/after diff card, not a one-line HUD.
       const position = WindowPositionUtil.getTranscriptionPreviewPosition(display, mainBounds, {
-        width: this.transcriptionPreviewWindow.getBounds().width,
-        height: this.transcriptionPreviewWindow.getBounds().height,
+        width: 480,
+        height: 240,
       });
       this.transcriptionPreviewWindow.setBounds(position);
     }

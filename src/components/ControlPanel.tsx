@@ -1,5 +1,6 @@
 import React, { Suspense, useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "./lib/utils";
 import { Button } from "./ui/button";
 import {
   Download,
@@ -84,7 +85,7 @@ interface ControlPanelProps {
 
 export default function ControlPanel({ initialSettingsSection }: ControlPanelProps = {}) {
   const { t } = useTranslation();
-  const userName = localStorage.getItem("userName") ?? "Rushikesh";
+  const userName = window.electronAPI?.getUserName?.() ?? "User";
   const history = useTranscriptions();
   const [isLoading, setIsLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(!!initialSettingsSection);
@@ -97,6 +98,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   );
   const theme = useSettingsStore((s) => s.theme);
   const setTheme = useSettingsStore((s) => s.setTheme);
+  const isSidebarCollapsed = useSettingsStore((s) => s.isSidebarCollapsed);
   const THEME_CYCLE = ["light", "dark", "auto"] as const;
   const themeIcon = { light: Sun, dark: Moon, auto: Monitor } as const;
   const ThemeIcon = themeIcon[theme];
@@ -722,6 +724,10 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             onTranscriptSelect={() => {
               setActiveView("home");
             }}
+            onOpenSettings={(section) => {
+              if (section) setSettingsSection(section);
+              setShowSettings(true);
+            }}
           />
         </Suspense>
       )}
@@ -735,26 +741,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
           className="flex items-center gap-2.5"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
-          {/* Sidebar toggle icon (styled static placeholder for layout parity) */}
-          <button
-            onClick={() => {}}
-            className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground transition-colors cursor-pointer"
-            title="Toggle Sidebar"
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <line x1="9" y1="3" x2="9" y2="21" />
-            </svg>
-          </button>
+
 
           {/* User Profile Avatar */}
           <div
@@ -850,10 +837,13 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
         <div
-          className="shrink-0 overflow-hidden transition-[width] duration-300 ease-out"
-          style={{ width: isSidePanelLayout ? 0 : undefined }}
+          className={cn(
+            "shrink-0 transition-[width] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] relative z-20",
+            isSidePanelLayout ? "w-0" : isSidebarCollapsed ? "w-14" : "w-56"
+          )}
         >
           <ControlPanelSidebar
+            isCollapsed={isSidebarCollapsed}
             activeView={activeView}
             onViewChange={setActiveView}
             onOpenSearch={() => setShowSearch(true)}
@@ -900,7 +890,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto relative" id="main-scroll-container">
             {(gpuAccelAvailable.cuda || gpuAccelAvailable.vulkan) &&
               activeView === "home" &&
               !gpuBannerDismissed && (

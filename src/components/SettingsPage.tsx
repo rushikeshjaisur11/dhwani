@@ -206,8 +206,6 @@ interface TranscriptionSectionProps {
   setTranscriptionMode: (mode: InferenceMode) => void;
   remoteTranscriptionUrl: string;
   setRemoteTranscriptionUrl: (url: string) => void;
-  showTranscriptionPreview: boolean;
-  setShowTranscriptionPreview: (value: boolean) => void;
   toast: (opts: {
     title: string;
     description: string;
@@ -238,8 +236,6 @@ function TranscriptionSection({
   setTranscriptionMode,
   remoteTranscriptionUrl,
   setRemoteTranscriptionUrl,
-  showTranscriptionPreview,
-  setShowTranscriptionPreview,
   toast,
 }: TranscriptionSectionProps) {
   const { t } = useTranslation();
@@ -297,18 +293,7 @@ function TranscriptionSection({
     [localTranscriptionProvider, setParakeetModel, setWhisperModel]
   );
 
-  const renderPreviewToggle = () => (
-    <SettingsPanel>
-      <SettingsPanelRow>
-        <SettingsRow
-          label={t("settingsPage.transcription.transcriptionPreview")}
-          description={t("settingsPage.transcription.transcriptionPreviewDescription")}
-        >
-          <Toggle checked={showTranscriptionPreview} onChange={setShowTranscriptionPreview} />
-        </SettingsRow>
-      </SettingsPanelRow>
-    </SettingsPanel>
-  );
+
 
   const renderTranscriptionPicker = (mode?: "cloud" | "local") => (
     <TranscriptionModelPicker
@@ -349,7 +334,6 @@ function TranscriptionSection({
       {transcriptionMode === "local" && (
         <>
           {renderTranscriptionPicker("local")}
-          {renderPreviewToggle()}
         </>
       )}
 
@@ -736,12 +720,15 @@ export default function SettingsPage({
     setStyleTonePersonal,
     styleToneOther,
     setStyleToneOther,
+    enableVoiceStyles,
+    setEnableVoiceStyles,
     pauseMediaOnDictation,
     setPauseMediaOnDictation,
-    showTranscriptionPreview,
-    setShowTranscriptionPreview,
+
     autoPasteEnabled,
+    showStreamingPreview,
     setAutoPasteEnabled,
+    setShowStreamingPreview,
     keepTranscriptionInClipboard,
     setKeepTranscriptionInClipboard,
     floatingIconAutoHide,
@@ -1762,6 +1749,8 @@ export default function SettingsPage({
                 </SettingsPanelRow>
               </SettingsPanel>
             </div>
+
+
           </div>
         );
 
@@ -1861,6 +1850,14 @@ export default function SettingsPage({
                     description={t("settingsPage.general.clipboard.autoPasteDescription")}
                   >
                     <Toggle checked={autoPasteEnabled} onChange={setAutoPasteEnabled} />
+                  </SettingsRow>
+                </SettingsPanelRow>
+                <SettingsPanelRow>
+                  <SettingsRow
+                    label="Live Streaming Preview"
+                    description="Show unpolished text floating next to the dictation pill while recording."
+                  >
+                    <Toggle checked={showStreamingPreview} onChange={setShowStreamingPreview} />
                   </SettingsRow>
                 </SettingsPanelRow>
                 <SettingsPanelRow>
@@ -2796,6 +2793,13 @@ EOF`,
                 description={t("settingsPage.general.personalizedStyles.description")}
               />
               <SettingsPanel>
+                <SettingsPanelRow className="flex items-center justify-between gap-3 pb-3 mb-2 border-b border-border/40 dark:border-white/5">
+                  <span className="text-sm font-medium text-foreground">
+                    Enable Voice Styles
+                  </span>
+                  <Toggle checked={enableVoiceStyles} onChange={setEnableVoiceStyles} />
+                </SettingsPanelRow>
+
                 {(
                   [
                     ["work", styleToneWork, setStyleToneWork],
@@ -2820,6 +2824,9 @@ EOF`,
                       >
                         <option value="off">
                           {t("settingsPage.general.personalizedStyles.off")}
+                        </option>
+                        <option value="veryCasual">
+                          {t("style.presets.veryCasual.label", "Very Casual")}
                         </option>
                         <option value="casual">
                           {t("settingsPage.general.personalizedStyles.casual")}
@@ -3468,8 +3475,6 @@ EOF`,
                   setTranscriptionMode={setTranscriptionMode}
                   remoteTranscriptionUrl={remoteTranscriptionUrl}
                   setRemoteTranscriptionUrl={setRemoteTranscriptionUrl}
-                  showTranscriptionPreview={showTranscriptionPreview}
-                  setShowTranscriptionPreview={setShowTranscriptionPreview}
                   toast={toast}
                 />
                 {transcriptionMode === "local" &&

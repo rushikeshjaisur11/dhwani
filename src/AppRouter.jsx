@@ -2,8 +2,8 @@ import React, { Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import App from "./App.jsx";
 import MeetingNotificationOverlay from "./components/MeetingNotificationOverlay.tsx";
-import TranscriptionPreviewOverlay from "./components/TranscriptionPreviewOverlay.tsx";
 import UpdateNotificationOverlay from "./components/UpdateNotificationOverlay.tsx";
+import TransformChangesOverlay from "./components/TransformChangesOverlay.tsx";
 import { useTheme } from "./hooks/useTheme";
 
 const ControlPanel = React.lazy(() => import("./components/ControlPanel.tsx"));
@@ -24,7 +24,7 @@ export default function AppRouter() {
   }
 
   if (params.includes("transcription-preview=true")) {
-    return <TranscriptionPreviewOverlay />;
+    return <TransformChangesOverlay />;
   }
 
   if (params.includes("scratchpad=true")) {

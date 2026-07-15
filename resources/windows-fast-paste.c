@@ -137,15 +137,22 @@ static int ReleaseModifiers(INPUT* released, WORD* releasedVKs) {
     return count;
 }
 
-/* Re-press modifier keys that were released by ReleaseModifiers(). */
+/* Re-press modifier keys that were released by ReleaseModifiers(),
+   but only if the user is still physically holding them down. */
 static void RestoreModifiers(WORD* releasedVKs, int count) {
     if (count == 0) return;
     INPUT restore[NUM_MODIFIERS];
+    int actualCount = 0;
     ZeroMemory(restore, sizeof(restore));
     for (int i = 0; i < count; i++) {
-        SetKey(&restore[i], releasedVKs[i], 0);
+        if (GetAsyncKeyState(releasedVKs[i]) & 0x8000) {
+            SetKey(&restore[actualCount], releasedVKs[i], 0);
+            actualCount++;
+        }
     }
-    SendInput((UINT)count, restore, sizeof(INPUT));
+    if (actualCount > 0) {
+        SendInput((UINT)actualCount, restore, sizeof(INPUT));
+    }
 }
 
 static int SendPasteNormal(void) {

@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Search, FileText, Mic, Folder, Users, Upload, MessageSquare } from "lucide-react";
+import { Search, FileText, Mic, Folder, Users, Upload, MessageSquare, Settings, Key, BookOpen, Palette, ChevronLeft, Play, Pause, Copy, Trash2, RotateCcw } from "lucide-react";
 import { cn } from "./lib/utils";
 import type { NoteItem, FolderItem, TranscriptionItem } from "../types/electron.js";
 import { normalizeDbDate } from "../utils/dateFormatting";
+import TranscriptDetailView from "./ui/TranscriptDetailView";
 
 interface ConversationResult {
   id: number;
@@ -21,12 +22,21 @@ export interface CommandSearchProps {
   onNoteSelect?: (noteId: number, folderId: number | null) => void;
   onTranscriptSelect?: (transcriptId: number) => void;
   onConversationSelect?: (conversationId: number) => void;
+  onOpenSettings?: (section?: string) => void;
 }
 
 type FlatItem =
   | { kind: "note"; note: NoteItem }
   | { kind: "transcript"; transcript: TranscriptionItem }
-  | { kind: "conversation"; conversation: ConversationResult };
+  | { kind: "conversation"; conversation: ConversationResult }
+  | { kind: "settings"; id: string; label: string; icon: React.ReactNode; section?: string };
+
+const SETTINGS_ITEMS = [
+  { id: "settings-general", label: "Open Settings", icon: <Settings size={14} />, section: undefined },
+  { id: "settings-api", label: "Manage API Keys", icon: <Key size={14} />, section: "cloud" },
+  { id: "settings-dictionary", label: "Edit Dictionary", icon: <BookOpen size={14} />, section: "dictionary" },
+  { id: "settings-styles", label: "Configure Styles", icon: <Palette size={14} />, section: "styles" },
+];
 
 function relativeTime(
   dateStr: string,
@@ -62,9 +72,11 @@ export default function CommandSearch({
   onNoteSelect,
   onTranscriptSelect,
   onConversationSelect,
+  onOpenSettings,
 }: CommandSearchProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
+  const [detailTranscript, setDetailTranscript] = useState<TranscriptionItem | null>(null);
   const [notes, setNotes] = useState<NoteItem[]>([]);
   const [folders, setFolders] = useState<FolderItem[]>([]);
   const [conversations, setConversations] = useState<ConversationResult[]>([]);
@@ -90,6 +102,7 @@ export default function CommandSearch({
     setPrevOpen(open);
     setQuery("");
     setSelectedIndex(0);
+    setDetailTranscript(null);
   } else if (open !== prevOpen) {
     setPrevOpen(open);
   }
@@ -209,10 +222,15 @@ export default function CommandSearch({
 
   const filteredTranscripts = useMemo(() => {
     const slice = query.trim()
-      ? transcriptions.filter((tr) => tr.text.toLowerCase().includes(query.toLowerCase()))
+      ? transcriptions.filter((tr) => tr.text.toLowerCase().includes(query.toLowerCase()) || tr.raw_text?.toLowerCase().includes(query.toLowerCase()))
       : transcriptions;
     return slice.slice(0, 5);
   }, [transcriptions, query]);
+
+  const filteredSettings = useMemo(() => {
+    if (isConversationsMode || !query.trim()) return [];
+    return SETTINGS_ITEMS.filter((s) => s.label.toLowerCase().includes(query.toLowerCase()));
+  }, [query, isConversationsMode]);
 
   const flatItems = useMemo<FlatItem[]>(() => {
     if (isConversationsMode) {
@@ -223,17 +241,26 @@ export default function CommandSearch({
       for (const note of group.items) items.push({ kind: "note", note });
     }
     for (const transcript of filteredTranscripts) items.push({ kind: "transcript", transcript });
+    for (const setting of filteredSettings) items.push({ kind: "settings", ...setting });
     return items;
-  }, [noteGroups, filteredTranscripts, conversations, isConversationsMode]);
+  }, [noteGroups, filteredTranscripts, filteredSettings, conversations, isConversationsMode]);
 
   const selectItem = useCallback(
     (item: FlatItem) => {
-      if (item.kind === "note") onNoteSelect?.(item.note.id, item.note.folder_id ?? null);
-      else if (item.kind === "transcript") onTranscriptSelect?.(item.transcript.id);
-      else if (item.kind === "conversation") onConversationSelect?.(item.conversation.id);
-      onOpenChange(false);
+      if (item.kind === "note") {
+        onNoteSelect?.(item.note.id, item.note.folder_id ?? null);
+        onOpenChange(false);
+      } else if (item.kind === "transcript") {
+        setDetailTranscript(item.transcript);
+      } else if (item.kind === "conversation") {
+        onConversationSelect?.(item.conversation.id);
+        onOpenChange(false);
+      } else if (item.kind === "settings") {
+        onOpenSettings?.(item.section);
+        onOpenChange(false);
+      }
     },
-    [onNoteSelect, onTranscriptSelect, onConversationSelect, onOpenChange]
+    [onNoteSelect, onConversationSelect, onOpenSettings, onOpenChange]
   );
 
   const handleKeyDown = useCallback(
@@ -267,8 +294,8 @@ export default function CommandSearch({
         <DialogPrimitive.Content
           className={cn(
             "fixed left-[50%] top-[18%] z-50 w-full max-w-xl translate-x-[-50%]",
-            "rounded-xl border border-border/60 bg-card shadow-2xl overflow-hidden",
-            "dark:bg-surface-2 dark:border-border dark:shadow-modal",
+            "rounded-2xl border border-border/60 bg-background/85 backdrop-blur-3xl shadow-[0_16px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden",
+            "dark:bg-[#151413]/70 dark:border-white/10 dark:shadow-[0_16px_64px_-12px_rgba(0,0,0,0.8)]",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
             "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -283,9 +310,18 @@ export default function CommandSearch({
             {t("commandSearch.description")}
           </DialogPrimitive.Description>
 
-          {/* Search input */}
-          <div className="flex items-center gap-2.5 px-3.5 py-3 border-b border-border/40">
-            <Search size={14} className="shrink-0 text-muted-foreground/50" />
+          {detailTranscript ? (
+            <TranscriptDetailView
+              transcript={detailTranscript}
+              onBack={() => setDetailTranscript(null)}
+              onClose={() => onOpenChange(false)}
+              t={t}
+            />
+          ) : (
+            <>
+              {/* Search input */}
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border/30 bg-background/20">
+            <Search size={16} className="shrink-0 text-muted-foreground/50" />
             <input
               ref={inputRef}
               value={query}
@@ -313,7 +349,7 @@ export default function CommandSearch({
           </div>
 
           {/* Results list */}
-          <div ref={listRef} className="overflow-y-auto max-h-[340px] p-1.5">
+          <div ref={listRef} className="overflow-y-auto max-h-[380px] p-2 scroll-smooth">
             {!hasResults ? (
               <div className="flex items-center justify-center py-10">
                 <p className="text-xs text-muted-foreground/50">
@@ -354,7 +390,15 @@ export default function CommandSearch({
                       </p>
                     )}
                   </div>
-                  <span className="text-[10px] text-muted-foreground/35 tabular-nums shrink-0">
+                  <kbd
+                    className={cn(
+                      "hidden group-hover:block ml-auto text-[10px] px-1.5 py-0.5 rounded border font-mono leading-tight shadow-sm transition-opacity duration-200",
+                      selectedIndex === idx ? "border-primary/30 bg-primary/10 text-primary" : "border-border/40 bg-muted/50 text-muted-foreground"
+                    )}
+                  >
+                    ↵
+                  </kbd>
+                  <span className="text-[10px] text-muted-foreground/35 tabular-nums shrink-0 ml-1">
                     {relativeTime(conv.updated_at, t)}
                   </span>
                 </button>
@@ -415,16 +459,64 @@ export default function CommandSearch({
                     })}
                   </div>
                 )}
+                
+                {filteredSettings.length > 0 && (
+                  <div className={(noteGroups.length > 0 || filteredTranscripts.length > 0) ? "mt-0.5" : ""}>
+                    <SectionHeader
+                      icon={<Settings size={11} />}
+                      label="Settings"
+                    />
+                    {filteredSettings.map((setting) => {
+                      const idx = flatItems.findIndex(
+                        (fi) => fi.kind === "settings" && fi.id === setting.id
+                      );
+                      const isSelected = selectedIndex === idx;
+                      return (
+                        <button
+                          key={setting.id}
+                          type="button"
+                          data-idx={idx}
+                          onClick={() => selectItem({ kind: "settings", ...setting })}
+                          onMouseEnter={() => setSelectedIndex(idx)}
+                          className={cn(
+                            "group flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-left transition-colors duration-100 outline-none",
+                            isSelected
+                              ? "bg-primary/8 dark:bg-primary/10"
+                              : "hover:bg-foreground/4 dark:hover:bg-white/4"
+                          )}
+                        >
+                          <span className={cn(
+                            "shrink-0 mt-px transition-colors",
+                            isSelected ? "text-primary" : "text-muted-foreground/40"
+                          )}>
+                            {setting.icon}
+                          </span>
+                          <p className="flex-1 text-xs text-foreground/75 truncate min-w-0">{setting.label}</p>
+                          <kbd
+                            className={cn(
+                              "hidden group-hover:block ml-auto text-[10px] px-1.5 py-0.5 rounded border font-mono leading-tight shadow-sm transition-opacity duration-200",
+                              isSelected ? "border-primary/30 bg-primary/10 text-primary" : "border-border/40 bg-muted/50 text-muted-foreground"
+                            )}
+                          >
+                            ↵
+                          </kbd>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </>
             )}
           </div>
 
           {/* Footer */}
-          <div className="flex items-center gap-4 px-3.5 py-2 border-t border-border/30 bg-muted/15">
+          <div className="flex items-center gap-5 px-4 py-2 border-t border-border/20 bg-muted/10 shadow-[0_-1px_15px_rgba(0,0,0,0.03)]">
             <FooterHint keys={["↑", "↓"]} label={t("commandSearch.footer.navigate")} />
             <FooterHint keys={["↵"]} label={t("commandSearch.footer.open")} />
             <FooterHint keys={["Esc"]} label={t("commandSearch.footer.dismiss")} />
           </div>
+          </>
+          )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
@@ -433,9 +525,9 @@ export default function CommandSearch({
 
 function SectionHeader({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex items-center gap-1.5 px-2.5 pt-2 pb-1">
+    <div className="flex items-center gap-1.5 px-3 pt-4 pb-1.5 mt-1 first:mt-0 first:pt-2 border-t border-border/15 first:border-t-0">
       <span className="text-muted-foreground/45">{icon}</span>
-      <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/50">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
         {label}
       </span>
     </div>
@@ -493,7 +585,15 @@ function NoteRow({
           <p className="text-[11px] text-muted-foreground/55 truncate mt-px">{preview}</p>
         )}
       </div>
-      <span className="text-[10px] text-muted-foreground/35 tabular-nums shrink-0">
+      <kbd
+        className={cn(
+          "hidden group-hover:block ml-auto text-[10px] px-1.5 py-0.5 rounded border font-mono leading-tight shadow-sm transition-opacity duration-200",
+          isSelected ? "border-primary/30 bg-primary/10 text-primary" : "border-border/40 bg-muted/50 text-muted-foreground"
+        )}
+      >
+        ↵
+      </kbd>
+      <span className="text-[10px] text-muted-foreground/35 tabular-nums shrink-0 ml-1">
         {relativeTime(note.updated_at, t)}
       </span>
     </button>
@@ -536,7 +636,15 @@ function TranscriptRow({
         )}
       />
       <p className="flex-1 text-xs text-foreground/75 truncate min-w-0">{transcript.text}</p>
-      <span className="text-[10px] text-muted-foreground/35 tabular-nums shrink-0">
+      <kbd
+        className={cn(
+          "hidden group-hover:block ml-auto text-[10px] px-1.5 py-0.5 rounded border font-mono leading-tight shadow-sm transition-opacity duration-200",
+          isSelected ? "border-primary/30 bg-primary/10 text-primary" : "border-border/40 bg-muted/50 text-muted-foreground"
+        )}
+      >
+        ↵
+      </kbd>
+      <span className="text-[10px] text-muted-foreground/35 tabular-nums shrink-0 ml-1">
         {relativeTime(transcript.created_at, t)}
       </span>
     </button>
@@ -545,16 +653,16 @@ function TranscriptRow({
 
 function FooterHint({ keys, label }: { keys: string[]; label: string }) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       {keys.map((k) => (
         <kbd
           key={k}
-          className="text-[10px] px-1 py-px rounded border border-border/40 bg-muted/50 text-muted-foreground/55 font-mono leading-tight"
+          className="text-[10px] px-1.5 py-px rounded border border-border/30 bg-muted/40 text-muted-foreground/60 font-mono font-medium leading-tight shadow-sm"
         >
           {k}
         </kbd>
       ))}
-      <span className="text-[10px] text-muted-foreground/40 ml-0.5">{label}</span>
+      <span className="text-[11px] font-medium text-muted-foreground/50 ml-0.5">{label}</span>
     </div>
   );
 }

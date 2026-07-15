@@ -274,6 +274,30 @@ class ReasoningService extends BaseReasoningService {
     return responseText;
   }
 
+  public async processPipelinedChunk(
+    currentChunk: string,
+    previousChunks: string[],
+    config: ReasoningConfig
+  ): Promise<string> {
+    const contextText = previousChunks.join(" ");
+    const pipelinedSystemPrompt = `You are a real-time dictation assistant. Your task is to polish the grammar, punctuation, and flow of the user's spoken words. 
+Do NOT add extra conversational filler. Do NOT hallucinate endings to unfinished thoughts.
+Here is what the user has said so far (for context only):
+<context>
+${contextText}
+</context>
+
+Now, strictly polish this next continuation:`;
+
+    const customConfig = {
+      ...config,
+      systemPrompt: pipelinedSystemPrompt,
+      temperature: 0, // Enforce deterministic output
+    };
+
+    return this.processText(currentChunk, "", null, customConfig);
+  }
+
   async processText(
     text: string,
     model: string = "",

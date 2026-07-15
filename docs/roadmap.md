@@ -4,16 +4,7 @@ This document outlines planned alignment fixes and new productivity features to 
 
 ---
 
-## 🛠️ High Priority Alignment Fixes
 
-### 1. Unified Style Tones (Connecting Sidebar & Pipeline)
-* **Goal:** Sync the sidebar **Style** view with the settings store so selecting a tone has an immediate impact on dictation.
-* **Tasks:**
-  - Update `StyleView.tsx` to read/write directly to the settings store keys (`styleToneWork`, `styleToneEmail`, `styleTonePersonal`, `styleToneOther`) instead of a separate `"dictationStyle"` key in `localStorage`.
-  - Add `"veryCasual"` to the instructions mapping in `appCategory.js` (*"Adjust tone to be very casual, relaxed, and informal"*).
-  - Include "Very Casual" in the Settings Page Personalized Styles dropdowns.
-
----
 
 ## 💡 New Productivity Feature Ideas
 
@@ -84,6 +75,21 @@ This document outlines planned alignment fixes and new productivity features to 
   - Next time, it automatically boosts those specific words in the Whisper prompt.
 * **Benefit:** The app adapts to your personal vocabulary over time without requiring you to open settings and manually manage a custom dictionary.
 
+### 10. Cadence-Based Auto-Formatting
+* **Concept:** Format text based on the rhythmic timing and pauses of your speech rather than explicit voice commands.
+* **How it works:**
+  - Dhwani analyzes the silence gaps (VAD pauses) between your sentences.
+  - If you take a 2-second breath, it automatically creates a new paragraph.
+  - If you quickly list items (*"we need marketing, sales, and engineering"*), it detects the rapid, rhythmic cadence and automatically formats the output as a markdown bulleted list.
+* **Benefit:** You never have to unnaturally dictate punctuation commands like "new line" or "comma" again, allowing for a pure, uninterrupted flow of thought.
+
+### 11. Non-Destructive Paste (Auto-Clipboard Restore)
+* **Concept:** Prevent dictation from overwriting whatever text or files you currently have copied to your system clipboard.
+* **How it works:**
+  - Before pasting the transcribed text into the active window (using simulated keystrokes like `Ctrl+V`), Dhwani temporarily saves the current state of your system clipboard.
+  - It pastes the dictation, and then instantly restores your original clipboard contents in the background.
+* **Benefit:** You can dictate a message and still hit `Ctrl+V` immediately after to paste the URL or text you originally had copied, without losing your clipboard history.
+
 ---
 
 ## ⚡ Performance Feature Ideas
@@ -139,11 +145,11 @@ This document outlines planned alignment fixes and new productivity features to 
   - Automatically download and configure the most performant model quantization (e.g., suggesting a highly-quantized 4-bit model for 8GB RAM systems, or an unquantized/8-bit model for high-end systems).
 * **Benefit:** Prevents out-of-memory crashes and lag for users who don't know which model version matches their hardware.
 
-### 8. Speculative Streaming Transcription (Near-Instant Paste)
-* **Concept:** Eliminate the waiting time after releasing the recording hotkey by transcribing speech in real-time.
-* **How it works:**
-  - Stream audio chunks to the local Whisper engine continuously while the user is speaking.
-  - When the hotkey is released, only the last few seconds of audio need to be transcribed.
+### 8. Speculative Streaming Transcription (Near-Instant Paste) [IN PROGRESS]
+* **Concept:** Eliminate the waiting time after releasing the recording hotkey by transcribing and polishing speech in real-time.
+* **How it works (Hybrid Pipelining):**
+  - **Linear Pipeline:** For simple polishing, stream audio chunks to the local STT. When a Voice Activity Detection (VAD) pause is hit, lock the chunk and send it to the LLM (with previous chunks injected as context for accuracy).
+  - **Structural Pipeline:** For complex tasks (e.g. Summarization), wait until recording is fully complete to process as a single block.
 * **Benefit:** Dictation is pasted near-instantly when the hotkey is released, regardless of how long the user spoke.
 
 ### 9. Pre-Warmed Inference Pipeline (Zero Startup Delay)
@@ -160,41 +166,94 @@ This document outlines planned alignment fixes and new productivity features to 
   - Apply deep-learning noise-cancellation (like RNNoise) and select larger Whisper models (e.g. Medium instead of Base) only when the environment is loud.
 * **Benefit:** Maximizes speed in quiet settings, while preserving high transcription accuracy in cafes or airports.
 
+### 11. Rust/C++ Native Node Addon for Audio Math
+* **Concept:** Move all remaining heavy mathematical audio operations (like real-time PCM down-sampling or volume normalization) out of the JavaScript event loop.
+* **How it works:**
+  - Create a lightweight Rust or C++ Node addon (using `napi-rs` or `node-addon-api`).
+  - Route the raw audio buffers through this compiled module before they hit the STT engines.
+* **Benefit:** Drastically reduces CPU spikes during continuous recording and drops audio-routing latency to single-digit milliseconds, ensuring the React UI remains buttery smooth.
+
+### 12. Electron V8 Snapshotting (Instant App Boot)
+* **Concept:** Slash the application boot time by pre-compiling JavaScript dependencies into a binary snapshot.
+* **How it works:**
+  - Use Electron's `mksnapshot` feature during the build process to parse all heavy vendor dependencies (React, AI SDKs) into a V8 memory snapshot.
+  - When the app launches, the V8 engine bypasses parsing the JS source code and instantly loads the binary snapshot directly into memory.
+* **Benefit:** The application boots from a cold start in under 100 milliseconds, making it feel as fast as a native C++ desktop application.
+
 ---
 
 ## 🎨 UI/UX Feature Ideas
 
-### 1. Floating Glassmorphic Dictation HUD (With Audio Wave)
-* **Concept:** Redesign the dictation overlay from a simple popup into a premium, responsive HUD that feels "alive."
+### 1. Refined Insights Dashboard
+* **Concept:** Transform the Insights page into a visually stunning, data-rich dashboard.
 * **How it works:**
-  - Use a sleek glassmorphic card (heavy backdrop-blur, semi-transparent dark/light fill, and a subtle glowing border colored with the active accent color).
-  - Add a fluid SVG audio wave visualizer that ripples and changes amplitude dynamically based on the microphone's input volume.
-  - Apply spring-like entrance and exit animations (sliding up from the bottom of the screen).
+  - Introduce sleek, interactive charts (e.g., using Recharts) for dictation frequency, average word count, and time saved.
+  - Implement dynamic glassmorphic metric cards that animate on load.
+  - Add filtering by date range with smooth transitions.
 
-### 2. Collapsible Sidebar with Peek Transition
-* **Concept:** Save screen real estate while keeping navigation fluid.
+### 2. Enhanced Smart Snippets UI
+* **Concept:** Redesign the Snippets manager to feel like an advanced prompt library.
 * **How it works:**
-  - Allow the sidebar to collapse into a minimal, vertical strip of icons.
-  - When the user hovers over the collapsed strip, it smoothly "peeks" open to reveal the text labels using a spring transition.
-  - Add micro-animations to sidebar icons.
+  - Display snippets as a beautiful masonry grid of cards instead of a basic list.
+  - Add visual tagging (color-coded badges) to categorize snippets.
+  - Provide an inline, syntax-highlighted preview of dynamic variables (e.g., `{{clipboard}}`) directly on the snippet card.
 
-### 3. Raycast-Style Cmd+K Command Center
-* **Concept:** Enhance the search overlay (`CommandSearch.tsx`) to feel like a premium command center.
-* **How it works:**
-  - Group search results into clear, visually distinct sections (Notes, Settings, Actions, Snippets) with subtle separator lines.
-  - Align custom keyboard shortcuts (styled as modern, rounded `Kbd` badges) perfectly on the right edge of each list row.
-  - Implement smooth height auto-resizing on the container card as results filter down.
+### 3. Fluid Audio Visualizer (Recording HUD)
+* **Concept:** Make the act of dictating visually mesmerizing.
+* **How it works:** 
+  - Replace the simple pulsing recording indicator with a dynamic, liquid-like waveform or a glowing 3D orb.
+  - Hook it into the Web Audio API so it reacts in real-time to the pitch and volume of the voice.
 
-### 4. Premium Workspace Card Switcher
-* **Concept:** Redesign the workspace dropdown to feel like a modern collaborative tool.
-* **How it works:**
-  - Instead of a native dropdown menu, clicking the workspace name opens a floating list of visual cards.
-  - Each workspace card shows its name, a colored monogram avatar, and participant badges.
-  - Highlight the active workspace with a checkmark and a subtle gradient glow.
+### 4. Context-Aware Command Palette (CMD+K)
+* **Concept:** Navigate the entire app instantly without touching the mouse, packaged in a sleek interface.
+* **How it works:** 
+  - Add a global hotkey (`CMD+K` or `Ctrl+K`) that summons a floating, glassmorphic search bar in the center of the screen.
+  - Features rich keyboard navigation and fuzzy search to instantly jump to specific notes, trigger snippets, or toggle settings.
 
-### 5. Interactive Cards for Settings Rows
-* **Concept:** Ditch the long plain settings list for interactive grid cards.
-* **How it works:**
-  - Group settings into distinct visual panels with rounded corners.
-  - Hovering over a settings row highlights the entire row with a soft background wash and focuses the associated toggle switch.
-  - Add tooltips that fade in smoothly with context explanations.
+### 5. Immersive Focus Mode (Zen Editor)
+* **Concept:** A distraction-free environment for pure, uninterrupted thought.
+* **How it works:** 
+  - A single toggle in the editor that gracefully fades out the sidebar, the top navigation, and all toolbars.
+  - The text centers itself against a subtle, ambient background gradient that very slowly shifts colors.
+
+### 6. Chronological "Journey" Timeline
+* **Concept:** Replace the standard list of past dictations with a beautiful, connected timeline.
+* **How it works:** 
+  - Lay out dictations along a vertical or horizontal track in the History tab.
+  - Cluster notes from the same session together, connected by a subtle, glowing line.
+  - Hover over a dot on the timeline to pop up a miniature preview card.
+
+### 7. Cinematic "First Run" Onboarding
+* **Concept:** Make the first impression unforgettable with an interactive setup wizard.
+* **How it works:** 
+  - A full-screen, blurred glassmorphic wizard that guides users through setup.
+  - It plays a short, beautiful embedded video showing how the app works, tests their microphone with a 3D audio visualizer, and lets them pick their favorite AI models with sleek animated cards.
+
+### 8. Visual "Soundwave" Minimap
+* **Concept:** Make reviewing 45-minute meeting recordings or long lectures incredibly intuitive and visual.
+* **How it works:** 
+  - Next to a long transcript in the History view, Dhwani renders a tiny, interactive audio waveform acting as a scrollbar minimap.
+  - Sections where people spoke loudly or with high energy are color-coded (e.g., bright orange).
+  - You can click anywhere on the waveform minimap to instantly jump to that exact sentence in the transcript and start playing the audio.
+  - Includes an interactive mic test (with live visualizers) and automatically detects hardware to suggest the best AI models.
+
+### 9. Generative UI Themes (AI Color Palettes)
+* **Concept:** Infinite, personalized themes generated on the fly.
+* **How it works:** 
+  - A text prompt (e.g., "Midnight Cyberpunk" or "Cozy Autumn Cafe") uses the local LLM to generate a perfectly balanced CSS color palette.
+  - Smoothly crossfades the entire application into the new theme.
+
+### 10. Magnetic, Cascading Context Menus
+* **Concept:** Make every right-click and dropdown feel physically satisfying.
+* **How it works:** 
+  - Custom context menus utilizing heavy background blur (`backdrop-blur-xl`) and physical "magnetism" (snapping slightly to the cursor).
+  - Menu items cascade into view with a subtle, staggered spring animation.
+
+---
+
+## ✅ Completed Items
+
+### UI/UX
+* **Collapsible Sidebar with Peek Transition:** Allowed the sidebar to collapse into a minimal strip, conserving screen real estate while keeping navigation fluid. Added micro-animations to sidebar icons.
+* **Premium Workspace Card Switcher:** Replaced the native dropdown menu with a floating grid of visual workspace cards featuring gradient glows and monogram avatars.
+* **Interactive Cards for Settings Rows:** Redesigned the settings layout from plain divided lists into individually hoverable, interactive cards with rounded corners.

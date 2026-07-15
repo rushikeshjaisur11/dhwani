@@ -54,6 +54,20 @@ export async function applyPolishToText(text, settings = getSettings()) {
   return extractRewrite(polished);
 }
 
+export async function applyPipelinedPolishToText(currentChunk, previousChunks, settings = getSettings()) {
+  const polished = await ReasoningService.processPipelinedChunk(
+    currentChunk,
+    previousChunks,
+    {
+      model: settings.cleanupModel,
+      disableThinking: settings.cleanupDisableThinking,
+      maxTokens: 512,
+    }
+  );
+
+  return polished.trim();
+}
+
 // Polish: rewrites the text currently selected in whatever app has focus.
 // Reuses the dictation-cleanup model/provider (no dedicated Polish model
 // selection yet) since it's the same "light rewrite" quality tier.

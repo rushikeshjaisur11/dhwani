@@ -1015,18 +1015,21 @@ async function startApp() {
   if (!polishResult.success) {
     debugLogger.warn("Failed to register polish hotkey", { hotkey: savedPolishKey }, "hotkey");
   }
+  windowManager.reconcileNativeKeyListeners();
 
   ipcMain.handle("register-polish-hotkey", async (_event, hotkey) => {
     if (hotkey) {
       const result = await hotkeyManager.registerSlot("polish", hotkey, polishHotkeyCallback);
       if (result.success) {
         environmentManager.savePolishKey(hotkey);
+        windowManager.reconcileNativeKeyListeners();
         return { success: true };
       }
       return { success: false, message: result.error };
     } else {
       hotkeyManager.unregisterSlot("polish");
       environmentManager.savePolishKey("");
+      windowManager.reconcileNativeKeyListeners();
       return { success: true };
     }
   });
@@ -1062,10 +1065,9 @@ async function startApp() {
       if (preview && !preview.isDestroyed() && preview.isVisible()) {
         // Card already on screen (retry from it) — refresh in place.
         await windowManager.showLastTransformChanges();
-      } else {
-        // Otherwise show "Done. See changes" in the pill; the card opens on click.
-        windowManager.sendTransformDone();
       }
+      // Always show "Done. See changes" / clear processing spinner in the pill.
+      windowManager.sendTransformDone();
     }
     return { success: true };
   });
@@ -1073,6 +1075,15 @@ async function startApp() {
   ipcMain.handle("show-last-transform-changes", async () => {
     await windowManager.showLastTransformChanges();
     return { success: true };
+  });
+
+  ipcMain.handle("hide-transcription-preview", () => {
+    windowManager.hideTranscriptionPreview();
+    return { success: true };
+  });
+
+  ipcMain.handle("resize-transcription-preview-window", (_event, width, height) => {
+    return windowManager.resizeTranscriptionPreview(width, height);
   });
 
   // Run a transform on the current selection (sparkle click in the pill) —

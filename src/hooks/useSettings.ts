@@ -25,7 +25,7 @@ export interface TranscriptionSettings {
   customDictionary: string[];
   snippets: Snippet[];
   assemblyAiStreaming: boolean;
-  showTranscriptionPreview: boolean;
+
 }
 
 export interface CleanupSettings {
@@ -84,6 +84,7 @@ export interface ThemeSettings {
   palette: "default" | "nord" | "dracula" | "solarized" | "rose";
   accentColor: string | null;
   voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
+  enableVoiceStyles: boolean;
 }
 
 export interface ChatAgentSettings {
@@ -289,6 +290,8 @@ function useSettingsInternal() {
     setAccentColor: store.setAccentColor,
     voiceVisualizerStyle: store.voiceVisualizerStyle,
     setVoiceVisualizerStyle: store.setVoiceVisualizerStyle,
+    enableVoiceStyles: store.enableVoiceStyles,
+    setEnableVoiceStyles: store.setEnableVoiceStyles,
     activationMode: store.activationMode,
     setActivationMode: store.setActivationMode,
     notificationsEnabled: store.notificationsEnabled,
@@ -335,10 +338,10 @@ function useSettingsInternal() {
     setSelectedMicDeviceId: store.setSelectedMicDeviceId,
     autoLearnCorrections,
     setAutoLearnCorrections,
-    showTranscriptionPreview: store.showTranscriptionPreview,
-    setShowTranscriptionPreview: store.setShowTranscriptionPreview,
     autoPasteEnabled: store.autoPasteEnabled,
     setAutoPasteEnabled: store.setAutoPasteEnabled,
+    showStreamingPreview: store.showStreamingPreview,
+    setShowStreamingPreview: store.setShowStreamingPreview,
     keepTranscriptionInClipboard: store.keepTranscriptionInClipboard,
     setKeepTranscriptionInClipboard: store.setKeepTranscriptionInClipboard,
     noteFilesEnabled: store.noteFilesEnabled,

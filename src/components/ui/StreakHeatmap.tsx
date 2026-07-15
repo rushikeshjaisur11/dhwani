@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useRef, useLayoutEffect } from "react";
 
 interface DailyActivity {
   date: string; // YYYY-MM-DD
@@ -37,9 +38,15 @@ export default function StreakHeatmap({ dailyActivity, weeks = 53 }: StreakHeatm
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const totalDays = weeks * 7;
-  const start = new Date(today);
-  start.setDate(start.getDate() - (totalDays - 1) - today.getDay());
+  
+  const currentYear = today.getFullYear();
+  const start = new Date(currentYear, 0, 1);
+  start.setDate(start.getDate() - start.getDay()); // Start on the Sunday of the week containing Jan 1
+  
+  const end = new Date(currentYear, 11, 31);
+  end.setDate(end.getDate() + (6 - end.getDay())); // End on the Saturday of the week containing Dec 31
+  
+  const totalDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
   const days: Date[] = [];
   for (let i = 0; i < totalDays; i++) {
@@ -56,8 +63,23 @@ export default function StreakHeatmap({ dailyActivity, weeks = 53 }: StreakHeatm
   const monthFormatter = new Intl.DateTimeFormat(i18n.language, { month: "short" });
   const weekdayFormatter = new Intl.DateTimeFormat(i18n.language, { weekday: "narrow" });
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const todayIso = today.toISOString().slice(0, 10);
+  const currentColumnIndex = columns.findIndex((col) =>
+    col.some((d) => d.toISOString().slice(0, 10) === todayIso)
+  );
+
+  useLayoutEffect(() => {
+    if (scrollRef.current && currentColumnIndex !== -1) {
+      const colWidth = 14; // 11px width + 3px gap
+      const offset = 24; // Left labels padding
+      const targetScroll = offset + currentColumnIndex * colWidth - scrollRef.current.clientWidth / 2 + colWidth / 2;
+      scrollRef.current.scrollLeft = targetScroll;
+    }
+  }, [currentColumnIndex]);
+
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto custom-scrollbar pb-2" ref={scrollRef}>
       <div className="flex gap-[3px] mb-1 pl-6">
         {columns.map((col, i) => {
           const first = col[0];
@@ -87,10 +109,8 @@ export default function StreakHeatmap({ dailyActivity, weeks = 53 }: StreakHeatm
               return (
                 <div
                   key={j}
-                  title={`${isoDate}: ${entry?.words ?? 0} words`}
-                  className={`w-[11px] h-[11px] rounded-[2px] ${
-                    isFuture ? "opacity-0" : LEVEL_CLASSES[level]
-                  }`}
+                  title={isFuture ? undefined : `${isoDate}: ${entry?.words ?? 0} words`}
+                  className={`w-[11px] h-[11px] rounded-[2px] ${LEVEL_CLASSES[isFuture ? 0 : level]}`}
                 />
               );
             })}

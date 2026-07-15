@@ -127,11 +127,12 @@ const BOOLEAN_SETTINGS = new Set([
   "meetingSileroEnabled",
   "isSignedIn",
   "autoPasteEnabled",
+  "showStreamingPreview",
   "keepTranscriptionInClipboard",
   "dataRetentionEnabled",
   "saveDiscardedTranscriptions",
   "noteFilesEnabled",
-  "showTranscriptionPreview",
+
   "cleanupDisableThinking",
   "polishEnabled",
   "polishInstructionConcise",
@@ -433,8 +434,10 @@ export interface SettingsState
   whisperVadSpeechPadMs: number;
   whisperVadSamplesOverlap: number;
   panelStartPosition: "bottom-right" | "center" | "bottom-left";
-  showTranscriptionPreview: boolean;
+  isSidebarCollapsed: boolean;
+
   autoPasteEnabled: boolean;
+  showStreamingPreview: boolean;
   keepTranscriptionInClipboard: boolean;
   noteFilesEnabled: boolean;
   noteFilesPath: string;
@@ -492,6 +495,7 @@ export interface SettingsState
   polishInstructionTone: boolean;
   polishInstructionStructure: boolean;
   polishKey: string;
+  enableVoiceStyles: boolean;
   styleToneWork: string;
   styleToneEmail: string;
   styleTonePersonal: string;
@@ -551,12 +555,15 @@ export interface SettingsState
   setNoteFormattingDisableThinking: (value: boolean) => void;
   setChatAgentDisableThinking: (value: boolean) => void;
 
+  setIsSidebarCollapsed: (value: boolean) => void;
+
   setPolishEnabled: (value: boolean) => void;
   setPolishInstructionConcise: (value: boolean) => void;
   setPolishInstructionClarity: (value: boolean) => void;
   setPolishInstructionTone: (value: boolean) => void;
   setPolishInstructionStructure: (value: boolean) => void;
   setPolishKey: (key: string) => void;
+  setEnableVoiceStyles: (value: boolean) => void;
   setStyleToneWork: (value: string) => void;
   setStyleToneEmail: (value: string) => void;
   setStyleTonePersonal: (value: string) => void;
@@ -677,7 +684,7 @@ export interface SettingsState
   setWhisperVadSpeechPadMs: (value: number) => void;
   setWhisperVadSamplesOverlap: (value: number) => void;
   setPanelStartPosition: (position: "bottom-right" | "center" | "bottom-left") => void;
-  setShowTranscriptionPreview: (value: boolean) => void;
+
   setAutoPasteEnabled: (value: boolean) => void;
   setKeepTranscriptionInClipboard: (value: boolean) => void;
   setNoteFilesEnabled: (value: boolean) => void;
@@ -960,7 +967,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   })(),
   voiceVisualizerStyle: (() => {
     const v = readString("voiceVisualizerStyle", "plasma");
-    return (["plasma", "bars"].includes(v) ? v : "plasma") as "plasma" | "bars";
+    return (["plasma", "bars", "siri", "ripple", "neon", "particles"].includes(v) ? v : "plasma") as "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
   })(),
   accentColor: (() => {
     const v = readString("accentColor", "");
@@ -1028,8 +1035,10 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (v === "bottom-right" || v === "center" || v === "bottom-left") return v;
     return "bottom-right" as const;
   })(),
-  showTranscriptionPreview: readBoolean("showTranscriptionPreview", false),
+  isSidebarCollapsed: readBoolean("isSidebarCollapsed", false),
+
   autoPasteEnabled: readBoolean("autoPasteEnabled", true),
+  showStreamingPreview: readBoolean("showStreamingPreview", true),
   keepTranscriptionInClipboard: readBoolean("keepTranscriptionInClipboard", false),
   noteFilesEnabled: readBoolean("noteFilesEnabled", false),
   noteFilesPath: readString("noteFilesPath", ""),
@@ -1215,6 +1224,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   polishInstructionTone: readBoolean("polishInstructionTone", true),
   polishInstructionStructure: readBoolean("polishInstructionStructure", false),
   polishKey: readString("polishKey", ""),
+  enableVoiceStyles: readBoolean("enableVoiceStyles", true),
   styleToneWork: readString("styleToneWork", "off"),
   styleToneEmail: readString("styleToneEmail", "off"),
   styleTonePersonal: readString("styleTonePersonal", "off"),
@@ -1251,6 +1261,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setNoteFormattingDisableThinking: createBooleanSetter("noteFormattingDisableThinking"),
   setChatAgentDisableThinking: createBooleanSetter("chatAgentDisableThinking"),
 
+  setIsSidebarCollapsed: createBooleanSetter("isSidebarCollapsed"),
+
   setUseLocalWhisper: createBooleanSetter("useLocalWhisper"),
   setWhisperModel: createStringSetter("whisperModel"),
   setLocalTranscriptionProvider: (value: LocalTranscriptionProvider) => {
@@ -1268,6 +1280,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setCloudTranscriptionMode: createStringSetter("cloudTranscriptionMode"),
   setCleanupCloudMode: createStringSetter("cleanupCloudMode"),
   setCleanupCloudBaseUrl: createStringSetter("cleanupCloudBaseUrl"),
+
   setAssemblyAiStreaming: createBooleanSetter("assemblyAiStreaming"),
   setAutoGenerateNoteTitle: createBooleanSetter("autoGenerateNoteTitle"),
   setUseCleanupModel: createBooleanSetter("useCleanupModel"),
@@ -1467,6 +1480,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (isBrowser) localStorage.setItem("polishKey", key);
     set({ polishKey: key });
   },
+  setEnableVoiceStyles: createBooleanSetter("enableVoiceStyles"),
   setStyleToneWork: createStringSetter("styleToneWork"),
   setStyleToneEmail: createStringSetter("styleToneEmail"),
   setStyleTonePersonal: createStringSetter("styleTonePersonal"),
@@ -1672,8 +1686,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     }
   },
 
-  setShowTranscriptionPreview: createBooleanSetter("showTranscriptionPreview"),
   setAutoPasteEnabled: createBooleanSetter("autoPasteEnabled"),
+  setShowStreamingPreview: createBooleanSetter("showStreamingPreview"),
   setKeepTranscriptionInClipboard: createBooleanSetter("keepTranscriptionInClipboard"),
   setNoteFilesEnabled: createBooleanSetter("noteFilesEnabled"),
   setNoteFilesPath: createStringSetter("noteFilesPath"),
@@ -1725,8 +1739,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (settings.snippets !== undefined) s.setSnippets(settings.snippets);
     if (settings.assemblyAiStreaming !== undefined)
       s.setAssemblyAiStreaming(settings.assemblyAiStreaming);
-    if (settings.showTranscriptionPreview !== undefined)
-      s.setShowTranscriptionPreview(settings.showTranscriptionPreview);
+
   },
 
   // Apply a transcription config to dictation, then mirror its cloud routing to

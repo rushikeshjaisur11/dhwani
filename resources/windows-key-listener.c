@@ -242,6 +242,7 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
         }
 
         if (g_useModifiersOnly) {
+            SyncModifierState(0);
             if (isKeyDown) {
                 if (!g_isKeyDown && AreRequiredModifiersPressed()) {
                     g_isKeyDown = TRUE;
@@ -260,6 +261,7 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
         // Check for the target key
         if (kbd->vkCode == g_targetVk) {
+            SyncModifierState(0);
             BOOL modsSatisfied = AreRequiredModifiersPressed();
             if (isKeyDown) {
                 // Only trigger if modifiers are satisfied and not already down
@@ -352,6 +354,28 @@ DWORD ParseCompoundHotkey(const char* hotkey) {
     return mainKeyVk;
 }
 
+DWORD WINAPI WatchdogThread(LPVOID lpParam) {
+    while (TRUE) {
+        Sleep(100);
+        if (g_isKeyDown) {
+            SyncModifierState(0);
+            BOOL physicallyPressed = FALSE;
+            if (g_useModifiersOnly) {
+                physicallyPressed = AreRequiredModifiersPressed();
+            } else {
+                physicallyPressed = (GetAsyncKeyState(g_targetVk) & 0x8000) && AreRequiredModifiersPressed();
+            }
+            
+            if (!physicallyPressed) {
+                g_isKeyDown = FALSE;
+                printf("KEY_UP\n");
+                fflush(stdout);
+            }
+        }
+    }
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         fprintf(stderr, "Usage: %s <key>|--capture\n", argv[0]);
@@ -386,6 +410,9 @@ int main(int argc, char* argv[]) {
 
     // Set up console handler for clean shutdown
     SetConsoleCtrlHandler(ConsoleHandler, TRUE);
+
+    // Spawn the watchdog thread to handle missed key up events
+    CreateThread(NULL, 0, WatchdogThread, NULL, 0, NULL);
 
     // Install the low-level keyboard hook
     g_hook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, NULL, 0);

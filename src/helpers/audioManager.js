@@ -588,41 +588,11 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       this.onStateChange?.({ isRecording: true, isProcessing: false });
 
       const {
-        showTranscriptionPreview,
         useLocalWhisper,
         localTranscriptionProvider,
         whisperModel,
         parakeetModel,
       } = getSettings();
-      if (showTranscriptionPreview && useLocalWhisper) {
-        try {
-          this._previewAudioContext = new AudioContext({ sampleRate: 16000 });
-          this._previewSource = this._previewAudioContext.createMediaStreamSource(micStream);
-          await this._previewAudioContext.audioWorklet.addModule(this.getWorkletBlobUrl());
-
-          this._previewProcessor = new AudioWorkletNode(
-            this._previewAudioContext,
-            "pcm-streaming-processor"
-          );
-          this._previewProcessor.port.onmessage = (event) => {
-            window.electronAPI?.sendDictationPreviewAudio?.(event.data);
-          };
-          this._previewSource.connect(this._previewProcessor);
-
-          const provider = localTranscriptionProvider === "nvidia" ? "nvidia" : "whisper";
-          const model = provider === "nvidia" ? parakeetModel : whisperModel;
-          const language = getBaseLanguageCode(getSettings().preferredLanguage);
-          window.electronAPI?.startDictationPreview?.({
-            provider,
-            model,
-            language,
-            overlay: showTranscriptionPreview,
-            initialPrompt: this.getCustomDictionaryPrompt() || undefined,
-          });
-        } catch (e) {
-          logger.warn("Preview worklet setup failed", { error: e.message }, "audio");
-        }
-      }
 
       return true;
     } catch (error) {
