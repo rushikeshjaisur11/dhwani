@@ -76,7 +76,7 @@ async function tryDownload() {
 }
 
 function quotePath(p) {
-  return `"${p.replace(/"/g, '\\"')}"`;
+  return `"${p.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
 function tryCompile() {
