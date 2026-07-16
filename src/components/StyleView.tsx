@@ -165,7 +165,7 @@ export default function StyleView() {
                       <app.icon size={18} className="text-white opacity-95" strokeWidth={2.5} />
                     ) : null}
                     {/* Tooltip */}
-                    <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                    <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
                       <div className="bg-foreground text-background text-[10px] font-semibold px-2 py-1 rounded shadow-lg whitespace-nowrap">
                         {app.name}
                       </div>

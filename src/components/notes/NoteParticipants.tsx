@@ -245,7 +245,7 @@ export default function NoteParticipants({ noteId, participants }: NoteParticipa
 
                   <button
                     onClick={() => removeParticipant(p.email)}
-                    className="shrink-0 opacity-0 group-hover:opacity-100 p-0.5 rounded text-foreground/30 hover:text-foreground/60 transition-opacity cursor-pointer"
+                    className="shrink-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-0.5 rounded text-foreground/30 hover:text-foreground/60 transition-opacity cursor-pointer"
                   >
                     <X size={12} />
                   </button>

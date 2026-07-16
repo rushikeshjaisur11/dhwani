@@ -98,12 +98,25 @@ export default function TranscriptionItem({
     <div
       className={cn(
         "group px-5 py-4 transition-colors duration-150 bg-transparent hover:bg-muted/50 dark:hover:bg-white/5 hover:rounded-lg",
+        "outline-none focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:rounded-lg",
         isFailed ? "bg-destructive/5 rounded-lg" : isDiscarded ? "opacity-60" : "",
         onSelect ? "cursor-pointer" : ""
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onSelect?.()}
+      {...(onSelect
+        ? {
+            role: "button",
+            tabIndex: 0,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect();
+              }
+            },
+          }
+        : {})}
     >
       <div className="flex items-start gap-3">
         {formattedTime && (
@@ -179,7 +192,7 @@ export default function TranscriptionItem({
 
         <div
           className={cn(
-            "flex items-center gap-0.5 shrink-0 transition-opacity duration-150",
+            "flex items-center gap-0.5 shrink-0 transition-opacity duration-150 focus-within:opacity-100",
             isFailed || isDiscarded ? "opacity-100" : isHovered ? "opacity-100" : "opacity-0"
           )}
           onClick={(e) => e.stopPropagation()}
@@ -267,20 +280,20 @@ export default function TranscriptionItem({
             <>
               <button
                 onClick={() => onCopy(item.text)}
-                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                className="p-1 rounded opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
                 title={t("controlPanel.history.copyText")}
               >
                 <Copy size={14} />
               </button>
               <button
-                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                className="p-1 rounded opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
                 title="Flag entry"
               >
                 <Flag size={14} />
               </button>
               <button
                 onClick={() => onDelete(item.id)}
-                className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-all cursor-pointer"
+                className="p-1 rounded opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-all cursor-pointer"
                 title={t("common.delete")}
               >
                 <Trash2 size={14} strokeWidth={2.5} />

@@ -154,7 +154,7 @@ export default function IntegrationsView() {
                   <button
                     onClick={() => setConfirmDisconnectEmail(account.email)}
                     disabled={disconnectingEmail === account.email}
-                    className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50"
+                    className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50"
                     aria-label={t("integrations.googleCalendar.disconnect")}
                   >
                     {disconnectingEmail === account.email ? (

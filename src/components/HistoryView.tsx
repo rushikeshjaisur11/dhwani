@@ -344,6 +344,7 @@ export default function HistoryView({
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchExpanded(true)}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') {
                   setSearchQuery("");

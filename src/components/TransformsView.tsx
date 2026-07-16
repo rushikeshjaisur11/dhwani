@@ -75,7 +75,7 @@ function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }:
             onRemove(transform);
           }}
           aria-label={t("transforms.remove", { name: transform.name })}
-          className="absolute top-3 right-3 p-1 text-foreground/25 hover:text-destructive/70 transition-colors opacity-0 group-hover:opacity-100"
+          className="absolute top-3 right-3 p-1 text-foreground/25 hover:text-destructive/70 transition-colors opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
         >
           <Trash2 size={12} />
         </button>

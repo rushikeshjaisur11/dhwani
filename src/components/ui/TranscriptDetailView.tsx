@@ -170,7 +170,7 @@ export default function TranscriptDetailView({
         {/* Sleek Audio Player */}
         {audioUrl ? (
           <div className="group relative flex items-center gap-5 p-4 rounded-2xl bg-gradient-to-r from-background/80 to-muted/30 border border-white/5 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.2)] overflow-hidden">
-            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none" />
             
             <button
               onClick={togglePlay}

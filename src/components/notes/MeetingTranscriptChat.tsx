@@ -423,13 +423,13 @@ function SpeakerLabel({
           onClick={() =>
             onConfirm?.(speakerId, segment.suggestedName!, segment.suggestedProfileId!)
           }
-          className="opacity-0 group-hover:opacity-100 p-0.5 rounded transition-opacity cursor-pointer text-muted-foreground hover:text-emerald-500"
+          className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-0.5 rounded transition-opacity cursor-pointer text-muted-foreground hover:text-emerald-500"
         >
           <Check size={12} />
         </button>
         <button
           onClick={() => onDismiss?.(speakerId)}
-          className="opacity-0 group-hover:opacity-100 p-0.5 rounded transition-opacity cursor-pointer text-muted-foreground hover:text-destructive"
+          className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-0.5 rounded transition-opacity cursor-pointer text-muted-foreground hover:text-destructive"
         >
           <X size={12} />
         </button>
@@ -497,7 +497,7 @@ function SelectCheckbox({
         "w-4 h-4 rounded-full border flex items-center justify-center transition-all cursor-pointer",
         isSelected
           ? "border-primary bg-primary text-primary-foreground opacity-100"
-          : "border-border/60 bg-background/80 opacity-0 group-hover:opacity-100 hover:border-foreground/50",
+          : "border-border/60 bg-background/80 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:border-foreground/50",
         className
       )}
     >

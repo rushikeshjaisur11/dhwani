@@ -665,7 +665,7 @@ export function HotkeyInput({
           e.stopPropagation();
           onClear();
         }}
-        className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-muted-foreground/50 hover:text-destructive cursor-pointer"
+        className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 text-muted-foreground/50 hover:text-destructive cursor-pointer"
       >
         <Trash2 className="w-3.5 h-3.5" />
       </button>

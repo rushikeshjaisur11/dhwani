@@ -744,16 +744,16 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
 
 
           {/* User Profile Avatar */}
-          <div
+          <button
             onClick={() => {
               setSettingsSection("general");
               setShowSettings(true);
             }}
-            className="w-6 h-6 rounded-full bg-[#EDE4FB] border border-[#C4B0F7]/40 flex items-center justify-center text-[11px] font-bold text-[#2B1A47] cursor-pointer hover:opacity-90 select-none uppercase"
+            className="w-6 h-6 rounded-full bg-[#EDE4FB] border border-[#C4B0F7]/40 flex items-center justify-center text-[11px] font-bold text-[#2B1A47] cursor-pointer hover:opacity-90 select-none uppercase outline-none focus-visible:ring-1 focus-visible:ring-primary/40"
             title={t("sidebar.settings")}
           >
             {userName.charAt(0)}
-          </div>
+          </button>
         </div>
 
         {/* Drag space in the middle */}

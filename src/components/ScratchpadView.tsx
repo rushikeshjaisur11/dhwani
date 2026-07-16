@@ -180,8 +180,16 @@ export default function ScratchpadView() {
             {visibleNotes.map((note) => (
               <div
                 key={note.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => openOverlay({ noteId: note.id })}
-                className="group relative w-full cursor-pointer rounded-xl border border-border bg-card p-4 hover:bg-muted/40 transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openOverlay({ noteId: note.id });
+                  }
+                }}
+                className="group relative w-full cursor-pointer rounded-xl border border-border bg-card p-4 hover:bg-muted/40 transition-colors outline-none focus-visible:ring-1 focus-visible:ring-primary/30"
               >
                 <p className="text-sm font-medium text-foreground truncate pr-14">
                   {note.title || "Untitled"}
@@ -189,7 +197,7 @@ export default function ScratchpadView() {
                 <p className="mt-1 text-sm text-foreground/70 line-clamp-2 pr-14">
                   {note.content}
                 </p>
-                <div className="absolute right-3 top-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute right-3 top-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

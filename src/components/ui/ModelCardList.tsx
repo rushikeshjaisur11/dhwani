@@ -114,8 +114,16 @@ export default function ModelCardList({
         return (
           <div
             key={model.value}
+            role="button"
+            tabIndex={0}
             onClick={handleCardClick}
-            className={`relative w-full p-2 rounded-md border text-left transition-colors duration-200 group overflow-hidden ${
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleCardClick();
+              }
+            }}
+            className={`relative w-full p-2 rounded-md border text-left transition-colors duration-200 group overflow-hidden outline-none focus-visible:ring-1 focus-visible:ring-primary/40 ${
               isSelected ? styles.selected : styles.default
             } ${!isLocalMode || (isDownloaded && !isSelected) ? "cursor-pointer" : ""}`}
           >
@@ -195,7 +203,7 @@ export default function ModelCardList({
                         }}
                         size="sm"
                         variant="ghost"
-                        className="h-6 w-6 p-0 text-muted-foreground/40 hover:text-destructive opacity-0 group-hover:opacity-100 transition-[color,opacity,transform] active:scale-95"
+                        className="h-6 w-6 p-0 text-muted-foreground/40 hover:text-destructive opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-[color,opacity,transform] active:scale-95"
                       >
                         <Trash2 size={12} />
                       </Button>

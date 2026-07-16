@@ -347,7 +347,7 @@ export default function SnippetsView() {
                 <div className="flex-1 min-w-0 text-[13px] text-foreground/70 truncate">
                   {renderSnippetReplacement(snippet.replacement)}
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0">
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 shrink-0">
                   <button
                     onClick={() => setEditing(snippet)}
                     aria-label={t("dictionary.snippets.edit", { trigger: snippet.trigger })}
