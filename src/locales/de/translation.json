@@ -164,6 +164,7 @@
   "onboarding": {
     "steps": {
       "welcome": "Willkommen",
+      "demo": "Demo ansehen",
       "setup": "Einrichtung",
       "permissions": "Berechtigungen",
       "activation": "Diktat",
@@ -214,7 +215,8 @@
       "test": "Test",
       "hotkeyToStartStop": "{{hotkey}} zum Starten/Stoppen",
       "holdHotkey": "{{hotkey}} gedrÃ¼ckt halten",
-      "textareaPlaceholder": "Hier klicken und Hotkey zum Diktieren verwenden..."
+      "textareaPlaceholder": "Hier klicken und Hotkey zum Diktieren verwenden...",
+      "micTestHint": "Sag etwas — die Kugel reagiert auf deine Stimme."
     },
     "voiceAgent": {
       "title": "Sprachagent-Einrichtung",
@@ -302,6 +304,12 @@
         "step2": "Ã–ffne die Corti-Konsole und erstelle API-Zugangsdaten",
         "step3": "FÃ¼ge Client-ID und Secret unten ein"
       }
+    },
+    "demo": {
+      "title": "Diktat in Aktion",
+      "description": "Drücke den Hotkey, sprich, und deine Worte landen dort, wo dein Cursor ist.",
+      "typedText": "Verfasse eine kurze Notiz an das Team zum morgigen Launch.",
+      "replay": "Wiederholen"
     }
   },
   "streaming": {

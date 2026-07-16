@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { LazyMotion, domAnimation, MotionConfig, AnimatePresence, m } from "framer-motion";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -8,6 +9,7 @@ import {
   ChevronLeft,
   Check,
   Flag,
+  Play,
   Settings,
   Shield,
   Command,
@@ -47,14 +49,17 @@ import { ACCESSIBILITY_SKIPPED_KEY, areRequiredPermissionsMet } from "../utils/p
 import UseCaseStep from "./onboarding/UseCaseStep";
 import MeetingSetupStep from "./onboarding/MeetingSetupStep";
 import FinishStep from "./onboarding/FinishStep";
+import DemoStep from "./onboarding/DemoStep";
+import MicTestOrb from "./onboarding/MicTestOrb";
+import { stepVariants, staggerContainer, staggerItem } from "./onboarding/motion";
 import { USE_CASE_IDS } from "./onboarding/useCases";
 import { cloudPost } from "../services/cloudApi";
 
 // Highest possible step index across flow variants (skip-auth with meeting step).
-const MAX_STEP_INDEX = 7;
+const MAX_STEP_INDEX = 8;
 
 // Steps whose primary action is optional — the user can advance without it.
-const SKIPPABLE_STEPS = new Set(["usecase", "voiceAgent", "meeting"]);
+const SKIPPABLE_STEPS = new Set(["demo", "usecase", "voiceAgent", "meeting"]);
 
 interface OnboardingFlowProps {
   onComplete: (options?: { openSettings?: boolean }) => void;
@@ -196,6 +201,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const steps = useMemo(() => {
     const list = [
       { id: "welcome", title: t("onboarding.steps.welcome"), icon: UserCircle },
+      { id: "demo", title: t("onboarding.steps.demo"), icon: Play },
       { id: "usecase", title: t("onboarding.steps.useCase"), icon: Sparkles },
       { id: "setup", title: t("onboarding.steps.setup"), icon: Settings },
     ];
@@ -509,19 +515,34 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     switch (currentStepId) {
       case "welcome":
         return (
-          <div className="space-y-6 text-center">
-            <img src={logoIcon} alt="Dhwani" className="w-14 h-14 mx-auto rounded-xl shadow-sm" />
-            <div>
+          <m.div
+            variants={staggerContainer}
+            initial="initial"
+            animate="animate"
+            className="space-y-6 text-center"
+          >
+            <m.img
+              variants={staggerItem}
+              src={logoIcon}
+              alt="Dhwani"
+              className="w-14 h-14 mx-auto rounded-xl shadow-sm"
+            />
+            <m.div variants={staggerItem}>
               <h2 className="text-2xl font-semibold text-foreground mb-2">
                 {t("auth.welcomeTitle")}
               </h2>
               <p className="text-muted-foreground">{t("auth.welcomeSubtitle")}</p>
-            </div>
-            <Button onClick={nextStep} className="w-full max-w-xs mx-auto h-10">
-              {t("common.next")}
-            </Button>
-          </div>
+            </m.div>
+            <m.div variants={staggerItem}>
+              <Button onClick={nextStep} className="w-full max-w-xs mx-auto h-10">
+                {t("common.next")}
+              </Button>
+            </m.div>
+          </m.div>
         );
+
+      case "demo":
+        return <DemoStep hotkeyLabel={readableHotkey} />;
 
       case "usecase":
         return (
@@ -784,6 +805,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               : t("onboarding.activation.holdHotkey", { hotkey: readableHotkey })}
           </span>
         </div>
+        <MicTestOrb />
         <Textarea
           rows={2}
           placeholder={t("onboarding.activation.textareaPlaceholder")}
@@ -868,6 +890,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     switch (currentStepId) {
       case "welcome":
         return isSignedIn || skipAuth;
+      case "demo":
+        return true; // Watch-only step — Next always available
       case "usecase":
         return true; // Selection is optional — Next doubles as skip
       case "setup":
@@ -931,146 +955,175 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       ? window.electronAPI.getPlatform()
       : "darwin";
 
-  // ponytail: applies Flow Bar tokens (font, card radius, CTA gradient) to the
-  // onboarding shell only, not a per-step re-theme — the 8 step bodies still use
-  // the app's default --color-primary/foreground tokens. Upgrade to full per-step
-  // styling if the shell-only pass looks inconsistent against Wispr's reference.
+  // ponytail: motion pass is shell + welcome/demo/activation only — the other
+  // step bodies (setup/permissions/finish internals) keep their own markup and
+  // ride the shared AnimatePresence step transition. Per-card stagger inside
+  // shared components (PermissionsSection, TranscriptionModelPicker) would mean
+  // re-theming components other views use; add only if this pass looks flat.
   return (
-    <div
-      className="h-screen flex flex-col bg-background"
-      style={{
-        paddingTop: "env(safe-area-inset-top, 0px)",
-        fontFamily: "var(--font-family-flow-sans)",
-      }}
-    >
-      <ConfirmDialog
-        open={confirmDialog.open}
-        onOpenChange={(open) => !open && hideConfirmDialog()}
-        title={confirmDialog.title}
-        description={confirmDialog.description}
-        confirmText={confirmDialog.confirmText}
-        cancelText={confirmDialog.cancelText}
-        onConfirm={confirmDialog.onConfirm}
-      />
-
-      <ConfirmDialog
-        open={connectivityDialog.open}
-        onOpenChange={(open) => !open && setConnectivityDialog({ open: false, cause: "" })}
-        title={t("onboarding.connectivity.title")}
-        description={t("onboarding.connectivity.body", { cause: connectivityDialog.cause })}
-        confirmText={t("onboarding.connectivity.useLocal")}
-        cancelText={t("onboarding.connectivity.continue")}
-        onConfirm={() => resolveConnectivity(true)}
-        onCancel={() => resolveConnectivity(false)}
-      />
-
-      <AlertDialog
-        open={alertDialog.open}
-        onOpenChange={(open) => !open && hideAlertDialog()}
-        title={alertDialog.title}
-        description={alertDialog.description}
-        onOk={() => {}}
-      />
-
-      {/* Title Bar / drag region */}
-      {currentStep === 0 ? (
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user">
         <div
-          className="flex items-center justify-end w-full h-10 shrink-0"
-          style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+          className="relative h-screen flex flex-col bg-background"
+          style={{
+            paddingTop: "env(safe-area-inset-top, 0px)",
+            fontFamily: "var(--font-family-flow-sans)",
+          }}
         >
-          {onboardingPlatform !== "darwin" && (
-            <div className="pr-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-              <WindowControls />
+          {/* Slow ambient gradient behind the glassmorphic shell */}
+          <m.div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-40"
+            animate={{
+              background: [
+                "radial-gradient(600px circle at 15% 20%, color-mix(in srgb, var(--color-flow-accent) 22%, transparent), transparent 70%)",
+                "radial-gradient(600px circle at 85% 30%, color-mix(in srgb, var(--color-flow-accent) 22%, transparent), transparent 70%)",
+                "radial-gradient(600px circle at 50% 85%, color-mix(in srgb, var(--color-flow-accent) 22%, transparent), transparent 70%)",
+                "radial-gradient(600px circle at 15% 20%, color-mix(in srgb, var(--color-flow-accent) 22%, transparent), transparent 70%)",
+              ],
+            }}
+            transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+          />
+          <ConfirmDialog
+            open={confirmDialog.open}
+            onOpenChange={(open) => !open && hideConfirmDialog()}
+            title={confirmDialog.title}
+            description={confirmDialog.description}
+            confirmText={confirmDialog.confirmText}
+            cancelText={confirmDialog.cancelText}
+            onConfirm={confirmDialog.onConfirm}
+          />
+
+          <ConfirmDialog
+            open={connectivityDialog.open}
+            onOpenChange={(open) => !open && setConnectivityDialog({ open: false, cause: "" })}
+            title={t("onboarding.connectivity.title")}
+            description={t("onboarding.connectivity.body", { cause: connectivityDialog.cause })}
+            confirmText={t("onboarding.connectivity.useLocal")}
+            cancelText={t("onboarding.connectivity.continue")}
+            onConfirm={() => resolveConnectivity(true)}
+            onCancel={() => resolveConnectivity(false)}
+          />
+
+          <AlertDialog
+            open={alertDialog.open}
+            onOpenChange={(open) => !open && hideAlertDialog()}
+            title={alertDialog.title}
+            description={alertDialog.description}
+            onOk={() => {}}
+          />
+
+          {/* Title Bar / drag region */}
+          {currentStep === 0 ? (
+            <div
+              className="flex items-center justify-end w-full h-10 shrink-0"
+              style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+            >
+              {onboardingPlatform !== "darwin" && (
+                <div className="pr-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+                  <WindowControls />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="shrink-0 z-10">
+              <TitleBar
+                showTitle={true}
+                className="bg-background backdrop-blur-xl border-b border-border shadow-sm"
+                actions={isSignedIn ? <SupportDropdown /> : undefined}
+                center={
+                  onboardingPlatform === "darwin" ? (
+                    <StepProgress steps={steps.slice(1)} currentStep={currentStep - 1} />
+                  ) : undefined
+                }
+              ></TitleBar>
+            </div>
+          )}
+
+          {/* Progress bar — on macOS it lives centered in the title bar instead */}
+          {showProgress && onboardingPlatform !== "darwin" && (
+            <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-b border-white/5 px-6 md:px-12 py-3 z-10">
+              <div className="max-w-3xl mx-auto">
+                <StepProgress steps={steps.slice(1)} currentStep={currentStep - 1} />
+              </div>
+            </div>
+          )}
+
+          {/* Content - This will grow to fill available space */}
+          <div
+            className={`flex-1 px-6 md:px-12 overflow-y-auto ${currentStep === 0 ? "flex items-center" : "py-6"}`}
+          >
+            <div className={`w-full ${currentStep === 0 ? "max-w-sm" : "max-w-3xl"} mx-auto`}>
+              <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-2xl overflow-hidden">
+                <CardContent className={currentStep === 0 ? "p-6" : "p-6 md:p-8"}>
+                  <AnimatePresence mode="wait">
+                    <m.div
+                      key={currentStepId}
+                      variants={stepVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                    >
+                      {renderStep()}
+                    </m.div>
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Footer Navigation - hidden on welcome/auth step */}
+          {showProgress && (
+            <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-t border-white/5 px-6 md:px-12 py-3 z-10">
+              <div className="max-w-3xl mx-auto flex items-center justify-between">
+                {/* Hide back button on first step for signed-in users */}
+                {!(currentStep === 1 && isSignedIn && !skipAuth) && (
+                  <Button
+                    onClick={prevStep}
+                    variant="outline"
+                    disabled={currentStep === 0}
+                    className="h-8 px-5 rounded-full text-xs"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    {t("common.back")}
+                  </Button>
+                )}
+
+                {/* Spacer to push next button to the right when back button is hidden */}
+                {currentStep === 1 && isSignedIn && !skipAuth && <div />}
+
+                <div className="flex items-center gap-2">
+                  {currentStepId !== "finish" && (
+                    <>
+                      {SKIPPABLE_STEPS.has(currentStepId ?? "") && (
+                        <Button
+                          onClick={nextStep}
+                          variant="ghost"
+                          className="h-8 px-4 rounded-full text-xs text-muted-foreground"
+                        >
+                          {t("common.skip")}
+                        </Button>
+                      )}
+                      <Button
+                        onClick={nextStep}
+                        disabled={!canProceed()}
+                        className="h-8 px-6 rounded-full text-xs border-0 text-white disabled:opacity-40"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, var(--color-flow-accent), var(--color-flow-accent-strong))",
+                        }}
+                      >
+                        {t("common.next")}
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
-      ) : (
-        <div className="shrink-0 z-10">
-          <TitleBar
-            showTitle={true}
-            className="bg-background backdrop-blur-xl border-b border-border shadow-sm"
-            actions={isSignedIn ? <SupportDropdown /> : undefined}
-            center={
-              onboardingPlatform === "darwin" ? (
-                <StepProgress steps={steps.slice(1)} currentStep={currentStep - 1} />
-              ) : undefined
-            }
-          ></TitleBar>
-        </div>
-      )}
-
-      {/* Progress bar — on macOS it lives centered in the title bar instead */}
-      {showProgress && onboardingPlatform !== "darwin" && (
-        <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-b border-white/5 px-6 md:px-12 py-3 z-10">
-          <div className="max-w-3xl mx-auto">
-            <StepProgress steps={steps.slice(1)} currentStep={currentStep - 1} />
-          </div>
-        </div>
-      )}
-
-      {/* Content - This will grow to fill available space */}
-      <div
-        className={`flex-1 px-6 md:px-12 overflow-y-auto ${currentStep === 0 ? "flex items-center" : "py-6"}`}
-      >
-        <div className={`w-full ${currentStep === 0 ? "max-w-sm" : "max-w-3xl"} mx-auto`}>
-          <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-2xl overflow-hidden">
-            <CardContent className={currentStep === 0 ? "p-6" : "p-6 md:p-8"}>
-              {renderStep()}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Footer Navigation - hidden on welcome/auth step */}
-      {showProgress && (
-        <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-t border-white/5 px-6 md:px-12 py-3 z-10">
-          <div className="max-w-3xl mx-auto flex items-center justify-between">
-            {/* Hide back button on first step for signed-in users */}
-            {!(currentStep === 1 && isSignedIn && !skipAuth) && (
-              <Button
-                onClick={prevStep}
-                variant="outline"
-                disabled={currentStep === 0}
-                className="h-8 px-5 rounded-full text-xs"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                {t("common.back")}
-              </Button>
-            )}
-
-            {/* Spacer to push next button to the right when back button is hidden */}
-            {currentStep === 1 && isSignedIn && !skipAuth && <div />}
-
-            <div className="flex items-center gap-2">
-              {currentStepId !== "finish" && (
-                <>
-                  {SKIPPABLE_STEPS.has(currentStepId ?? "") && (
-                    <Button
-                      onClick={nextStep}
-                      variant="ghost"
-                      className="h-8 px-4 rounded-full text-xs text-muted-foreground"
-                    >
-                      {t("common.skip")}
-                    </Button>
-                  )}
-                  <Button
-                    onClick={nextStep}
-                    disabled={!canProceed()}
-                    className="h-8 px-6 rounded-full text-xs border-0 text-white disabled:opacity-40"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, var(--color-flow-accent), var(--color-flow-accent-strong))",
-                    }}
-                  >
-                    {t("common.next")}
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </MotionConfig>
+    </LazyMotion>
   );
 }

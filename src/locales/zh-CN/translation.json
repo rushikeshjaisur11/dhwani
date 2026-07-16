@@ -164,6 +164,7 @@
   "onboarding": {
     "steps": {
       "welcome": "æ¬¢è¿Ž",
+      "demo": "观看演示",
       "setup": "è®¾ç½®",
       "permissions": "æƒé™",
       "activation": "å¬å†™",
@@ -214,7 +215,8 @@
       "test": "æµ‹è¯•",
       "hotkeyToStartStop": "{{hotkey}} å¼€å§‹/åœæ­¢",
       "holdHotkey": "æŒ‰ä½ {{hotkey}}",
-      "textareaPlaceholder": "ç‚¹å‡»æ­¤å¤„ï¼Œç„¶åŽä½¿ç”¨å¿«æ·é”®è¿›è¡Œå¬å†™..."
+      "textareaPlaceholder": "ç‚¹å‡»æ­¤å¤„ï¼Œç„¶åŽä½¿ç”¨å¿«æ·é”®è¿›è¡Œå¬å†™...",
+      "micTestHint": "说点什么 — 光球会随你的声音变化。"
     },
     "voiceAgent": {
       "title": "è¯­éŸ³åŠ©æ‰‹è®¾ç½®",
@@ -302,6 +304,12 @@
         "step2": "æ‰“å¼€ Corti æŽ§åˆ¶å°å¹¶åˆ›å»º API å‡­æ®",
         "step3": "åœ¨ä¸‹æ–¹ç²˜è´´ Client ID å’Œ Secret"
       }
+    },
+    "demo": {
+      "title": "听写实演",
+      "description": "按下快捷键开始说话，文字会出现在光标所在的位置。",
+      "typedText": "给团队写一条关于明天发布的简短备忘。",
+      "replay": "重播"
     }
   },
   "streaming": {

@@ -686,6 +686,7 @@ export interface SettingsState
   setPanelStartPosition: (position: "bottom-right" | "center" | "bottom-left") => void;
 
   setAutoPasteEnabled: (value: boolean) => void;
+  setShowStreamingPreview: (value: boolean) => void;
   setKeepTranscriptionInClipboard: (value: boolean) => void;
   setNoteFilesEnabled: (value: boolean) => void;
   setNoteFilesPath: (value: string) => void;

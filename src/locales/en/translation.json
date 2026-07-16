@@ -179,6 +179,7 @@
   "onboarding": {
     "steps": {
       "welcome": "Welcome",
+      "demo": "See it work",
       "setup": "Setup",
       "permissions": "Permissions",
       "activation": "Dictation",
@@ -229,7 +230,8 @@
       "test": "Test",
       "hotkeyToStartStop": "{{hotkey}} to start/stop",
       "holdHotkey": "Hold {{hotkey}}",
-      "textareaPlaceholder": "Click here and use your hotkey to dictate..."
+      "textareaPlaceholder": "Click here and use your hotkey to dictate...",
+      "micTestHint": "Say something — the orb reacts to your voice."
     },
     "voiceAgent": {
       "title": "Voice Agent Setup",
@@ -317,6 +319,12 @@
         "step2": "Open the Corti console and create API credentials",
         "step3": "Paste your Client ID and Secret below"
       }
+    },
+    "demo": {
+      "title": "Dictation in action",
+      "description": "Press the hotkey, speak, and your words land wherever your cursor is.",
+      "typedText": "Draft a quick note to the team about tomorrow's launch.",
+      "replay": "Replay"
     }
   },
   "streaming": {

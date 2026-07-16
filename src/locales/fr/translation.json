@@ -164,6 +164,7 @@
   "onboarding": {
     "steps": {
       "welcome": "Bienvenue",
+      "demo": "Voir la démo",
       "setup": "Configuration",
       "permissions": "Permissions",
       "activation": "DictÃ©e",
@@ -214,7 +215,8 @@
       "test": "Test",
       "hotkeyToStartStop": "{{hotkey}} pour dÃ©marrer/arrÃªter",
       "holdHotkey": "Maintenir {{hotkey}}",
-      "textareaPlaceholder": "Cliquez ici puis utilisez votre raccourci pour dicter..."
+      "textareaPlaceholder": "Cliquez ici puis utilisez votre raccourci pour dicter...",
+      "micTestHint": "Dites quelque chose — l'orbe réagit à votre voix."
     },
     "voiceAgent": {
       "title": "Configuration de l'agent vocal",
@@ -302,6 +304,12 @@
         "step2": "Ouvrez la console Corti et crÃ©ez des identifiants API",
         "step3": "Collez votre Client ID et votre Secret ci-dessous"
       }
+    },
+    "demo": {
+      "title": "La dictée en action",
+      "description": "Appuyez sur le raccourci, parlez, et vos mots apparaissent là où se trouve le curseur.",
+      "typedText": "Rédige une note rapide à l'équipe sur le lancement de demain.",
+      "replay": "Rejouer"
     }
   },
   "streaming": {

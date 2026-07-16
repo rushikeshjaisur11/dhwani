@@ -164,6 +164,7 @@
   "onboarding": {
     "steps": {
       "welcome": "æ­¡è¿Ž",
+      "demo": "觀看示範",
       "setup": "è¨­å®š",
       "permissions": "æ¬Šé™",
       "activation": "è½å¯«",
@@ -214,7 +215,8 @@
       "test": "æ¸¬è©¦",
       "hotkeyToStartStop": "{{hotkey}} é–‹å§‹/åœæ­¢",
       "holdHotkey": "æŒ‰ä½ {{hotkey}}",
-      "textareaPlaceholder": "é»žæ“Šé€™è£¡ï¼Œç„¶å¾Œä½¿ç”¨å¿«æ·éµé–‹å§‹èªžéŸ³è¼¸å…¥..."
+      "textareaPlaceholder": "é»žæ“Šé€™è£¡ï¼Œç„¶å¾Œä½¿ç”¨å¿«æ·éµé–‹å§‹èªžéŸ³è¼¸å…¥...",
+      "micTestHint": "說點什麼 — 光球會隨你的聲音變化。"
     },
     "voiceAgent": {
       "title": "èªžéŸ³åŠ©æ‰‹è¨­å®š",
@@ -302,6 +304,12 @@
         "step2": "é–‹å•Ÿ Corti æŽ§åˆ¶å°ä¸¦å»ºç«‹ API æ†‘è­‰",
         "step3": "åœ¨ä¸‹æ–¹è²¼ä¸Š Client ID å’Œ Secret"
       }
+    },
+    "demo": {
+      "title": "聽寫實演",
+      "description": "按下快捷鍵開始說話，文字會出現在游標所在的位置。",
+      "typedText": "給團隊寫一則關於明天發佈的簡短備忘。",
+      "replay": "重播"
     }
   },
   "streaming": {

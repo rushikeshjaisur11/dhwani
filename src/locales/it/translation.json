@@ -164,6 +164,7 @@
   "onboarding": {
     "steps": {
       "welcome": "Benvenuto",
+      "demo": "Guarda la demo",
       "setup": "Configurazione",
       "permissions": "Permessi",
       "activation": "Dettatura",
@@ -214,7 +215,8 @@
       "test": "Test",
       "hotkeyToStartStop": "{{hotkey}} per avviare/fermare",
       "holdHotkey": "Tieni premuto {{hotkey}}",
-      "textareaPlaceholder": "Clicca qui e usa la scorciatoia per dettare..."
+      "textareaPlaceholder": "Clicca qui e usa la scorciatoia per dettare...",
+      "micTestHint": "Di' qualcosa — la sfera reagisce alla tua voce."
     },
     "voiceAgent": {
       "title": "Configurazione dell'agente vocale",
@@ -302,6 +304,12 @@
         "step2": "Apri la console Corti e crea le credenziali API",
         "step3": "Incolla qui sotto Client ID e Secret"
       }
+    },
+    "demo": {
+      "title": "Dettatura in azione",
+      "description": "Premi la scorciatoia, parla e le tue parole compaiono dove si trova il cursore.",
+      "typedText": "Scrivi una breve nota al team sul lancio di domani.",
+      "replay": "Ripeti"
     }
   },
   "streaming": {

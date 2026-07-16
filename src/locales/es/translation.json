@@ -164,6 +164,7 @@
   "onboarding": {
     "steps": {
       "welcome": "Bienvenido",
+      "demo": "Míralo en acción",
       "setup": "ConfiguraciÃ³n",
       "permissions": "Permisos",
       "activation": "Dictado",
@@ -214,7 +215,8 @@
       "test": "Prueba",
       "hotkeyToStartStop": "{{hotkey}} para iniciar/detener",
       "holdHotkey": "Mantener {{hotkey}}",
-      "textareaPlaceholder": "Haz clic aquÃ­ y usa tu atajo para dictar..."
+      "textareaPlaceholder": "Haz clic aquÃ­ y usa tu atajo para dictar...",
+      "micTestHint": "Di algo — el orbe reacciona a tu voz."
     },
     "voiceAgent": {
       "title": "ConfiguraciÃ³n del agente de voz",
@@ -302,6 +304,12 @@
         "step2": "Abre la consola de Corti y crea credenciales de API",
         "step3": "Pega tu Client ID y Secret abajo"
       }
+    },
+    "demo": {
+      "title": "Dictado en acción",
+      "description": "Pulsa el atajo, habla y tus palabras aparecen donde esté el cursor.",
+      "typedText": "Redacta una nota rápida para el equipo sobre el lanzamiento de mañana.",
+      "replay": "Repetir"
     }
   },
   "streaming": {
