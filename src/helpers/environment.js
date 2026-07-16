@@ -104,7 +104,14 @@ class EnvironmentManager {
   // Keychain before any window is visible. Migration and _loadAllSecrets are
   // both no-ops on fresh installs, so neither path triggers Keychain until
   // the user actually saves their first secret.
-  async init() {
+  init() {
+    if (!this.initPromise) {
+      this.initPromise = this._init();
+    }
+    return this.initPromise;
+  }
+
+  async _init() {
     if (!fs.existsSync(this._getMigrationSentinelPath())) {
       await this._migrateToSecureStorage();
     }

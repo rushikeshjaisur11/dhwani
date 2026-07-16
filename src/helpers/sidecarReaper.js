@@ -1,6 +1,9 @@
-const { execFileSync } = require("child_process");
+const { execFile } = require("child_process");
+const { promisify } = require("util");
 const debugLogger = require("./debugLogger");
 const sidecarPidFile = require("./sidecarPidFile");
+
+const execFileAsync = promisify(execFile);
 
 const EXPECTED_BINARY_FRAGMENTS = {
   parakeet: "sherpa-onnx-ws",
@@ -19,40 +22,40 @@ function isProcessAlive(pid) {
   }
 }
 
-function processCommand(pid) {
+async function processCommand(pid) {
   try {
     if (process.platform === "win32") {
-      const out = execFileSync("tasklist", ["/FI", `PID eq ${pid}`, "/FO", "CSV", "/NH"], {
-        stdio: ["ignore", "pipe", "ignore"],
-        windowsHide: true,
-      }).toString();
-      const match = out.match(/^"([^"]+)"/);
+      const { stdout } = await execFileAsync(
+        "tasklist",
+        ["/FI", `PID eq ${pid}`, "/FO", "CSV", "/NH"],
+        { windowsHide: true }
+      );
+      const match = stdout.match(/^"([^"]+)"/);
       return match ? match[1] : "";
     }
-    return execFileSync("ps", ["-p", String(pid), "-o", "command="], {
-      stdio: ["ignore", "pipe", "ignore"],
-    })
-      .toString()
-      .trim();
+    const { stdout } = await execFileAsync("ps", ["-p", String(pid), "-o", "command="]);
+    return stdout.trim();
   } catch {
     return "";
   }
 }
 
-function reapStaleSidecars() {
+async function reapStaleSidecars() {
   const entries = sidecarPidFile.readAll();
-  for (const { name, pid } of entries) {
-    const fragment = EXPECTED_BINARY_FRAGMENTS[name];
-    if (fragment && isProcessAlive(pid) && processCommand(pid).includes(fragment)) {
-      debugLogger.warn("Reaping stale sidecar", { name, pid });
-      try {
-        process.kill(pid, "SIGTERM");
-      } catch {
-        // Already dead.
+  await Promise.all(
+    entries.map(async ({ name, pid }) => {
+      const fragment = EXPECTED_BINARY_FRAGMENTS[name];
+      if (fragment && isProcessAlive(pid) && (await processCommand(pid)).includes(fragment)) {
+        debugLogger.warn("Reaping stale sidecar", { name, pid });
+        try {
+          process.kill(pid, "SIGTERM");
+        } catch {
+          // Already dead.
+        }
       }
-    }
-    sidecarPidFile.clear(name);
-  }
+      sidecarPidFile.clear(name);
+    })
+  );
 }
 
 module.exports = { reapStaleSidecars };

@@ -790,6 +790,7 @@ class IPCHandlers {
     });
 
     ipcMain.handle("get-openai-key", async (event) => {
+      await this.environmentManager.init();
       return this.environmentManager.getOpenAIKey();
     });
 
@@ -1592,7 +1593,7 @@ class IPCHandlers {
 
       // Smart spacing (#856): append a trailing space so the next paste's leading
       // space self-corrects the gap. macOS prepend-mode (getPrecedingChar) is
-      // intentionally skipped here — its Accessibility read costs hundreds of ms,
+      // intentionally skipped here â€” its Accessibility read costs hundreds of ms,
       // too slow for the paste hot path.
       const textToPaste = applySmartSpacing({ text, mode: "append" });
 
@@ -2236,14 +2237,14 @@ class IPCHandlers {
       ipcMain.emit("hotkey-listening-mode-changed", null, enabled);
       const hotkeyManager = this.windowManager.hotkeyManager;
 
-      // newHotkey is whatever the HotkeyInput that just blurred captured — it's
+      // newHotkey is whatever the HotkeyInput that just blurred captured â€” it's
       // only meaningful here when that HotkeyInput was recording the dictation
       // slot (this reconciliation is dictation-specific: "use that to avoid
       // reading stale state" while its own registration IPC is still in
       // flight). Every other HotkeyInput (polish/agent/meeting/transforms/...)
       // shares this same channel and blurs with its own captured hotkey too,
       // so treat newHotkey as untrustworthy if it's already the current
-      // hotkey of some other slot — otherwise this would try to register that
+      // hotkey of some other slot â€” otherwise this would try to register that
       // slot's hotkey as dictation's.
       const newHotkeyBelongsElsewhere =
         newHotkey &&
@@ -2269,7 +2270,7 @@ class IPCHandlers {
         isRightSideModifier(hotkey);
 
       if (enabled) {
-        // Entering capture mode — unregister ALL slots so none intercept keypresses.
+        // Entering capture mode â€” unregister ALL slots so none intercept keypresses.
         // Dictation is always active; meeting and agent may or may not be set.
         const allSlots = hotkeyManager.slots;
         for (const [slot, info] of allSlots) {
@@ -2319,7 +2320,7 @@ class IPCHandlers {
         }
       } else {
         // Exiting capture mode - re-register globalShortcut if not already registered
-        // Skip for KDE/GNOME/Hyprland — updateHotkey handles re-registration via native path
+        // Skip for KDE/GNOME/Hyprland â€” updateHotkey handles re-registration via native path
         const usesNativePath =
           hotkeyManager.isUsingKDE() ||
           hotkeyManager.isUsingGnome() ||
@@ -2344,7 +2345,7 @@ class IPCHandlers {
         }
 
         // Re-sync native key listeners (Windows/Linux) across all hotkey slots now
-        // that capture is done. Idempotent — reads the current slot hotkeys.
+        // that capture is done. Idempotent â€” reads the current slot hotkeys.
         this.windowManager.reconcileNativeKeyListeners();
 
         // On GNOME, re-register the keybinding with the effective hotkey
@@ -2586,10 +2587,12 @@ class IPCHandlers {
     });
 
     ipcMain.handle("get-anthropic-key", async (event) => {
+      await this.environmentManager.init();
       return this.environmentManager.getAnthropicKey();
     });
 
     ipcMain.handle("get-gemini-key", async (event) => {
+      await this.environmentManager.init();
       return this.environmentManager.getGeminiKey();
     });
 
@@ -2598,6 +2601,7 @@ class IPCHandlers {
     });
 
     ipcMain.handle("get-groq-key", async (event) => {
+      await this.environmentManager.init();
       return this.environmentManager.getGroqKey();
     });
 
@@ -2606,6 +2610,7 @@ class IPCHandlers {
     });
 
     ipcMain.handle("get-xai-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getXaiKey();
     });
 
@@ -2650,6 +2655,7 @@ class IPCHandlers {
     );
 
     ipcMain.handle("get-mistral-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getMistralKey();
     });
 
@@ -2696,6 +2702,7 @@ class IPCHandlers {
     );
 
     ipcMain.handle("get-corti-client-id", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getCortiClientId();
     });
 
@@ -2704,6 +2711,7 @@ class IPCHandlers {
     });
 
     ipcMain.handle("get-corti-client-secret", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getCortiClientSecret();
     });
 
@@ -2733,6 +2741,7 @@ class IPCHandlers {
     );
 
     ipcMain.handle("get-custom-transcription-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getCustomTranscriptionKey();
     });
 
@@ -2741,6 +2750,7 @@ class IPCHandlers {
     });
 
     ipcMain.handle("get-cleanup-custom-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getCleanupCustomKey();
     });
 
@@ -2762,18 +2772,21 @@ class IPCHandlers {
       return this.environmentManager.saveBedrockProfile(value);
     });
     ipcMain.handle("get-bedrock-access-key-id", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getBedrockAccessKeyId();
     });
     ipcMain.handle("save-bedrock-access-key-id", async (event, key) => {
       return this.environmentManager.saveBedrockAccessKeyId(key);
     });
     ipcMain.handle("get-bedrock-secret-access-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getBedrockSecretAccessKey();
     });
     ipcMain.handle("save-bedrock-secret-access-key", async (event, key) => {
       return this.environmentManager.saveBedrockSecretAccessKey(key);
     });
     ipcMain.handle("get-bedrock-session-token", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getBedrockSessionToken();
     });
     ipcMain.handle("save-bedrock-session-token", async (event, key) => {
@@ -2786,6 +2799,7 @@ class IPCHandlers {
       return this.environmentManager.saveAzureEndpoint(value);
     });
     ipcMain.handle("get-azure-api-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getAzureApiKey();
     });
     ipcMain.handle("save-azure-api-key", async (event, key) => {
@@ -2816,6 +2830,7 @@ class IPCHandlers {
       return this.environmentManager.saveVertexLocation(value);
     });
     ipcMain.handle("get-vertex-api-key", async () => {
+      await this.environmentManager.init();
       return this.environmentManager.getVertexApiKey();
     });
     ipcMain.handle("save-vertex-api-key", async (event, key) => {

@@ -780,13 +780,14 @@ function startAuthBridgeServer() {
 // Main application startup
 async function startApp() {
   markStartup("startApp-begin");
-  reapStaleSidecars();
 
   // Phase 1: Core managers + IPC handlers before windows
   initializeCoreManagers();
   markStartup("coreManagers-done");
-  await environmentManager.init();
-  markStartup("env-init-done");
+  // Secret decryption runs concurrently with window creation. Awaited below
+  // before the control panel is created; secret-getter IPC handlers gate on
+  // environmentManager.init() themselves (idempotent, returns same promise).
+  const envInitPromise = environmentManager.init();
   registerSidecars();
   startAuthBridgeServer();
 
@@ -895,7 +896,7 @@ async function startApp() {
     cliBridge = null;
   });
 
-  await migrateCookieToBearerToken();
+  const cookieMigrationPromise = migrateCookieToBearerToken();
 
   // Electron's file:// renderer sends Origin: null, which Better Auth's
   // trustedOrigins check rejects. Spoof Origin to the request's own URL so
@@ -961,13 +962,157 @@ async function startApp() {
   if (debugLogger) debugLogger.info("Start minimized", { enabled: startMinimized });
   await windowManager.createMainWindow();
   markStartup("mainWindow-shown");
+
+  // Windows and Linux share the same native low-level key listener model: one hook
+  // process per watched key (Electron globalShortcut can't see modifier-only or
+  // right-side-modifier combos), routed to the owning slot here. macOS is handled
+  // separately above via globeKeyManager.
+  if (process.platform === "win32" || process.platform === "linux") {
+    const isWindows = process.platform === "win32";
+    const nativeKeyManager = isWindows ? windowsKeyManager : linuxKeyManager;
+    debugLogger.debug("[Push-to-Talk] Native key listener setup starting");
+
+    // Dictation supports push-to-talk and needs the overlay window; agent/meeting
+    // drive other windows (matching their globalShortcut callbacks and macOS).
+    const dispatchNativeKeyDown = (key) => {
+      if (key === hotkeyManager.getCurrentHotkey()) {
+        if (!isLiveWindow(windowManager.mainWindow)) return;
+        if (windowManager.getActivationMode() === "push") {
+          windowManager.startWindowsPushToTalk();
+        } else {
+          windowManager.sendToggleDictation();
+        }
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("voiceAgent")) {
+        windowManager.sendToggleVoiceAgent();
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("agent")) {
+        if (!hotkeyManager.isInListeningMode()) windowManager.toggleAgentOverlay();
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("meeting")) {
+        if (!hotkeyManager.isInListeningMode()) meetingDetectionEngine?.startManualMeeting();
+        return;
+      }
+      if (key === hotkeyManager.getSlotHotkey("polish")) {
+        if (!hotkeyManager.isInListeningMode()) windowManager.sendTriggerPolish();
+        return;
+      }
+      // Per-transform hotkeys are dynamic (one slot per user-created
+      // transform, named "transform:<id>"), so this can't be a fixed
+      // else-if branch like the slots above — look up whichever registered
+      // transform slot this key belongs to.
+      if (!hotkeyManager.isInListeningMode()) {
+        for (const slotName of windowManager.transformSlotIds) {
+          if (key === hotkeyManager.getSlotHotkey(slotName)) {
+            windowManager.sendTriggerTransform(slotName.slice("transform:".length));
+            return;
+          }
+        }
+      }
+    };
+
+    // Only dictation drives push-to-talk, so only its key-up matters.
+    const dispatchNativeKeyUp = (key) => {
+      if (key !== hotkeyManager.getCurrentHotkey()) return;
+      if (windowManager.winPushState?.active) {
+        windowManager.handleWindowsPushKeyUp();
+      } else if (
+        isLiveWindow(windowManager.mainWindow) &&
+        windowManager.getActivationMode() === "push"
+      ) {
+        windowManager.handleWindowsPushKeyUp();
+      }
+    };
+
+    nativeKeyManager.on("key-down", dispatchNativeKeyDown);
+    nativeKeyManager.on("key-up", dispatchNativeKeyUp);
+
+    nativeKeyManager.on("error", (error) => {
+      debugLogger.warn("[Push-to-Talk] Native key listener error", { error: error.message });
+      if (isWindows && isLiveWindow(windowManager.mainWindow)) {
+        windowManager.mainWindow.webContents.send("windows-ptt-unavailable", {
+          reason: "error",
+          message: error.message,
+        });
+      }
+    });
+
+    nativeKeyManager.on("unavailable", () => {
+      debugLogger.debug(
+        "[Push-to-Talk] Native key listener unavailable - falling back to toggle mode"
+      );
+      if (isWindows && isLiveWindow(windowManager.mainWindow)) {
+        windowManager.mainWindow.webContents.send("windows-ptt-unavailable", {
+          reason: "binary_not_found",
+          message: i18nMain.t("windows.pttUnavailable"),
+        });
+      }
+    });
+
+    nativeKeyManager.on("ready", () => {
+      debugLogger.debug("[Push-to-Talk] Native key listener ready and listening");
+    });
+
+    if (!isWindows) {
+      nativeKeyManager.on("permission-denied", () => {
+        debugLogger.warn(
+          "[Push-to-Talk] Linux key listener has no permission to access input devices"
+        );
+        if (isLiveWindow(windowManager.mainWindow)) {
+          windowManager.mainWindow.webContents.send("linux-ptt-permission-denied");
+        }
+      });
+    }
+
+    ipcMain.on("activation-mode-changed", () => {
+      windowManager.resetWindowsPushState();
+      windowManager.reconcileNativeKeyListeners();
+    });
+
+    ipcMain.on("hotkey-changed", () => {
+      windowManager.resetWindowsPushState();
+      windowManager.reconcileNativeKeyListeners();
+    });
+  }
+
+  // Set up Polish hotkey (rewrite the currently selected text in the target app)
+  const polishHotkeyCallback = () => {
+    if (hotkeyManager.isInListeningMode()) return;
+    windowManager.sendTriggerPolish();
+  };
+  windowManager._polishHotkeyCallback = polishHotkeyCallback;
+
+  // Defaults to Win+Alt+1 (matches the Transforms page's Polish card, which
+  // reuses this exact slot/settings rather than duplicating Polish as its
+  // own transform) when the user has never set — or explicitly cleared —
+  // their own Polish hotkey.
+  const savedPolishKey = environmentManager.getPolishKey?.() || "Super+Alt+1";
+  const polishResult = await hotkeyManager.registerSlot("polish", savedPolishKey, polishHotkeyCallback);
+  if (!polishResult.success) {
+    debugLogger.warn("Failed to register polish hotkey", { hotkey: savedPolishKey }, "hotkey");
+  }
+  windowManager.reconcileNativeKeyListeners();
+
+  await envInitPromise;
+  markStartup("env-init-done");
+  await cookieMigrationPromise;
   if (!startMinimized) {
     await windowManager.createControlPanelWindow();
     markStartup("controlPanel-created");
   }
 
-  // Create agent window (hidden) and set up agent hotkey
-  await windowManager.createAgentWindow();
+  // Create agent window (hidden) and set up agent hotkey. Not awaited: its
+  // renderer load is the single slowest startup step and nothing below needs
+  // the window — toggleAgentOverlay no-ops until it exists.
+  windowManager
+    .createAgentWindow()
+    .then(() => markStartup("agentWindow-created"))
+    .catch((err) => {
+      debugLogger.error("Agent window creation failed", { error: err.message });
+    });
 
   const agentHotkeyCallback = () => {
     if (hotkeyManager.isInListeningMode()) return;
@@ -1005,24 +1150,6 @@ async function startApp() {
       );
     }
   }
-
-  // Set up Polish hotkey (rewrite the currently selected text in the target app)
-  const polishHotkeyCallback = () => {
-    if (hotkeyManager.isInListeningMode()) return;
-    windowManager.sendTriggerPolish();
-  };
-  windowManager._polishHotkeyCallback = polishHotkeyCallback;
-
-  // Defaults to Win+Alt+1 (matches the Transforms page's Polish card, which
-  // reuses this exact slot/settings rather than duplicating Polish as its
-  // own transform) when the user has never set — or explicitly cleared —
-  // their own Polish hotkey.
-  const savedPolishKey = environmentManager.getPolishKey?.() || "Super+Alt+1";
-  const polishResult = await hotkeyManager.registerSlot("polish", savedPolishKey, polishHotkeyCallback);
-  if (!polishResult.success) {
-    debugLogger.warn("Failed to register polish hotkey", { hotkey: savedPolishKey }, "hotkey");
-  }
-  windowManager.reconcileNativeKeyListeners();
 
   ipcMain.handle("register-polish-hotkey", async (_event, hotkey) => {
     if (hotkey) {
@@ -1291,8 +1418,10 @@ async function startApp() {
     trayManager.setLanguageState(selectedCode);
   });
 
+  markStartup("slots-registered");
   // Phase 2: Initialize remaining managers after windows are visible
   initializeDeferredManagers();
+  markStartup("deferredManagers-done");
 
   app.on("browser-window-focus", () => {
     if (googleCalendarManager) googleCalendarManager.syncOnFocus();
@@ -1311,6 +1440,8 @@ async function startApp() {
     whisperModel: process.env.LOCAL_WHISPER_MODEL,
     useCuda: process.env.WHISPER_CUDA_ENABLED === "true" && whisperCudaManager?.isDownloaded(),
   };
+  // Stale sidecars must be reaped before fresh ones spawn (PID-file reuse).
+  await reapStaleSidecars();
   markStartup("sidecar-kick-whisper");
   whisperManager.initializeAtStartup(whisperSettings).catch((err) => {
     debugLogger.debug("Whisper startup init error (non-fatal)", { error: err.message });
@@ -1325,71 +1456,86 @@ async function startApp() {
     debugLogger.debug("Parakeet startup init error (non-fatal)", { error: err.message });
   });
 
-  // TODO: drop legacy REASONING_PROVIDER / LOCAL_REASONING_MODEL fallbacks after 2 releases.
-  const cleanupProvider = process.env.CLEANUP_PROVIDER || process.env.REASONING_PROVIDER;
-  const cleanupLocalModel = process.env.LOCAL_CLEANUP_MODEL || process.env.LOCAL_REASONING_MODEL;
-  if (cleanupProvider === "local" && cleanupLocalModel) {
-    markStartup("sidecar-kick-llama-prewarm");
-    const modelManager = require("./src/helpers/modelManagerBridge").default;
-    modelManager.prewarmServer(cleanupLocalModel).catch((err) => {
-      debugLogger.debug("llama-server pre-warm error (non-fatal)", { error: err.message });
-    });
-  }
+  // Stagger the remaining sidecar storm so it doesn't compete with first
+  // paint / first dictation. T+3s: local-LLM prewarm + Qdrant. T+10s: model
+  // downloads + update check. Active STT (whisper/parakeet above) stays at
+  // T+0 — dictation latency depends on it.
+  setTimeout(() => {
+    if (!isLiveWindow(windowManager.mainWindow)) return;
 
-  if (
-    process.env.DICTATION_AGENT_PROVIDER === "local" &&
-    process.env.LOCAL_DICTATION_AGENT_MODEL &&
-    process.env.LOCAL_DICTATION_AGENT_MODEL !== cleanupLocalModel
-  ) {
-    const modelManager = require("./src/helpers/modelManagerBridge").default;
-    modelManager.prewarmServer(process.env.LOCAL_DICTATION_AGENT_MODEL).catch((err) => {
-      debugLogger.debug("dictation-agent llama-server pre-warm error (non-fatal)", {
-        error: err.message,
+    // TODO: drop legacy REASONING_PROVIDER / LOCAL_REASONING_MODEL fallbacks after 2 releases.
+    const cleanupProvider = process.env.CLEANUP_PROVIDER || process.env.REASONING_PROVIDER;
+    const cleanupLocalModel = process.env.LOCAL_CLEANUP_MODEL || process.env.LOCAL_REASONING_MODEL;
+    if (cleanupProvider === "local" && cleanupLocalModel) {
+      markStartup("sidecar-kick-llama-prewarm");
+      const modelManager = require("./src/helpers/modelManagerBridge").default;
+      modelManager.prewarmServer(cleanupLocalModel).catch((err) => {
+        debugLogger.debug("llama-server pre-warm error (non-fatal)", { error: err.message });
       });
-    });
-  }
+    }
 
-  // Auto-download diarization models if binary is available
-  if (
-    diarizationManager.getBinaryPath() &&
-    (!diarizationManager.isModelDownloaded() || !diarizationManager.isVadModelDownloaded())
-  ) {
-    markStartup("sidecar-kick-diarization-download");
-    diarizationManager.downloadModels().catch((err) => {
-      debugLogger.debug("Diarization model auto-download error (non-fatal)", {
-        error: err.message,
+    if (
+      process.env.DICTATION_AGENT_PROVIDER === "local" &&
+      process.env.LOCAL_DICTATION_AGENT_MODEL &&
+      process.env.LOCAL_DICTATION_AGENT_MODEL !== cleanupLocalModel
+    ) {
+      const modelManager = require("./src/helpers/modelManagerBridge").default;
+      modelManager.prewarmServer(process.env.LOCAL_DICTATION_AGENT_MODEL).catch((err) => {
+        debugLogger.debug("dictation-agent llama-server pre-warm error (non-fatal)", {
+          error: err.message,
+        });
       });
-    });
-  }
+    }
 
-  const QdrantManager = require("./src/helpers/qdrantManager");
-  qdrantManager = new QdrantManager();
-  sidecarRegistry.register("qdrant", () => qdrantManager.stop());
-  if (qdrantManager.isAvailable()) {
-    markStartup("sidecar-kick-qdrant");
-    qdrantManager
-      .start()
-      .then(() => {
-        if (qdrantManager.isReady()) {
-          const vectorIndex = require("./src/helpers/vectorIndex");
-          vectorIndex.init(qdrantManager.getPort());
-          vectorIndex.ensureCollection().catch((err) => {
-            debugLogger.debug("Qdrant collection setup error (non-fatal)", { error: err.message });
-          });
-        }
-      })
-      .catch((err) => {
-        debugLogger.debug("Qdrant startup error (non-fatal)", { error: err.message });
+    const QdrantManager = require("./src/helpers/qdrantManager");
+    qdrantManager = new QdrantManager();
+    sidecarRegistry.register("qdrant", () => qdrantManager.stop());
+    if (qdrantManager.isAvailable()) {
+      markStartup("sidecar-kick-qdrant");
+      qdrantManager
+        .start()
+        .then(() => {
+          if (qdrantManager.isReady()) {
+            const vectorIndex = require("./src/helpers/vectorIndex");
+            vectorIndex.init(qdrantManager.getPort());
+            vectorIndex.ensureCollection().catch((err) => {
+              debugLogger.debug("Qdrant collection setup error (non-fatal)", { error: err.message });
+            });
+          }
+        })
+        .catch((err) => {
+          debugLogger.debug("Qdrant startup error (non-fatal)", { error: err.message });
+        });
+    }
+  }, 3000);
+
+  setTimeout(() => {
+    if (!isLiveWindow(windowManager.mainWindow)) return;
+
+    // Auto-download diarization models if binary is available
+    if (
+      diarizationManager.getBinaryPath() &&
+      (!diarizationManager.isModelDownloaded() || !diarizationManager.isVadModelDownloaded())
+    ) {
+      markStartup("sidecar-kick-diarization-download");
+      diarizationManager.downloadModels().catch((err) => {
+        debugLogger.debug("Diarization model auto-download error (non-fatal)", {
+          error: err.message,
+        });
       });
-  }
+    }
 
-  const localEmbeddings = require("./src/helpers/localEmbeddings");
-  if (!localEmbeddings.isAvailable()) {
-    markStartup("sidecar-kick-embedding-download");
-    localEmbeddings.downloadModel().catch((err) => {
-      debugLogger.debug("Embedding model download error (non-fatal)", { error: err.message });
-    });
-  }
+    const localEmbeddings = require("./src/helpers/localEmbeddings");
+    if (!localEmbeddings.isAvailable()) {
+      markStartup("sidecar-kick-embedding-download");
+      localEmbeddings.downloadModel().catch((err) => {
+        debugLogger.debug("Embedding model download error (non-fatal)", { error: err.message });
+      });
+    }
+
+    markStartup("sidecar-kick-update-check");
+    updateManager.checkForUpdatesOnStartup();
+  }, 10000);
 
   if (process.platform === "win32") {
     const nircmdStatus = clipboardManager.getNircmdStatus();
@@ -1405,8 +1551,6 @@ async function startApp() {
   markStartup("tray-created");
 
   updateManager.setWindows(windowManager.mainWindow, windowManager.controlPanelWindow);
-  markStartup("sidecar-kick-update-check");
-  updateManager.checkForUpdatesOnStartup();
 
   if (process.platform === "darwin") {
     const { isGlobeLikeHotkey, isMouseButtonHotkey } = require("./src/helpers/hotkeyManager");
@@ -1705,123 +1849,6 @@ async function startApp() {
     });
   }
 
-  // Windows and Linux share the same native low-level key listener model: one hook
-  // process per watched key (Electron globalShortcut can't see modifier-only or
-  // right-side-modifier combos), routed to the owning slot here. macOS is handled
-  // separately above via globeKeyManager.
-  if (process.platform === "win32" || process.platform === "linux") {
-    const isWindows = process.platform === "win32";
-    const nativeKeyManager = isWindows ? windowsKeyManager : linuxKeyManager;
-    debugLogger.debug("[Push-to-Talk] Native key listener setup starting");
-
-    // Dictation supports push-to-talk and needs the overlay window; agent/meeting
-    // drive other windows (matching their globalShortcut callbacks and macOS).
-    const dispatchNativeKeyDown = (key) => {
-      if (key === hotkeyManager.getCurrentHotkey()) {
-        if (!isLiveWindow(windowManager.mainWindow)) return;
-        if (windowManager.getActivationMode() === "push") {
-          windowManager.startWindowsPushToTalk();
-        } else {
-          windowManager.sendToggleDictation();
-        }
-        return;
-      }
-      if (key === hotkeyManager.getSlotHotkey("voiceAgent")) {
-        windowManager.sendToggleVoiceAgent();
-        return;
-      }
-      if (key === hotkeyManager.getSlotHotkey("agent")) {
-        if (!hotkeyManager.isInListeningMode()) windowManager.toggleAgentOverlay();
-        return;
-      }
-      if (key === hotkeyManager.getSlotHotkey("meeting")) {
-        if (!hotkeyManager.isInListeningMode()) meetingDetectionEngine?.startManualMeeting();
-        return;
-      }
-      if (key === hotkeyManager.getSlotHotkey("polish")) {
-        if (!hotkeyManager.isInListeningMode()) windowManager.sendTriggerPolish();
-        return;
-      }
-      // Per-transform hotkeys are dynamic (one slot per user-created
-      // transform, named "transform:<id>"), so this can't be a fixed
-      // else-if branch like the slots above — look up whichever registered
-      // transform slot this key belongs to.
-      if (!hotkeyManager.isInListeningMode()) {
-        for (const slotName of windowManager.transformSlotIds) {
-          if (key === hotkeyManager.getSlotHotkey(slotName)) {
-            windowManager.sendTriggerTransform(slotName.slice("transform:".length));
-            return;
-          }
-        }
-      }
-    };
-
-    // Only dictation drives push-to-talk, so only its key-up matters.
-    const dispatchNativeKeyUp = (key) => {
-      if (key !== hotkeyManager.getCurrentHotkey()) return;
-      if (windowManager.winPushState?.active) {
-        windowManager.handleWindowsPushKeyUp();
-      } else if (
-        isLiveWindow(windowManager.mainWindow) &&
-        windowManager.getActivationMode() === "push"
-      ) {
-        windowManager.handleWindowsPushKeyUp();
-      }
-    };
-
-    nativeKeyManager.on("key-down", dispatchNativeKeyDown);
-    nativeKeyManager.on("key-up", dispatchNativeKeyUp);
-
-    nativeKeyManager.on("error", (error) => {
-      debugLogger.warn("[Push-to-Talk] Native key listener error", { error: error.message });
-      if (isWindows && isLiveWindow(windowManager.mainWindow)) {
-        windowManager.mainWindow.webContents.send("windows-ptt-unavailable", {
-          reason: "error",
-          message: error.message,
-        });
-      }
-    });
-
-    nativeKeyManager.on("unavailable", () => {
-      debugLogger.debug(
-        "[Push-to-Talk] Native key listener unavailable - falling back to toggle mode"
-      );
-      if (isWindows && isLiveWindow(windowManager.mainWindow)) {
-        windowManager.mainWindow.webContents.send("windows-ptt-unavailable", {
-          reason: "binary_not_found",
-          message: i18nMain.t("windows.pttUnavailable"),
-        });
-      }
-    });
-
-    nativeKeyManager.on("ready", () => {
-      debugLogger.debug("[Push-to-Talk] Native key listener ready and listening");
-    });
-
-    if (!isWindows) {
-      nativeKeyManager.on("permission-denied", () => {
-        debugLogger.warn(
-          "[Push-to-Talk] Linux key listener has no permission to access input devices"
-        );
-        if (isLiveWindow(windowManager.mainWindow)) {
-          windowManager.mainWindow.webContents.send("linux-ptt-permission-denied");
-        }
-      });
-    }
-
-    const STARTUP_DELAY_MS = 3000;
-    setTimeout(() => windowManager.reconcileNativeKeyListeners(), STARTUP_DELAY_MS);
-
-    ipcMain.on("activation-mode-changed", () => {
-      windowManager.resetWindowsPushState();
-      windowManager.reconcileNativeKeyListeners();
-    });
-
-    ipcMain.on("hotkey-changed", () => {
-      windowManager.resetWindowsPushState();
-      windowManager.reconcileNativeKeyListeners();
-    });
-  }
   markStartup("startApp-done");
 }
 

@@ -105,9 +105,16 @@ class WindowManager {
       this.enforceMainWindowOnTop();
     });
 
-    await this.loadMainWindow();
+    // Hotkeys come from .env (already loaded), not from the renderer or secret
+    // decryption — register them before the renderer finishes loading so
+    // dictation responds immediately on cold start.
+    const loadPromise = this.loadMainWindow();
     await this.initializeHotkey();
     markStartup("hotkey-registered");
+    // Spawn the native key listener (Windows/Linux push-to-talk) for the
+    // dictation key now; later slot registrations reconcile again to add theirs.
+    this.reconcileNativeKeyListeners();
+    await loadPromise;
     this.dragManager.setTargetWindow(this.mainWindow);
     MenuManager.setupMainMenu(() => this.openSettings());
   }

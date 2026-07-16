@@ -1,5 +1,14 @@
-const { autoUpdater } = require("electron-updater");
 const debugLogger = require("./helpers/debugLogger");
+
+// electron-updater costs ~200ms to require; defer it off the startup
+// critical path until the first real updater interaction.
+let _autoUpdater = null;
+function getAutoUpdater() {
+  if (!_autoUpdater) {
+    _autoUpdater = require("electron-updater").autoUpdater;
+  }
+  return _autoUpdater;
+}
 
 class UpdateManager {
   constructor() {
@@ -14,8 +23,7 @@ class UpdateManager {
     this.updateCheckInterval = null;
     this.windowManager = null;
     this._suppressNotification = false;
-
-    this.setupAutoUpdater();
+    this._setupDone = false;
   }
 
   setWindows(mainWindow, controlPanelWindow) {
@@ -28,10 +36,12 @@ class UpdateManager {
   }
 
   setupAutoUpdater() {
-    if (process.env.NODE_ENV === "development") {
+    if (this._setupDone || process.env.NODE_ENV === "development") {
       return;
     }
+    this._setupDone = true;
 
+    const autoUpdater = getAutoUpdater();
     autoUpdater.setFeedURL({
       provider: "github",
       owner: "rushikeshjaisur11",
@@ -77,6 +87,7 @@ class UpdateManager {
   }
 
   setupEventHandlers() {
+    const autoUpdater = getAutoUpdater();
     const handlers = {
       "checking-for-update": () => {
         this.notifyRenderers("checking-for-update");
@@ -168,8 +179,9 @@ class UpdateManager {
       }
 
       debugLogger.info("🔍 Checking for updates...");
+      this.setupAutoUpdater();
       this._suppressNotification = true;
-      const result = await autoUpdater.checkForUpdates();
+      const result = await getAutoUpdater().checkForUpdates();
 
       if (result?.isUpdateAvailable && result?.updateInfo) {
         debugLogger.info("📋 Update available:", result.updateInfo.version);
@@ -218,7 +230,8 @@ class UpdateManager {
 
       this.isDownloading = true;
       debugLogger.info("📥 Starting update download...");
-      await autoUpdater.downloadUpdate();
+      this.setupAutoUpdater();
+      await getAutoUpdater().downloadUpdate();
       debugLogger.info("📥 Download initiated successfully");
 
       return { success: true, message: "Update download started" };
@@ -269,7 +282,7 @@ class UpdateManager {
       });
 
       const isSilent = process.platform === "win32";
-      autoUpdater.quitAndInstall(isSilent, true);
+      getAutoUpdater().quitAndInstall(isSilent, true);
 
       return { success: true, message: "Update installation started" };
     } catch (error) {
@@ -313,19 +326,24 @@ class UpdateManager {
 
   checkForUpdatesOnStartup() {
     if (process.env.NODE_ENV !== "development") {
+      this.setupAutoUpdater();
       setTimeout(() => {
         console.log("🔄 Checking for updates on startup...");
-        autoUpdater.checkForUpdates().catch((err) => {
-          console.error("Startup update check failed:", err);
-        });
+        getAutoUpdater()
+          .checkForUpdates()
+          .catch((err) => {
+            console.error("Startup update check failed:", err);
+          });
       }, 3000);
 
       const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
       this.updateCheckInterval = setInterval(() => {
         console.log("🔄 Periodic update check...");
-        autoUpdater.checkForUpdates().catch((err) => {
-          console.error("Periodic update check failed:", err);
-        });
+        getAutoUpdater()
+          .checkForUpdates()
+          .catch((err) => {
+            console.error("Periodic update check failed:", err);
+          });
       }, FOUR_HOURS_MS);
     }
   }
@@ -336,7 +354,7 @@ class UpdateManager {
       this.updateCheckInterval = null;
     }
     this.eventListeners.forEach(({ event, handler }) => {
-      autoUpdater.removeListener(event, handler);
+      getAutoUpdater().removeListener(event, handler);
     });
     this.eventListeners = [];
   }
