@@ -807,6 +807,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Agent mode
   updateAgentHotkey: (hotkey) => ipcRenderer.invoke("update-agent-hotkey", hotkey),
   updateVoiceAgentHotkey: (hotkey) => ipcRenderer.invoke("update-voice-agent-hotkey", hotkey),
+  checkHotkeyConflict: (slotName, hotkey) =>
+    ipcRenderer.invoke("check-hotkey-conflict", { slotName, hotkey }),
   getVoiceAgentKey: () => ipcRenderer.invoke("get-voice-agent-key"),
   getAgentKey: () => ipcRenderer.invoke("get-agent-key"),
   saveAgentKey: (key) => ipcRenderer.invoke("save-agent-key", key),

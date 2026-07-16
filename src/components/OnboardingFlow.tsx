@@ -772,6 +772,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             disabled={isHotkeyRegistering}
             variant="hero"
             validate={validateHotkeyForInput}
+            slotName="dictation"
           />
         </div>
 
@@ -839,6 +840,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             onClear={() => setVoiceAgentKey("")}
             variant="hero"
             validate={validateVoiceAgentHotkey}
+            slotName="voiceAgent"
           />
         </div>
 

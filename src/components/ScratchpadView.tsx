@@ -105,6 +105,7 @@ export default function ScratchpadView() {
                 onChange={(hotkey) => void saveShortcut(hotkey)}
                 onClear={() => void saveShortcut("")}
                 onBlur={() => setEditingKey(false)}
+                slotName="scratchpad"
               />
             </div>
           ) : (

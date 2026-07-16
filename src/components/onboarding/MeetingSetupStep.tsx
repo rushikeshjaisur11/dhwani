@@ -80,6 +80,7 @@ export default function MeetingSetupStep({
           }}
           disabled={isRegistering}
           validate={validateMeetingHotkey}
+          slotName="meeting"
         />
         {meetingKey && (
           <button

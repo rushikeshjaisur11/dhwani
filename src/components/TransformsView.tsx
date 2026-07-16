@@ -104,6 +104,7 @@ function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }:
               onShortcutChange(transform, "");
             }}
             disabled={isRegistering}
+            slotName={`transform:${transform.id}`}
           />
         </div>
       )}

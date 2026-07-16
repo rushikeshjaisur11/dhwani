@@ -297,6 +297,7 @@ export default function TransformDetailView({ transform, onBack }: TransformDeta
                   onChange={(hotkey) => void registerHotkey(hotkey)}
                   onClear={handleClearShortcut}
                   disabled={isRegistering}
+                  slotName={isPolish ? "polish" : `transform:${transform.id}`}
                 />
               </div>
               <Pencil size={14} className="shrink-0 text-muted-foreground" />

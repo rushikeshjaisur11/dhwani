@@ -1463,6 +1463,10 @@ declare global {
       // Agent Mode
       updateAgentHotkey?: (hotkey: string) => Promise<{ success: boolean; message: string }>;
       updateVoiceAgentHotkey?: (hotkey: string) => Promise<{ success: boolean; message: string }>;
+      checkHotkeyConflict?: (
+        slotName: string,
+        hotkey: string
+      ) => Promise<{ conflict: boolean; conflictSlot?: string; message?: string }>;
       getVoiceAgentKey?: () => Promise<string>;
       getAgentKey?: () => Promise<string>;
       saveAgentKey?: (key: string) => Promise<void>;

@@ -2591,6 +2591,7 @@ EOF`,
                     }}
                     disabled={isHotkeyRegistering}
                     validate={validateDictationHotkey}
+                    slotName="dictation"
                   />
                   {effectiveDefaultHotkey &&
                     dictationKey &&
@@ -2636,6 +2637,7 @@ EOF`,
                     onChange={setVoiceAgentKey}
                     onClear={() => setVoiceAgentKey("")}
                     validate={validateVoiceAgentHotkey}
+                    slotName="voiceAgent"
                   />
                 </SettingsPanelRow>
               </SettingsPanel>
@@ -2660,6 +2662,7 @@ EOF`,
                     }}
                     disabled={isMeetingHotkeyRegistering}
                     validate={validateMeetingHotkey}
+                    slotName="meeting"
                   />
                 </SettingsPanelRow>
                 <SettingsPanelRow className="flex items-center justify-between gap-3 border-t border-border/40 dark:border-white/5">
@@ -2713,6 +2716,7 @@ EOF`,
                     }}
                     disabled={isPolishHotkeyRegistering}
                     validate={validatePolishHotkey}
+                    slotName="polish"
                   />
                 </SettingsPanelRow>
                 <SettingsPanelRow className="flex items-center justify-between gap-3 border-t border-border/40 dark:border-white/5">
@@ -2781,6 +2785,7 @@ EOF`,
                     }}
                     disabled={isPasteLastTranscriptHotkeyRegistering}
                     validate={validatePasteLastTranscriptHotkey}
+                    slotName="pasteLastTranscript"
                   />
                 </SettingsPanelRow>
               </SettingsPanel>
@@ -2854,6 +2859,7 @@ EOF`,
                     onChange={setChatAgentKey}
                     onClear={() => setChatAgentKey("")}
                     validate={validateChatAgentHotkey}
+                    slotName="agent"
                   />
                 </SettingsPanelRow>
               </SettingsPanel>

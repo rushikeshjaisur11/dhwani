@@ -7307,6 +7307,15 @@ class IPCHandlers {
       return this.environmentManager.getVoiceAgentKey?.() || "";
     });
 
+    // Read-only: never registers/unregisters anything. Live inline feedback
+    // in HotkeyInput; save-time validation in registerSlot stays the hard gate.
+    ipcMain.handle("check-hotkey-conflict", (_event, { slotName, hotkey }) => {
+      const conflict = this.windowManager.hotkeyManager._findSlotConflict(slotName, hotkey);
+      return conflict
+        ? { conflict: true, conflictSlot: conflict.conflictSlot, message: conflict.error }
+        : { conflict: false };
+    });
+
     ipcMain.handle("get-agent-key", async () => {
       return this.environmentManager.getAgentKey?.() || "";
     });

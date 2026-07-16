@@ -179,7 +179,27 @@ export interface HotkeyInputProps {
   disabled?: boolean;
   autoFocus?: boolean;
   validate?: (hotkey: string) => string | null | undefined;
+  /**
+   * Hotkey-manager slot name (e.g. "dictation", "transform:<id>"). When set,
+   * a captured combo is checked live against all registered slots via the
+   * read-only check-hotkey-conflict IPC before being committed: conflicts show
+   * red inline and block onChange; a clear combo flashes green and commits.
+   * Save-time validation in the main process remains the hard gate.
+   */
+  slotName?: string;
 }
+
+// Friendly labels for known slots (existing i18n keys). Unknown slots
+// (transform:<id>) fall back to the main process's localized message.
+const SLOT_LABEL_KEYS: Record<string, string> = {
+  dictation: "settingsPage.general.hotkey.title",
+  meeting: "settingsPage.general.meetingHotkey.title",
+  agent: "agentMode.settings.hotkey",
+  voiceAgent: "settingsPage.general.voiceAgentHotkey.title",
+  polish: "settingsPage.general.polishHotkey.title",
+  pasteLastTranscript: "settingsPage.general.pasteLastTranscriptHotkey.title",
+  scratchpad: "scratchpad.title",
+};
 
 function mapKeyboardEventToHotkey(e: KeyboardEvent): string | null {
   if (MODIFIER_CODES.has(e.code)) {
@@ -221,11 +241,15 @@ export function HotkeyInput({
   autoFocus = false,
   variant = "default",
   validate,
+  slotName,
 }: HotkeyInputProps & HotkeyInputVariant) {
   const { t } = useTranslation();
   const [isCapturing, setIsCapturing] = useState(false);
   const [activeModifiers, setActiveModifiers] = useState<Set<string>>(new Set());
   const [validationWarning, setValidationWarning] = useState<string | null>(null);
+  const [conflictError, setConflictError] = useState<string | null>(null);
+  const [justAccepted, setJustAccepted] = useState(false);
+  const acceptedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isFnHeld, setIsFnHeld] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastCapturedHotkeyRef = useRef<string | null>(null);
@@ -301,29 +325,61 @@ export function HotkeyInput({
         warningTimeoutRef.current = null;
       }
 
+      const rejectCapture = () => {
+        heldModifiersRef.current = { ctrl: false, meta: false, alt: false, shift: false };
+        modifierCodesRef.current = {};
+        setActiveModifiers(new Set());
+        keyDownTimeRef.current = 0;
+        clearFnHeld();
+      };
+
       if (validate) {
         const errorMsg = validate(hotkey);
         if (errorMsg) {
           setValidationWarning(errorMsg);
           warningTimeoutRef.current = setTimeout(() => setValidationWarning(null), 4000);
-          heldModifiersRef.current = { ctrl: false, meta: false, alt: false, shift: false };
-          modifierCodesRef.current = {};
-          setActiveModifiers(new Set());
-          keyDownTimeRef.current = 0;
-          clearFnHeld();
+          rejectCapture();
           return;
         }
       }
 
-      setValidationWarning(null);
-      lastCapturedHotkeyRef.current = hotkey;
-      onChange(hotkey);
-      setIsCapturing(false);
-      setActiveModifiers(new Set());
-      clearFnHeld();
-      containerRef.current?.blur();
+      const commit = () => {
+        setValidationWarning(null);
+        setConflictError(null);
+        lastCapturedHotkeyRef.current = hotkey;
+        onChange(hotkey);
+        setIsCapturing(false);
+        setActiveModifiers(new Set());
+        clearFnHeld();
+        containerRef.current?.blur();
+      };
+
+      // ponytail: no debounce — a combo capture is one discrete event, the
+      // IPC check is a sync Map scan in main. Save-time validation stays as
+      // the hard gate; this is eager UI feedback only.
+      if (slotName && window.electronAPI?.checkHotkeyConflict) {
+        void window.electronAPI.checkHotkeyConflict(slotName, hotkey).then((res) => {
+          if (res?.conflict) {
+            const labelKey = res.conflictSlot ? SLOT_LABEL_KEYS[res.conflictSlot] : undefined;
+            setConflictError(
+              labelKey
+                ? t("hotkey.errors.slotConflict", { slot: t(labelKey) })
+                : res.message || t("hotkey.errors.slotConflict", { slot: res.conflictSlot })
+            );
+            rejectCapture();
+            return;
+          }
+          setJustAccepted(true);
+          if (acceptedTimeoutRef.current) clearTimeout(acceptedTimeoutRef.current);
+          acceptedTimeoutRef.current = setTimeout(() => setJustAccepted(false), 1200);
+          commit();
+        });
+        return;
+      }
+
+      commit();
     },
-    [validate, onChange, clearFnHeld]
+    [validate, onChange, clearFnHeld, slotName, t]
   );
 
   const handleKeyDown = useCallback(
@@ -331,6 +387,8 @@ export function HotkeyInput({
       if (disabled) return;
       e.preventDefault();
       e.stopPropagation();
+
+      setConflictError(null);
 
       // Track held modifiers for modifier-only capture
       heldModifiersRef.current = {
@@ -447,6 +505,7 @@ export function HotkeyInput({
     if (!disabled) {
       setIsCapturing(true);
       setValidationWarning(null);
+      setConflictError(null);
       clearFnHeld();
       window.electronAPI?.setHotkeyListeningMode?.(true);
     }
@@ -456,6 +515,7 @@ export function HotkeyInput({
     setIsCapturing(false);
     setActiveModifiers(new Set());
     setValidationWarning(null);
+    setConflictError(null);
     clearFnHeld();
     window.electronAPI?.setHotkeyListeningMode?.(false, lastCapturedHotkeyRef.current);
     lastCapturedHotkeyRef.current = null;
@@ -472,6 +532,7 @@ export function HotkeyInput({
     return () => {
       window.electronAPI?.setHotkeyListeningMode?.(false, null);
       if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
+      if (acceptedTimeoutRef.current) clearTimeout(acceptedTimeoutRef.current);
     };
   }, []);
 
@@ -631,9 +692,13 @@ export function HotkeyInput({
           ${
             disabled
               ? "bg-muted/30 border-border cursor-not-allowed opacity-50"
-              : isCapturing
-                ? "bg-primary/5 border-primary/30 shadow-[0_0_0_2px_rgba(37,99,212,0.1)]"
-                : "bg-surface-1 border-border hover:border-border-hover hover:bg-surface-2"
+              : conflictError && isCapturing
+                ? "bg-destructive/5 border-destructive/50 shadow-[0_0_0_2px_rgba(220,38,38,0.1)]"
+                : isCapturing
+                  ? "bg-primary/5 border-primary/30 shadow-[0_0_0_2px_rgba(37,99,212,0.1)]"
+                  : justAccepted
+                    ? "bg-green-500/5 border-green-500/50"
+                    : "bg-surface-1 border-border hover:border-border-hover hover:bg-surface-2"
           }
         `}
       >
@@ -668,11 +733,23 @@ export function HotkeyInput({
                 {isMac ? t("hotkeyInput.pressAnyKeyMac") : t("hotkeyInput.pressAnyKey")}
               </span>
             )}
-            {validationWarning && (
-              <div className="flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-md bg-warning/8 border border-warning/20 dark:bg-warning/12 dark:border-warning/25">
-                <AlertTriangle className="w-3 h-3 text-warning shrink-0" />
-                <span className="text-xs text-warning dark:text-amber-400">
-                  {validationWarning}
+            {(validationWarning || conflictError) && (
+              <div
+                className={`flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-md border ${
+                  conflictError
+                    ? "bg-destructive/8 border-destructive/25"
+                    : "bg-warning/8 border-warning/20 dark:bg-warning/12 dark:border-warning/25"
+                }`}
+              >
+                <AlertTriangle
+                  className={`w-3 h-3 shrink-0 ${conflictError ? "text-destructive" : "text-warning"}`}
+                />
+                <span
+                  className={`text-xs ${
+                    conflictError ? "text-destructive" : "text-warning dark:text-amber-400"
+                  }`}
+                >
+                  {conflictError || validationWarning}
                 </span>
               </div>
             )}
@@ -736,14 +813,22 @@ export function HotkeyInput({
         ${
           disabled
             ? "bg-muted/30 border-border cursor-not-allowed opacity-50"
-            : isCapturing
-              ? "bg-primary/5 border-primary/30 shadow-[0_0_0_2px_rgba(37,99,212,0.1)]"
-              : "bg-surface-1 border-border hover:border-border-hover hover:bg-surface-2"
+            : conflictError && isCapturing
+              ? "bg-destructive/5 border-destructive/50 shadow-[0_0_0_2px_rgba(220,38,38,0.1)]"
+              : isCapturing
+                ? "bg-primary/5 border-primary/30 shadow-[0_0_0_2px_rgba(37,99,212,0.1)]"
+                : justAccepted
+                  ? "bg-green-500/5 border-green-500/50"
+                  : "bg-surface-1 border-border hover:border-border-hover hover:bg-surface-2"
         }
       `}
     >
       {isCapturing && (
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary animate-pulse" />
+        <div
+          className={`absolute top-0 left-0 right-0 h-0.5 animate-pulse ${
+            conflictError ? "bg-destructive" : "bg-primary"
+          }`}
+        />
       )}
 
       <div className="px-4 py-3">
@@ -776,11 +861,23 @@ export function HotkeyInput({
                 </span>
               )}
             </div>
-            {validationWarning && (
-              <div className="flex items-center gap-1.5 mt-1.5 px-3 py-1.5 rounded-md bg-warning/8 border border-warning/20 dark:bg-warning/12 dark:border-warning/25">
-                <AlertTriangle className="w-3 h-3 text-warning shrink-0" />
-                <span className="text-xs text-warning dark:text-amber-400">
-                  {validationWarning}
+            {(validationWarning || conflictError) && (
+              <div
+                className={`flex items-center gap-1.5 mt-1.5 px-3 py-1.5 rounded-md border ${
+                  conflictError
+                    ? "bg-destructive/8 border-destructive/25"
+                    : "bg-warning/8 border-warning/20 dark:bg-warning/12 dark:border-warning/25"
+                }`}
+              >
+                <AlertTriangle
+                  className={`w-3 h-3 shrink-0 ${conflictError ? "text-destructive" : "text-warning"}`}
+                />
+                <span
+                  className={`text-xs ${
+                    conflictError ? "text-destructive" : "text-warning dark:text-amber-400"
+                  }`}
+                >
+                  {conflictError || validationWarning}
                 </span>
               </div>
             )}
