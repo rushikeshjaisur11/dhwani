@@ -2948,5 +2948,10 @@
       "nvidiaGpuLarge": "お使いのNVIDIA GPUには、より大きく高性能なローカルモデルを実行するのに十分なVRAMがあります",
       "weakHardwareCloud": "お使いのシステムのハードウェアはローカルAIモデルには限界があります。クラウドプロバイダーの方が高速かつ安定して動作します"
     }
+  },
+  "transforms": {
+    "exportPlugin": "{{name}} をファイルとしてエクスポート",
+    "exportedTo": "{{path}} にエクスポートしました",
+    "openPluginsFolder": "トランスフォームフォルダーを開く"
   }
 }

@@ -2948,5 +2948,10 @@
       "nvidiaGpuLarge": "Ihre NVIDIA-GPU hat genug VRAM für ein größeres, leistungsfähigeres lokales Modell",
       "weakHardwareCloud": "Die Hardware Ihres Systems ist für lokale KI-Modelle eingeschränkt – ein Cloud-Anbieter läuft schneller und zuverlässiger"
     }
+  },
+  "transforms": {
+    "exportPlugin": "{{name}} als Datei exportieren",
+    "exportedTo": "Exportiert nach {{path}}",
+    "openPluginsFolder": "Transformations-Ordner öffnen"
   }
 }

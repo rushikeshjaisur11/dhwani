@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2 } from "lucide-react";
+import { FileDown, FolderOpen, Plus, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -24,6 +24,9 @@ import {
   saveCustoms,
   mergeTransforms,
   applyBuiltinOverrides,
+  appendPlugins,
+  loadCachedPlugins,
+  refreshPlugins,
   type Transform,
 } from "../config/transforms/loadEffectiveTransforms";
 
@@ -33,13 +36,14 @@ interface TransformCardProps {
   transform: Transform;
   onShortcutChange: (transform: Transform, hotkey: string) => void;
   onRemove: (transform: Transform) => void;
+  onExport: (transform: Transform) => void;
   onOpenPreview: () => void;
 }
 
 // Its own component so each custom card can independently call
 // useHotkeyRegistration (a per-transform hotkey needs a per-transform hook
 // instance) — hooks can't be called conditionally inside the parent's .map().
-function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }: TransformCardProps) {
+function TransformCard({ transform, onShortcutChange, onRemove, onExport, onOpenPreview }: TransformCardProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   // Polish mirrors the existing Settings Polish hotkey rather than owning
@@ -68,21 +72,34 @@ function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }:
       onKeyDown={(e) => e.key === "Enter" && onOpenPreview()}
       className="group relative rounded-xl border border-border bg-card p-4 flex flex-col gap-2 text-left cursor-pointer hover:bg-muted/40 transition-colors"
     >
-      {!transform.builtin && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove(transform);
-          }}
-          aria-label={t("transforms.remove", { name: transform.name })}
-          className="absolute top-3 right-3 p-1 text-foreground/25 hover:text-destructive/70 transition-colors opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-        >
-          <Trash2 size={12} />
-        </button>
+      {!transform.builtin && !transform.plugin && (
+        <div className="absolute top-3 right-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onExport(transform);
+            }}
+            aria-label={t("transforms.exportPlugin", { name: transform.name })}
+            title={t("transforms.exportPlugin", { name: transform.name })}
+            className="p-1 text-foreground/25 hover:text-foreground/70 transition-colors"
+          >
+            <FileDown size={12} />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(transform);
+            }}
+            aria-label={t("transforms.remove", { name: transform.name })}
+            className="p-1 text-foreground/25 hover:text-destructive/70 transition-colors"
+          >
+            <Trash2 size={12} />
+          </button>
+        </div>
       )}
       <p className="text-sm font-semibold text-foreground pr-5">{transform.name}</p>
       <p className="text-xs text-muted-foreground line-clamp-2">{transform.prompt}</p>
-      {transform.builtin ? (
+      {transform.builtin || transform.plugin ? (
         displayShortcut && (
           <div className="flex items-center gap-1 mt-1">
             {formatHotkeyLabel(displayShortcut)
@@ -114,8 +131,10 @@ function TransformCard({ transform, onShortcutChange, onRemove, onOpenPreview }:
 
 export default function TransformsView() {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [defaults, setDefaults] = useState<Transform[]>(BUNDLED_DEFAULTS);
   const [customs, setCustoms] = useState<Transform[]>(loadCustoms);
+  const [plugins, setPlugins] = useState<Transform[]>(loadCachedPlugins);
   const [optIn, setOptIn] = useState(() => localStorage.getItem(OPT_IN_KEY) === "true");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -128,6 +147,7 @@ export default function TransformsView() {
   // app release. See src/config/transforms/loadEffectiveTransforms.ts.
   useEffect(() => {
     resolveDefaults(TRANSFORMS_DEFAULTS_URL).then(setDefaults);
+    refreshPlugins().then(setPlugins);
   }, []);
 
   useEffect(() => {
@@ -140,9 +160,9 @@ export default function TransformsView() {
 
   // detailId in deps: re-apply overrides after the detail page edits them.
   const transforms = useMemo(
-    () => mergeTransforms(applyBuiltinOverrides(defaults), customs),
+    () => appendPlugins(mergeTransforms(applyBuiltinOverrides(defaults), customs), plugins),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [defaults, customs, detailId]
+    [defaults, customs, plugins, detailId]
   );
 
   const canCreate = name.trim() && prompt.trim();
@@ -169,6 +189,23 @@ export default function TransformsView() {
   // HotkeyInput, so onShortcutChange never fires for them).
   const handleShortcutChange = (tr: Transform, hotkey: string) => {
     setCustoms(customs.map((c) => (c.id === tr.id ? { ...c, shortcut: hotkey || undefined } : c)));
+  };
+
+  // Writes the custom transform to ~/.dhwani/transforms/<id>.json so it can
+  // be shared/installed on another machine (drop the file in that folder).
+  const handleExport = async (tr: Transform) => {
+    const result = await window.electronAPI?.exportTransformPlugin?.({
+      id: tr.id,
+      name: tr.name,
+      prompt: tr.prompt,
+      shortcut: tr.shortcut,
+    });
+    toast({
+      title: result?.success
+        ? t("transforms.exportedTo", { path: result.path })
+        : t("transforms.failed", { defaultValue: "Transform failed" }),
+      ...(result?.success ? {} : { variant: "destructive" as const }),
+    });
   };
 
   // Builtin detail page (Polish / Prompt Engineer) replaces the grid.
@@ -238,9 +275,19 @@ export default function TransformsView() {
 
       <div className="flex items-center justify-between">
         <h3 className="font-serif text-lg text-foreground">{t("transforms.myTransforms")}</h3>
-        <Button size="sm" onClick={() => setDialogOpen(true)}>
-          {t("transforms.createNew")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            title={t("transforms.openPluginsFolder")}
+            onClick={() => void window.electronAPI?.openTransformPluginsFolder?.()}
+          >
+            <FolderOpen size={14} />
+          </Button>
+          <Button size="sm" onClick={() => setDialogOpen(true)}>
+            {t("transforms.createNew")}
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -250,6 +297,7 @@ export default function TransformsView() {
             transform={tr}
             onShortcutChange={handleShortcutChange}
             onRemove={handleRemove}
+            onExport={handleExport}
             onOpenPreview={() => {
               // Builtins open their full config page; customs keep the
               // static preview dialog.

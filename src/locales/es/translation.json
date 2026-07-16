@@ -2948,5 +2948,10 @@
       "nvidiaGpuLarge": "Tu GPU NVIDIA tiene suficiente VRAM para un modelo local más grande y capaz",
       "weakHardwareCloud": "El hardware de tu sistema es limitado para modelos de IA locales; un proveedor en la nube funcionará más rápido y de forma más fiable"
     }
+  },
+  "transforms": {
+    "exportPlugin": "Exportar {{name}} como archivo",
+    "exportedTo": "Exportado a {{path}}",
+    "openPluginsFolder": "Abrir carpeta de transformaciones"
   }
 }

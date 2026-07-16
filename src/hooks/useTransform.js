@@ -4,6 +4,7 @@ import ReasoningService from "../services/ReasoningService";
 import logger from "../utils/logger";
 import {
   getEffectiveTransformsSync,
+  refreshPlugins,
   BUILTIN_POLISH_ID,
 } from "../config/transforms/loadEffectiveTransforms";
 
@@ -12,6 +13,7 @@ const SYNCED_STORAGE_KEYS = new Set([
   "customTransforms",
   "transformDefaultsCache",
   "builtinTransformOverrides",
+  "transformPluginsCache",
 ]);
 
 // Pushes the current {id, hotkey} mapping to the main process, which has no
@@ -124,6 +126,9 @@ export function useTransform(toast, t) {
   // is edited in a different renderer window (Transforms settings page).
   useEffect(() => {
     syncTransformHotkeys();
+    // Pick up file-based plugins (~/.dhwani/transforms/), then re-sync so
+    // their hotkeys register too.
+    void refreshPlugins().then(syncTransformHotkeys);
     const handleStorage = (event) => {
       if (event.key && SYNCED_STORAGE_KEYS.has(event.key)) syncTransformHotkeys();
     };

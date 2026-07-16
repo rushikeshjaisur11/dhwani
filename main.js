@@ -25,6 +25,7 @@ const {
   ipcMain,
   net,
   session,
+  shell,
   systemPreferences,
 } = require("electron");
 const path = require("path");
@@ -836,6 +837,24 @@ async function startApp() {
   };
 
   const transformSlotName = (id) => `transform:${id}`;
+
+  // File-based transform plugins (~/.dhwani/transforms/*.json): the renderer
+  // merges these into its transform list and registers their hotkeys through
+  // the same sync-transform-hotkeys flow below.
+  const transformPluginLoader = require("./src/helpers/transformPluginLoader");
+  ipcMain.handle("get-transform-plugins", () => transformPluginLoader.loadPlugins());
+  ipcMain.handle("export-transform-plugin", (_event, transform) => {
+    try {
+      return { success: true, path: transformPluginLoader.exportPlugin(transform) };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  });
+  ipcMain.handle("open-transform-plugins-folder", async () => {
+    require("fs").mkdirSync(transformPluginLoader.PLUGINS_DIR, { recursive: true });
+    await shell.openPath(transformPluginLoader.PLUGINS_DIR);
+    return { success: true };
+  });
 
   ipcMain.handle("register-transform-hotkey", async (_event, { id, hotkey } = {}) => {
     if (!id) return { success: false, message: "Missing transform id" };

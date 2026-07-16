@@ -76,6 +76,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   registerTransformHotkey: (id, hotkey) =>
     ipcRenderer.invoke("register-transform-hotkey", { id, hotkey }),
   syncTransformHotkeys: (list) => ipcRenderer.invoke("sync-transform-hotkeys", list),
+  getTransformPlugins: () => ipcRenderer.invoke("get-transform-plugins"),
+  exportTransformPlugin: (transform) => ipcRenderer.invoke("export-transform-plugin", transform),
+  openTransformPluginsFolder: () => ipcRenderer.invoke("open-transform-plugins-folder"),
   startHotkeyCapture: () => ipcRenderer.invoke("start-hotkey-capture"),
   stopHotkeyCapture: () => ipcRenderer.invoke("stop-hotkey-capture"),
   onHotkeyCaptureEvent: registerListener(

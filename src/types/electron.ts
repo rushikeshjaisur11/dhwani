@@ -535,6 +535,16 @@ declare global {
       syncTransformHotkeys?: (
         list: { id: string; hotkey: string }[]
       ) => Promise<{ success: boolean }>;
+      getTransformPlugins?: () => Promise<
+        { id: string; name: string; prompt: string; shortcut?: string; plugin: true }[]
+      >;
+      exportTransformPlugin?: (transform: {
+        id: string;
+        name: string;
+        prompt: string;
+        shortcut?: string;
+      }) => Promise<{ success: boolean; path?: string; message?: string }>;
+      openTransformPluginsFolder?: () => Promise<{ success: boolean }>;
       startHotkeyCapture?: () => Promise<{ success: boolean }>;
       stopHotkeyCapture?: () => Promise<{ success: boolean }>;
       onHotkeyCaptureEvent?: (

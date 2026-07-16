@@ -2948,5 +2948,10 @@
       "nvidiaGpuLarge": "你的 NVIDIA GPU 有足够的显存运行更大、更强的本地模型",
       "weakHardwareCloud": "你系统的硬件对本地 AI 模型来说较为有限——使用云端服务商速度更快、更稳定"
     }
+  },
+  "transforms": {
+    "exportPlugin": "将 {{name}} 导出为文件",
+    "exportedTo": "已导出至 {{path}}",
+    "openPluginsFolder": "打开转换文件夹"
   }
 }

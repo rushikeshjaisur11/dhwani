@@ -12,6 +12,8 @@ export interface Transform {
   prompt: string;
   shortcut?: string;
   builtin?: boolean;
+  /** True for file-based transforms loaded from ~/.dhwani/transforms/. */
+  plugin?: boolean;
 }
 
 // Polish isn't a real transform-pipeline entry — it's a UI mirror of the
@@ -163,6 +165,37 @@ export async function resolveDefaults(remoteUrl: string): Promise<Transform[]> {
   }
 }
 
+const PLUGINS_KEY = "transformPluginsCache";
+
+// File-based plugins arrive async over IPC; sync readers (hotkey handlers)
+// use this localStorage cache, refreshed by refreshPlugins() on mount.
+export function loadCachedPlugins(): Transform[] {
+  try {
+    const raw = localStorage.getItem(PLUGINS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter(isValidTransform) : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function refreshPlugins(): Promise<Transform[]> {
+  const list = (await window.electronAPI?.getTransformPlugins?.()) ?? [];
+  const items = list.filter(isValidTransform).map((t) => ({ ...t, plugin: true as const }));
+  try {
+    localStorage.setItem(PLUGINS_KEY, JSON.stringify(items));
+  } catch {
+    // best-effort; ignore quota/serialization errors
+  }
+  return items;
+}
+
+// Plugins never shadow an in-app transform with the same id (e.g. a custom
+// that was exported and still exists locally).
+export function appendPlugins(base: Transform[], plugins: Transform[]): Transform[] {
+  return [...base, ...plugins.filter((p) => !base.some((t) => t.id === p.id))];
+}
+
 export function loadCustoms(): Transform[] {
   try {
     const raw = localStorage.getItem(CUSTOMS_KEY);
@@ -182,5 +215,6 @@ export function saveCustoms(customs: Transform[]) {
 export function getEffectiveTransformsSync(): Transform[] {
   const cache = readCache();
   const defaults = cache?.items ?? BUNDLED_DEFAULTS;
-  return mergeTransforms(applyBuiltinOverrides(defaults), loadCustoms());
+  const base = mergeTransforms(applyBuiltinOverrides(defaults), loadCustoms());
+  return appendPlugins(base, loadCachedPlugins());
 }
