@@ -100,7 +100,6 @@ export const NeonPulseVisualizer = ({ levels, isCommandMode }) => {
 
 export const ParticleSwarmVisualizer = ({ levels, isCommandMode }) => {
   const particleColor = isCommandMode ? "rgba(251, 191, 36, 0.9)" : "rgba(139, 110, 240, 0.9)";
-  const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
   
   return (
     <div className="absolute inset-0 overflow-hidden rounded-[24px] pointer-events-none">
