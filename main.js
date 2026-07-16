@@ -466,6 +466,29 @@ function registerSidecars() {
   sidecarRegistry.register("llama", () => modelManager.stopServer());
   const onnxWorkerClient = require("./src/helpers/onnxWorkerClient");
   sidecarRegistry.register("onnx", () => onnxWorkerClient.stop());
+
+  // Memory-pressure eviction reuses the same stop paths; transcribe/prewarm
+  // lazily restart a stopped server, so this only costs a reload. Servers
+  // active in the last minute (mid-dictation) are left alone.
+  const memoryPressureMonitor = require("./src/helpers/memoryPressureMonitor");
+  const recentlyActive = (server) => server && Date.now() - (server._lastActivityAt || 0) < 60000;
+  if (whisperManager) {
+    memoryPressureMonitor.register("whisper", () => {
+      if (recentlyActive(whisperManager.serverManager)) return;
+      return whisperManager.stopServer();
+    });
+  }
+  if (parakeetManager) {
+    memoryPressureMonitor.register("parakeet", () => {
+      if (recentlyActive(parakeetManager.wsServer)) return;
+      return parakeetManager.stopServer();
+    });
+  }
+  memoryPressureMonitor.register("llama", () => {
+    if (recentlyActive(modelManager.serverManager)) return;
+    return modelManager.stopServer();
+  });
+  memoryPressureMonitor.start();
 }
 
 // Phase 2: Non-critical setup after windows are visible
