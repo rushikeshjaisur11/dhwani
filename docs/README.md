@@ -15,6 +15,9 @@ specific areas.
 - [build-and-deploy.md](build-and-deploy.md) — Windows build, native-helper compilation, sidecar binaries,
   CI workflows, release/auto-update
 - [ipc-reference.md](ipc-reference.md) — categorized map of the ~380 main↔renderer IPC channels
+- [optimization.md](optimization.md) — perf methodology, shipped optimizations (startup, sqlite-vec,
+  lazy locales), and the perf backlog
+- [roadmap.md](roadmap.md) — productivity and UI/UX feature ideas
 
 ## Other docs in this repo
 

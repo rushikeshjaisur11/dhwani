@@ -118,7 +118,7 @@ Dhwani is an Electron-based desktop dictation application that uses whisper.cpp 
 
 - **App.jsx**: Main dictation interface with recording states
 - **ControlPanel.tsx**: Settings, history, model management UI
-- **OnboardingFlow.tsx**: 8-step first-time setup wizard
+- **OnboardingFlow.tsx**: 9-step first-time setup wizard (includes scripted dictation demo step)
 - **PostMigrationOnboarding.tsx**: One-time modal for users returning from the pre-Gizmo bundle ID; reuses `PermissionsSection` to walk through re-granting Microphone, Accessibility, and System Audio. Triggered by `postMigrationDetector.js` (see Helper Modules)
 - **SettingsPage.tsx**: Comprehensive settings interface
 - **WhisperModelPicker.tsx**: Model selection and download UI
@@ -295,7 +295,7 @@ Non-secret env vars persisted to `.env` (via `saveAllKeysToEnvFile()`):
 
 ### 7. Agent Naming System
 
-- User names their agent during onboarding (step 6/8)
+- User names their agent during onboarding
 - Name stored in localStorage and database
 - ReasoningService detects "Hey [AgentName]" patterns
 - AI processes command and removes agent reference from output

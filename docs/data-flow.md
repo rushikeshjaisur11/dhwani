@@ -90,19 +90,20 @@ dispatch:
 
 ## Local semantic search
 
-Always-on, offline. Qdrant starts as a sidecar on app launch; the `all-MiniLM-L6-v2` embedding model runs
-in the ONNX utility process and auto-downloads on first use if missing.
+Always-on, offline. Vectors live in `vec0` (sqlite-vec) virtual tables inside the app's SQLite database —
+no separate process. The `all-MiniLM-L6-v2` embedding model runs in the ONNX utility process and
+auto-downloads on first use if missing.
 
 ```mermaid
 flowchart LR
     Note["Note create/update"] --> SQLite["SQLite write"]
-    SQLite -.background.-> Vector["Vector upsert<br/>(Qdrant, 384-dim)"]
+    SQLite -.background.-> Vector["Vector upsert<br/>(sqlite-vec vec0, 384-dim)"]
     Query["Agent search_notes tool"] --> FTS["FTS5 keyword search"]
-    Query --> VSearch["Qdrant vector search"]
+    Query --> VSearch["sqlite-vec vector search"]
     FTS --> RRF["Reciprocal Rank Fusion<br/>(k=60, 0.3 cosine threshold)"]
     VSearch --> RRF
     RRF --> Results["Ranked results"]
 ```
 
-If Qdrant fails to start, search silently falls back to FTS5 keyword search only — semantic search is a
-progressive enhancement, not a hard dependency, for the agent's note search.
+If the sqlite-vec extension fails to load, search silently falls back to FTS5 keyword search only —
+semantic search is a progressive enhancement, not a hard dependency, for the agent's note search.

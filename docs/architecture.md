@@ -5,7 +5,7 @@
 Dhwani is a standard three-process Electron app plus one dedicated utility process for ONNX inference:
 
 - **Main process** (`main.js`, `src/helpers/*.js`) — window lifecycle, IPC handler registration, hotkey
-  registration, native sidecar process management (whisper.cpp, Parakeet/sherpa-onnx, Qdrant, llama.cpp
+  registration, native sidecar process management (whisper.cpp, Parakeet/sherpa-onnx, llama.cpp
   server), SQLite database, tray, auto-updater.
 - **Renderer process(es)** (`src/*.tsx`, `src/*.jsx`) — React 19 + TypeScript UI, one `BrowserWindow` per
   window role (see below), context-isolated with no direct Node access.
@@ -60,7 +60,6 @@ flowchart TB
     subgraph Sidecars["Native sidecar processes"]
         Whisper["whisper-server.exe"]
         Parakeet["sherpa-onnx-ws.exe"]
-        Qdrant["qdrant.exe"]
         Llama["llama-server.exe"]
     end
 
@@ -101,7 +100,8 @@ managers (see `CLAUDE.md` for the full list):
 - **`modelDirUtils.js`** — single source of truth for the `~/.cache/dhwani` model/cache root (migrated
   from legacy `~/.cache/openwhispr` on first access)
 - **`whisper.js` / `parakeet.js` / `parakeetServer.js`** — local ASR engines
-- **`qdrantManager.js` / `localEmbeddings.js` / `vectorIndex.js`** — local semantic search sidecar
+- **`localEmbeddings.js` / `vectorIndex.js`** — local semantic search (sqlite-vec tables on the app DB +
+  MiniLM embeddings via the ONNX utility process)
 - **`ipcHandlers.js`** — the single large class registering nearly all `ipcMain` handlers (see
   [ipc-reference.md](ipc-reference.md))
 
@@ -109,13 +109,14 @@ managers (see `CLAUDE.md` for the full list):
 
 - **SQLite** (`database.js`, via `better-sqlite3`) — transcriptions, notes/folders, agent conversations,
   custom dictionary. Lives in `userData/`.
-- **Qdrant** (sidecar binary) — vector index for local semantic note search. Data at
-  `~/.cache/dhwani/qdrant-data/`.
+- **sqlite-vec** (`vec0` virtual tables inside the same SQLite DB) — vector index for local semantic
+  note/conversation search. No separate process or data directory.
 - **`safeStorage`-encrypted secrets** — BYOK API keys + enterprise cloud credentials, one file per key
   under `userData/secure-keys/`, delegating to the OS keychain (DPAPI on Windows).
 - **`.env` in `userData`** — non-secret persisted settings (hotkeys, provider selection, feature flags).
-- **`~/.cache/dhwani/`** — downloaded model weights (whisper-models, parakeet-models, embedding-models),
-  Qdrant data. Shared cache root, not per-channel.
+- **`~/.cache/dhwani/`** — downloaded model weights (whisper-models, parakeet-models, embedding-models).
+  Shared cache root, not per-channel. (Pre-sqlite-vec installs may still have an unused `qdrant-data/`
+  directory here — harmless leftover.)
 - **`~/.dhwani/cli-bridge.json`** — loopback bridge token for the CLI-to-desktop-app connection (ports
   8200–8219, 127.0.0.1-only).
 

@@ -12,7 +12,7 @@ npm run dev           # concurrently runs dev:renderer (vite, port 5183) + dev:m
 ```
 
 `predev`/`predev:main` compile native helpers and download sidecar binaries automatically
-(`compile:native` + `download:meeting-aec-helper` + `download:qdrant` + `download:embedding-model` +
+(`compile:native` + `download:meeting-aec-helper` + `download:embedding-model` +
 `download:whisper-vad-model`). `sherpa-onnx` (Parakeet) is **not** in `predev` — run
 `npm run download:sherpa-onnx` manually if you hit "binary not found".
 
@@ -41,7 +41,6 @@ Downloaded (not compiled) into `resources/bin/` at `prebuild`/`predev` time:
 |---|---|---|
 | `whisper-server-win32-x64-cuda.exe` | Local Whisper ASR (CUDA) | whisper.cpp release, lives in `userData/bin/`, not `resources/bin/` |
 | `sherpa-onnx-ws-win32-x64.exe` | Local Parakeet ASR | sherpa-onnx release |
-| `qdrant-win32-x64.exe` | Vector DB for semantic search | Qdrant release |
 | `llama-server` | Local LLM cleanup/agent inference | llama.cpp release |
 | `nircmd.exe` | Windows clipboard fallback | bundled |
 | `meeting-aec-helper-win32-x64.exe` | WebRTC echo cancellation for meeting recording | this repo's own `build-meeting-aec-helper.yml` |
