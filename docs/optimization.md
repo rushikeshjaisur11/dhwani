@@ -89,23 +89,29 @@ indexing had been silently dead.
 Not a perf item, but shipped in the same branch: scripted in-app dictation demo step, live mic-test orb,
 spring step transitions. framer-motion is confined to the lazy OnboardingFlow chunk.
 
-## Phase 5 (planned in this effort)
+### Reliability / extensibility / a11y (Phase 5)
 
-1. **Memory-pressure model eviction** — extend roadmap ⚡#1 with an `os.freemem()` poll (30 s) that
-   unloads loaded local models below a threshold, with a re-trigger cooldown. Electron has no native
+1. **Memory-pressure model eviction** (`memoryPressureMonitor.js`) — 30 s `os.freemem()` poll;
+   below 500 MB free or 10 % of total, whisper/parakeet/llama are stopped via their existing
+   `stopServer()` paths (transcribe/prewarm lazily restart them), with a 5 min re-trigger cooldown
+   and a "was active in the last 60 s" guard so mid-dictation is never killed. Electron has no native
    low-memory event on Windows; freemem polling is the pragmatic baseline.
-2. **Transform plugin system** — file-based transforms in `~/.dhwani/transforms/` feeding the existing
-   per-transform hotkey slot registration; import/export from the Transforms UI.
-3. **Full keyboard navigation** — audit-first (Radix already covers most): virtualized list focus,
-   custom card `tabIndex`/`aria-*`, `:focus-visible` ring pass.
-4. **Live hotkey conflict indicator** — debounced read-only `check-hotkey-conflict` IPC wrapping the
-   existing `_findSlotConflict`; red/green inline state while typing, save-time validation stays.
+2. **Transform plugin system** (`transformPluginLoader.js`) — file-based transforms in
+   `~/.dhwani/transforms/*.json` merged into the effective transform list and registered through the
+   existing `sync-transform-hotkeys` pipeline; Transforms UI gained per-custom export and an
+   open-folder button.
+3. **Keyboard navigation pass** — virtualized history rows, model cards, scratchpad cards and the
+   control-panel avatar became keyboard-activatable with `:focus-visible` rings; all 21 hover-revealed
+   action buttons now also reveal on `group-focus-within`. Radix Dialog focus trap verified stock.
+4. **Live hotkey conflict indicator** — read-only `check-hotkey-conflict` IPC wrapping the existing
+   `_findSlotConflict`; a captured combo shows red inline (naming the conflicting slot) and blocks
+   commit, a clear combo flashes green. Save-time validation remains the hard gate.
 
 ## Future backlog (carried from roadmap ⚡ Performance)
 
 | # | Item | Status |
 |---|---|---|
-| 1 | Smart Model Suspend (idle unload) | llamaServer already has an idle timer; whisper/parakeet pending. Phase 5.1 adds memory-pressure eviction on top |
+| 1 | Smart Model Suspend (idle unload) | llamaServer has an idle timer; memory-pressure eviction shipped (Phase 5.1) covers whisper/parakeet under pressure; pure idle unload for them still open |
 | 2 | Audio Stream Chunker (disk-backed long recordings) | Open |
 | 3 | List Virtualization for History | **Done** (already shipped) |
 | 4 | Segment-Parallel Transcription | Open |
