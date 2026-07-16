@@ -333,7 +333,6 @@ let meetingDetectionEngine = null;
 let audioTapManager = null;
 let linuxPortalAudioManager = null;
 let meetingAecManager = null;
-let qdrantManager = null;
 let ipcHandlers = null;
 let cliBridge = null;
 let globeKeyAlertShown = false;
@@ -1493,25 +1492,28 @@ async function startApp() {
       });
     }
 
-    const QdrantManager = require("./src/helpers/qdrantManager");
-    qdrantManager = new QdrantManager();
-    sidecarRegistry.register("qdrant", () => qdrantManager.stop());
-    if (qdrantManager.isAvailable()) {
-      markStartup("sidecar-kick-qdrant");
-      qdrantManager
-        .start()
-        .then(() => {
-          if (qdrantManager.isReady()) {
-            const vectorIndex = require("./src/helpers/vectorIndex");
-            vectorIndex.init(qdrantManager.getPort());
-            vectorIndex.ensureCollection().catch((err) => {
-              debugLogger.debug("Qdrant collection setup error (non-fatal)", { error: err.message });
-            });
-          }
-        })
-        .catch((err) => {
-          debugLogger.debug("Qdrant startup error (non-fatal)", { error: err.message });
+    // Semantic search: sqlite-vec tables on the existing SQLite handle
+    // (no sidecar process). One-time migration re-embeds existing notes
+    // after the Qdrant removal.
+    try {
+      markStartup("vector-index-init");
+      const vectorIndex = require("./src/helpers/vectorIndex");
+      vectorIndex.init(databaseManager.db);
+      vectorIndex.ensureCollection();
+      vectorIndex.ensureConversationChunksCollection();
+      const notes = databaseManager.getNotes(null, 100000);
+      if (vectorIndex.needsMigration(notes.length)) {
+        debugLogger.info("Re-embedding notes into sqlite-vec (one-time migration)", {
+          count: notes.length,
         });
+        vectorIndex.reindexAll(notes).catch((err) => {
+          debugLogger.debug("sqlite-vec migration reindex error (non-fatal)", {
+            error: err.message,
+          });
+        });
+      }
+    } catch (err) {
+      debugLogger.debug("Vector index init error (non-fatal)", { error: err.message });
     }
   }, 3000);
 

@@ -311,6 +311,9 @@ class IPCHandlers {
   constructor(managers) {
     this.environmentManager = managers.environmentManager;
     this.databaseManager = managers.databaseManager;
+    // Was never assigned before, so the conversation-chunk indexing paths
+    // below silently no-oped; wired up as part of the sqlite-vec migration.
+    this.vectorIndex = require("./vectorIndex");
     this.clipboardManager = managers.clipboardManager;
     this.whisperManager = managers.whisperManager;
     this.parakeetManager = managers.parakeetManager;
