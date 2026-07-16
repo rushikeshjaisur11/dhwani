@@ -1,5 +1,6 @@
 const { app, screen, BrowserWindow, shell, dialog } = require("electron");
 const debugLogger = require("./debugLogger");
+const { markStartup } = require("./startupMarks");
 const HotkeyManager = require("./hotkeyManager");
 const { isGlobeLikeHotkey } = HotkeyManager;
 const DragManager = require("./dragManager");
@@ -106,6 +107,7 @@ class WindowManager {
 
     await this.loadMainWindow();
     await this.initializeHotkey();
+    markStartup("hotkey-registered");
     this.dragManager.setTargetWindow(this.mainWindow);
     MenuManager.setupMainMenu(() => this.openSettings());
   }
@@ -575,6 +577,10 @@ class WindowManager {
       this.windowsKeyManager.setKeys(keys);
     } else if (process.platform === "linux" && this.linuxKeyManager) {
       this.linuxKeyManager.setKeys(keys);
+    }
+    if (!this._nativeReconcileMarked && keys.length > 0) {
+      this._nativeReconcileMarked = true;
+      markStartup("native-key-listener-reconciled");
     }
   }
 

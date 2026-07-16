@@ -30,6 +30,7 @@ const {
 const path = require("path");
 const http = require("http");
 const tls = require("tls");
+const { markStartup } = require("./src/helpers/startupMarks");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 // Extend Node's TLS trust with the OS store so ws and https.get see corporate
@@ -308,6 +309,7 @@ const { i18nMain, changeLanguage } = require("./src/helpers/i18nMain");
 const { ensureYdotool } = require("./src/helpers/ensureYdotool");
 const sidecarRegistry = require("./src/helpers/sidecarRegistry");
 const { reapStaleSidecars } = require("./src/helpers/sidecarReaper");
+markStartup("main-required");
 
 // Manager instances - initialized after app.whenReady()
 let debugLogger = null;
@@ -777,11 +779,14 @@ function startAuthBridgeServer() {
 
 // Main application startup
 async function startApp() {
+  markStartup("startApp-begin");
   reapStaleSidecars();
 
   // Phase 1: Core managers + IPC handlers before windows
   initializeCoreManagers();
+  markStartup("coreManagers-done");
   await environmentManager.init();
+  markStartup("env-init-done");
   registerSidecars();
   startAuthBridgeServer();
 
@@ -955,8 +960,10 @@ async function startApp() {
   const startMinimized = environmentManager.getStartMinimized();
   if (debugLogger) debugLogger.info("Start minimized", { enabled: startMinimized });
   await windowManager.createMainWindow();
+  markStartup("mainWindow-shown");
   if (!startMinimized) {
     await windowManager.createControlPanelWindow();
+    markStartup("controlPanel-created");
   }
 
   // Create agent window (hidden) and set up agent hotkey
@@ -1304,6 +1311,7 @@ async function startApp() {
     whisperModel: process.env.LOCAL_WHISPER_MODEL,
     useCuda: process.env.WHISPER_CUDA_ENABLED === "true" && whisperCudaManager?.isDownloaded(),
   };
+  markStartup("sidecar-kick-whisper");
   whisperManager.initializeAtStartup(whisperSettings).catch((err) => {
     debugLogger.debug("Whisper startup init error (non-fatal)", { error: err.message });
   });
@@ -1312,6 +1320,7 @@ async function startApp() {
     localTranscriptionProvider: process.env.LOCAL_TRANSCRIPTION_PROVIDER || "",
     parakeetModel: process.env.PARAKEET_MODEL,
   };
+  markStartup("sidecar-kick-parakeet");
   parakeetManager.initializeAtStartup(parakeetSettings).catch((err) => {
     debugLogger.debug("Parakeet startup init error (non-fatal)", { error: err.message });
   });
@@ -1320,6 +1329,7 @@ async function startApp() {
   const cleanupProvider = process.env.CLEANUP_PROVIDER || process.env.REASONING_PROVIDER;
   const cleanupLocalModel = process.env.LOCAL_CLEANUP_MODEL || process.env.LOCAL_REASONING_MODEL;
   if (cleanupProvider === "local" && cleanupLocalModel) {
+    markStartup("sidecar-kick-llama-prewarm");
     const modelManager = require("./src/helpers/modelManagerBridge").default;
     modelManager.prewarmServer(cleanupLocalModel).catch((err) => {
       debugLogger.debug("llama-server pre-warm error (non-fatal)", { error: err.message });
@@ -1344,6 +1354,7 @@ async function startApp() {
     diarizationManager.getBinaryPath() &&
     (!diarizationManager.isModelDownloaded() || !diarizationManager.isVadModelDownloaded())
   ) {
+    markStartup("sidecar-kick-diarization-download");
     diarizationManager.downloadModels().catch((err) => {
       debugLogger.debug("Diarization model auto-download error (non-fatal)", {
         error: err.message,
@@ -1355,6 +1366,7 @@ async function startApp() {
   qdrantManager = new QdrantManager();
   sidecarRegistry.register("qdrant", () => qdrantManager.stop());
   if (qdrantManager.isAvailable()) {
+    markStartup("sidecar-kick-qdrant");
     qdrantManager
       .start()
       .then(() => {
@@ -1373,6 +1385,7 @@ async function startApp() {
 
   const localEmbeddings = require("./src/helpers/localEmbeddings");
   if (!localEmbeddings.isAvailable()) {
+    markStartup("sidecar-kick-embedding-download");
     localEmbeddings.downloadModel().catch((err) => {
       debugLogger.debug("Embedding model download error (non-fatal)", { error: err.message });
     });
@@ -1389,8 +1402,10 @@ async function startApp() {
   trayManager.setUpdateManager(updateManager);
   trayManager.setPasteLastTranscriptCallback(pasteLastTranscriptCallback);
   await trayManager.createTray();
+  markStartup("tray-created");
 
   updateManager.setWindows(windowManager.mainWindow, windowManager.controlPanelWindow);
+  markStartup("sidecar-kick-update-check");
   updateManager.checkForUpdatesOnStartup();
 
   if (process.platform === "darwin") {
@@ -1807,6 +1822,7 @@ async function startApp() {
       windowManager.reconcileNativeKeyListeners();
     });
   }
+  markStartup("startApp-done");
 }
 
 // Listen for usage limit reached from dictation overlay, forward to control panel
@@ -1859,6 +1875,7 @@ if (gotSingleInstanceLock) {
   app
     .whenReady()
     .then(() => {
+      markStartup("whenReady");
       // On Linux, --enable-transparent-visuals requires a short delay before creating
       // windows to allow the compositor to set up the ARGB visual correctly.
       // Without this delay, transparent windows flicker on both X11 and Wayland.
