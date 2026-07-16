@@ -40,17 +40,24 @@ export function useMicLevel(active) {
         source.connect(analyser);
 
         const data = new Uint8Array(analyser.frequencyBinCount);
-        const tick = () => {
-          analyser.getByteFrequencyData(data);
-          const step = Math.floor(data.length / BAR_COUNT) || 1;
-          const next = new Array(BAR_COUNT).fill(0).map((_, i) => {
-            const value = data[i * step] / 255;
-            return Math.max(0.15, Math.min(1, value));
-          });
-          setLevels(next);
+        // ~20fps is visually indistinguishable for the waveform but cuts
+        // React state updates (and re-renders) to a third of 60fps rAF.
+        const FRAME_INTERVAL_MS = 50;
+        let lastFrame = 0;
+        const tick = (now) => {
+          if (now - lastFrame >= FRAME_INTERVAL_MS) {
+            lastFrame = now;
+            analyser.getByteFrequencyData(data);
+            const step = Math.floor(data.length / BAR_COUNT) || 1;
+            const next = new Array(BAR_COUNT).fill(0).map((_, i) => {
+              const value = data[i * step] / 255;
+              return Math.max(0.15, Math.min(1, value));
+            });
+            setLevels(next);
+          }
           rafRef.current = requestAnimationFrame(tick);
         };
-        tick();
+        tick(performance.now());
       } catch {
         // no mic permission — pill falls back to the static idle bar heights
       }

@@ -994,6 +994,7 @@ declare global {
       windowMaximize: () => Promise<void>;
       windowClose: () => Promise<void>;
       windowIsMaximized: () => Promise<boolean>;
+      onWindowMaximizedChanged?: (callback: (maximized: boolean) => void) => () => void;
       snapToMeetingMode: () => Promise<void>;
       restoreFromMeetingMode: () => Promise<void>;
       getPlatform: () => string;

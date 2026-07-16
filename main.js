@@ -510,6 +510,12 @@ function initializeDeferredManagers() {
   }
 
   googleCalendarManager.start();
+  // Seed detection prefs from persisted env before starting: a start-minimized
+  // launch has no renderer to push prefs, and detectors default to enabled.
+  Object.assign(meetingDetectionEngine.preferences, {
+    processDetection: environmentManager.getMeetingProcessDetection(),
+    audioDetection: environmentManager.getMeetingAudioDetection(),
+  });
   meetingDetectionEngine.start();
 }
 

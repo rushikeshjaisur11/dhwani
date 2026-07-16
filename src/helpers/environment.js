@@ -47,6 +47,8 @@ const PERSISTED_KEYS = [
   "SCRATCHPAD_KEY",
   "MEETING_KEY",
   "PASTE_LAST_TRANSCRIPT_KEY",
+  "MEETING_PROCESS_DETECTION",
+  "MEETING_AUDIO_DETECTION",
   "ACTIVATION_MODE",
   "FLOATING_ICON_AUTO_HIDE",
   "PANEL_START_POSITION",
@@ -562,6 +564,29 @@ class EnvironmentManager {
 
   saveStartMinimized(enabled) {
     const result = this._saveKey("START_MINIMIZED", String(enabled));
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
+  // Meeting detection prefs persist in main so a start-minimized launch (no
+  // renderer to push prefs) doesn't run detectors the user disabled.
+  // Default true (unset = enabled) — only an explicit "false" disables.
+  getMeetingProcessDetection() {
+    return this._getKey("MEETING_PROCESS_DETECTION") !== "false";
+  }
+
+  saveMeetingProcessDetection(enabled) {
+    const result = this._saveKey("MEETING_PROCESS_DETECTION", String(enabled));
+    this.saveAllKeysToEnvFile().catch(() => {});
+    return result;
+  }
+
+  getMeetingAudioDetection() {
+    return this._getKey("MEETING_AUDIO_DETECTION") !== "false";
+  }
+
+  saveMeetingAudioDetection(enabled) {
+    const result = this._saveKey("MEETING_AUDIO_DETECTION", String(enabled));
     this.saveAllKeysToEnvFile().catch(() => {});
     return result;
   }

@@ -736,6 +736,15 @@ class WindowManager {
       }
     });
 
+    // Push maximize-state changes so WindowControls doesn't have to poll.
+    const sendMaximizedChanged = (maximized) => {
+      if (this.controlPanelWindow && !this.controlPanelWindow.isDestroyed()) {
+        this.controlPanelWindow.webContents.send("window-maximized-changed", maximized);
+      }
+    };
+    this.controlPanelWindow.on("maximize", () => sendMaximizedChanged(true));
+    this.controlPanelWindow.on("unmaximize", () => sendMaximizedChanged(false));
+
     this.controlPanelWindow.on("closed", () => {
       clearVisibilityTimer();
       this.controlPanelWindow = null;

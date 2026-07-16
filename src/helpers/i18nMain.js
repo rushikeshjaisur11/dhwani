@@ -1,28 +1,15 @@
 const i18next = require("i18next");
 
-const enTranslation = require("../locales/en/translation.json");
-const esTranslation = require("../locales/es/translation.json");
-const frTranslation = require("../locales/fr/translation.json");
-const deTranslation = require("../locales/de/translation.json");
-const ptTranslation = require("../locales/pt/translation.json");
-const itTranslation = require("../locales/it/translation.json");
-const ruTranslation = require("../locales/ru/translation.json");
-const jaTranslation = require("../locales/ja/translation.json");
-const zhCNTranslation = require("../locales/zh-CN/translation.json");
-const zhTWTranslation = require("../locales/zh-TW/translation.json");
-
-const enPrompts = require("../locales/en/prompts.json");
-const esPrompts = require("../locales/es/prompts.json");
-const frPrompts = require("../locales/fr/prompts.json");
-const dePrompts = require("../locales/de/prompts.json");
-const ptPrompts = require("../locales/pt/prompts.json");
-const itPrompts = require("../locales/it/prompts.json");
-const ruPrompts = require("../locales/ru/prompts.json");
-const jaPrompts = require("../locales/ja/prompts.json");
-const zhCNPrompts = require("../locales/zh-CN/prompts.json");
-const zhTWPrompts = require("../locales/zh-TW/prompts.json");
-
 const SUPPORTED_UI_LANGUAGES = ["en", "es", "fr", "de", "pt", "it", "ru", "ja", "zh-CN", "zh-TW"];
+
+// Locale JSON is required on demand: only `en` (the fallback) and the active
+// UI language load at startup instead of all 10 locales.
+function localeResources(lang) {
+  return {
+    translation: require(`../locales/${lang}/translation.json`),
+    prompts: require(`../locales/${lang}/prompts.json`),
+  };
+}
 
 function normalizeUiLanguage(language) {
   const candidate = (language || "").trim();
@@ -41,51 +28,19 @@ function normalizeUiLanguage(language) {
 
 const i18nMain = i18next.createInstance();
 
+const initialLanguage = normalizeUiLanguage(process.env.UI_LANGUAGE);
+const loadedLocales = new Set(["en"]);
+
+const resources = { en: localeResources("en") };
+if (initialLanguage !== "en") {
+  resources[initialLanguage] = localeResources(initialLanguage);
+  loadedLocales.add(initialLanguage);
+}
+
 void i18nMain.init({
   initAsync: false,
-  resources: {
-    en: {
-      translation: enTranslation,
-      prompts: enPrompts,
-    },
-    es: {
-      translation: esTranslation,
-      prompts: esPrompts,
-    },
-    fr: {
-      translation: frTranslation,
-      prompts: frPrompts,
-    },
-    de: {
-      translation: deTranslation,
-      prompts: dePrompts,
-    },
-    pt: {
-      translation: ptTranslation,
-      prompts: ptPrompts,
-    },
-    it: {
-      translation: itTranslation,
-      prompts: itPrompts,
-    },
-    ru: {
-      translation: ruTranslation,
-      prompts: ruPrompts,
-    },
-    ja: {
-      translation: jaTranslation,
-      prompts: jaPrompts,
-    },
-    "zh-CN": {
-      translation: zhCNTranslation,
-      prompts: zhCNPrompts,
-    },
-    "zh-TW": {
-      translation: zhTWTranslation,
-      prompts: zhTWPrompts,
-    },
-  },
-  lng: normalizeUiLanguage(process.env.UI_LANGUAGE),
+  resources,
+  lng: initialLanguage,
   fallbackLng: "en",
   ns: ["translation", "prompts"],
   defaultNS: "translation",
@@ -98,6 +53,13 @@ void i18nMain.init({
 
 function changeLanguage(language) {
   const normalized = normalizeUiLanguage(language);
+
+  if (!loadedLocales.has(normalized)) {
+    const res = localeResources(normalized);
+    i18nMain.addResourceBundle(normalized, "translation", res.translation);
+    i18nMain.addResourceBundle(normalized, "prompts", res.prompts);
+    loadedLocales.add(normalized);
+  }
 
   if (i18nMain.language !== normalized) {
     void i18nMain.changeLanguage(normalized);

@@ -8,7 +8,19 @@ const { app } = require("electron");
 class DatabaseManager {
   constructor() {
     this.db = null;
+    this._stmtCache = new Map();
     this.initDatabase();
+  }
+
+  // Memoized prepared statements for hot paths — better-sqlite3 re-parses SQL
+  // on every prepare() otherwise.
+  _prep(sql) {
+    let stmt = this._stmtCache.get(sql);
+    if (!stmt) {
+      stmt = this.db.prepare(sql);
+      this._stmtCache.set(sql, stmt);
+    }
+    return stmt;
   }
 
   initDatabase() {
@@ -259,6 +271,11 @@ class DatabaseManager {
       }
       this.db.exec(
         "CREATE INDEX IF NOT EXISTS idx_agent_conversations_note ON agent_conversations(note_id)"
+      );
+
+      // History list reads: WHERE deleted_at IS NULL ORDER BY timestamp DESC.
+      this.db.exec(
+        "CREATE INDEX IF NOT EXISTS idx_transcriptions_deleted_at_timestamp ON transcriptions(deleted_at, timestamp DESC)"
       );
 
       const actionCount = this.db.prepare("SELECT COUNT(*) as count FROM actions").get();
@@ -624,7 +641,7 @@ class DatabaseManager {
       if (!this.db) {
         throw new Error("Database not initialized");
       }
-      const stmt = this.db.prepare(
+      const stmt = this._prep(
         "INSERT INTO transcriptions (text, raw_text, status, error_message, error_code, client_transcription_id, target_app) VALUES (?, ?, ?, ?, ?, ?, ?)"
       );
       const result = stmt.run(
@@ -637,7 +654,7 @@ class DatabaseManager {
         targetApp
       );
 
-      const fetchStmt = this.db.prepare("SELECT * FROM transcriptions WHERE id = ?");
+      const fetchStmt = this._prep("SELECT * FROM transcriptions WHERE id = ?");
       const transcription = fetchStmt.get(result.lastInsertRowid);
 
       return { id: result.lastInsertRowid, success: true, transcription };
@@ -773,7 +790,7 @@ class DatabaseManager {
         throw new Error("Database not initialized");
       }
       const statusFilter = includeDiscarded ? "" : " AND status != 'discarded'";
-      const stmt = this.db.prepare(
+      const stmt = this._prep(
         `SELECT * FROM transcriptions WHERE deleted_at IS NULL${statusFilter} ORDER BY timestamp DESC LIMIT ?`
       );
       const transcriptions = stmt.all(limit);
@@ -828,7 +845,7 @@ class DatabaseManager {
   updateTranscriptionAudio(id, { hasAudio, audioDurationMs, provider, model }) {
     try {
       if (!this.db) throw new Error("Database not initialized");
-      const stmt = this.db.prepare(
+      const stmt = this._prep(
         "UPDATE transcriptions SET has_audio = ?, audio_duration_ms = ?, provider = ?, model = ? WHERE id = ?"
       );
       stmt.run(hasAudio, audioDurationMs, provider, model, id);
@@ -842,7 +859,7 @@ class DatabaseManager {
   updateTranscriptionText(id, text, rawText) {
     try {
       if (!this.db) throw new Error("Database not initialized");
-      const stmt = this.db.prepare("UPDATE transcriptions SET text = ?, raw_text = ? WHERE id = ?");
+      const stmt = this._prep("UPDATE transcriptions SET text = ?, raw_text = ? WHERE id = ?");
       stmt.run(text, rawText, id);
       return { success: true };
     } catch (error) {
@@ -854,7 +871,7 @@ class DatabaseManager {
   updateTranscriptionStatus(id, status, errorMessage = null, errorCode = null) {
     try {
       if (!this.db) throw new Error("Database not initialized");
-      const stmt = this.db.prepare(
+      const stmt = this._prep(
         "UPDATE transcriptions SET status = ?, error_message = ?, error_code = ? WHERE id = ?"
       );
       stmt.run(status, errorMessage, errorCode, id);
@@ -872,7 +889,7 @@ class DatabaseManager {
   getTranscriptionById(id) {
     try {
       if (!this.db) throw new Error("Database not initialized");
-      const stmt = this.db.prepare("SELECT * FROM transcriptions WHERE id = ?");
+      const stmt = this._prep("SELECT * FROM transcriptions WHERE id = ?");
       return stmt.get(id) || null;
     } catch (error) {
       debugLogger.error("Error getting transcription by id", { error: error.message }, "database");
@@ -2078,6 +2095,7 @@ class DatabaseManager {
           debugLogger.error("Error closing database", { error: closeError.message }, "database");
         }
         this.db = null;
+        this._stmtCache.clear();
       }
       const dbPath = path.join(
         app.getPath("userData"),

@@ -18,11 +18,13 @@ export default function WindowControls() {
     };
 
     syncIsMaximized();
-    const intervalId = setInterval(syncIsMaximized, 1000);
+    const unsubscribe = window.electronAPI?.onWindowMaximizedChanged?.((maximized: boolean) => {
+      if (mounted) setIsMaximized(maximized);
+    });
 
     return () => {
       mounted = false;
-      clearInterval(intervalId);
+      unsubscribe?.();
     };
   }, []);
 

@@ -15,6 +15,9 @@ const PORT_RANGE_END = 8240;
 const STARTUP_TIMEOUT_MS = 120000;
 const VULKAN_STARTUP_TIMEOUT_MS = 120000;
 const HEALTH_CHECK_INTERVAL_MS = 5000;
+// Idle backoff: fast checks for a minute after start/activity, then slow.
+const HEALTH_CHECK_IDLE_INTERVAL_MS = 30000;
+const HEALTH_CHECK_ACTIVE_WINDOW_MS = 60000;
 const HEALTH_CHECK_TIMEOUT_MS = 2000;
 const STARTUP_POLL_INTERVAL_MS = 500;
 const HEALTH_CHECK_FAILURE_THRESHOLD = 3;
@@ -380,10 +383,22 @@ class LlamaServerManager {
     });
   }
 
+  noteActivity() {
+    this._lastActivityAt = Date.now();
+  }
+
   startHealthCheck() {
     this.stopHealthCheck();
     this.healthCheckFailures = 0;
-    this.healthCheckInterval = setInterval(async () => {
+    this.noteActivity();
+    const schedule = () => {
+      const active = Date.now() - this._lastActivityAt < HEALTH_CHECK_ACTIVE_WINDOW_MS;
+      this.healthCheckInterval = setTimeout(
+        run,
+        active ? HEALTH_CHECK_INTERVAL_MS : HEALTH_CHECK_IDLE_INTERVAL_MS
+      );
+    };
+    const run = async () => {
       try {
         if (!this.process) {
           this.stopHealthCheck();
@@ -403,17 +418,20 @@ class LlamaServerManager {
       } catch (err) {
         debugLogger.error("Health check error", { error: err.message });
       }
-    }, HEALTH_CHECK_INTERVAL_MS);
+      schedule();
+    };
+    schedule();
   }
 
   stopHealthCheck() {
     if (this.healthCheckInterval) {
-      clearInterval(this.healthCheckInterval);
+      clearTimeout(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
   }
 
   resetIdleTimer() {
+    this.noteActivity();
     this.clearIdleTimer();
     this.idleTimer = setTimeout(() => {
       debugLogger.info("llama-server idle timeout reached, stopping to free VRAM", {

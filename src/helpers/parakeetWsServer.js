@@ -16,6 +16,9 @@ const PORT_RANGE_START = 6006;
 const PORT_RANGE_END = 6029;
 const STARTUP_TIMEOUT_MS = 60000;
 const HEALTH_CHECK_INTERVAL_MS = 5000;
+// Idle backoff: fast checks for a minute after start/activity, then slow.
+const HEALTH_CHECK_IDLE_INTERVAL_MS = 30000;
+const HEALTH_CHECK_ACTIVE_WINDOW_MS = 60000;
 const TRANSCRIPTION_TIMEOUT_MS = 300000;
 
 class ParakeetWsServer {
@@ -182,9 +185,21 @@ class ParakeetWsServer {
     }
   }
 
+  noteActivity() {
+    this._lastActivityAt = Date.now();
+  }
+
   _startHealthCheck() {
     this.stopHealthCheck();
-    this.healthCheckInterval = setInterval(() => {
+    this.noteActivity();
+    const schedule = () => {
+      const active = Date.now() - this._lastActivityAt < HEALTH_CHECK_ACTIVE_WINDOW_MS;
+      this.healthCheckInterval = setTimeout(
+        run,
+        active ? HEALTH_CHECK_INTERVAL_MS : HEALTH_CHECK_IDLE_INTERVAL_MS
+      );
+    };
+    const run = () => {
       if (!this.process) {
         this.stopHealthCheck();
         return;
@@ -194,13 +209,16 @@ class ParakeetWsServer {
         debugLogger.warn("parakeet-ws health check failed: process not alive");
         this.ready = false;
         this.stopHealthCheck();
+        return;
       }
-    }, HEALTH_CHECK_INTERVAL_MS);
+      schedule();
+    };
+    schedule();
   }
 
   stopHealthCheck() {
     if (this.healthCheckInterval) {
-      clearInterval(this.healthCheckInterval);
+      clearTimeout(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
   }
@@ -209,6 +227,7 @@ class ParakeetWsServer {
     if (!this.ready || !this.process) {
       throw new Error("parakeet-ws server is not running");
     }
+    this.noteActivity();
 
     return new Promise((resolve, reject) => {
       const startTime = Date.now();

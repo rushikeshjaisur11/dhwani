@@ -364,6 +364,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   windowMaximize: () => ipcRenderer.invoke("window-maximize"),
   windowClose: () => ipcRenderer.invoke("window-close"),
   windowIsMaximized: () => ipcRenderer.invoke("window-is-maximized"),
+  onWindowMaximizedChanged: (callback) => {
+    const listener = (_event, maximized) => callback(maximized);
+    ipcRenderer.on("window-maximized-changed", listener);
+    return () => ipcRenderer.removeListener("window-maximized-changed", listener);
+  },
   snapToMeetingMode: () => ipcRenderer.invoke("snap-to-meeting-mode"),
   restoreFromMeetingMode: () => ipcRenderer.invoke("restore-from-meeting-mode"),
   getPlatform: () => process.platform,

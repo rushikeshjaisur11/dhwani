@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { API_ENDPOINTS } from "../config/constants";
-import i18n, { normalizeUiLanguage } from "../i18n";
+import { changeUiLanguage, normalizeUiLanguage } from "../i18n";
 import { ensureAgentNameInDictionary } from "../utils/agentName";
 import { useStreamingProvidersStore } from "./streamingProvidersStore";
 import logger from "../utils/logger";
@@ -1322,7 +1322,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     const normalized = normalizeUiLanguage(language);
     if (isBrowser) localStorage.setItem("uiLanguage", normalized);
     set({ uiLanguage: normalized });
-    void i18n.changeLanguage(normalized);
+    void changeUiLanguage(normalized);
     if (isBrowser && window.electronAPI?.setUiLanguage) {
       window.electronAPI.setUiLanguage(normalized).catch((err) => {
         logger.warn(
@@ -2183,14 +2183,14 @@ export async function initializeSettings(): Promise<void> {
         if (isBrowser) localStorage.setItem("uiLanguage", resolved);
         useSettingsStore.setState({ uiLanguage: resolved });
       }
-      await i18n.changeLanguage(resolved);
+      await changeUiLanguage(resolved);
     } catch (err) {
       logger.warn(
         "Failed to sync UI language on startup",
         { error: (err as Error).message },
         "settings"
       );
-      void i18n.changeLanguage(normalizeUiLanguage(state.uiLanguage));
+      void changeUiLanguage(state.uiLanguage);
     }
 
     const migratedLang = isBrowser ? localStorage.getItem("preferredLanguage") : null;
@@ -2349,7 +2349,7 @@ export async function initializeSettings(): Promise<void> {
     }
 
     if (key === "uiLanguage" && typeof value === "string") {
-      void i18n.changeLanguage(value);
+      void changeUiLanguage(value);
     }
   });
 

@@ -18,6 +18,9 @@ const PORT_RANGE_END = 8199;
 const STARTUP_TIMEOUT_MS = 30000;
 const HEALTH_CHECK_INTERVAL_MS = 5000;
 const HEALTH_CHECK_TIMEOUT_MS = 2000;
+// Idle backoff: fast checks for a minute after start/activity, then slow.
+const HEALTH_CHECK_IDLE_INTERVAL_MS = 30000;
+const HEALTH_CHECK_ACTIVE_WINDOW_MS = 60000;
 const DEFAULT_WHISPER_THREADS = 4;
 const MAX_AUTO_WHISPER_THREADS = 12;
 const MAX_MANUAL_WHISPER_THREADS = 64;
@@ -605,9 +608,21 @@ class WhisperServerManager extends EventEmitter {
     });
   }
 
+  noteActivity() {
+    this._lastActivityAt = Date.now();
+  }
+
   startHealthCheck() {
     this.stopHealthCheck();
-    this.healthCheckInterval = setInterval(async () => {
+    this.noteActivity();
+    const schedule = () => {
+      const active = Date.now() - this._lastActivityAt < HEALTH_CHECK_ACTIVE_WINDOW_MS;
+      this.healthCheckInterval = setTimeout(
+        run,
+        active ? HEALTH_CHECK_INTERVAL_MS : HEALTH_CHECK_IDLE_INTERVAL_MS
+      );
+    };
+    const run = async () => {
       if (!this.isRemote && !this.process) {
         this.stopHealthCheck();
         return;
@@ -616,12 +631,14 @@ class WhisperServerManager extends EventEmitter {
         debugLogger.warn("whisper-server health check failed");
         this.ready = false;
       }
-    }, HEALTH_CHECK_INTERVAL_MS);
+      schedule();
+    };
+    schedule();
   }
 
   stopHealthCheck() {
     if (this.healthCheckInterval) {
-      clearInterval(this.healthCheckInterval);
+      clearTimeout(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
   }
@@ -630,6 +647,7 @@ class WhisperServerManager extends EventEmitter {
     if (!this.ready || (!this.process && !this.isRemote)) {
       throw new Error("whisper-server is not running");
     }
+    this.noteActivity();
 
     // Debug: Log audio buffer info
     debugLogger.debug("whisper-server transcribe called", {

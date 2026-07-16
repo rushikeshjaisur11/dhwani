@@ -74,7 +74,9 @@ interface MeetingRecordingState {
   windowWidth: number;
 }
 
-const MEETING_AUDIO_BUFFER_SIZE = 800;
+// ponytail: 4800 samples = 200ms per IPC message (~10 msg/s across streams,
+// was 33ms/~60 msg/s at 800). If live captions ever feel laggy, drop to 2400.
+const MEETING_AUDIO_BUFFER_SIZE = 4800;
 const MEETING_STOP_FLUSH_TIMEOUT_MS = 50;
 const MEETING_MIC_PRIMARY_AUDIO_CONSTRAINTS = {
   echoCancellation: false,

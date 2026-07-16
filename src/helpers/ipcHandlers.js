@@ -7471,6 +7471,13 @@ class IPCHandlers {
     ipcMain.handle("meeting-detection-set-preferences", async (_event, prefs) => {
       try {
         this.meetingDetectionEngine.setPreferences(prefs);
+        // Persist so start-minimized launches respect them without a renderer.
+        if (typeof prefs?.processDetection === "boolean") {
+          this.environmentManager.saveMeetingProcessDetection(prefs.processDetection);
+        }
+        if (typeof prefs?.audioDetection === "boolean") {
+          this.environmentManager.saveMeetingAudioDetection(prefs.audioDetection);
+        }
         return { success: true };
       } catch (error) {
         return { success: false, error: error.message };
@@ -7497,9 +7504,9 @@ class IPCHandlers {
         // Detection only serves the notification, so the toggle also gates the detector.
         const { notificationsEnabled, notifyMeetingDetection } =
           this.windowManager.notificationPrefs;
-        this.meetingDetectionEngine?.setPreferences({
-          audioDetection: notificationsEnabled && notifyMeetingDetection,
-        });
+        const audioDetection = notificationsEnabled && notifyMeetingDetection;
+        this.meetingDetectionEngine?.setPreferences({ audioDetection });
+        this.environmentManager.saveMeetingAudioDetection(audioDetection);
         return { success: true };
       } catch (error) {
         return { success: false, error: error.message };
