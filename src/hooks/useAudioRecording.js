@@ -13,6 +13,7 @@ import {
   getEffectiveTransformsSync,
   BUILTIN_POLISH_ID,
 } from "../config/transforms/loadEffectiveTransforms";
+import { shouldAttemptReplace } from "../helpers/instantPasteDecision";
 
 export const useAudioRecording = (toast, options = {}) => {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export const useAudioRecording = (toast, options = {}) => {
   const [isPipelining, setIsPipelining] = useState(false);
   const pipelinedChunksRef = useRef([]);
   const audioManagerRef = useRef(null);
+  const pendingInstantPasteRef = useRef(null);
   const startLockRef = useRef(false);
   const stopLockRef = useRef(false);
   const { onToggle } = options;
@@ -182,6 +184,17 @@ export const useAudioRecording = (toast, options = {}) => {
           }
         }
       },
+      onRawTranscriptReady: async ({ text, dictationId, foregroundApp }) => {
+        pendingInstantPasteRef.current = { rawText: text, dictationId, foregroundApp };
+        try {
+          await audioManagerRef.current.safePaste(text, {
+            restoreClipboard: !getSettings().keepTranscriptionInClipboard,
+            allowClipboardFallback: isAccessibilitySkipped(),
+          });
+        } catch (error) {
+          logger.warn("Instant raw paste failed", { error: error?.message }, "clipboard");
+        }
+      },
       onTranscriptionComplete: async (result) => {
         if (getSettings().pauseMediaOnDictation) {
           window.electronAPI?.resumeMediaPlayback?.();
@@ -253,7 +266,43 @@ export const useAudioRecording = (toast, options = {}) => {
             }
           };
 
-          if (autoPasteEnabled) {
+          const pending = pendingInstantPasteRef.current;
+          const wasInstantPasted =
+            result.instantPasteEligible && pending && pending.dictationId === result.dictationId;
+
+          if (wasInstantPasted) {
+            pendingInstantPasteRef.current = null;
+            const textChanged = result.text !== pending.rawText;
+            let foregroundAppMatches = true;
+            try {
+              const currentApp = await window.electronAPI?.getForegroundApp?.();
+              foregroundAppMatches = (currentApp?.app ?? null) === (pending.foregroundApp?.app ?? null);
+            } catch {
+              foregroundAppMatches = false;
+            }
+
+            const shouldReplace = shouldAttemptReplace({
+              autoPasteEnabled,
+              textChanged,
+              dictationIdMatches: true,
+              foregroundAppMatches,
+            });
+
+            if (shouldReplace) {
+              try {
+                await window.electronAPI?.sendBackspaces?.(pending.rawText.length);
+                await audioManagerRef.current.safePaste(result.text, {
+                  ...(isStreaming ? { fromStreaming: true } : {}),
+                  restoreClipboard: !keepTranscriptionInClipboard,
+                  allowClipboardFallback: isAccessibilitySkipped(),
+                });
+              } catch (error) {
+                logger.warn("Instant-paste replace failed", { error: error?.message }, "clipboard");
+              }
+            }
+            // Guardrails failed, or cleanup made no change: the raw paste
+            // already delivered the final text — nothing further to do.
+          } else if (autoPasteEnabled) {
             const pasteStart = performance.now();
             await audioManagerRef.current.safePaste(result.text, {
               ...(isStreaming ? { fromStreaming: true } : {}),
