@@ -29,6 +29,7 @@ export const useAudioRecording = (toast, options = {}) => {
   const pipelinedChunksRef = useRef([]);
   const audioManagerRef = useRef(null);
   const pendingInstantPasteRef = useRef(null);
+  const latestDictationIdRef = useRef(null);
   const startLockRef = useRef(false);
   const stopLockRef = useRef(false);
   const { onToggle } = options;
@@ -186,6 +187,7 @@ export const useAudioRecording = (toast, options = {}) => {
       },
       onRawTranscriptReady: async ({ text, dictationId, foregroundApp }) => {
         pendingInstantPasteRef.current = { rawText: text, dictationId, foregroundApp };
+        latestDictationIdRef.current = dictationId;
         try {
           await audioManagerRef.current.safePaste(text, {
             restoreClipboard: !getSettings().keepTranscriptionInClipboard,
@@ -229,6 +231,7 @@ export const useAudioRecording = (toast, options = {}) => {
           // Auto Apply After Dictation (overlay transform menu): run the
           // selected transform on the transcript before pasting. Any failure
           // keeps the raw transcript.
+          let transformWasApplied = false;
           if (
             !pipelinedResult &&
             localStorage.getItem("autoApplyAfterDictation") === "true" &&
@@ -243,7 +246,10 @@ export const useAudioRecording = (toast, options = {}) => {
                 const transform = getEffectiveTransformsSync().find((tr) => tr.id === selectedId);
                 if (transform) transformed = await applyTransformToText(result.text, transform);
               }
-              if (transformed) result.text = transformed;
+              if (transformed) {
+                result.text = transformed;
+                transformWasApplied = true;
+              }
             } catch (error) {
               logger.warn("Auto apply transform failed", { error: error?.message }, "transform");
             }
@@ -268,7 +274,10 @@ export const useAudioRecording = (toast, options = {}) => {
 
           const pending = pendingInstantPasteRef.current;
           const wasInstantPasted =
-            result.instantPasteEligible && pending && pending.dictationId === result.dictationId;
+            result.instantPasteEligible &&
+            pending &&
+            pending.dictationId === result.dictationId &&
+            !transformWasApplied;
 
           if (wasInstantPasted) {
             pendingInstantPasteRef.current = null;
@@ -284,7 +293,7 @@ export const useAudioRecording = (toast, options = {}) => {
             const shouldReplace = shouldAttemptReplace({
               autoPasteEnabled,
               textChanged,
-              dictationIdMatches: true,
+              dictationIdMatches: latestDictationIdRef.current === pending.dictationId,
               foregroundAppMatches,
             });
 
