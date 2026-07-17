@@ -832,7 +832,7 @@ class ClipboardManager {
   // no new native binaries. Never throws: a failed replace just leaves the
   // raw-pasted text in place, per the design's error-handling rule.
   async sendBackspaces(count) {
-    if (!count || count <= 0) return;
+    if (!Number.isInteger(count) || count <= 0) return;
     const platform = process.platform;
     try {
       if (platform === "darwin") {
@@ -852,12 +852,24 @@ class ClipboardManager {
       const script = `tell application "System Events"\n repeat ${count} times\n key code 51\n end repeat\nend tell`;
       const proc = spawn("osascript", ["-e", script]);
       let stderr = "";
+      let hasTimedOut = false;
       proc.stderr.on("data", (d) => (stderr += d.toString()));
       proc.on("close", (code) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
         if (code === 0) resolve();
         else reject(new Error(`osascript backspace exited ${code}: ${stderr.trim()}`));
       });
-      proc.on("error", reject);
+      proc.on("error", (error) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+      const timeoutId = setTimeout(() => {
+        hasTimedOut = true;
+        killProcess(proc, "SIGKILL");
+        reject(new Error("osascript backspace timed out"));
+      }, 3000);
     });
   }
 
@@ -874,12 +886,24 @@ class ClipboardManager {
         `[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('{BACKSPACE ${count}}')`,
       ]);
       let stderr = "";
+      let hasTimedOut = false;
       proc.stderr.on("data", (d) => (stderr += d.toString()));
       proc.on("close", (code) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
         if (code === 0) resolve();
         else reject(new Error(`PowerShell backspace exited ${code}: ${stderr.trim()}`));
       });
-      proc.on("error", reject);
+      proc.on("error", (error) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+      const timeoutId = setTimeout(() => {
+        hasTimedOut = true;
+        killProcess(proc, "SIGKILL");
+        reject(new Error("PowerShell backspace timed out"));
+      }, 3000);
     });
   }
 
@@ -895,19 +919,35 @@ class ClipboardManager {
         args = Array(count).fill(["-k", "BackSpace"]).flat();
       } else if (this.commandExists("ydotool") && this._isYdotoolDaemonRunning()) {
         cmd = "ydotool";
-        args = ["key", ...Array(count).fill("14:1", "14:0").flat()];
+        if (this._isYdotoolLegacy()) {
+          args = ["key", ...Array(count).fill("backspace")];
+        } else {
+          args = ["key", ...Array(count).fill(["14:1", "14:0"]).flat()];
+        }
       } else {
         reject(new Error("No Linux key-injection tool available for backspace"));
         return;
       }
       const proc = spawn(cmd, args);
       let stderr = "";
+      let hasTimedOut = false;
       proc.stderr.on("data", (d) => (stderr += d.toString()));
       proc.on("close", (code) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
         if (code === 0) resolve();
         else reject(new Error(`${cmd} backspace exited ${code}: ${stderr.trim()}`));
       });
-      proc.on("error", reject);
+      proc.on("error", (error) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+      const timeoutId = setTimeout(() => {
+        hasTimedOut = true;
+        killProcess(proc, "SIGKILL");
+        reject(new Error(`${cmd} backspace timed out`));
+      }, 3000);
     });
   }
 
