@@ -826,6 +826,131 @@ class ClipboardManager {
     }
   }
 
+  // Best-effort backspace injection for the instant-paste replace flow.
+  // Reuses each platform's existing shell-level key-injection tool (not the
+  // compiled fast-paste binaries, which only know how to send Ctrl+V/Cmd+V) —
+  // no new native binaries. Never throws: a failed replace just leaves the
+  // raw-pasted text in place, per the design's error-handling rule.
+  async sendBackspaces(count) {
+    if (!Number.isInteger(count) || count <= 0) return;
+    const platform = process.platform;
+    try {
+      if (platform === "darwin") {
+        await this._sendBackspacesMacOS(count);
+      } else if (platform === "win32") {
+        await this._sendBackspacesWindows(count);
+      } else {
+        await this._sendBackspacesLinux(count);
+      }
+    } catch (error) {
+      this.safeLog("❌ sendBackspaces failed", { platform, count, error: error.message });
+    }
+  }
+
+  _sendBackspacesMacOS(count) {
+    return new Promise((resolve, reject) => {
+      const script = `tell application "System Events"\n repeat ${count} times\n key code 51\n end repeat\nend tell`;
+      const proc = spawn("osascript", ["-e", script]);
+      let stderr = "";
+      let hasTimedOut = false;
+      proc.stderr.on("data", (d) => (stderr += d.toString()));
+      proc.on("close", (code) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        if (code === 0) resolve();
+        else reject(new Error(`osascript backspace exited ${code}: ${stderr.trim()}`));
+      });
+      proc.on("error", (error) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+      const timeoutId = setTimeout(() => {
+        hasTimedOut = true;
+        killProcess(proc, "SIGKILL");
+        reject(new Error("osascript backspace timed out"));
+      }, 3000);
+    });
+  }
+
+  _sendBackspacesWindows(count) {
+    return new Promise((resolve, reject) => {
+      const proc = spawn("powershell.exe", [
+        "-NoProfile",
+        "-NonInteractive",
+        "-WindowStyle",
+        "Hidden",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        `[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('{BACKSPACE ${count}}')`,
+      ]);
+      let stderr = "";
+      let hasTimedOut = false;
+      proc.stderr.on("data", (d) => (stderr += d.toString()));
+      proc.on("close", (code) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        if (code === 0) resolve();
+        else reject(new Error(`PowerShell backspace exited ${code}: ${stderr.trim()}`));
+      });
+      proc.on("error", (error) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+      const timeoutId = setTimeout(() => {
+        hasTimedOut = true;
+        killProcess(proc, "SIGKILL");
+        reject(new Error("PowerShell backspace timed out"));
+      }, 3000);
+    });
+  }
+
+  _sendBackspacesLinux(count) {
+    return new Promise((resolve, reject) => {
+      let cmd;
+      let args;
+      if (this.commandExists("xdotool")) {
+        cmd = "xdotool";
+        args = ["key", "--repeat", String(count), "--delay", "0", "BackSpace"];
+      } else if (this.commandExists("wtype")) {
+        cmd = "wtype";
+        args = Array(count).fill(["-k", "BackSpace"]).flat();
+      } else if (this.commandExists("ydotool") && this._isYdotoolDaemonRunning()) {
+        cmd = "ydotool";
+        if (this._isYdotoolLegacy()) {
+          args = ["key", ...Array(count).fill("backspace")];
+        } else {
+          args = ["key", ...Array(count).fill(["14:1", "14:0"]).flat()];
+        }
+      } else {
+        reject(new Error("No Linux key-injection tool available for backspace"));
+        return;
+      }
+      const proc = spawn(cmd, args);
+      let stderr = "";
+      let hasTimedOut = false;
+      proc.stderr.on("data", (d) => (stderr += d.toString()));
+      proc.on("close", (code) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        if (code === 0) resolve();
+        else reject(new Error(`${cmd} backspace exited ${code}: ${stderr.trim()}`));
+      });
+      proc.on("error", (error) => {
+        if (hasTimedOut) return;
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+      const timeoutId = setTimeout(() => {
+        hasTimedOut = true;
+        killProcess(proc, "SIGKILL");
+        reject(new Error(`${cmd} backspace timed out`));
+      }, 3000);
+    });
+  }
+
   async pasteMacOS(originalClipboard, options = {}) {
     const fastPasteBinary = this.resolveFastPasteBinary();
     const useFastPaste = !!fastPasteBinary;

@@ -486,6 +486,7 @@ declare global {
           allowClipboardFallback?: boolean;
         }
       ) => Promise<void>;
+      sendBackspaces: (count: number) => Promise<void>;
       hideWindow: () => Promise<void>;
       showDictationPanel: () => Promise<void>;
       onToggleDictation: (callback: () => void) => () => void;
