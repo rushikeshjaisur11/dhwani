@@ -870,6 +870,19 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     const kind = computeSyncRouteKind(rawText, settings, agentName, this.voiceAgentRequested);
     if (kind !== "cleanup") return false;
 
+    // Auto-Apply-Transform produces text structurally different from the raw
+    // transcript, so instant-paste must stay inert and let the normal
+    // blocking flow paste the transformed result instead.
+    const autoApplyAfterDictation =
+      typeof window !== "undefined" && window.localStorage
+        ? localStorage.getItem("autoApplyAfterDictation")
+        : null;
+    const transformsOptIn =
+      typeof window !== "undefined" && window.localStorage
+        ? localStorage.getItem("transformsOptIn")
+        : null;
+    if (autoApplyAfterDictation === "true" && transformsOptIn === "true") return false;
+
     const foregroundApp = (await this.foregroundAppPromise) || null;
     this.onRawTranscriptReady({ text: rawText, dictationId, foregroundApp });
     return true;

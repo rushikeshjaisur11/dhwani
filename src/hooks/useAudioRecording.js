@@ -186,13 +186,16 @@ export const useAudioRecording = (toast, options = {}) => {
         }
       },
       onRawTranscriptReady: async ({ text, dictationId, foregroundApp }) => {
-        pendingInstantPasteRef.current = { rawText: text, dictationId, foregroundApp };
+        pendingInstantPasteRef.current = { rawText: text, dictationId, foregroundApp, pasted: false };
         latestDictationIdRef.current = dictationId;
         try {
           await audioManagerRef.current.safePaste(text, {
             restoreClipboard: !getSettings().keepTranscriptionInClipboard,
             allowClipboardFallback: isAccessibilitySkipped(),
           });
+          if (pendingInstantPasteRef.current?.dictationId === dictationId) {
+            pendingInstantPasteRef.current.pasted = true;
+          }
         } catch (error) {
           logger.warn("Instant raw paste failed", { error: error?.message }, "clipboard");
         }
@@ -273,14 +276,20 @@ export const useAudioRecording = (toast, options = {}) => {
           };
 
           const pending = pendingInstantPasteRef.current;
+          const pendingMatches = pending && pending.dictationId === result.dictationId;
           const wasInstantPasted =
             result.instantPasteEligible &&
-            pending &&
-            pending.dictationId === result.dictationId &&
+            pendingMatches &&
+            pending.pasted &&
             !transformWasApplied;
 
-          if (wasInstantPasted) {
+          if (pendingMatches) {
+            // Clear regardless of outcome so a stale record can never be
+            // reused by a later dictation.
             pendingInstantPasteRef.current = null;
+          }
+
+          if (wasInstantPasted) {
             const textChanged = result.text !== pending.rawText;
             let foregroundAppMatches = true;
             try {
@@ -299,7 +308,7 @@ export const useAudioRecording = (toast, options = {}) => {
 
             if (shouldReplace) {
               try {
-                await window.electronAPI?.sendBackspaces?.(pending.rawText.length);
+                await window.electronAPI?.sendBackspaces?.([...pending.rawText].length);
                 await audioManagerRef.current.safePaste(result.text, {
                   ...(isStreaming ? { fromStreaming: true } : {}),
                   restoreClipboard: !keepTranscriptionInClipboard,
