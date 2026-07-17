@@ -826,6 +826,91 @@ class ClipboardManager {
     }
   }
 
+  // Best-effort backspace injection for the instant-paste replace flow.
+  // Reuses each platform's existing shell-level key-injection tool (not the
+  // compiled fast-paste binaries, which only know how to send Ctrl+V/Cmd+V) —
+  // no new native binaries. Never throws: a failed replace just leaves the
+  // raw-pasted text in place, per the design's error-handling rule.
+  async sendBackspaces(count) {
+    if (!count || count <= 0) return;
+    const platform = process.platform;
+    try {
+      if (platform === "darwin") {
+        await this._sendBackspacesMacOS(count);
+      } else if (platform === "win32") {
+        await this._sendBackspacesWindows(count);
+      } else {
+        await this._sendBackspacesLinux(count);
+      }
+    } catch (error) {
+      this.safeLog("❌ sendBackspaces failed", { platform, count, error: error.message });
+    }
+  }
+
+  _sendBackspacesMacOS(count) {
+    return new Promise((resolve, reject) => {
+      const script = `tell application "System Events"\n repeat ${count} times\n key code 51\n end repeat\nend tell`;
+      const proc = spawn("osascript", ["-e", script]);
+      let stderr = "";
+      proc.stderr.on("data", (d) => (stderr += d.toString()));
+      proc.on("close", (code) => {
+        if (code === 0) resolve();
+        else reject(new Error(`osascript backspace exited ${code}: ${stderr.trim()}`));
+      });
+      proc.on("error", reject);
+    });
+  }
+
+  _sendBackspacesWindows(count) {
+    return new Promise((resolve, reject) => {
+      const proc = spawn("powershell.exe", [
+        "-NoProfile",
+        "-NonInteractive",
+        "-WindowStyle",
+        "Hidden",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        `[void][System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms');[System.Windows.Forms.SendKeys]::SendWait('{BACKSPACE ${count}}')`,
+      ]);
+      let stderr = "";
+      proc.stderr.on("data", (d) => (stderr += d.toString()));
+      proc.on("close", (code) => {
+        if (code === 0) resolve();
+        else reject(new Error(`PowerShell backspace exited ${code}: ${stderr.trim()}`));
+      });
+      proc.on("error", reject);
+    });
+  }
+
+  _sendBackspacesLinux(count) {
+    return new Promise((resolve, reject) => {
+      let cmd;
+      let args;
+      if (this.commandExists("xdotool")) {
+        cmd = "xdotool";
+        args = ["key", "--repeat", String(count), "--delay", "0", "BackSpace"];
+      } else if (this.commandExists("wtype")) {
+        cmd = "wtype";
+        args = Array(count).fill(["-k", "BackSpace"]).flat();
+      } else if (this.commandExists("ydotool") && this._isYdotoolDaemonRunning()) {
+        cmd = "ydotool";
+        args = ["key", ...Array(count).fill("14:1", "14:0").flat()];
+      } else {
+        reject(new Error("No Linux key-injection tool available for backspace"));
+        return;
+      }
+      const proc = spawn(cmd, args);
+      let stderr = "";
+      proc.stderr.on("data", (d) => (stderr += d.toString()));
+      proc.on("close", (code) => {
+        if (code === 0) resolve();
+        else reject(new Error(`${cmd} backspace exited ${code}: ${stderr.trim()}`));
+      });
+      proc.on("error", reject);
+    });
+  }
+
   async pasteMacOS(originalClipboard, options = {}) {
     const fastPasteBinary = this.resolveFastPasteBinary();
     const useFastPaste = !!fastPasteBinary;

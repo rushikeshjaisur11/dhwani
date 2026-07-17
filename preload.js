@@ -31,6 +31,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     }
   },
   pasteText: (text, options) => ipcRenderer.invoke("paste-text", text, options),
+  sendBackspaces: (count) => ipcRenderer.invoke("send-backspaces", count),
   hideWindow: () => ipcRenderer.invoke("hide-window"),
   showDictationPanel: () => ipcRenderer.invoke("show-dictation-panel"),
   onToggleDictation: registerListener("toggle-dictation", (callback) => () => callback()),
