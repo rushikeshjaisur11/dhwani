@@ -12,11 +12,10 @@ on:
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # Skip bot-authored PRs (e.g. release-please's version-bump/changelog PRs) -
+    # claude-code-action refuses to run for non-human actors anyway, and a
+    # version bump doesn't need an AI code review.
+    if: github.event.pull_request.user.login != 'github-actions[bot]'
 
     runs-on: ubuntu-latest
     permissions:
