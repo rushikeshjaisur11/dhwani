@@ -291,7 +291,7 @@ export const useAudioRecording = (toast, options = {}) => {
 
           if (wasInstantPasted) {
             const textChanged = result.text !== pending.rawText;
-            let foregroundAppMatches = true;
+            let foregroundAppMatches;
             try {
               const currentApp = await window.electronAPI?.getForegroundApp?.();
               foregroundAppMatches = (currentApp?.app ?? null) === (pending.foregroundApp?.app ?? null);
