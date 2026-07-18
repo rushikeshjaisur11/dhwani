@@ -1555,15 +1555,16 @@ class IPCHandlers {
     ipcMain.handle("transcribe-audio-file", async (event, filePath, options = {}) => {
       const fs = require("fs");
       try {
-        const audioBuffer = fs.readFileSync(filePath);
         if (options.provider === "nvidia") {
+          const audioBuffer = fs.readFileSync(filePath);
           const result = await this.parakeetManager.transcribeLocalParakeet(audioBuffer, options);
           return result;
         }
         const vadOptions = this._resolveWhisperVadOptions("noteRecording");
-        const result = await this.whisperManager.transcribeLocalWhisper(audioBuffer, {
+        const result = await this.whisperManager.transcribeLocalWhisperSegmented(filePath, {
           ...options,
           ...vadOptions,
+          onSegmentProgress: (payload) => event.sender.send("upload-transcription-progress", payload),
         });
         return result;
       } catch (error) {

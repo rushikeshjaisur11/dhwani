@@ -319,6 +319,48 @@ function splitAudioFile(inputPath, outputDir, options = {}) {
   });
 }
 
+function parseDurationSeconds(ffmpegStderr) {
+  const match = ffmpegStderr.match(/Duration:\s*(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)/);
+  if (!match) return null;
+  const [, hh, mm, ss] = match;
+  return parseInt(hh, 10) * 3600 + parseInt(mm, 10) * 60 + parseFloat(ss);
+}
+
+function getAudioDurationSeconds(inputPath) {
+  return new Promise((resolve, reject) => {
+    const ffmpegPath = getFFmpegPath();
+    if (!ffmpegPath) {
+      reject(new Error("FFmpeg not found - required for audio duration probing"));
+      return;
+    }
+
+    // ffmpeg with -i and no output always exits non-zero; the duration is in
+    // stderr regardless, so the exit code is intentionally not checked here.
+    const proc = spawn(ffmpegPath, ["-i", inputPath], {
+      stdio: ["ignore", "ignore", "pipe"],
+      windowsHide: true,
+    });
+
+    let stderr = "";
+    proc.stderr.on("data", (data) => {
+      stderr += data.toString();
+    });
+
+    proc.on("error", (error) => {
+      reject(new Error(`FFmpeg duration probe error: ${error.message}`));
+    });
+
+    proc.on("close", () => {
+      const duration = parseDurationSeconds(stderr);
+      if (duration === null) {
+        reject(new Error("Could not determine audio duration from FFmpeg output"));
+        return;
+      }
+      resolve(duration);
+    });
+  });
+}
+
 function clearCache() {
   cachedFFmpegPath = null;
 }
@@ -328,6 +370,8 @@ module.exports = {
   isWavFormat,
   convertToWav,
   splitAudioFile,
+  parseDurationSeconds,
+  getAudioDurationSeconds,
   wavToFloat32Samples,
   computeFloat32RMS,
   clearCache,
