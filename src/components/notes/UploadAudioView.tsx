@@ -309,7 +309,9 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     setProgress(0);
     setChunkProgress(null);
 
-    const useChunkProgress = isOpenWhisprCloud && isLargeFile;
+    const useChunkProgress =
+      (isOpenWhisprCloud && isLargeFile) ||
+      (useLocalWhisper && localTranscriptionProvider !== "nvidia");
 
     if (useChunkProgress) {
       progressCleanupRef.current =
