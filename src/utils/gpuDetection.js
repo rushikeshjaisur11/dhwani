@@ -44,6 +44,34 @@ function detectNvidiaGpu() {
   });
 }
 
+function parseFreeVramMb(csvOutput) {
+  const trimmed = (csvOutput || "").trim();
+  if (!trimmed) return null;
+  const value = parseInt(trimmed.split(",")[0].trim(), 10);
+  return Number.isFinite(value) ? value : null;
+}
+
+// Not cached like detectNvidiaGpu's memory.total — free VRAM changes with
+// every model load/unload, so a stale cache here would defeat the guard.
+function getFreeVramMb() {
+  if (process.platform === "darwin") return Promise.resolve(null);
+
+  return new Promise((resolve) => {
+    execFile(
+      "nvidia-smi",
+      ["--query-gpu=memory.free", "--format=csv,noheader,nounits"],
+      { timeout: 5000 },
+      (error, stdout) => {
+        if (error || !stdout) {
+          resolve(null);
+          return;
+        }
+        resolve(parseFreeVramMb(stdout));
+      }
+    );
+  });
+}
+
 let cachedGpuList = null;
 
 function listNvidiaGpus() {
@@ -87,4 +115,4 @@ function listNvidiaGpus() {
   });
 }
 
-module.exports = { detectNvidiaGpu, listNvidiaGpus };
+module.exports = { detectNvidiaGpu, listNvidiaGpus, parseFreeVramMb, getFreeVramMb };
