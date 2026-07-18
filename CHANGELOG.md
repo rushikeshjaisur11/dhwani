@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0](https://github.com/rushikeshjaisur11/dhwani/compare/dhwani-v0.5.2...dhwani-v0.6.0) (2026-07-18)
+
+
+### Features
+
+* cinematic first-run onboarding (roadmap UI/UX [#7](https://github.com/rushikeshjaisur11/dhwani/issues/7)) ([5f39a25](https://github.com/rushikeshjaisur11/dhwani/commit/5f39a2540eba67a827be7663ef45c52e12241152))
+* file-based transform plugins (Phase 5.2) ([724a103](https://github.com/rushikeshjaisur11/dhwani/commit/724a103cf8de58437881ce15c1788c0f6150c5da))
+* live inline hotkey conflict indicator (Phase 5.4) ([b55f20a](https://github.com/rushikeshjaisur11/dhwani/commit/b55f20a76481ac03dab3e4265ed80f1262c6c067))
+* memory-pressure model eviction (Phase 5.1) ([1c5a4d5](https://github.com/rushikeshjaisur11/dhwani/commit/1c5a4d5276082dc19e58ef113b2c97bd7044d978))
+* replace Qdrant sidecar with sqlite-vec ([079d279](https://github.com/rushikeshjaisur11/dhwani/commit/079d27973cfbb67628e31daa8a5f3479c5af9666))
+* skin customization color system and console warning fix ([0f9b74f](https://github.com/rushikeshjaisur11/dhwani/commit/0f9b74faef420bbd52ae1d9c33ee4a2ad6a01160))
+* updated voice visualizers and disabled strict signature checks ([94f1a17](https://github.com/rushikeshjaisur11/dhwani/commit/94f1a170632df0ead8ef78fb3a8328558fa2d6d3))
+
+
+### Bug Fixes
+
+* auto-updater installation race condition and improve update debug logs ([59697c9](https://github.com/rushikeshjaisur11/dhwani/commit/59697c9a7c627f6d1fed4ec84e020927592ba391))
+* correct action name typo in semantic-pr workflow ([ae23498](https://github.com/rushikeshjaisur11/dhwani/commit/ae234984fd4dcd3124c8c72dabeaa1d1809c3c8e))
+* keyboard navigation audit pass (Phase 5.3) ([5f947da](https://github.com/rushikeshjaisur11/dhwani/commit/5f947da2110ccdacc5e76453a0028a8e51bd1d31))
+* revert @ai-sdk/openai and @ai-sdk/google to provider-spec-compatible versions ([630bc38](https://github.com/rushikeshjaisur11/dhwani/commit/630bc38673fb14bfb9fb2a7d266b8ed0c74ed662))
+* sync package-lock.json with package.json to unbreak npm ci ([c1c72cb](https://github.com/rushikeshjaisur11/dhwani/commit/c1c72cb34a83fa3fd4e182bd029073a3f249a85a))
+
+
+### Performance Improvements
+
+* add startup timing instrumentation ([a26c22e](https://github.com/rushikeshjaisur11/dhwani/commit/a26c22e5ec052425ca4ffc453af8bc9037d5fbd8))
+* runtime optimizations — lazy locales, memoized settings, DB + polling fixes ([d512633](https://github.com/rushikeshjaisur11/dhwani/commit/d5126336a3de3da81311f27e836b126a9e4bd1d7))
+* startup critical path — hotkeys live before renderer load ([b7cb677](https://github.com/rushikeshjaisur11/dhwani/commit/b7cb677a68c7ddba396b2e868c2e71efbb1b794f))
+
 ## [Unreleased]
 
 ### Transcription
