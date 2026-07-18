@@ -22,6 +22,8 @@ Verification commands: `npm run dev`, `npm test` (vitest + `node --test`), `npm 
 
 ## Phase 0 — Startup instrumentation (first, so before/after is measurable)
 
+**Status: ✅ Completed** (`a26c22e5`)
+
 Files: `main.js`, `src/helpers/windowManager.js`.
 
 - `const STARTUP_T0 = Date.now();` near top of main.js + `markStartup(name)` helper logging `[startup] <name> +<ms>` via existing `debugLogger` (fallback console.log before logger exists).
@@ -29,6 +31,8 @@ Files: `main.js`, `src/helpers/windowManager.js`.
 - Run `npm run dev`, record baseline numbers (used in Phase 4 doc).
 
 ## Phase 1 — Startup critical path (window + Win+Alt+1 live ASAP)
+
+**Status: ✅ Completed** (`b7cb677a`)
 
 Files: `main.js`, `src/helpers/windowManager.js`, `src/helpers/sidecarReaper.js`, `src/helpers/environment.js`, `src/helpers/ipcHandlers.js`.
 
@@ -51,6 +55,8 @@ Verify: startup marks — `hotkey-registered` + `native-key-listener-reconciled`
 
 ## Phase 2 — Runtime optimizations (all items)
 
+**Status: ✅ Completed** (`d5126336`)
+
 1. **Locale lazy-loading** (`src/i18n.ts`, biggest bundle win): eager-import only `en`; explicit `import()` loader map per other locale (one lazy chunk each); export `changeUiLanguage(lang)` = `await loadLocale(lang); await i18n.changeLanguage(lang);` and swap call sites (grep `i18n.changeLanguage` — settingsStore `setUiLanguage`, useSettings init). Delete `src/locales/translations.ts`/`prompts.ts` if unused after. Also `src/helpers/i18nMain.js`: require `en` + saved `UI_LANGUAGE` only. Trade-off: one-frame English flash for non-en users — document it. Verify: `npm run build:renderer` → settingsStore chunk 1.5MB → ≲250KB, per-locale chunks; language switch works; `npm run i18n:check`.
 2. **Settings context** (`src/hooks/useSettings.ts`): wrap returned object (lines ~200-382) in `useMemo` keyed on `store` snapshot; migrate narrow consumers (`useTraySync.ts`, `DictionaryView.tsx`) to direct zustand selectors (pattern at OnboardingFlow.tsx:120). Don't split context (only 9 consumers).
 3. **DB index** (`src/helpers/database.js`, in `initDatabase()` next to existing index creations): `CREATE INDEX IF NOT EXISTS idx_transcriptions_deleted_at_timestamp ON transcriptions(deleted_at, timestamp DESC)`. Leave insights full-scan (aggregates all rows; index won't help).
@@ -65,6 +71,8 @@ Verify: startup marks — `hotkey-registered` + `native-key-listener-reconciled`
 Verify gate: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build:renderer` (record chunk sizes); manual smoke: dictate, history, notes, insights, settings, language switch, meeting record.
 
 ## Phase 2.5 — Replace Qdrant sidecar with sqlite-vec
+
+**Status: ✅ Completed** (`079d2797`)
 
 Removes an entire subsystem: 85MB bundled `qdrant-{platform}-{arch}` binary, a spawned child process, a port (6333-6350), a 5s-forever health-check loop, `~/.cache/dhwani/qdrant-data/`, and the spawn/reap/backoff machinery in `qdrantManager.js` + `sidecarReaper.js` entries for it. `vectorIndex.js` (verified, ~150 lines) is already a thin, clean interface — `init/ensureCollection/upsertNote/deleteNote/search/reindexAll/ensureConversationChunksCollection/upsertConversationChunks/deleteConversationChunks` — two collections (`notes`, `conversation_chunks`), 384-dim cosine, backed by `localEmbeddings.embedText/embedTexts`. This maps directly onto `sqlite-vec` (`npm i sqlite-vec`, loaded as a better-sqlite3 extension — same DB connection `database.js` already opens, no new process).
 
@@ -88,6 +96,8 @@ Verify: `npm test`; create a note "quarterly revenue projections", agent-search 
 
 ## Phase 3 — Cinematic First-Run Onboarding (roadmap item 7)
 
+**Status: ✅ Completed** (`5f39a254`)
+
 Presentation upgrade + demo step insertion; step logic/settings wiring untouched. `OnboardingFlow.tsx` is already lazy + prefetched (`AppRouter.jsx:55-57`).
 
 1. **Dep**: `nvm exec 24 npm install framer-motion`. Import only from onboarding files (lands in lazy OnboardingFlow chunk). Use `LazyMotion features={domAnimation}` + `m.*`; wrap flow in `<MotionConfig reducedMotion="user">`.
@@ -101,6 +111,8 @@ Presentation upgrade + demo step insertion; step logic/settings wiring untouched
 Verify: `npm run typecheck`, `i18n:check`, `npm test`; manual — clear `onboardingCompleted`+`onboardingCurrentStep` in control-panel devtools, reload, run full flow (demo loops, skip/back/next transitions, mic orb reacts, recommendation badge, hotkey registers, finish persists, dictation works after); OS reduce-motion → minimal animation; non-English locale; `npm run build:renderer` → framer-motion inside OnboardingFlow chunk only.
 
 ## Phase 4 — Documentation (replace roadmap.md)
+
+**Status: ✅ Completed** (`dcd447df`)
 
 1. **New `docs/optimization.md`** (primary): methodology (`[startup]` marks capture, chunk measurement); baseline-vs-after tables (Phase 0 vs Phase 1 marks; chunk sizes; installer size before/after Qdrant removal); completed optimizations (each Phase 1-2.5 item, one line what/why/file, incl. "verified already done" items so future audits don't re-litigate); Phase 5 items (memory-pressure eviction, transform plugin system, keyboard nav, live hotkey conflict indicator) documented alongside; prioritized future backlog — carry roadmap ⚡Performance #1-12 with statuses (#8 speculative streaming stays [IN PROGRESS]; #7 partially exists via `get-recommended-model`; #11 native addon / #12 V8 snapshot low-priority) + new candidates (per-consumer settings selectors, CSS-var mic levels, lazy-download STT binaries, Obsidian/markdown export, CLI bridge subcommands, DB export/import backup, unified cloud-call retry/backoff).
 2. **Rewrite `docs/roadmap.md` slim**: productivity + UI/UX feature ideas carried forward; move UI/UX #7 to Completed; link to optimization.md for all perf work; ✅Completed Items section carried over + new entries.
@@ -117,6 +129,8 @@ Verify: `npm run typecheck`, `i18n:check`, `npm test`; manual — clear `onboard
 - sqlite-vec distance semantics differ from Qdrant cosine score → verify score/threshold mapping against `searchNotesTool.ts`'s existing 0.3 threshold before removing Qdrant fallback path.
 
 ## Phase 5 — Reliability, extensibility, accessibility
+
+**Status: ✅ Completed** (`1c5a4d52`, `724a103c`, `5f947da2`, `b55f20a7`)
 
 ### 5.1 Memory-pressure model eviction
 Extends roadmap ⚡#1 "Smart Model Suspend" (idle-timer unload) with real memory-pressure reaction, not just idle time. `main.js:1285-1286` already lazy-requires `powerMonitor` for `resume` events — same lazy-require pattern applies here.

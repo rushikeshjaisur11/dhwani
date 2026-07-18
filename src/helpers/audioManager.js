@@ -53,7 +53,12 @@ function formatActiveApp(foregroundApp) {
   return foregroundApp.title ? `${foregroundApp.app} — ${foregroundApp.title}` : foregroundApp.app;
 }
 
-function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, activeApp) {
+// Pure, synchronous route-kind decision — no prompt-building, no async model
+// lookups. Shared by resolveReasoningRoute (full config-building) and the
+// instant-paste eligibility pre-check in processWithLocalWhisper/Parakeet,
+// which needs to know "will this be cleanup?" before the async
+// isReasoningAvailable() check even runs.
+export function computeSyncRouteKind(text, settings, agentName, voiceAgentRequested) {
   const cleanupReachable =
     !!settings.useCleanupModel && (!!settings.cleanupModel?.trim() || isCloudCleanupMode());
   const agentModel = settings.dictationAgentModel?.trim() || "";
@@ -66,13 +71,22 @@ function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, a
     isCloudAgent,
     isSelfHostedAgent,
   });
-
-  const kind = resolveDictationRouteKind({
+  return resolveDictationRouteKind({
     cleanupReachable,
     agentReachable,
     agentInvoked: !!agentName && detectAgentName(text, agentName),
     voiceAgentRequested,
   });
+}
+
+function resolveReasoningRoute(text, settings, agentName, voiceAgentRequested, activeApp) {
+  const cleanupReachable =
+    !!settings.useCleanupModel && (!!settings.cleanupModel?.trim() || isCloudCleanupMode());
+  const agentModel = settings.dictationAgentModel?.trim() || "";
+  const isCloudAgent = isCloudDictationAgentMode();
+  const isSelfHostedAgent =
+    settings.dictationAgentMode === "self-hosted" && !!settings.dictationAgentRemoteUrl?.trim();
+  const kind = computeSyncRouteKind(text, settings, agentName, voiceAgentRequested);
   if (kind === "agent") {
     const provider = isCloudAgent
       ? "openwhispr"
@@ -202,6 +216,7 @@ class AudioManager {
     this.onError = null;
     this.onTranscriptionComplete = null;
     this.onPartialTranscript = null;
+    this.onRawTranscriptReady = null;
     this.cachedApiKey = null;
     this.cachedApiKeyProvider = null;
 
@@ -249,6 +264,7 @@ class AudioManager {
     this.lastAudioBlob = null;
     this.lastAudioMetadata = null;
     this._localSpeechGateState = null;
+    this._dictationSeq = 0;
   }
 
   getWorkletBlobUrl() {
@@ -309,12 +325,14 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     onError,
     onTranscriptionComplete,
     onPartialTranscript,
+    onRawTranscriptReady,
     onStreamingCommit,
   }) {
     this.onStateChange = onStateChange;
     this.onError = onError;
     this.onTranscriptionComplete = onTranscriptionComplete;
     this.onPartialTranscript = onPartialTranscript;
+    this.onRawTranscriptReady = onRawTranscriptReady;
     this.onStreamingCommit = onStreamingCommit;
   }
 
@@ -739,15 +757,17 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         "transcription"
       );
 
+      const dictationId = ++this._dictationSeq;
+
       let result;
       let activeModel;
       if (useLocalWhisper) {
         if (localProvider === "nvidia") {
           activeModel = parakeetModel;
-          result = await this.processWithLocalParakeet(audioBlob, parakeetModel, metadata);
+          result = await this.processWithLocalParakeet(audioBlob, parakeetModel, metadata, dictationId);
         } else {
           activeModel = whisperModel;
-          result = await this.processWithLocalWhisper(audioBlob, whisperModel, metadata);
+          result = await this.processWithLocalWhisper(audioBlob, whisperModel, metadata, dictationId);
         }
       } else if (isOpenWhisprCloudMode) {
         if (!isSignedIn) {
@@ -834,7 +854,41 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
   }
 
-  async processWithLocalWhisper(audioBlob, model = "base", metadata = {}) {
+  // Fires onRawTranscriptReady when this dictation is eligible for the
+  // instant-paste flow (auto-paste on, and — cheaply, synchronously —
+  // predicted to land on the cleanup route rather than agent/skip). Returns
+  // whether it fired, so the caller can tag its result for the renderer.
+  async _maybeFireInstantPaste(rawText, dictationId) {
+    if (dictationId == null || !this.onRawTranscriptReady) return false;
+    const settings = getSettings();
+    if (!settings.autoPasteEnabled) return false;
+
+    const agentName =
+      typeof window !== "undefined" && window.localStorage
+        ? localStorage.getItem("agentName") || null
+        : null;
+    const kind = computeSyncRouteKind(rawText, settings, agentName, this.voiceAgentRequested);
+    if (kind !== "cleanup") return false;
+
+    // Auto-Apply-Transform produces text structurally different from the raw
+    // transcript, so instant-paste must stay inert and let the normal
+    // blocking flow paste the transformed result instead.
+    const autoApplyAfterDictation =
+      typeof window !== "undefined" && window.localStorage
+        ? localStorage.getItem("autoApplyAfterDictation")
+        : null;
+    const transformsOptIn =
+      typeof window !== "undefined" && window.localStorage
+        ? localStorage.getItem("transformsOptIn")
+        : null;
+    if (autoApplyAfterDictation === "true" && transformsOptIn === "true") return false;
+
+    const foregroundApp = (await this.foregroundAppPromise) || null;
+    this.onRawTranscriptReady({ text: rawText, dictationId, foregroundApp });
+    return true;
+  }
+
+  async processWithLocalWhisper(audioBlob, model = "base", metadata = {}, dictationId = null) {
     const timings = {};
 
     try {
@@ -882,12 +936,21 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           throw new Error("No audio detected");
         }
         const rawText = result.text;
+        const instantPasteEligible = await this._maybeFireInstantPaste(rawText, dictationId);
         const reasoningStart = performance.now();
         const text = await this.processTranscription(result.text, "local");
         timings.reasoningProcessingDurationMs = Math.round(performance.now() - reasoningStart);
 
         if (text !== null && text !== undefined) {
-          return { success: true, text: text || result.text, rawText, source: "local", timings };
+          return {
+            success: true,
+            text: text || result.text,
+            rawText,
+            source: "local",
+            timings,
+            dictationId,
+            instantPasteEligible,
+          };
         } else {
           throw new Error("No text transcribed");
         }
@@ -918,7 +981,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
   }
 
-  async processWithLocalParakeet(audioBlob, model = "parakeet-tdt-0.6b-v3", metadata = {}) {
+  async processWithLocalParakeet(audioBlob, model = "parakeet-tdt-0.6b-v3", metadata = {}, dictationId = null) {
     const timings = {};
 
     try {
@@ -951,6 +1014,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       if (result.success && result.text) {
         const rawText = result.text;
+        const instantPasteEligible = await this._maybeFireInstantPaste(rawText, dictationId);
         const reasoningStart = performance.now();
         const text = await this.processTranscription(result.text, "local-parakeet");
         timings.reasoningProcessingDurationMs = Math.round(performance.now() - reasoningStart);
@@ -962,6 +1026,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
             rawText,
             source: "local-parakeet",
             timings,
+            dictationId,
+            instantPasteEligible,
           };
         } else {
           throw new Error("No text transcribed");
