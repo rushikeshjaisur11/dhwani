@@ -289,7 +289,6 @@ class WhisperManager {
     const { getAudioDurationSeconds, splitAudioFile } = require("./ffmpegUtils");
     const {
       shouldSegmentAudio,
-      assignSegmentWorker,
       hasVramHeadroom,
       LOCAL_CHUNK_SEGMENT_SECONDS,
     } = require("./transcriptionSegmentPlan");
@@ -386,7 +385,7 @@ class WhisperManager {
           });
           const parsed = this.parseWhisperResult(raw);
           if (!parsed.success) {
-            throw new Error(parsed.error || `Segment ${index} transcription failed`);
+            throw new Error(parsed.message || `Segment ${index} transcription failed`);
           }
           results[index] = parsed.text;
           completedCount++;
