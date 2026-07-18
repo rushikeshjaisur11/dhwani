@@ -46,6 +46,26 @@ test("GPU present but low VRAM falls through to RAM tiers", async () => {
   );
 });
 
+test("pickBestQuant: budget comfortably above q5 threshold picks q5_k_m", async () => {
+  const { pickBestQuant } = await load();
+  assert.equal(pickBestQuant("qwen3-8b", 7.0, "qwen3-8b-q4_k_m"), "qwen3-8b-q5_k_m");
+});
+
+test("pickBestQuant: budget between q4 and q5 thresholds falls back to q4_k_m", async () => {
+  const { pickBestQuant } = await load();
+  assert.equal(pickBestQuant("qwen3-8b", 6.0, "qwen3-8b-q4_k_m"), "qwen3-8b-q4_k_m");
+});
+
+test("pickBestQuant: budget below every variant returns the fallback", async () => {
+  const { pickBestQuant } = await load();
+  assert.equal(pickBestQuant("qwen3-8b", 3.0, "qwen3-8b-q4_k_m"), "qwen3-8b-q4_k_m");
+});
+
+test("pickBestQuant: unknown family key returns the fallback untouched", async () => {
+  const { pickBestQuant } = await load();
+  assert.equal(pickBestQuant("not-a-real-family", 100, "some-fallback-id"), "some-fallback-id");
+});
+
 // recommendReasoningModel now reserves RAM/VRAM for the whisper/Parakeet STT
 // model recommendWhisperModel would already pick for the same profile (it
 // stays resident alongside the reasoning model on-device) — these three
@@ -75,4 +95,22 @@ test("reasoning: weak hardware suggests cloud", async () => {
   const rec = recommendReasoningModel({ hasNvidiaGpu: false, vramMb: 0, totalMemGb: 4, cpuCores: 2 });
   assert.equal(rec.modelId, null);
   assert.equal(rec.isCloud, true);
+});
+
+test("reasoning: NVIDIA GPU with ample VRAM upgrades to qwen3-8b q5_k_m", async () => {
+  const { recommendReasoningModel } = await load();
+  // raw vramMb 11000 - turbo's 2500MB STT reserve = 8500MB adjusted,
+  // clears the >=8000 GPU branch and comfortably clears q5_k_m's ~6.78GB threshold.
+  const rec = recommendReasoningModel({ hasNvidiaGpu: true, vramMb: 11000, totalMemGb: 16, cpuCores: 8 });
+  assert.equal(rec.modelId, "qwen3-8b-q5_k_m");
+  assert.equal(rec.isCloud, false);
+});
+
+test("reasoning: 40GB RAM CPU-only upgrades to qwen3-8b q5_k_m", async () => {
+  const { recommendReasoningModel } = await load();
+  // raw totalMemGb 40 - "small" whisper tier's 1.0GB STT reserve = 39GB adjusted,
+  // clears the >=32 CPU branch and comfortably clears q5_k_m's ~6.78GB threshold.
+  const rec = recommendReasoningModel({ hasNvidiaGpu: false, vramMb: 0, totalMemGb: 40, cpuCores: 16 });
+  assert.equal(rec.modelId, "qwen3-8b-q5_k_m");
+  assert.equal(rec.isCloud, false);
 });

@@ -109,26 +109,25 @@ spring step transitions. framer-motion is confined to the lazy OnboardingFlow ch
 
 ## Future backlog (carried from roadmap ⚡ Performance)
 
+Sorted by expected user-facing gain (highest first, within same status tier).
+
 | # | Item | Status |
 |---|---|---|
-| 1 | Smart Model Suspend (idle unload) | llamaServer has an idle timer; memory-pressure eviction shipped (Phase 5.1) covers whisper/parakeet under pressure; pure idle unload for them still open |
-| 2 | Audio Stream Chunker (disk-backed long recordings) | Open |
-| 3 | List Virtualization for History | **Done** (already shipped) |
-| 4 | Segment-Parallel Transcription | Open |
-| 5 | Local Prompt Caching (llama.cpp KV reuse) | Open |
-| 6 | Battery-Aware Power Modes | Open |
-| 7 | Hardware-Aware Quantization Picker | Partially exists — `get-recommended-model` picks per-hardware models in onboarding |
-| 8 | Speculative Streaming Transcription | **[IN PROGRESS]** |
-| 9 | Pre-Warmed Inference Pipeline | Partially — active STT prewarms at T+0 on startup; focus-triggered warmup open |
-| 10 | Adaptive Acoustic Profile | Open |
-| 11 | Rust/C++ native addon for audio math | Open — low priority |
-| 12 | Electron V8 snapshotting | Open — low priority |
-
-New candidates found during this effort:
-
-- Per-consumer zustand selectors to replace the remaining broad `useSettings()` consumers.
-- Drive mic-level bars via CSS variables instead of React state (zero re-renders).
-- Lazy-download STT binaries on first use instead of bundling all of them.
-- Obsidian/markdown export for notes; DB export/import backup.
-- CLI bridge subcommands (`dhwani transcribe <file>` etc.).
-- Unified retry/backoff wrapper for cloud calls (calendar sync already has one; providers don't).
+| 1 | Speculative Streaming Transcription | **In progress** — instant-paste-cleanup sub-project #1 of 3, see `docs/superpowers/plans/2026-07-17-instant-paste-cleanup-plan.md` |
+| 2 | Segment-Parallel Transcription | Open — biggest remaining win for long recordings |
+| 3 | Pre-Warmed Inference Pipeline | Partial — active STT prewarms at T+0 on startup; focus-triggered warmup open |
+| 4 | Lazy-download STT binaries on first use instead of bundling all of them | Open — cuts install size + first-launch cost |
+| 5 | Local Prompt Caching (llama.cpp KV reuse) | Open — repeated cleanup calls pay full prefill every time |
+| 6 | Smart Model Suspend (idle unload) | llamaServer has an idle timer; memory-pressure eviction shipped (Phase 5.1) covers whisper/parakeet under pressure; pure idle unload for them still open |
+| 7 | Audio Stream Chunker (disk-backed long recordings) | Open — reliability for long dictations/meetings |
+| 8 | Hardware-Aware Quantization Picker | Partially exists — `get-recommended-model` picks per-hardware models in onboarding |
+| 9 | Battery-Aware Power Modes | Open |
+| 10 | Drive mic-level bars via CSS variables instead of React state (zero re-renders) | Open — small, cheap perf win |
+| 11 | Per-consumer zustand selectors to replace the remaining broad `useSettings()` consumers | Open |
+| 12 | Unified retry/backoff wrapper for cloud calls (calendar sync already has one; providers don't) | Open — reliability, low visible gain |
+| 13 | Adaptive Acoustic Profile | Open — niche accuracy win |
+| 14 | Obsidian/markdown export for notes; DB export/import backup | Open — feature, not perf |
+| 15 | CLI bridge subcommands (`dhwani transcribe <file>` etc.) | Open — feature, not perf |
+| 16 | Rust/C++ native addon for audio math | Open — low priority |
+| 17 | Electron V8 snapshotting | Open — low priority |
+| 18 | List Virtualization for History | **Done** (already shipped) |

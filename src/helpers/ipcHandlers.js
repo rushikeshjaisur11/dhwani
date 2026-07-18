@@ -1624,6 +1624,10 @@ class IPCHandlers {
       return result;
     });
 
+    ipcMain.handle("send-backspaces", async (_event, count) => {
+      await this.clipboardManager.sendBackspaces(count);
+    });
+
     ipcMain.handle("check-accessibility-permission", async (_event, silent = false) => {
       return this.clipboardManager.checkAccessibilityPermissions(silent);
     });
