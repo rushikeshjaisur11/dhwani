@@ -123,8 +123,8 @@
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^4.0.93",
     "@ai-sdk/anthropic": "^3.0.58",
+    "@ai-sdk/google": "^4.0.17",
     "@ai-sdk/azure": "^4.0.16",
-    "@ai-sdk/google": "^3.0.43",
     "@ai-sdk/google-vertex": "^5.0.22",
     "@ai-sdk/groq": "^4.0.3",
     "@ai-sdk/openai": "^3.0.41",
@@ -182,7 +182,7 @@
     "unbzip2-stream": "^1.4.3",
     "unzipper": "^0.12.3",
     "ws": "8.21.0",
-    "zod": "^4.3.6",
+    "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
   "overrides": {
