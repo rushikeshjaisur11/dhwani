@@ -287,11 +287,8 @@ class WhisperManager {
 
   async transcribeLocalWhisperSegmented(filePath, options = {}) {
     const { getAudioDurationSeconds, splitAudioFile } = require("./ffmpegUtils");
-    const {
-      shouldSegmentAudio,
-      hasVramHeadroom,
-      LOCAL_CHUNK_SEGMENT_SECONDS,
-    } = require("./transcriptionSegmentPlan");
+    const { shouldSegmentAudio, LOCAL_CHUNK_SEGMENT_SECONDS } = require("./transcriptionSegmentPlan");
+    const { getSafeTempDir } = require("./safeTempDir");
 
     let durationSeconds = null;
     try {
@@ -310,20 +307,6 @@ class WhisperManager {
     const model = options.model || "base";
     const modelPath = this.getModelPath(model);
 
-    if (this.serverManager.useCuda) {
-      const { getFreeVramMb } = require("../utils/gpuDetection");
-      const modelSizeBytes = fs.existsSync(modelPath) ? fs.statSync(modelPath).size : 0;
-      const freeVramMb = await getFreeVramMb();
-      if (!hasVramHeadroom(freeVramMb, modelSizeBytes)) {
-        debugLogger.debug(
-          "Insufficient VRAM headroom for a second whisper worker, falling back to serial",
-          { freeVramMb }
-        );
-        const audioBuffer = fs.readFileSync(filePath);
-        return await this.transcribeLocalWhisper(audioBuffer, options);
-      }
-    }
-
     if (!fs.existsSync(modelPath)) {
       throw new Error(`Whisper model "${model}" not downloaded. Please download it from Settings.`);
     }
@@ -339,12 +322,11 @@ class WhisperManager {
     });
     this.currentServerModel = model;
 
-    const os = require("os");
     const crypto = require("crypto");
     const WhisperServerManager = require("./whisperServer");
 
     const jobId = `${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
-    const chunkDir = path.join(os.tmpdir(), `dhwani-local-chunks-${jobId}`);
+    const chunkDir = path.join(getSafeTempDir(), `dhwani-local-chunks-${jobId}`);
     fs.mkdirSync(chunkDir, { recursive: true });
 
     // Transient: spun up only for this job's duration, never kept warm — a
@@ -384,10 +366,7 @@ class WhisperManager {
             initialPrompt: options.initialPrompt || null,
           });
           const parsed = this.parseWhisperResult(raw);
-          if (!parsed.success) {
-            throw new Error(parsed.message || `Segment ${index} transcription failed`);
-          }
-          results[index] = parsed.text;
+          results[index] = parsed.success ? parsed.text : "";
           completedCount++;
           options.onSegmentProgress?.({
             stage: "transcribing",

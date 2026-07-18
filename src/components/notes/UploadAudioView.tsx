@@ -309,22 +309,7 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     setProgress(0);
     setChunkProgress(null);
 
-    const useChunkProgress =
-      (isOpenWhisprCloud && isLargeFile) ||
-      (useLocalWhisper && localTranscriptionProvider !== "nvidia");
-
-    if (useChunkProgress) {
-      progressCleanupRef.current =
-        window.electronAPI.onUploadTranscriptionProgress?.((data) => {
-          if (data.chunksTotal > 0) {
-            setChunkProgress({
-              chunksTotal: data.chunksTotal,
-              chunksCompleted: data.chunksCompleted,
-            });
-            setProgress((data.chunksCompleted / data.chunksTotal) * 90);
-          }
-        }) ?? null;
-    } else {
+    const startSimulatedProgress = () => {
       progressRef.current = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 90) {
@@ -334,6 +319,36 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
           return prev + Math.random() * 6;
         });
       }, 500);
+    };
+
+    const isCloudChunked = isOpenWhisprCloud && isLargeFile;
+    const localMayChunk = useLocalWhisper && localTranscriptionProvider !== "nvidia";
+    const useChunkProgress = isCloudChunked || localMayChunk;
+
+    if (useChunkProgress) {
+      progressCleanupRef.current =
+        window.electronAPI.onUploadTranscriptionProgress?.((data) => {
+          if (data.chunksTotal > 0) {
+            if (progressRef.current) {
+              clearInterval(progressRef.current);
+              progressRef.current = null;
+            }
+            setChunkProgress({
+              chunksTotal: data.chunksTotal,
+              chunksCompleted: data.chunksCompleted,
+            });
+            setProgress((data.chunksCompleted / data.chunksTotal) * 90);
+          }
+        }) ?? null;
+
+      // Local whisper's segmenting decision happens server-side (duration-based);
+      // start the simulated bar as a fallback in case this specific upload isn't
+      // actually segmented — cancelled above the moment a real event arrives.
+      if (!isCloudChunked) {
+        startSimulatedProgress();
+      }
+    } else {
+      startSimulatedProgress();
     }
 
     try {
