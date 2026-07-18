@@ -285,6 +285,135 @@ class WhisperManager {
     });
   }
 
+  async transcribeLocalWhisperSegmented(filePath, options = {}) {
+    const { getAudioDurationSeconds, splitAudioFile } = require("./ffmpegUtils");
+    const {
+      shouldSegmentAudio,
+      assignSegmentWorker,
+      hasVramHeadroom,
+      LOCAL_CHUNK_SEGMENT_SECONDS,
+    } = require("./transcriptionSegmentPlan");
+
+    let durationSeconds = null;
+    try {
+      durationSeconds = await getAudioDurationSeconds(filePath);
+    } catch (error) {
+      debugLogger.debug("Could not probe audio duration, using single-call path", {
+        error: error.message,
+      });
+    }
+
+    if (!shouldSegmentAudio(durationSeconds)) {
+      const audioBuffer = fs.readFileSync(filePath);
+      return await this.transcribeLocalWhisper(audioBuffer, options);
+    }
+
+    const model = options.model || "base";
+    const modelPath = this.getModelPath(model);
+
+    if (this.serverManager.useCuda) {
+      const { getFreeVramMb } = require("../utils/gpuDetection");
+      const modelSizeBytes = fs.existsSync(modelPath) ? fs.statSync(modelPath).size : 0;
+      const freeVramMb = await getFreeVramMb();
+      if (!hasVramHeadroom(freeVramMb, modelSizeBytes)) {
+        debugLogger.debug(
+          "Insufficient VRAM headroom for a second whisper worker, falling back to serial",
+          { freeVramMb }
+        );
+        const audioBuffer = fs.readFileSync(filePath);
+        return await this.transcribeLocalWhisper(audioBuffer, options);
+      }
+    }
+
+    if (!fs.existsSync(modelPath)) {
+      throw new Error(`Whisper model "${model}" not downloaded. Please download it from Settings.`);
+    }
+
+    const vadEnabled = options.vadEnabled === true;
+    const vadModelPath = vadEnabled ? this.getVadModelPath() : null;
+
+    await this.serverManager.start(modelPath, {
+      useCuda: this.serverManager.useCuda || process.env.WHISPER_CUDA_ENABLED === "true",
+      vadEnabled,
+      vadModelPath,
+      vadConfig: options.vadConfig || null,
+    });
+    this.currentServerModel = model;
+
+    const os = require("os");
+    const crypto = require("crypto");
+    const WhisperServerManager = require("./whisperServer");
+
+    const jobId = `${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
+    const chunkDir = path.join(os.tmpdir(), `dhwani-local-chunks-${jobId}`);
+    fs.mkdirSync(chunkDir, { recursive: true });
+
+    // Transient: spun up only for this job's duration, never kept warm — a
+    // permanently-doubled idle model would cost RAM for a feature that only
+    // matters on occasional long uploads.
+    const transientServer = new WhisperServerManager();
+
+    try {
+      const chunkPaths = await splitAudioFile(filePath, chunkDir, {
+        segmentDuration: LOCAL_CHUNK_SEGMENT_SECONDS,
+      });
+      const totalChunks = chunkPaths.length;
+
+      await transientServer.start(modelPath, {
+        useCuda: false,
+        vadEnabled,
+        vadModelPath,
+        vadConfig: options.vadConfig || null,
+      });
+
+      const results = new Array(totalChunks).fill(null);
+      let completedCount = 0;
+      let nextIndex = 0;
+
+      options.onSegmentProgress?.({
+        stage: "transcribing",
+        chunksTotal: totalChunks,
+        chunksCompleted: 0,
+      });
+
+      const runWorker = async (server) => {
+        while (nextIndex < totalChunks) {
+          const index = nextIndex++;
+          const chunkBuffer = fs.readFileSync(chunkPaths[index]);
+          const raw = await server.transcribe(chunkBuffer, {
+            language: options.language || null,
+            initialPrompt: options.initialPrompt || null,
+          });
+          const parsed = this.parseWhisperResult(raw);
+          if (!parsed.success) {
+            throw new Error(parsed.error || `Segment ${index} transcription failed`);
+          }
+          results[index] = parsed.text;
+          completedCount++;
+          options.onSegmentProgress?.({
+            stage: "transcribing",
+            chunksTotal: totalChunks,
+            chunksCompleted: completedCount,
+          });
+        }
+      };
+
+      await Promise.all([runWorker(this.serverManager), runWorker(transientServer)]);
+
+      return { success: true, text: this.normalizeWhitespace(results.join(" ")) };
+    } finally {
+      await transientServer.stop();
+      try {
+        for (const chunkFile of fs.readdirSync(chunkDir)) {
+          fs.unlinkSync(path.join(chunkDir, chunkFile));
+        }
+        fs.rmdirSync(chunkDir);
+      } catch (cleanupError) {
+        debugLogger.debug("Segment chunk cleanup failed", { error: cleanupError.message });
+      }
+    }
+  }
+
   async transcribeViaServer(audioBlob, model, language, initialPrompt = null, options = {}) {
     debugLogger.info("Transcription mode: SERVER", { model, language: language || "auto" });
     const modelPath = this.getModelPath(model);
