@@ -819,6 +819,77 @@ a:hover {
   border-color: rgba(255, 255, 255, 0.75);
 }
 
+/* Pill Style — collapsed handle sliver (7x40px). Smallest, least visually
+   significant state; same per-style language as the idle dock, scaled
+   down. Not individually mocked in the visual brainstorm — direct
+   extrapolation, not a new design decision. */
+.flow-dock-handle.flow-dock-handle--glass {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.dark .flow-dock-handle.flow-dock-handle--glass {
+  background: rgba(30, 28, 38, 0.45);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* flat: matches the unmodified .flow-dock-handle rule above — no override. */
+.flow-dock-handle.flow-dock-handle--flat {
+}
+
+/* bold: same opaque neutral sliver as flat — bold's contrast signal lives
+   in the mic icon and recording pill, not this sliver. */
+.flow-dock-handle.flow-dock-handle--bold {
+}
+
+.flow-dock-handle.flow-dock-handle--minimal {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+}
+.dark .flow-dock-handle.flow-dock-handle--minimal {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Pill Style — transform menu card. The existing bg-white/dark:bg-neutral-900
+   Tailwind utilities ARE the flat look already; these modifiers override
+   them with !important for the other 3 styles (same technique the
+   recording-pill rules above already use for state overrides). */
+.flow-transform-menu.flow-transform-menu--glass {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+.dark .flow-transform-menu.flow-transform-menu--glass {
+  background: rgba(30, 28, 38, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* flat: matches the existing Tailwind bg-white/dark:bg-neutral-900 utility
+   classes already on this element — no override needed. */
+.flow-transform-menu.flow-transform-menu--flat {
+}
+
+.flow-transform-menu.flow-transform-menu--bold {
+  background: var(--color-surface-2) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+.dark .flow-transform-menu.flow-transform-menu--bold {
+  background: var(--color-flow-surface-dark) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.flow-transform-menu.flow-transform-menu--minimal {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
+}
+.dark .flow-transform-menu.flow-transform-menu--minimal {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
 /* Rounded vertical panel holding the mic / scratchpad / transforms icons. */
 .flow-dock-panel {
   display: flex;
@@ -1210,6 +1281,52 @@ a:hover {
   background: rgba(14, 14, 16, 0.94);
   color: #fff;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* Pill Style — processing/status pill. Neutral surface like the idle dock
+   (C1), not the active recording pill — no bold color-block, no breathing
+   pulse. */
+.flow-pill-h.flow-pill-h--glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.dark .flow-pill-h.flow-pill-h--glass {
+  background: rgba(30, 28, 38, 0.35);
+  border-color: rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* flat: matches the unmodified .flow-pill-h rule above — no override. */
+.flow-pill-h.flow-pill-h--flat {
+}
+
+.flow-pill-h.flow-pill-h--bold {
+  background: var(--color-surface-2);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+}
+.dark .flow-pill-h.flow-pill-h--bold {
+  background: var(--color-flow-surface-dark);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+.flow-pill-h.flow-pill-h--minimal {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+}
+.dark .flow-pill-h.flow-pill-h--minimal {
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 /* Label pill shown to the left of a dock icon on hover — inverted vs the
