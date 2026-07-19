@@ -275,6 +275,7 @@ export default function App() {
 
   const floatingIconAutoHide = useSettingsStore((s) => s.floatingIconAutoHide);
   const voiceVisualizerStyle = useSettingsStore((s) => s.voiceVisualizerStyle);
+  const flowBarPillStyle = useSettingsStore((s) => s.flowBarPillStyle);
   const polishKey = useSettingsStore((s) => s.polishKey);
   const prevAutoHideRef = useRef(floatingIconAutoHide);
   const showStreamingPreview = useSettingsStore((s) => s.showStreamingPreview);
@@ -598,7 +599,7 @@ export default function App() {
         }}
       >
         {statusPill ? (
-          <div className="flow-pill-h mr-1.5">
+          <div className={`flow-pill-h flow-pill-h--${flowBarPillStyle} mr-1.5`}>
             {statusPill.mode === "processing" ? (
               <>
                 <Loader2 size={15} className="animate-spin opacity-80" />
@@ -631,7 +632,7 @@ export default function App() {
           </div>
         ) : !isExpanded ? (
           <div
-            className="flow-dock-handle"
+            className={`flow-dock-handle flow-dock-handle--${flowBarPillStyle}`}
             role="button"
             aria-label={t("app.dock.expand", { defaultValue: "Expand Flow Bar" })}
             onClick={() => setIsExpanded(true)}
@@ -661,7 +662,7 @@ export default function App() {
               <button
                 onClick={toggleListening}
                 aria-label={t("app.mic.recording")}
-                className={`flow-dock-mic flow-dock-mic--recording ${micStateClass} relative flex items-center justify-center`}
+                className={`flow-dock-mic flow-dock-mic--recording flow-dock-mic--recording--${flowBarPillStyle} ${micStateClass} relative flex items-center justify-center`}
               >
                 {voiceVisualizerStyle === "bars" ? (
                   <LiveWaveform levels={micLevels} isCommandMode={isCommandMode} />
@@ -684,7 +685,7 @@ export default function App() {
                 <span className="flow-bar-ring flow-bar-ring--listening" aria-hidden="true" />
               </button>
             ) : (
-            <div className="flow-dock-panel">
+            <div className={`flow-dock-panel flow-dock-panel--${flowBarPillStyle}`}>
 
               <Tooltip
                 label={t("app.dock.dictate", { defaultValue: "Dictate" })}
@@ -720,7 +721,7 @@ export default function App() {
                     }
                     e.preventDefault();
                   }}
-                  className="flow-dock-mic"
+                  className={`flow-dock-mic flow-dock-mic--${flowBarPillStyle}`}
                   style={{ cursor: isDragging ? "grabbing" : "pointer" }}
                 >
                   <Mic size={16} className="opacity-90" />
@@ -795,7 +796,7 @@ export default function App() {
             {isTransformMenuOpen && (
               <div
                 ref={menuRef}
-                className="absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 animate-menu-in"
+                className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 animate-menu-in`}
                 onMouseEnter={() => {
                   setWindowInteractivity(true);
                 }}
