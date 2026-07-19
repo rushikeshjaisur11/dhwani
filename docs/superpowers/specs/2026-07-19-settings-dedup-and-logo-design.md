@@ -127,69 +127,98 @@ CSS classes, window-size constraints) done during brainstorming.
 **Direction, locked via visual brainstorm (6 rounds, 21 concepts):** clean/modern surface
 treatment, same shape and interaction model as today (no layout rethink, no change to the
 `WINDOW_SIZES` lookup table or `resizeMainWindow` calls in `App.jsx:433-452` — footprint
-stays identical). Final pick: **"L4" — restrained glass, idle-neutral, active-tinted.**
+stays identical). Rather than hardcoding one winning look, this ships as a **user-selectable
+"Pill Style" setting** with 4 options — resolving the glass-vs-solid tension as a user
+choice instead of a unilateral call, and following the exact pattern the app already uses
+for the "Voice Overlay Pill" visualizer-style picker (`SettingsPage.tsx:1690-1751`, a grid
+of live-previewed option buttons).
 
-### Important: this intentionally reverses part of Task 8/9 from the earlier
-### glass-removal audit on this same branch
+### C0. New setting + UI
+
+- New store field `flowBarPillStyle: "glass" | "flat" | "bold" | "minimal"` in
+  `useSettingsStore` (same persistence pattern as `voiceVisualizerStyle`), default `"glass"`.
+- New **dedicated** settings section "Pill Appearance" (separate from the existing "Voice
+  Overlay Pill" visualizer section per the earlier decision) — same grid-of-live-preview-
+  buttons UI pattern as `SettingsPage.tsx:1690-1751`, 4 buttons (Glass / Flat / Bold /
+  Minimal), each rendering a small live mock of the idle-dock + recording-pill look.
+- Implementation: each of the 5 Flow Bar states (`.flow-dock-handle`, `.flow-dock-panel`,
+  `.flow-dock-mic`, `.flow-dock-mic--recording`, `.flow-pill-h`, transform menu card) reads
+  `flowBarPillStyle` and applies a corresponding modifier class (e.g.
+  `flow-dock-panel--glass`, `flow-dock-panel--flat`, `flow-dock-panel--bold`,
+  `flow-dock-panel--minimal`) alongside the existing base class, mirroring how
+  `micStateClass` already branches className today (`App.jsx:578-583`).
+
+### Important: "flat" reuses Task 8/9 from the earlier glass-removal audit; "glass" reverses
+### it (deliberately, for this control only, and only when the user picks it)
 
 Task 8 (commit `f344dfb1`) solidified `.flow-dock-panel` and `.flow-dock-mic--recording` —
-removed their `backdrop-filter`, made them opaque. This spec puts a *restrained* blur back
-on those two rules specifically, and only those two. This is a deliberate, researched
-exception, not a regression: Apple's current (2026) "Liquid Glass" design language
-explicitly reserves translucency for floating controls that sit above arbitrary content
-(exactly this window's situation — it floats over the user's desktop, not over in-app
-content), while the rest of the app's panels — which sit over the app's own content, not
-arbitrary desktop windows — correctly stay solid per the original audit. Add a code comment
-at the point of change explaining this so a future glass-audit pass doesn't "fix" it back
-to solid without knowing why.
+that solidified CSS becomes the **`flat`** style variant verbatim (no new values needed,
+just gated behind the modifier class instead of being the only option). The **`glass`**
+style (below) puts a *restrained* blur back — deliberate, researched, and opt-in: Apple's
+current (2026) "Liquid Glass" design language reserves translucency for floating controls
+above arbitrary content (this window's exact situation), while the rest of the app's
+panels stay solid. Because it's now a setting rather than a forced default-for-everyone,
+users who want full-app consistency simply pick `flat`. Add a code comment at each modifier
+class explaining the 4-way split so a future glass-audit pass doesn't collapse them back to
+one option without knowing why.
 
-### C1. Idle expanded dock (`.flow-dock-panel`, `index.css:823-846`)
+### C1. Idle expanded dock (`.flow-dock-panel`, `index.css:823-846`) — per style
 
-Replace the now-solid `background: var(--color-surface-2)` (light) /
-`var(--color-flow-surface-dark)` (dark) with a restrained glass treatment:
-- `background: rgba(255,255,255,0.2)` (light) / `rgba(30,28,38,0.35)` (dark)
-- `backdrop-filter: blur(12px) saturate(150%)` (+ `-webkit-` prefix)
-- `border: 1px solid rgba(255,255,255,0.5)` (light) / `rgba(255,255,255,0.14)` (dark), with
-  `border-top-color: rgba(255,255,255,0.8)` (light) / `rgba(255,255,255,0.32)` (dark) for
-  the brighter top rim highlight (the "light catching the glass edge" effect)
-- `box-shadow: 0 6px 18px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.55)` (dark
-  swaps the outer shadow alpha to `0.35` to stay visible against a dark desktop)
-- Mic button (`.flow-dock-mic`, `index.css:860-901`) icon/fill stays neutral at idle — no
-  purple tint on the button itself, just the icon color: `#6d4fe0` (light) / `#b8a8f5`
-  (dark) — per the L4 pick ("idle = clear/neutral, active = colored").
+- **`glass`**: `background: rgba(255,255,255,0.2)` (light) / `rgba(30,28,38,0.35)` (dark);
+  `backdrop-filter: blur(12px) saturate(150%)` (+ `-webkit-`); `border: 1px solid
+  rgba(255,255,255,0.5)` (light) / `rgba(255,255,255,0.14)` (dark) with `border-top-color:
+  rgba(255,255,255,0.8)` (light) / `rgba(255,255,255,0.32)` (dark) for the bright top rim;
+  `box-shadow: 0 6px 18px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.55)` (dark:
+  outer shadow alpha `0.35`). Mic button icon stays neutral (`#6d4fe0`/`#b8a8f5`), no fill
+  tint at idle.
+- **`flat`**: exactly Task 8's already-solid values — `background: var(--color-surface-2)`
+  (light) / `var(--color-flow-surface-dark)` (dark), `border: 1px solid rgba(0,0,0,0.15)`,
+  no backdrop-filter, existing box-shadow (no inset layer).
+- **`bold`**: flat neutral surface (`bg-surface-2`/`--color-flow-surface-dark`, no blur),
+  mic button icon uses high-contrast ink/cream color (`#1c1a17` light / `#f4f1ea` dark)
+  instead of purple — purple only appears when actively recording (C2).
+- **`minimal`**: `background: transparent`, `border: 1px solid rgba(0,0,0,0.12)` (light) /
+  `rgba(255,255,255,0.14)` (dark), no shadow, no blur. Mic button: transparent fill, thin
+  1px border matching the panel, neutral gray icon (`#6b6558`/`#9b9587`).
 
-### C2. Recording pill (`.flow-dock-mic--recording`, `index.css:905-928`)
+### C2. Recording pill (`.flow-dock-mic--recording`, `index.css:905-928`) — per style
 
-Replace the now-solid `background: #120f1c !important` with:
-- `background: rgba(109,79,224,0.55)` (same in both themes — the purple tint reads clearly
-  on any desktop background)
-- `backdrop-filter: blur(12px) saturate(150%)` (+ `-webkit-` prefix)
-- `border: 1px solid rgba(255,255,255,0.45)`, `border-top-color: rgba(255,255,255,0.85)`
-- `box-shadow: 0 8px 22px rgba(109,79,224,0.3), inset 0 1px 0 rgba(255,255,255,0.5)`
-- A slow breathing pulse while recording: `animation: flow-pill-breathe 2.6s ease-in-out
-  infinite` (new keyframe, `scale(1)` → `scale(1.03)` → `scale(1)`) — additive to the
-  existing `flow-pill-spring` entrance animation, not a replacement.
-- The command-mode variant (`.flow-bar-pill--command`, amber-tinted) gets the same
-  treatment with the amber color swapped in for the purple.
-- The live waveform visualizer inside the pill (one of 6, App.jsx:666-678) is unaffected —
-  it renders on top of this background exactly as it does today.
+- **`glass`**: `background: rgba(109,79,224,0.55)` (same both themes); `backdrop-filter:
+  blur(12px) saturate(150%)`; `border: 1px solid rgba(255,255,255,0.45)`, `border-top-color:
+  rgba(255,255,255,0.85)`; `box-shadow: 0 8px 22px rgba(109,79,224,0.3), inset 0 1px 0
+  rgba(255,255,255,0.5)`; slow breathing pulse — `animation: flow-pill-breathe 2.6s
+  ease-in-out infinite` (new keyframe, `scale(1)`→`scale(1.03)`→`scale(1)`), additive to
+  the existing `flow-pill-spring` entrance animation.
+- **`flat`**: exactly Task 8's already-solid values — `background: #120f1c !important`, no
+  backdrop-filter, existing box-shadow, no breathing pulse (keeps only the existing
+  `flow-pill-spring` entrance animation).
+- **`bold`**: solid flat `#f5a94a` (amber) background, no gradient, no blur, no glow —
+  icon/text switches to dark ink (`#1c1a17`) for contrast against the amber fill. No
+  breathing pulse (relies on the inner waveform visualizer alone to read as "live").
+  Command-mode variant swaps to solid purple `#6d4fe0` instead of amber (inverted from the
+  normal-recording color, so the two modes stay visually distinct).
+- **`minimal`**: `background: transparent`, `border: 2px solid #6d4fe0` (light) /
+  `#8b6ef0` (dark), icon color matches the border. A small 6px solid dot (`#e0524d`,
+  positioned top-center inside the pill) is the only additional "recording" signal — no
+  fill/background color change at all.
+- All 4 styles: the command-mode variant (`.flow-bar-pill--command`) and the live waveform
+  visualizer inside the pill (one of 6, `App.jsx:666-678`) render unaffected on top of
+  whichever background is active — visualizer selection is a separate setting, untouched.
 
 ### C3. Processing/status pill (`.flow-pill-h`, `index.css:1045-1062`) and transform menu
 (App.jsx:795-862 card)
 
-Apply the same glass-rim language for visual consistency across all 5 states (per the
-"all 5 states" scope decision) — restrained glass background + bright top-rim border,
-same alpha/blur values as C1's idle dock treatment (both are "neutral" surfaces, not
-active/recording surfaces, so they don't get C2's purple tint or breathing pulse). These
-two states weren't individually mocked up in the visual brainstorm (only idle dock and
-recording pill were compared side-by-side across all 6 rounds) — this is a direct,
-low-risk extrapolation of the same locked language, not a new design decision.
+Apply the same per-style language as C1 (these are "neutral" surfaces like the idle dock,
+not "active" surfaces like the recording pill — no bold color-block or breathing pulse,
+just each style's neutral surface treatment). Not individually mocked in the visual
+brainstorm (only idle dock and recording pill were compared across rounds) — direct,
+low-risk extrapolation of each style's already-locked language, not a new design decision
+per style.
 
 ### C4. Idle collapsed handle (`.flow-dock-handle`, `index.css:794-820`)
 
-Smallest, least visually significant state (7×40px sliver). Apply the same glass
-background/blur/rim treatment at reduced scale — no new decisions needed, same values as
-C1 scaled to the handle's existing dimensions.
+Smallest, least visually significant state (7×40px sliver). Same per-style neutral
+treatment as C1, scaled to the handle's existing dimensions.
 
 ### Out of scope
 
@@ -197,11 +226,16 @@ C1 scaled to the handle's existing dimensions.
   logic — the redesign is surface-only, confirmed compatible with the existing IPC-driven
   resize lookup table.
 - No change to the 6 selectable visualizer components (`LiveWaveform`, `SiriOrbVisualizer`,
-  etc. in `App.jsx`) or the "Voice Overlay Pill" visualizer-style setting
+  etc. in `App.jsx`) or the existing "Voice Overlay Pill" visualizer-style setting
   (`SettingsPage.tsx:1690-1751`) — they continue to render inside the recording pill exactly
-  as today.
+  as today, and stay in their own settings section, separate from the new "Pill Appearance"
+  section (per the earlier decision).
 - The non-functional `panelStartPosition` setting (ignored per `windowConfig.js:168-171`)
   is not addressed by this spec.
+- No 5th/6th style options beyond the 4 selected (Glass/Flat/Bold/Minimal) — the other
+  brainstormed directions (Dynamic Island, Siri-orb halation, oversized squircle, etc.)
+  are not implemented; can be added as future style options following the same
+  `flowBarPillStyle` pattern if wanted later.
 
 ## Global Constraints
 
