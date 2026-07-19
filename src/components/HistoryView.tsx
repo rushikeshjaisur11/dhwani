@@ -258,19 +258,19 @@ export default function HistoryView({
                 <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center gap-4 select-none pointer-events-none">
                   <div className="relative w-44 h-24">
                     {/* Notion Bubble */}
-                    <div className="absolute top-0 right-10 w-7 h-7 rounded-full bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                    <div className="absolute top-0 right-10 w-7 h-7 rounded-full bg-white/20 border border-white/10 flex items-center justify-center shadow-md">
                       <span className="text-[10px] text-white font-bold">N</span>
                     </div>
                     {/* Slack Bubble */}
-                    <div className="absolute bottom-2 left-6 w-8 h-8 rounded-full bg-[#3F0F3F]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                    <div className="absolute bottom-2 left-6 w-8 h-8 rounded-full bg-[#3F0F3F] border border-white/10 flex items-center justify-center shadow-md">
                       <span className="text-[10px] text-white font-bold">#</span>
                     </div>
                     {/* Gmail Bubble */}
-                    <div className="absolute bottom-0 right-12 w-8 h-8 rounded-full bg-[#EA4335]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                    <div className="absolute bottom-0 right-12 w-8 h-8 rounded-full bg-[#EA4335] border border-white/10 flex items-center justify-center shadow-md">
                       <span className="text-[10px] text-white font-bold">M</span>
                     </div>
                     {/* LinkedIn Bubble */}
-                    <div className="absolute top-6 left-20 w-8 h-8 rounded-full bg-[#0077B5]/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-md">
+                    <div className="absolute top-6 left-20 w-8 h-8 rounded-full bg-[#0077B5] border border-white/10 flex items-center justify-center shadow-md">
                       <span className="text-[10px] text-white font-bold">in</span>
                     </div>
                   </div>
@@ -413,14 +413,14 @@ export default function HistoryView({
               </div>
             )}
             {isLoading && history.length === 0 ? (
-              <div className="rounded-2xl border border-border bg-card/50 dark:bg-card/60 backdrop-blur-sm shadow-sm">
+              <div className="rounded-2xl border border-border bg-surface-1 dark:bg-surface-2 shadow-sm">
                 <div className="flex items-center justify-center gap-2 py-8">
                   <Loader2 size={14} className="animate-spin text-primary" />
                   <span className="text-sm text-muted-foreground">{t("controlPanel.loading")}</span>
                 </div>
               </div>
             ) : history.length === 0 ? (
-              <div className="rounded-2xl border border-border bg-card/50 dark:bg-card/60 backdrop-blur-sm shadow-sm">
+              <div className="rounded-2xl border border-border bg-surface-1 dark:bg-surface-2 shadow-sm">
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   <svg
                     className="text-foreground dark:text-white mb-5"
@@ -596,7 +596,7 @@ export default function HistoryView({
         </div>
       </div>
       {selectedTranscript && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 p-4">
           <div className="w-full max-w-2xl bg-card border border-border shadow-2xl rounded-2xl overflow-hidden max-h-[90vh] flex flex-col">
              <TranscriptDetailView 
                transcript={selectedTranscript} 
