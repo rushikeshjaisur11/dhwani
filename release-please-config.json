@@ -3,7 +3,8 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "dhwani"
+      "package-name": "dhwani",
+      "include-component-in-tag": false
     }
   }
 }
