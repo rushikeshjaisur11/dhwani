@@ -1581,6 +1581,14 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Pill Appearance",
+        "description": "Choose how the floating Flow Bar looks",
+        "glass": "Glass",
+        "flat": "Flat",
+        "bold": "Bold",
+        "minimal": "Minimal"
+      },
       "floatingIcon": {
         "autoHide": "Auto-hide when idle",
         "autoHideDescription": "Keep the icon hidden until you start dictating",

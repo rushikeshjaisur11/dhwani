@@ -1393,6 +1393,14 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Aussehen der Pille",
+        "description": "Wähle, wie die schwebende Flow Bar aussieht",
+        "glass": "Glas",
+        "flat": "Flach",
+        "bold": "Kräftig",
+        "minimal": "Minimal"
+      },
       "floatingIcon": {
         "autoHide": "Automatisch ausblenden bei InaktivitÃ¤t",
         "autoHideDescription": "Symbol ausblenden, bis Sie mit dem Diktieren beginnen",

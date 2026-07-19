@@ -1372,6 +1372,14 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Aparência da pílula",
+        "description": "Escolha a aparência da barra flutuante Flow Bar",
+        "glass": "Vidro",
+        "flat": "Plano",
+        "bold": "Arrojado",
+        "minimal": "Minimalista"
+      },
       "floatingIcon": {
         "autoHide": "Ocultar automaticamente quando ocioso",
         "autoHideDescription": "Mantenha o Ã­cone oculto atÃ© iniciar o ditado",

@@ -1393,6 +1393,14 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "膠囊外觀",
+        "description": "選擇浮動 Flow Bar 的外觀",
+        "glass": "玻璃",
+        "flat": "平面",
+        "bold": "醒目",
+        "minimal": "極簡"
+      },
       "floatingIcon": {
         "autoHide": "é–’ç½®æ™‚è‡ªå‹•éš±è—",
         "autoHideDescription": "åœ¨é–‹å§‹èªžéŸ³è¼¸å…¥å‰ä¿æŒåœ–ç¤ºéš±è—",

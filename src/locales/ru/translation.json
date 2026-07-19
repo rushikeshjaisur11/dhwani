@@ -1393,6 +1393,14 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Оформление панели",
+        "description": "Выберите внешний вид плавающей панели Flow Bar",
+        "glass": "Стекло",
+        "flat": "Плоский",
+        "bold": "Смелый",
+        "minimal": "Минимальный"
+      },
       "floatingIcon": {
         "autoHide": "Ð¡ÐºÑ€Ñ‹Ð²Ð°Ñ‚ÑŒ Ð¿Ñ€Ð¸ Ð±ÐµÐ·Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ð¸",
         "autoHideDescription": "Ð—Ð½Ð°Ñ‡Ð¾Ðº Ð±ÑƒÐ´ÐµÑ‚ ÑÐºÑ€Ñ‹Ñ‚, Ð¿Ð¾ÐºÐ° Ð²Ñ‹ Ð½Ðµ Ð½Ð°Ñ‡Ð½Ñ‘Ñ‚Ðµ Ð´Ð¸ÐºÑ‚Ð¾Ð²ÐºÑƒ",

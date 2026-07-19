@@ -758,6 +758,8 @@ export default function SettingsPage({
     setWhisperVadSamplesOverlap,
     voiceVisualizerStyle,
     setVoiceVisualizerStyle,
+    flowBarPillStyle,
+    setFlowBarPillStyle,
   } = useSettings();
 
   const chatAgentKey = useSettingsStore((s) => s.chatAgentKey);
@@ -1735,6 +1737,70 @@ export default function SettingsPage({
               </SettingsPanel>
             </div>
 
+            {/* Pill Appearance — separate section from Voice Overlay Pill above
+                (that controls the in-pill visualizer animation; this controls
+                the pill's surface treatment). Same grid-of-live-preview-buttons
+                pattern as Voice Overlay Pill. */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.pillAppearance.title", {
+                  defaultValue: "Pill Appearance",
+                })}
+                description={t("settingsPage.general.pillAppearance.description", {
+                  defaultValue: "Choose how the floating Flow Bar looks",
+                })}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                    {(
+                      [
+                        { id: "glass", labelKey: "glass", defaultLabel: "Glass" },
+                        { id: "flat", labelKey: "flat", defaultLabel: "Flat" },
+                        { id: "bold", labelKey: "bold", defaultLabel: "Bold" },
+                        { id: "minimal", labelKey: "minimal", defaultLabel: "Minimal" },
+                      ] as const
+                    ).map((style) => {
+                      const isSelected = flowBarPillStyle === style.id;
+                      return (
+                        <button
+                          key={style.id}
+                          onClick={() => setFlowBarPillStyle(style.id)}
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border-[1.5px] transition-all duration-200 shadow-sm outline-none group ${
+                            isSelected
+                              ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.02]"
+                              : "border-border hover:border-border-hover bg-card scale-100"
+                          }`}
+                        >
+                          <div className="flex items-center justify-center h-[70px] w-full mb-2 pointer-events-none">
+                            <div
+                              className={`flow-dock-panel flow-dock-panel--${style.id} flex items-center justify-center w-14 h-14`}
+                            >
+                              <div className={`flow-dock-mic flow-dock-mic--${style.id} w-8 h-8`}>
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <span
+                            className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}
+                          >
+                            {t(`settingsPage.general.pillAppearance.${style.labelKey}`, {
+                              defaultValue: style.defaultLabel,
+                            })}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
 
           </div>
         );
