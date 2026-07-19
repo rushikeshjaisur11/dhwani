@@ -1031,7 +1031,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             <div className="shrink-0 z-10">
               <TitleBar
                 showTitle={true}
-                className="bg-background backdrop-blur-xl border-b border-border shadow-sm"
+                className="bg-background border-b border-border shadow-sm"
                 actions={isSignedIn ? <SupportDropdown /> : undefined}
                 center={
                   onboardingPlatform === "darwin" ? (
@@ -1044,7 +1044,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
           {/* Progress bar — on macOS it lives centered in the title bar instead */}
           {showProgress && onboardingPlatform !== "darwin" && (
-            <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-b border-white/5 px-6 md:px-12 py-3 z-10">
+            <div className="shrink-0 bg-background border-b border-white/5 px-6 md:px-12 py-3 z-10">
               <div className="max-w-3xl mx-auto">
                 <StepProgress steps={steps.slice(1)} currentStep={currentStep - 1} />
               </div>
@@ -1056,7 +1056,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             className={`flex-1 px-6 md:px-12 overflow-y-auto ${currentStep === 0 ? "flex items-center" : "py-6"}`}
           >
             <div className={`w-full ${currentStep === 0 ? "max-w-sm" : "max-w-3xl"} mx-auto`}>
-              <Card className="bg-card/90 backdrop-blur-2xl border border-border/50 dark:border-white/5 shadow-lg rounded-2xl overflow-hidden">
+              <Card className="bg-card border border-border/50 dark:border-white/5 shadow-lg rounded-2xl overflow-hidden">
                 <CardContent className={currentStep === 0 ? "p-6" : "p-6 md:p-8"}>
                   <AnimatePresence mode="wait">
                     <m.div
@@ -1076,7 +1076,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
           {/* Footer Navigation - hidden on welcome/auth step */}
           {showProgress && (
-            <div className="shrink-0 bg-background/80 backdrop-blur-2xl border-t border-white/5 px-6 md:px-12 py-3 z-10">
+            <div className="shrink-0 bg-background border-t border-white/5 px-6 md:px-12 py-3 z-10">
               <div className="max-w-3xl mx-auto flex items-center justify-between">
                 {/* Hide back button on first step for signed-in users */}
                 {!(currentStep === 1 && isSignedIn && !skipAuth) && (
