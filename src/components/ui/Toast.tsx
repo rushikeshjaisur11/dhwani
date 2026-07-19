@@ -265,11 +265,11 @@ const Toast: React.FC<
           className={cn(
             "absolute -left-2 -top-2 size-6 rounded-full",
             "flex items-center justify-center",
-            "bg-black/5 dark:bg-white/10 backdrop-blur-sm border border-black/5 dark:border-white/10",
-            "text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/20",
+            "bg-surface-3 dark:bg-surface-raised border border-border-subtle",
+            "text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white hover:bg-surface-raised dark:hover:bg-surface-3",
             "opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100",
             "transition-all duration-150",
-            "focus:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
+            "focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/30"
           )}
         >
           <X className="size-3" />
