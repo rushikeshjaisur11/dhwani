@@ -203,11 +203,10 @@ export default function EmbeddedChat({
           "absolute bottom-4 left-5 right-5 z-20",
           "max-h-[calc(100%-2rem)] min-h-50",
           "flex flex-col",
-          "bg-background/95 dark:bg-surface-2/95",
+          "bg-background dark:bg-surface-2",
           "border border-border/20 dark:border-white/8",
           "rounded-xl",
           "shadow-elevated",
-          "backdrop-blur-2xl",
           "animate-[scale-in_200ms_ease-out]"
         )}
       >
