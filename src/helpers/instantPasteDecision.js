@@ -1,7 +1,7 @@
 // Guardrails before replacing an already-pasted raw transcript with the
 // cleaned-up version. All four must hold; if any fails, the raw paste
 // simply stays as the final pasted text.
-function shouldAttemptReplace({
+export function shouldAttemptReplace({
   autoPasteEnabled,
   textChanged,
   dictationIdMatches,
@@ -9,5 +9,3 @@ function shouldAttemptReplace({
 }) {
   return !!(autoPasteEnabled && textChanged && dictationIdMatches && foregroundAppMatches);
 }
-
-module.exports = { shouldAttemptReplace };
