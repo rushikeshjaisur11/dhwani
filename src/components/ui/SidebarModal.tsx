@@ -206,7 +206,7 @@ export default function SidebarModal<T extends string>({
                       <div className="h-1 w-1 rounded-full bg-success/60" />
                       {!isCompact && (
                         <span className="text-xs text-muted-foreground/40 tabular-nums tracking-wide">
-                          v{version}
+                          Dhwani v{version}
                         </span>
                       )}
                     </div>
