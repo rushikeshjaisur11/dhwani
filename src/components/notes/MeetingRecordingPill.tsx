@@ -78,8 +78,7 @@ export default function MeetingRecordingPill({
       <div
         className={cn(
           "flex items-center gap-2 h-9 px-3 rounded-xl",
-          "bg-card/95 dark:bg-surface-2/95",
-          "backdrop-blur-xl",
+          "bg-card dark:bg-surface-2",
           "border border-primary/25 dark:border-primary/30",
           "shadow-elevated"
         )}
