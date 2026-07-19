@@ -98,7 +98,11 @@ function MainApp() {
   }
 
   if (isLoading) {
-    return <LoadingFallback isExiting={isSplashExiting} />;
+    // Splash is control-panel-only per spec — the dictation overlay window is
+    // already invisible until painted (show: false + ready-to-show in
+    // windowConfig.js/windowManager.js), so showing a splash there would only
+    // add delay to an already-solved problem.
+    return isControlPanel ? <LoadingFallback isExiting={isSplashExiting} /> : null;
   }
 
   if (isControlPanel && showOnboarding) {
