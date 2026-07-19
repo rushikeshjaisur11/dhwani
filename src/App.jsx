@@ -645,7 +645,7 @@ export default function App() {
             }`}
           >
             {showStreamingPreview && isStreaming && (
-              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-72 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900/90 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-right-4 duration-300 z-50">
+              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-72 rounded-2xl bg-white border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-right-4 duration-300 z-50">
                 <div className="flex items-center gap-2 mb-2">
                   <Loader2 size={12} className="animate-spin text-neutral-500" />
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
@@ -770,7 +770,7 @@ export default function App() {
                         aria-label={t("app.dock.transformMenu", {
                           defaultValue: "Transform menu",
                         })}
-                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float bg-white/40 dark:bg-black/20 backdrop-blur-md shadow-sm border border-black/5 dark:border-white/10"
+                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float bg-surface-2 dark:bg-surface-2 shadow-sm border border-black/5 dark:border-white/10"
                       >
                         {isTransformMenuOpen ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
                       </button>
@@ -795,7 +795,7 @@ export default function App() {
             {isTransformMenuOpen && (
               <div
                 ref={menuRef}
-                className="absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900/90 dark:border-white/10 dark:text-neutral-100 animate-menu-in"
+                className="absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 animate-menu-in"
                 onMouseEnter={() => {
                   setWindowInteractivity(true);
                 }}
