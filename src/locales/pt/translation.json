@@ -1580,7 +1580,8 @@
         "instructionConcise": "Tornar mais conciso",
         "instructionClarity": "Melhorar clareza e fluidez",
         "instructionTone": "Preservar o tom original",
-        "instructionStructure": "Adicionar estrutura quando útil"
+        "instructionStructure": "Adicionar estrutura quando útil",
+        "configureLink": "Configurar Polish →"
       },
       "personalizedStyles": {
         "title": "Estilos personalizados",
@@ -1593,7 +1594,8 @@
           "email": "Apps de e-mail",
           "personal": "Apps pessoais/mensagens",
           "other": "Todo o resto"
-        }
+        },
+        "configureLink": "Configurar estilos personalizados →"
       }
     },
     "permissions": {

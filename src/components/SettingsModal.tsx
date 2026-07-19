@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Sliders, Palette, Mic, Brain, Wrench, Keyboard, Shield, Users } from "lucide-react";
 import SidebarModal, { type SidebarItem } from "./ui/SidebarModal";
 import SettingsPage, { SettingsSectionType } from "./SettingsPage";
+import type { ControlPanelView } from "./ControlPanelSidebar";
 import { WORKSPACES_ENABLED } from "../lib/features";
 
 export type { SettingsSectionType };
@@ -40,9 +41,15 @@ interface SettingsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   initialSection?: string;
+  onNavigateToView?: (view: ControlPanelView) => void;
 }
 
-export default function SettingsModal({ open, onOpenChange, initialSection }: SettingsModalProps) {
+export default function SettingsModal({
+  open,
+  onOpenChange,
+  initialSection,
+  onNavigateToView,
+}: SettingsModalProps) {
   const { t } = useTranslation();
   const sidebarItems: SidebarItem<SettingsSectionType>[] = useMemo(
     () => [
@@ -151,6 +158,7 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
       <SettingsPage
         activeSection={activeSection}
         onNavigateToSection={handleSectionChange}
+        onNavigateToView={onNavigateToView}
         initialSubTab={initialSubTab}
       />
     </SidebarModal>

@@ -1625,7 +1625,8 @@
         "instructionConcise": "Make more concise",
         "instructionClarity": "Improve clarity and flow",
         "instructionTone": "Preserve original tone",
-        "instructionStructure": "Add structure where helpful"
+        "instructionStructure": "Add structure where helpful",
+        "configureLink": "Configure Polish →"
       },
       "pasteLastTranscriptHotkey": {
         "title": "Paste Last Transcript",
@@ -1642,7 +1643,8 @@
           "email": "Email apps",
           "personal": "Personal/messaging apps",
           "other": "Everything else"
-        }
+        },
+        "configureLink": "Configure personalized styles →"
       },
       "microphone": {
         "description": "Select which input device to use for dictation",

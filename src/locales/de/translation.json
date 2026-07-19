@@ -1601,7 +1601,8 @@
         "instructionConcise": "Kürzer fassen",
         "instructionClarity": "Klarheit und Lesefluss verbessern",
         "instructionTone": "Ursprünglichen Ton beibehalten",
-        "instructionStructure": "Struktur hinzufügen, wo hilfreich"
+        "instructionStructure": "Struktur hinzufügen, wo hilfreich",
+        "configureLink": "Polish konfigurieren →"
       },
       "personalizedStyles": {
         "title": "Persönliche Stile",
@@ -1614,7 +1615,8 @@
           "email": "E-Mail-Apps",
           "personal": "Persönliche/Messaging-Apps",
           "other": "Alles andere"
-        }
+        },
+        "configureLink": "Personalisierte Stile konfigurieren →"
       }
     },
     "permissions": {

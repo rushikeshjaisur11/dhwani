@@ -101,6 +101,7 @@ import { useSettingsStore } from "../stores/settingsStore";
 import { canManageSystemAudioInApp } from "../utils/systemAudioAccess";
 import WorkspaceSection from "./settings/WorkspaceSection";
 import { WORKSPACES_ENABLED } from "../lib/features";
+import type { ControlPanelView } from "./ControlPanelSidebar";
 
 export type SettingsSectionType =
   | "workspace"
@@ -117,6 +118,9 @@ interface SettingsPageProps {
   onNavigateToSection?: (section: SettingsSectionType) => void;
   /** When a legacy section ID was used (e.g. `meetings`), land on the matching sub-tab. */
   initialSubTab?: string;
+  /** Closes Settings and switches the main sidebar to this ControlPanel view — used by
+   * link cards that point at a feature's dedicated page (Personalized Styles, Polish). */
+  onNavigateToView?: (view: ControlPanelView) => void;
 }
 
 const UI_LANGUAGE_OPTIONS: import("./ui/LanguageSelector").LanguageOption[] = [
@@ -636,6 +640,7 @@ function GpuDeviceSelector({ purpose }: { purpose: "transcription" | "intelligen
 export default function SettingsPage({
   activeSection = "general",
   onNavigateToSection,
+  onNavigateToView,
   initialSubTab,
 }: SettingsPageProps) {
   const { isCompact } = useSettingsLayout();
@@ -700,28 +705,8 @@ export default function SettingsPage({
     setNotifyUpdates,
     audioCuesEnabled,
     setAudioCuesEnabled,
-    polishEnabled,
-    setPolishEnabled,
-    polishInstructionConcise,
-    setPolishInstructionConcise,
-    polishInstructionClarity,
-    setPolishInstructionClarity,
-    polishInstructionTone,
-    setPolishInstructionTone,
-    polishInstructionStructure,
-    setPolishInstructionStructure,
     polishKey,
     setPolishKey,
-    styleToneWork,
-    setStyleToneWork,
-    styleToneEmail,
-    setStyleToneEmail,
-    styleTonePersonal,
-    setStyleTonePersonal,
-    styleToneOther,
-    setStyleToneOther,
-    enableVoiceStyles,
-    setEnableVoiceStyles,
     pauseMediaOnDictation,
     setPauseMediaOnDictation,
 
@@ -2697,7 +2682,9 @@ EOF`,
               </SettingsPanel>
             </div>
 
-            {/* Polish Hotkey */}
+            {/* Polish Hotkey — the on/off toggle and rule toggles moved to
+                TransformDetailView.tsx (the dedicated Polish page); only the
+                actual hotkey binding stays here. */}
             <div>
               <SectionHeader
                 title={t("settingsPage.general.polishHotkey.title")}
@@ -2719,49 +2706,14 @@ EOF`,
                     slotName="polish"
                   />
                 </SettingsPanelRow>
-                <SettingsPanelRow className="flex items-center justify-between gap-3 border-t border-border/40 dark:border-white/5">
-                  <span className="text-xs text-muted-foreground/80">
-                    {t("settingsPage.general.polishHotkey.enabledLabel")}
-                  </span>
-                  <Toggle checked={polishEnabled} onChange={setPolishEnabled} />
-                </SettingsPanelRow>
-                <SettingsPanelRow className="flex flex-col gap-2.5 border-t border-border/40 dark:border-white/5">
-                  <span className="text-xs text-muted-foreground/80">
-                    {t("settingsPage.general.polishHotkey.instructionsLabel")}
-                  </span>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionConcise")}
-                    </span>
-                    <Toggle
-                      checked={polishInstructionConcise}
-                      onChange={setPolishInstructionConcise}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionClarity")}
-                    </span>
-                    <Toggle
-                      checked={polishInstructionClarity}
-                      onChange={setPolishInstructionClarity}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionTone")}
-                    </span>
-                    <Toggle checked={polishInstructionTone} onChange={setPolishInstructionTone} />
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionStructure")}
-                    </span>
-                    <Toggle
-                      checked={polishInstructionStructure}
-                      onChange={setPolishInstructionStructure}
-                    />
-                  </div>
+                <SettingsPanelRow className="border-t border-border/40 dark:border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => onNavigateToView?.("transforms")}
+                    className="w-full flex items-center justify-between gap-3 text-left text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    {t("settingsPage.general.polishHotkey.configureLink")}
+                  </button>
                 </SettingsPanelRow>
               </SettingsPanel>
             </div>
@@ -2791,58 +2743,23 @@ EOF`,
               </SettingsPanel>
             </div>
 
-            {/* Personalized Styles */}
+            {/* Personalized Styles — full config lives at the dedicated `style`
+                sidebar view (StyleView.tsx); this used to be a duplicate mini-UI. */}
             <div>
               <SectionHeader
                 title={t("settingsPage.general.personalizedStyles.title")}
                 description={t("settingsPage.general.personalizedStyles.description")}
               />
               <SettingsPanel>
-                <SettingsPanelRow className="flex items-center justify-between gap-3 pb-3 mb-2 border-b border-border/40 dark:border-white/5">
-                  <span className="text-sm font-medium text-foreground">
-                    Enable Voice Styles
-                  </span>
-                  <Toggle checked={enableVoiceStyles} onChange={setEnableVoiceStyles} />
-                </SettingsPanelRow>
-
-                {(
-                  [
-                    ["work", styleToneWork, setStyleToneWork],
-                    ["email", styleToneEmail, setStyleToneEmail],
-                    ["personal", styleTonePersonal, setStyleTonePersonal],
-                    ["other", styleToneOther, setStyleToneOther],
-                  ] as const
-                ).map(([contextKey, value, setValue], index) => (
-                  <SettingsPanelRow
-                    key={contextKey}
-                    className={
-                      index > 0 ? "border-t border-border/40 dark:border-white/5" : undefined
-                    }
+                <SettingsPanelRow>
+                  <button
+                    type="button"
+                    onClick={() => onNavigateToView?.("style")}
+                    className="w-full flex items-center justify-between gap-3 text-left text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                   >
-                    <SettingsRow
-                      label={t(`settingsPage.general.personalizedStyles.contexts.${contextKey}`)}
-                    >
-                      <select
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        className="h-7 rounded border border-border/70 bg-surface-1 px-2.5 text-xs font-medium text-foreground shadow-sm hover:border-border-hover hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
-                      >
-                        <option value="off">
-                          {t("settingsPage.general.personalizedStyles.off")}
-                        </option>
-                        <option value="veryCasual">
-                          {t("style.presets.veryCasual.label", "Very Casual")}
-                        </option>
-                        <option value="casual">
-                          {t("settingsPage.general.personalizedStyles.casual")}
-                        </option>
-                        <option value="formal">
-                          {t("settingsPage.general.personalizedStyles.formal")}
-                        </option>
-                      </select>
-                    </SettingsRow>
-                  </SettingsPanelRow>
-                ))}
+                    {t("settingsPage.general.personalizedStyles.configureLink")}
+                  </button>
+                </SettingsPanelRow>
               </SettingsPanel>
             </div>
 

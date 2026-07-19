@@ -1601,7 +1601,8 @@
         "instructionConcise": "更简洁",
         "instructionClarity": "提升清晰度和流畅度",
         "instructionTone": "保留原有语气",
-        "instructionStructure": "在有帮助时增加结构"
+        "instructionStructure": "在有帮助时增加结构",
+        "configureLink": "配置 Polish →"
       },
       "personalizedStyles": {
         "title": "个性化风格",
@@ -1614,7 +1615,8 @@
           "email": "邮件应用",
           "personal": "个人/聊天应用",
           "other": "其他所有"
-        }
+        },
+        "configureLink": "配置个性化风格 →"
       }
     },
     "permissions": {
