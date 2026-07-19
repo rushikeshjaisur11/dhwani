@@ -154,7 +154,7 @@ export default function StyleView() {
             >
               <div className="flex items-center gap-3 mt-2 mb-3">
                 {CONTEXT_LOGOS[context].map((app) => (
-                  <div key={app.name} className="group relative w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md shadow-sm border border-white/10 transition-transform hover:scale-110 hover:bg-white/20 cursor-default">
+                  <div key={app.name} className="group relative w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shadow-sm border border-white/10 transition-transform hover:scale-110 hover:bg-white/30 cursor-default">
                     {app.slug ? (
                       <img 
                         src={`https://cdn.simpleicons.org/${app.slug}/white`} 
@@ -235,7 +235,7 @@ export default function StyleView() {
                     
                     <div className={cn(
                       "relative z-10 rounded-2xl p-5 w-full min-h-[140px] flex flex-col justify-end transition-all duration-500 border flex-shrink-0 mt-auto overflow-hidden",
-                      selected ? cn("bg-background/90 shadow-sm backdrop-blur-md", styleDef.borderClass) : "bg-muted/30 border-transparent group-hover:bg-muted/50"
+                      selected ? cn("bg-background shadow-sm", styleDef.borderClass) : "bg-muted/30 border-transparent group-hover:bg-muted/50"
                     )}>
                       {/* Decorative quotes watermark */}
                       <div className={cn(
