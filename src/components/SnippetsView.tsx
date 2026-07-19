@@ -248,7 +248,7 @@ export default function SnippetsView() {
             if (e.key === "Enter") openPanel();
           }}
           maxLength={80}
-          className="w-full h-9 text-[13px] pr-20 bg-card/50 backdrop-blur-sm border-border/50 focus-visible:ring-primary/20 transition-all placeholder:text-foreground/30 font-medium shadow-sm"
+          className="w-full h-9 text-[13px] pr-20 bg-surface-1 border-border/50 focus-visible:ring-primary/20 transition-all placeholder:text-foreground/30 font-medium shadow-sm"
         />
         {!panelOpen && (
           <button
@@ -338,7 +338,7 @@ export default function SnippetsView() {
             {visibleSnippets.map((snippet) => (
               <div
                 key={snippet.trigger}
-                className="group flex items-center gap-3 p-2.5 rounded-lg border border-border/40 bg-card/40 backdrop-blur-sm shadow-sm hover:bg-card/70 hover:border-primary/20 transition-all"
+                className="group flex items-center gap-3 p-2.5 rounded-lg border border-border/40 bg-surface-1 shadow-sm hover:bg-surface-2 hover:border-primary/20 transition-all"
               >
                 <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-foreground/5 dark:bg-white/10 text-foreground/80 border border-border/50">
                   {snippet.trigger}
