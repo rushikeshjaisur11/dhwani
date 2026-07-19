@@ -1,5 +1,5 @@
 import * as React from "react";
-import { X, Copy, Check } from "lucide-react";
+import { X, Copy, Check, CheckCircle2, AlertTriangle, Info } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ToastContext, type ToastProps } from "./useToast";
 
@@ -142,15 +142,18 @@ const ToastViewport: React.FC<{
 
 const variantConfig = {
   default: {
-    accentClass: "bg-white/20",
+    icon: Info,
+    iconClass: "text-primary",
     progressClass: "bg-white/15",
   },
   destructive: {
-    accentClass: "bg-red-400",
+    icon: AlertTriangle,
+    iconClass: "text-red-500 dark:text-red-400",
     progressClass: "bg-red-400/30",
   },
   success: {
-    accentClass: "bg-emerald-400",
+    icon: CheckCircle2,
+    iconClass: "text-emerald-600 dark:text-emerald-400",
     progressClass: "bg-emerald-400/30",
   },
 };
@@ -217,9 +220,8 @@ const Toast: React.FC<
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={cn("w-0.5 shrink-0", config.accentClass)} />
-
       <div className="flex items-start gap-2 flex-1 min-w-0 px-2.5 py-2">
+        <config.icon className={cn("size-3.5 shrink-0 mt-0.5", config.iconClass)} />
         <div className="flex-1 min-w-0">
           {message && (
             <div className="text-xs font-medium leading-tight text-neutral-900 dark:text-white/90">{message}</div>
