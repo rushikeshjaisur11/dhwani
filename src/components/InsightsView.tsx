@@ -40,7 +40,7 @@ export default function InsightsView() {
 
         <TabsContent value="usage" className="mt-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 flex flex-col items-center gap-1 shadow-sm transition-all hover:bg-card/80">
+            <div className="rounded-xl border border-border/50 bg-surface-1 dark:bg-surface-2 p-4 flex flex-col items-center gap-1 shadow-sm transition-all hover:bg-surface-2 dark:hover:bg-surface-3">
               <RadialGauge value={wpm} max={best || 1} />
               <span className="text-3xl font-bold text-foreground tabular-nums leading-none -mt-1 drop-shadow-sm">
                 {wpm}
@@ -58,7 +58,7 @@ export default function InsightsView() {
               </span>
             </div>
 
-            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 flex flex-col gap-1.5 justify-center shadow-sm transition-all hover:bg-card/80">
+            <div className="rounded-xl border border-border/50 bg-surface-1 dark:bg-surface-2 p-4 flex flex-col gap-1.5 justify-center shadow-sm transition-all hover:bg-surface-2 dark:hover:bg-surface-3">
               <span className="text-3xl font-bold text-foreground tabular-nums leading-none drop-shadow-sm">
                 {stats?.fixesMade ?? "–"}
               </span>
@@ -72,7 +72,7 @@ export default function InsightsView() {
               </span>
             </div>
 
-            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 flex flex-col gap-1.5 justify-center shadow-sm transition-all hover:bg-card/80">
+            <div className="rounded-xl border border-border/50 bg-surface-1 dark:bg-surface-2 p-4 flex flex-col gap-1.5 justify-center shadow-sm transition-all hover:bg-surface-2 dark:hover:bg-surface-3">
               <span className="text-3xl font-bold text-foreground tabular-nums leading-none drop-shadow-sm">
                 {stats?.totalWords ?? "–"}
               </span>
@@ -90,7 +90,7 @@ export default function InsightsView() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm">
+            <div className="rounded-xl border border-border/50 bg-surface-1 dark:bg-surface-2 p-4 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5 drop-shadow-sm">
                   <Flame className="w-3.5 h-3.5 text-orange-500" />
@@ -110,7 +110,7 @@ export default function InsightsView() {
             </div>
 
             {stats && stats.appUsage.length > 0 && (
-              <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm">
+              <div className="rounded-xl border border-border/50 bg-surface-1 dark:bg-surface-2 p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-semibold text-foreground drop-shadow-sm">
                     {t("insights.appUsage.title", { defaultValue: "Desktop usage" })}
@@ -145,7 +145,7 @@ export default function InsightsView() {
           </div>
 
           {stats && stats.dailyActivity.length > 0 && (
-            <div className="rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 shadow-sm h-64 mt-4">
+            <div className="rounded-xl border border-border/50 bg-surface-1 dark:bg-surface-2 p-4 shadow-sm h-64 mt-4">
               <h3 className="text-sm font-semibold text-foreground mb-4 drop-shadow-sm">
                 {t("insights.dailyWords.title", { defaultValue: "Words Dictated Over Time" })}
               </h3>
