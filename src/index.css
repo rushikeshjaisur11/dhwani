@@ -843,28 +843,22 @@ a:hover {
   gap: 8px;
   padding: 8px;
   border-radius: 28px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.4) 100%);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  background: var(--color-surface-2);
   color: #1a1a1a;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  box-shadow: 
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.1),
-    0 4px 16px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    0 4px 16px rgba(0, 0, 0, 0.04);
   animation: flow-dock-in 180ms var(--flow-spring-easing);
 }
 
 .dark .flow-dock-panel {
-  background: linear-gradient(135deg, rgba(45, 45, 52, 0.6) 0%, rgba(20, 20, 24, 0.4) 100%);
+  background: var(--color-flow-surface-dark);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.5),
-    0 4px 16px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 @keyframes flow-dock-in {
@@ -933,9 +927,7 @@ a:hover {
   justify-content: center !important;
   padding: 0 !important;
   border: 1px solid rgba(139, 110, 240, 0.35) !important;
-  background: rgba(18, 15, 28, 0.85) !important;
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  background: #120f1c !important;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
               0 0 1px 0 rgba(255, 255, 255, 0.2) inset,
               0 0 20px 2px rgba(139, 110, 240, 0.3);
