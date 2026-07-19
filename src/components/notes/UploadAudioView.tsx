@@ -683,9 +683,9 @@ function IdleView({
         onKeyDown={handleKeyDown}
         className={cn(
           "relative rounded-lg p-8 text-center cursor-pointer transition-[background-color,border-color,transform] duration-300 group",
-          "bg-surface-1/40 dark:bg-white/[0.03] backdrop-blur-sm",
+          "bg-surface-1 dark:bg-surface-2",
           "border border-foreground/6 dark:border-white/6",
-          "hover:bg-surface-1/60 dark:hover:bg-white/[0.05] hover:border-foreground/12 dark:hover:border-white/10",
+          "hover:bg-surface-2 dark:hover:bg-surface-3 hover:border-foreground/12 dark:hover:border-white/10",
           "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/30",
           isDragOver && "border-primary/30 bg-primary/[0.04] dark:bg-primary/[0.06] scale-[1.01]"
         )}
@@ -753,7 +753,7 @@ function SelectedView({
 
   return (
     <div style={{ animation: "float-up 0.3s ease-out" }}>
-      <div className="rounded-lg border border-foreground/8 dark:border-white/6 bg-surface-1/40 dark:bg-white/[0.03] backdrop-blur-sm p-4 mb-3">
+      <div className="rounded-lg border border-foreground/8 dark:border-white/6 bg-surface-1 dark:bg-surface-2 p-4 mb-3">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-[8px] bg-primary/8 dark:bg-primary/12 border border-primary/10 dark:border-primary/15 flex items-center justify-center shrink-0">
             <FileAudio size={15} className="text-primary/60" />
@@ -1037,7 +1037,7 @@ interface ErrorViewProps {
 function ErrorView({ t, error, reset, handleTranscribe }: ErrorViewProps) {
   return (
     <div style={{ animation: "float-up 0.3s ease-out" }}>
-      <div className="rounded-lg border border-destructive/15 dark:border-destructive/20 bg-destructive/[0.03] dark:bg-destructive/[0.05] backdrop-blur-sm p-4 mb-4">
+      <div className="rounded-lg border border-destructive/15 dark:border-destructive/20 bg-destructive/[0.06] dark:bg-destructive/[0.1] p-4 mb-4">
         <div className="flex items-start gap-2.5">
           <AlertCircle size={14} className="text-destructive/50 shrink-0 mt-0.5" />
           <p className="flex-1 text-xs text-destructive/70 leading-relaxed">{error}</p>
