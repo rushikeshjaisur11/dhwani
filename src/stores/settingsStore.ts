@@ -657,6 +657,8 @@ export interface SettingsState
   setAccentColor: (value: string | null) => void;
   voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
   setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles") => void;
+  flowBarPillStyle: "glass" | "flat" | "bold" | "minimal";
+  setFlowBarPillStyle: (style: "glass" | "flat" | "bold" | "minimal") => void;
   setCloudBackupEnabled: (value: boolean) => void;
   setTelemetryEnabled: (value: boolean) => void;
   setAudioRetentionDays: (days: number) => void;
@@ -969,6 +971,14 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   voiceVisualizerStyle: (() => {
     const v = readString("voiceVisualizerStyle", "plasma");
     return (["plasma", "bars", "siri", "ripple", "neon", "particles"].includes(v) ? v : "plasma") as "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
+  })(),
+  flowBarPillStyle: (() => {
+    const v = readString("flowBarPillStyle", "glass");
+    return (["glass", "flat", "bold", "minimal"].includes(v) ? v : "glass") as
+      | "glass"
+      | "flat"
+      | "bold"
+      | "minimal";
   })(),
   accentColor: (() => {
     const v = readString("accentColor", "");
@@ -1527,6 +1537,10 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles") => {
     if (isBrowser) localStorage.setItem("voiceVisualizerStyle", style);
     set({ voiceVisualizerStyle: style });
+  },
+  setFlowBarPillStyle: (style: "glass" | "flat" | "bold" | "minimal") => {
+    if (isBrowser) localStorage.setItem("flowBarPillStyle", style);
+    set({ flowBarPillStyle: style });
   },
 
   setAccentColor: (value: string | null) => {

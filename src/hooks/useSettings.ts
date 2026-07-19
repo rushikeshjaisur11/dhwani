@@ -84,6 +84,7 @@ export interface ThemeSettings {
   accentColor: string | null;
   voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
   enableVoiceStyles: boolean;
+  flowBarPillStyle: "glass" | "flat" | "bold" | "minimal";
 }
 
 export interface ChatAgentSettings {
@@ -295,6 +296,8 @@ function useSettingsInternal() {
       setVoiceVisualizerStyle: store.setVoiceVisualizerStyle,
       enableVoiceStyles: store.enableVoiceStyles,
       setEnableVoiceStyles: store.setEnableVoiceStyles,
+      flowBarPillStyle: store.flowBarPillStyle,
+      setFlowBarPillStyle: store.setFlowBarPillStyle,
       activationMode: store.activationMode,
       setActivationMode: store.setActivationMode,
       notificationsEnabled: store.notificationsEnabled,
