@@ -47,6 +47,8 @@ export default function TransformDetailView({ transform, onBack }: TransformDeta
 
   const polishKey = useSettingsStore((s) => s.polishKey);
   const setPolishKey = useSettingsStore((s) => s.setPolishKey);
+  const polishEnabled = useSettingsStore((s) => s.polishEnabled);
+  const setPolishEnabled = useSettingsStore((s) => s.setPolishEnabled);
   const instructionConcise = useSettingsStore((s) => s.polishInstructionConcise);
   const instructionClarity = useSettingsStore((s) => s.polishInstructionClarity);
   const instructionTone = useSettingsStore((s) => s.polishInstructionTone);
@@ -132,6 +134,7 @@ export default function TransformDetailView({ transform, onBack }: TransformDeta
     setOverride({});
     setPrompt(transform.prompt);
     if (isPolish) {
+      setPolishEnabled(true);
       setInstructionConcise(true);
       setInstructionClarity(true);
       setInstructionTone(true);
@@ -151,6 +154,7 @@ export default function TransformDetailView({ transform, onBack }: TransformDeta
     setInstructionConcise,
     setInstructionStructure,
     setInstructionTone,
+    setPolishEnabled,
     setPolishKey,
     transform,
     transformRegisterFn,
@@ -306,6 +310,14 @@ export default function TransformDetailView({ transform, onBack }: TransformDeta
 
           {isPolish ? (
             <div>
+              <div className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-muted/50 px-4 py-3.5">
+                <span className="text-sm font-medium text-foreground">
+                  {t("settingsPage.general.polishHotkey.enabledLabel", {
+                    defaultValue: "Enable Polish",
+                  })}
+                </span>
+                <Toggle checked={polishEnabled} onChange={setPolishEnabled} />
+              </div>
               <h3 className="mb-3 text-sm font-semibold text-foreground">
                 {t("transformDetail.selectRules", { defaultValue: "Select rules for Polish" })}
               </h3>
