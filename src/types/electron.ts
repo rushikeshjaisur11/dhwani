@@ -514,6 +514,7 @@ declare global {
 
       runTransform?: (payload: { id: string }) => Promise<{ success: boolean }>;
       setScratchpadPinned?: (pinned: boolean) => Promise<{ success: boolean }>;
+      resizeScratchpadBy?: (delta: { dx: number; dy: number }) => Promise<{ success: boolean }>;
       openTransformsView?: () => Promise<{ success: boolean }>;
       onOpenTransformsView?: (callback: () => void) => () => void;
       openScratchpadOverlay?: (payload?: {

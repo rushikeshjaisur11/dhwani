@@ -282,6 +282,14 @@ const AGENT_OVERLAY_CONFIG = {
 
 // Scratchpad floating note overlay — small always-on-top notes window
 // (sidebar + editor), cloned from the agent overlay shell.
+//
+// resizable stays false here even though this window IS user-resizable in
+// practice — Windows reintroduces the native WS_THICKFRAME border on
+// frameless *resizable* windows even with thickFrame: false (that's the
+// stray border users see around this window specifically; the agent
+// overlay above doesn't show it because it's not resizable). Resizing is
+// instead handled entirely in the renderer via a drag handle that calls
+// resizeScratchpadBy() over IPC — see src/components/ScratchpadOverlay.tsx.
 const SCRATCHPAD_OVERLAY_CONFIG = {
   ...AGENT_OVERLAY_CONFIG,
   width: 560,
@@ -290,7 +298,7 @@ const SCRATCHPAD_OVERLAY_CONFIG = {
   minHeight: 320,
   maxWidth: 1200,
   maxHeight: 900,
-  resizable: true,
+  resizable: false,
 };
 
 module.exports = {
