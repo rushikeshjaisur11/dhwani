@@ -41,6 +41,7 @@ export default function AppRouter() {
 function MainApp() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSplashExiting, setIsSplashExiting] = useState(false);
   const [postOnboardingSettingsSection, setPostOnboardingSettingsSection] = useState(undefined);
 
   const isAgentPanel = window.location.search.includes("agent=true");
@@ -74,7 +75,10 @@ function MainApp() {
       window.electronAPI?.hideWindow?.();
     }
 
-    setIsLoading(false);
+    // Fade the splash out over ~200ms instead of swapping it out instantly.
+    setIsSplashExiting(true);
+    const fadeTimer = setTimeout(() => setIsLoading(false), 200);
+    return () => clearTimeout(fadeTimer);
   }, [isControlPanel, isDictationPanel]);
 
   const handleOnboardingComplete = (options) => {
@@ -94,7 +98,7 @@ function MainApp() {
   }
 
   if (isLoading) {
-    return <LoadingFallback />;
+    return <LoadingFallback isExiting={isSplashExiting} />;
   }
 
   if (isControlPanel && showOnboarding) {
@@ -114,12 +118,14 @@ function MainApp() {
   );
 }
 
-function LoadingFallback({ message }) {
+function LoadingFallback({ message, isExiting = false }) {
   const { t } = useTranslation();
   const fallbackMessage = message || t("common.loading");
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div
+      className={`min-h-screen bg-background flex items-center justify-center transition-opacity duration-200 ease-out ${isExiting ? "opacity-0" : "opacity-100"}`}
+    >
       <div className="flex flex-col items-center gap-4 animate-[scale-in_300ms_ease-out]">
         <svg
           viewBox="0 0 1024 1024"
