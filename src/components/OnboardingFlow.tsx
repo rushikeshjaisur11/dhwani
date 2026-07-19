@@ -32,7 +32,7 @@ import { useSystemAudioPermission } from "../hooks/useSystemAudioPermission";
 import { useSettings } from "../hooks/useSettings";
 import { useSettingsStore } from "../stores/settingsStore";
 import LanguageSelector from "./ui/LanguageSelector";
-import logoIcon from "../assets/icon.png";
+import { Logo } from "./ui/Logo";
 import { setAgentName as saveAgentName } from "../utils/agentName";
 import { formatHotkeyLabel, getDefaultHotkey, isGlobeLikeHotkey } from "../utils/hotkeys";
 import { useAuth } from "../hooks/useAuth";
@@ -521,12 +521,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             animate="animate"
             className="space-y-6 text-center"
           >
-            <m.img
-              variants={staggerItem}
-              src={logoIcon}
-              alt="Dhwani"
-              className="w-14 h-14 mx-auto rounded-xl shadow-sm"
-            />
+            <m.div variants={staggerItem} className="mx-auto w-14 h-14 flex items-center justify-center text-foreground">
+              <Logo size={56} />
+            </m.div>
             <m.div variants={staggerItem}>
               <h2 className="text-2xl font-semibold text-foreground mb-2">
                 {t("auth.welcomeTitle")}

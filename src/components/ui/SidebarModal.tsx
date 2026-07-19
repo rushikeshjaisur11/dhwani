@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { SettingsLayoutProvider } from "./useSettingsLayout";
+import { Logo } from "./Logo";
 
 export interface SidebarItem<T extends string> {
   id: T;
@@ -203,6 +204,7 @@ export default function SidebarModal<T extends string>({
                     }`}
                   >
                     <div className="flex items-center gap-1.5">
+                      <Logo size={16} className="text-foreground/60 shrink-0" />
                       <div className="h-1 w-1 rounded-full bg-success/60" />
                       {!isCompact && (
                         <span className="text-xs text-muted-foreground/40 tabular-nums tracking-wide">
