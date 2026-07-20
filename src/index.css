@@ -940,13 +940,15 @@ a:hover {
    recording-pill rules above already use for state overrides). */
 .flow-transform-menu.flow-transform-menu--glass {
   background: rgba(255, 255, 255, 0.2) !important;
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
   border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25) !important;
 }
 .dark .flow-transform-menu.flow-transform-menu--glass {
-  background: rgba(30, 28, 38, 0.35) !important;
+  background: rgba(30, 28, 38, 0.5) !important;
   border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* flat: matches the existing Tailwind bg-white/dark:bg-neutral-900 utility
@@ -957,10 +959,12 @@ a:hover {
 .flow-transform-menu.flow-transform-menu--bold {
   background: var(--color-surface-2) !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18) !important;
 }
 .dark .flow-transform-menu.flow-transform-menu--bold {
   background: var(--color-flow-surface-dark) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
 }
 
 .flow-transform-menu.flow-transform-menu--minimal {
@@ -970,6 +974,29 @@ a:hover {
 }
 .dark .flow-transform-menu.flow-transform-menu--minimal {
   border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Transform menu — active/selected row. Today there is no background
+   highlight for the selected row at all (only a trailing checkmark icon);
+   these classes add one, per pill style, applied only when the row is
+   selected. flowBarPillStyle read at render time in App.jsx picks which of
+   these 4 classes to apply (Task 9). */
+.flow-transform-menu-item--active-glass {
+  background: linear-gradient(135deg, rgba(109, 79, 224, 0.5), rgba(109, 79, 224, 0.2)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.flow-transform-menu-item--active-flat {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+.dark .flow-transform-menu-item--active-flat {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.flow-transform-menu-item--active-bold {
+  background: rgba(245, 169, 74, 0.25) !important;
+}
+.flow-transform-menu-item--active-minimal {
+  background: transparent !important;
+  border: 1px solid rgba(109, 79, 224, 0.4);
 }
 
 /* Rounded horizontal capsule holding the mic / scratchpad / transforms
