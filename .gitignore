@@ -319,3 +319,6 @@ src/assets/Assets.car
 # Personal training data (Phase 3 flywheel) - never committed
 dataset/
 *.pfx
+
+# Local git worktrees (superpowers:using-git-worktrees)
+.worktrees/
