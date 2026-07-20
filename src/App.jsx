@@ -36,8 +36,9 @@ import {
 
 // White pill tooltip opening to the left of a dock icon (Wispr style):
 // "Dictate **Ctrl + Win**", "Scratchpad", "Polish **Win Alt 1**".
-const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
+const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true, direction = "up" }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const isDown = direction === "down";
 
   return (
     <div className="relative">
@@ -49,8 +50,10 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
       </div>
       {isVisible && (
         <div
-          className="flow-tooltip-pill absolute bottom-full left-1/2 -translate-x-1/2 z-10 max-w-[190px] truncate"
-          style={{ marginBottom: offset }}
+          className={`flow-tooltip-pill absolute left-1/2 -translate-x-1/2 z-10 max-w-[190px] truncate ${
+            isDown ? "top-full" : "bottom-full"
+          }`}
+          style={isDown ? { marginTop: offset } : { marginBottom: offset }}
         >
           {label}
           {hotkey ? <span className="font-semibold"> {hotkey}</span> : null}
@@ -72,6 +75,11 @@ export default function App() {
   // the finer hover-reveal content (tooltip, transform-menu arrow) briefly
   // after expanding so the resize has time to land first.
   const [dockReady, setDockReady] = useState(false);
+  // Which side the dock's popups (tooltips, transform menu, streaming
+  // preview) open on. Mirrors whichever direction resizeMainWindow actually
+  // used (it prefers "up" but falls back to "down" near the top of the
+  // screen) so the dock's own on-screen anchor point never jumps.
+  const [dockDirection, setDockDirection] = useState("up");
   const [isTransformMenuOpen, setIsTransformMenuOpen] = useState(false);
   // { mode: "processing", name } | { mode: "done" } | null — transform runs
   const [transformStatus, setTransformStatus] = useState(null);
@@ -259,22 +267,27 @@ export default function App() {
   }, [isExpanded]);
 
   useEffect(() => {
-    const resizeWindow = () => {
+    const applyDirection = (result) => {
+      if (result?.direction) setDockDirection(result.direction);
+    };
+    const resizeWindow = async () => {
+      let result;
       if (isTransformMenuOpen && toastCount > 0) {
-        window.electronAPI?.resizeMainWindow?.("EXPANDED");
+        result = await window.electronAPI?.resizeMainWindow?.("EXPANDED");
       } else if (isTransformMenuOpen) {
-        window.electronAPI?.resizeMainWindow?.("WITH_MENU");
+        result = await window.electronAPI?.resizeMainWindow?.("WITH_MENU");
       } else if (toastCount > 0) {
-        window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
+        result = await window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
       } else if (statusPill) {
-        window.electronAPI?.resizeMainWindow?.("WIDE");
+        result = await window.electronAPI?.resizeMainWindow?.("WIDE");
       } else if (isRecording) {
-        window.electronAPI?.resizeMainWindow?.("RECORDING");
+        result = await window.electronAPI?.resizeMainWindow?.("RECORDING");
       } else if (isExpanded) {
-        window.electronAPI?.resizeMainWindow?.("STACK");
+        result = await window.electronAPI?.resizeMainWindow?.("STACK");
       } else {
-        window.electronAPI?.resizeMainWindow?.("BASE");
+        result = await window.electronAPI?.resizeMainWindow?.("BASE");
       }
+      applyDirection(result);
     };
     resizeWindow();
   }, [isTransformMenuOpen, toastCount, isRecording, statusPill, isExpanded]);
@@ -413,7 +426,7 @@ export default function App() {
   return (
     <div className="dictation-window">
       <div
-        className="fixed right-0 bottom-0 z-50 flex items-center justify-end"
+        className={`fixed right-0 z-50 flex items-center justify-end ${dockDirection === "down" ? "top-0" : "bottom-0"}`}
         onMouseEnter={() => {
           setIsHovered(true);
           setWindowInteractivity(true);
@@ -473,7 +486,9 @@ export default function App() {
             }`}
           >
             {showStreamingPreview && isStreaming && (
-              <div className="absolute bottom-full right-0 mb-4 w-72 rounded-2xl bg-white border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-bottom-4 duration-300 z-50">
+              <div className={`absolute right-0 w-72 rounded-2xl bg-white border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in duration-300 z-50 ${
+                dockDirection === "down" ? "top-full mt-4 slide-in-from-top-4" : "bottom-full mb-4 slide-in-from-bottom-4"
+              }`}>
                 <div className="flex items-center gap-2 mb-2">
                   <Loader2 size={12} className="animate-spin text-neutral-500" />
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
@@ -521,6 +536,7 @@ export default function App() {
               <Tooltip
                 label={t("app.dock.dictate", { defaultValue: "Dictate" })}
                 hotkey={formatHotkeyLabel(hotkey)}
+                direction={dockDirection}
               >
                 <button
                   ref={buttonRef}
@@ -560,7 +576,7 @@ export default function App() {
               </Tooltip>
 
               {scratchpadInFlowBar && (
-                <Tooltip label={t("app.dock.scratchpad", { defaultValue: "Scratchpad" })}>
+                <Tooltip label={t("app.dock.scratchpad", { defaultValue: "Scratchpad" })} direction={dockDirection}>
                   <button
                     onClick={() => {
                       void window.electronAPI?.openScratchpadOverlay?.();
@@ -577,17 +593,25 @@ export default function App() {
                   hotkey={selectedShortcut ? formatHotkeyLabel(selectedShortcut) : undefined}
                   offset={40}
                   enabled={dockReady}
+                  direction={dockDirection}
                 >
                   <div ref={sparkleRef} className="group relative flex items-center">
                     <div
-                      className={`absolute inset-x-0 bottom-full flex justify-center pb-1 transition-all duration-200 ${
+                      className={`absolute inset-x-0 flex justify-center transition-all duration-200 ${
+                        dockDirection === "down" ? "top-full pt-1" : "bottom-full pb-1"
+                      } ${
                         isTransformMenuOpen
                           ? "opacity-100 pointer-events-auto scale-100 translate-y-0"
                           : dockReady
-                            ? "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 translate-y-1 group-hover:translate-y-0"
+                            ? `opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 ${
+                                dockDirection === "down" ? "-translate-y-1 group-hover:translate-y-0" : "translate-y-1 group-hover:translate-y-0"
+                              }`
                             : "opacity-0 pointer-events-none"
                       }`}
                     >
+                      {/* Integrated tab: shares the transform menu's own
+                          material (not a standalone floating chip) so it
+                          reads as part of the menu, not a separate control. */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -602,9 +626,11 @@ export default function App() {
                         aria-label={t("app.dock.transformMenu", {
                           defaultValue: "Transform menu",
                         })}
-                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float bg-surface-2 dark:bg-surface-2 shadow-sm border border-black/5 dark:border-white/10"
+                        className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} flow-dock-icon flow-dock-icon--small flex items-center justify-center`}
                       >
-                        {isTransformMenuOpen ? <ChevronDown size={13} /> : <ChevronUp size={13} />}
+                        {isTransformMenuOpen
+                          ? (dockDirection === "down" ? <ChevronUp size={13} /> : <ChevronDown size={13} />)
+                          : (dockDirection === "down" ? <ChevronDown size={13} /> : <ChevronUp size={13} />)}
                       </button>
                     </div>
                     {/* Sparkle — runs the selected transform on the current selection */}
@@ -627,7 +653,9 @@ export default function App() {
             {isTransformMenuOpen && (
               <div
                 ref={menuRef}
-                className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} absolute bottom-full right-0 mb-2 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 animate-menu-in`}
+                className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} absolute right-0 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 ${
+                  dockDirection === "down" ? "top-full mt-2 animate-menu-in-down" : "bottom-full mb-2 animate-menu-in"
+                }`}
                 onMouseEnter={() => {
                   setWindowInteractivity(true);
                 }}

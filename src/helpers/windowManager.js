@@ -163,16 +163,36 @@ class WindowManager {
     });
     const workArea = display.workArea || display.bounds;
 
-    // Right-edge dock: stay flush to the right edge, keep the bottom edge
-    // where it is (drag preserved), so expansion grows upward -- tooltips,
-    // the transform menu, and the streaming preview all open above the
-    // dock now that it's horizontal, so headroom needs to come from above,
-    // not be split evenly above/below a fixed center point.
+    // Right-edge dock: stay flush to the right edge. The dock's own
+    // on-screen anchor point (its bottom edge, where the icon row sits)
+    // must not jump when it expands -- so growth defaults to upward
+    // (keep the bottom edge fixed, extend the top), but falls back to
+    // downward (keep the top edge fixed, extend the bottom) when there
+    // isn't enough room above on the current display. The renderer needs
+    // to know which direction was actually used so tooltips/menus/preview
+    // panels open on the matching side -- see the `direction` return value.
     let newX = workArea.x + workArea.width - newSize.width;
-    let newY = currentBounds.y + currentBounds.height - newSize.height;
-
-    // Clamp to work area
     newX = Math.max(workArea.x, Math.min(newX, workArea.x + workArea.width - newSize.width));
+
+    const anchorBottom = currentBounds.y + currentBounds.height;
+    const spaceAbove = anchorBottom - workArea.y;
+    const spaceBelow = workArea.y + workArea.height - currentBounds.y;
+
+    let newY;
+    let direction;
+    if (newSize.height <= spaceAbove) {
+      newY = anchorBottom - newSize.height;
+      direction = "up";
+    } else if (newSize.height <= spaceBelow) {
+      newY = currentBounds.y;
+      direction = "down";
+    } else {
+      // Neither direction fits the full height -- prefer growing upward
+      // as far as the work area allows, then clamp.
+      newY = anchorBottom - newSize.height;
+      direction = "up";
+    }
+
     newY = Math.max(workArea.y, Math.min(newY, workArea.y + workArea.height - newSize.height));
 
     this.mainWindow.setBounds({
@@ -182,7 +202,7 @@ class WindowManager {
       height: newSize.height,
     });
 
-    return { success: true, bounds: { x: newX, y: newY, ...newSize } };
+    return { success: true, direction, bounds: { x: newX, y: newY, ...newSize } };
   }
 
   async loadWindowContent(window, isControlPanel = false, isAgent = false) {
