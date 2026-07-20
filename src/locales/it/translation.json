@@ -1401,6 +1401,14 @@
         "bold": "Deciso",
         "minimal": "Minimal"
       },
+      "idleAnimation": {
+        "title": "Animazione a riposo",
+        "description": "Scegli come si comporta la pillola a riposo",
+        "breathe": "Respiro",
+        "glowRing": "Anello luminoso",
+        "bob": "Ondeggio",
+        "shimmer": "Luccichio"
+      },
       "floatingIcon": {
         "autoHide": "Nascondi automaticamente quando inattivo",
         "autoHideDescription": "Mantieni l'icona nascosta finchÃ© non inizi a dettare",

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
-import { LiquidPlasmaVisualizer, LiveWaveform, SiriOrbVisualizer, RippleWaveVisualizer, NeonPulseVisualizer, ParticleSwarmVisualizer } from "../App";
+import { LiquidPlasmaVisualizer, LiveWaveform, SiriOrbVisualizer, RippleWaveVisualizer, NeonPulseVisualizer, ParticleSwarmVisualizer, WavelineVisualizer, SpectrumVisualizer } from "./flowbar/visualizers";
 import {
   RefreshCw,
   Download,
@@ -760,6 +760,8 @@ export default function SettingsPage({
     setVoiceVisualizerStyle,
     flowBarPillStyle,
     setFlowBarPillStyle,
+    idleOrbAnimation,
+    setIdleOrbAnimation,
   } = useSettings();
 
   const chatAgentKey = useSettingsStore((s) => s.chatAgentKey);
@@ -1702,7 +1704,9 @@ export default function SettingsPage({
                           { id: "siri", name: "Orb", Component: SiriOrbVisualizer },
                           { id: "ripple", name: "Ripple Waves", Component: RippleWaveVisualizer },
                           { id: "neon", name: "Neon Pulse", Component: NeonPulseVisualizer },
-                          { id: "particles", name: "Particle Swarm", Component: ParticleSwarmVisualizer }
+                          { id: "particles", name: "Particle Swarm", Component: ParticleSwarmVisualizer },
+                          { id: "waveline", name: "Waveline", Component: WavelineVisualizer },
+                          { id: "spectrum", name: "Spectrum", Component: SpectrumVisualizer }
                         ] as const
                       ).map(style => {
                         const isSelected = voiceVisualizerStyle === style.id;
@@ -1718,7 +1722,7 @@ export default function SettingsPage({
                             }`}
                           >
                             <div className="flex items-center justify-center h-[90px] w-full mb-2 pointer-events-none">
-                               <div className="relative flex items-center justify-center overflow-hidden bg-black/80 dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-sm transition-all w-[38px] h-[85px]">
+                               <div className="relative flex items-center justify-center overflow-hidden bg-black/80 dark:bg-black rounded-full border border-black/10 dark:border-white/10 shadow-sm transition-all w-[110px] h-[34px]">
                                  <style.Component levels={mockLevels} isCommandMode={false} />
                                  <svg className="w-4 h-4 text-white/90 z-10 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]" fill="currentColor" viewBox="0 0 24 24">
                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
@@ -1792,6 +1796,61 @@ export default function SettingsPage({
                           >
                             {t(`settingsPage.general.pillAppearance.${style.labelKey}`, {
                               defaultValue: style.defaultLabel,
+                            })}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
+
+            {/* Idle Animation — which motion the idle orb (Part A/C) plays
+                before recording starts. Same grid-picker pattern as Pill
+                Appearance, using the CSS classes from Task 4. */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.idleAnimation.title", {
+                  defaultValue: "Idle Animation",
+                })}
+                description={t("settingsPage.general.idleAnimation.description", {
+                  defaultValue: "Choose how the pill behaves while idle",
+                })}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                    {(
+                      [
+                        { id: "breathe", labelKey: "breathe", defaultLabel: "Breathe" },
+                        { id: "glow-ring", labelKey: "glowRing", defaultLabel: "Glow Ring" },
+                        { id: "bob", labelKey: "bob", defaultLabel: "Bob" },
+                        { id: "shimmer", labelKey: "shimmer", defaultLabel: "Shimmer" },
+                      ] as const
+                    ).map((anim) => {
+                      const isSelected = idleOrbAnimation === anim.id;
+                      return (
+                        <button
+                          key={anim.id}
+                          onClick={() => setIdleOrbAnimation(anim.id)}
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border-[1.5px] transition-all duration-200 shadow-sm outline-none group ${
+                            isSelected
+                              ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.02]"
+                              : "border-border hover:border-border-hover bg-card scale-100"
+                          }`}
+                        >
+                          <div className="flex items-center justify-center h-[70px] w-full mb-2 pointer-events-none">
+                            <div
+                              className={`flow-dock-handle flow-dock-handle--glass flow-dock-handle--anim-${anim.id}`}
+                              style={{ position: "relative", marginRight: 0 }}
+                            />
+                          </div>
+                          <span
+                            className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}
+                          >
+                            {t(`settingsPage.general.idleAnimation.${anim.labelKey}`, {
+                              defaultValue: anim.defaultLabel,
                             })}
                           </span>
                         </button>

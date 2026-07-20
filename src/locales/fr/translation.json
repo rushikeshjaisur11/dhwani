@@ -1449,6 +1449,14 @@
         "bold": "Audacieux",
         "minimal": "Minimaliste"
       },
+      "idleAnimation": {
+        "title": "Animation au repos",
+        "description": "Choisissez comment la pilule se comporte au repos",
+        "breathe": "Respiration",
+        "glowRing": "Anneau lumineux",
+        "bob": "Balancement",
+        "shimmer": "Reflet"
+      },
       "floatingIcon": {
         "autoHide": "Masquer automatiquement au repos",
         "autoHideDescription": "Garder l'icÃ´ne masquÃ©e jusqu'au dÃ©but de la dictÃ©e",

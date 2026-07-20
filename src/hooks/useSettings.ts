@@ -300,6 +300,7 @@ function useSettingsInternal() {
       flowBarPillStyle: store.flowBarPillStyle,
       setFlowBarPillStyle: store.setFlowBarPillStyle,
       idleOrbAnimation: store.idleOrbAnimation,
+      setIdleOrbAnimation: store.setIdleOrbAnimation,
       activationMode: store.activationMode,
       setActivationMode: store.setActivationMode,
       notificationsEnabled: store.notificationsEnabled,

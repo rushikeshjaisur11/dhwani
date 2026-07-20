@@ -1401,6 +1401,14 @@
         "bold": "Kräftig",
         "minimal": "Minimal"
       },
+      "idleAnimation": {
+        "title": "Ruheanimation",
+        "description": "Wähle, wie sich die Pille im Ruhezustand verhält",
+        "breathe": "Atmen",
+        "glowRing": "Leuchtring",
+        "bob": "Wippen",
+        "shimmer": "Schimmer"
+      },
       "floatingIcon": {
         "autoHide": "Automatisch ausblenden bei InaktivitÃ¤t",
         "autoHideDescription": "Symbol ausblenden, bis Sie mit dem Diktieren beginnen",

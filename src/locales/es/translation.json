@@ -1449,6 +1449,14 @@
         "bold": "Audaz",
         "minimal": "Minimalista"
       },
+      "idleAnimation": {
+        "title": "Animación en reposo",
+        "description": "Elige cómo se comporta la píldora en reposo",
+        "breathe": "Respirar",
+        "glowRing": "Anillo de brillo",
+        "bob": "Balanceo",
+        "shimmer": "Destello"
+      },
       "floatingIcon": {
         "autoHide": "Ocultar automÃ¡ticamente cuando estÃ¡ inactivo",
         "autoHideDescription": "MantÃ©n el Ã­cono oculto hasta que comiences a dictar",

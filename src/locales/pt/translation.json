@@ -1380,6 +1380,14 @@
         "bold": "Arrojado",
         "minimal": "Minimalista"
       },
+      "idleAnimation": {
+        "title": "Animação em repouso",
+        "description": "Escolha como a pílula se comporta em repouso",
+        "breathe": "Respirar",
+        "glowRing": "Anel brilhante",
+        "bob": "Balanço",
+        "shimmer": "Brilho"
+      },
       "floatingIcon": {
         "autoHide": "Ocultar automaticamente quando ocioso",
         "autoHideDescription": "Mantenha o Ã­cone oculto atÃ© iniciar o ditado",

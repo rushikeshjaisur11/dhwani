@@ -1589,6 +1589,14 @@
         "bold": "Bold",
         "minimal": "Minimal"
       },
+      "idleAnimation": {
+        "title": "Idle Animation",
+        "description": "Choose how the pill behaves while idle",
+        "breathe": "Breathe",
+        "glowRing": "Glow Ring",
+        "bob": "Bob",
+        "shimmer": "Shimmer"
+      },
       "floatingIcon": {
         "autoHide": "Auto-hide when idle",
         "autoHideDescription": "Keep the icon hidden until you start dictating",

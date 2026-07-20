@@ -1401,6 +1401,14 @@
         "bold": "醒目",
         "minimal": "极简"
       },
+      "idleAnimation": {
+        "title": "待机动画",
+        "description": "选择胶囊在待机状态下的表现方式",
+        "breathe": "呼吸",
+        "glowRing": "光环",
+        "bob": "浮动",
+        "shimmer": "微光"
+      },
       "floatingIcon": {
         "autoHide": "ç©ºé—²æ—¶è‡ªåŠ¨éšè—",
         "autoHideDescription": "åœ¨å¼€å§‹å¬å†™å‰ä¿æŒå›¾æ ‡éšè—",
