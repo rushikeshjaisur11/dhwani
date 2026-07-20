@@ -19,10 +19,22 @@
 - **Idle** (mouse away): a small solid circular orb, ~40px diameter, replacing today's 7×40px sliver handle. Colored per the active `flowBarPillStyle` (e.g. Glass: translucent purple gradient + blur; Flat: solid ink; Bold: solid amber; Minimal: hairline outline, transparent fill).
 - **Hover**: orb softens/rounds further and widens slightly (intermediate state, ~64×44px, rounded rect, not yet full capsule) — this is when the expanded dock icons (Part D) become visible.
 - **Recording**: grows into the full horizontal capsule (matches today's expanded pill width, ~140×44px, radius 22px) to host the visualizer.
-- **Orientation:** confirmed horizontal, not vertical — a vertical pill was considered and explicitly rejected (breaks docking/text-label/window-sizing conventions; see brainstorming transcript).
+- **Orientation:** confirmed horizontal. **Correction from an earlier (wrong) claim during brainstorming:** the app's *current* Flow Bar is actually already vertical — it docks at the right screen edge with `WINDOW_SIZES.BASE = {width:28, height:96}` and `WINDOW_SIZES.RECORDING = {width:110, height:170}` (`src/helpers/windowConfig.js`), and `.flow-dock-mic--recording` is `48×128px` (`src/index.css`). Going horizontal is a deliberate, larger change than first described, not the lower-risk option — the user chose it anyway after this was corrected. See "Window sizing" below for the concrete blast radius.
 - **Motion:** grow/shrink is an animated transition (scale + border-radius + width), not an instant swap, using the same easing family as the existing recording-pill entrance spring.
 
-This replaces the current idle-handle sliver (`.flow-dock-handle` and its `--{style}` modifiers from the prior plan) with an orb. The recording-capsule end state is visually the same footprint as today's expanded `.flow-dock-panel`/`.flow-dock-mic--recording` — only the idle and transition states change.
+This replaces the current idle-handle sliver (`.flow-dock-handle` and its `--{style}` modifiers from the prior plan) with an orb. The recording-capsule end state is visually the same *shape family* as today's expanded `.flow-dock-panel`/`.flow-dock-mic--recording` (rounded, blurred/tinted per style) but with swapped proportions (wide-short instead of narrow-tall) — see "Window sizing" below.
+
+### Window sizing (required for horizontal)
+
+`src/helpers/windowConfig.js`'s `WINDOW_SIZES` swaps width/height for the sizes the Flow Bar itself uses, so the *window* is wide-short instead of narrow-tall:
+
+- `BASE` (idle orb): `{width:96, height:40}` → wide enough for a 40px orb centered with margin (was `{width:28, height:96}`)
+- `RECORDING`: `{width:170, height:64}` → hosts the ~140×44px capsule with margin (was `{width:110, height:170}`)
+- `STACK` (idle hover dock): `{width:240, height:72}` → wide enough for the horizontal icon row plus leftward-opening tooltips (was `{width:300, height:240}`)
+- `WITH_MENU`: `{width:340, height:280}` → transform menu still opens as a vertical list card above/beside the dock, so height stays taller than width here (was `{width:340, height:340}` — trimmed since the menu itself doesn't need to grow with the dock anymore)
+- `WIDE` and `WITH_TOAST`/`EXPANDED` are unchanged — they're independent secondary surfaces (status pill, toast list), not the mic pill itself.
+
+No change to `MAIN_WINDOW_CONFIG`, `resizeMainWindow`'s clamping logic, or default-position anchoring in `windowManager.js` (still right-edge-vertically-centered, computed from the same `workArea` math) — only the numeric width/height *values* the Flow Bar's own states pass through that existing logic. The window will still default-anchor near the right edge; a wide-short pill sitting there is intentional (matches "no non-goal" for docking behavior below) and it stays user-draggable exactly as today.
 
 ## Part B: Voice visualizer — 8 redesigned/new styles
 
@@ -59,7 +71,7 @@ All 4 animate only in the idle state; hover and recording states use their own e
 - Real stroke-based SVG icons (already the case for `Mic`/`SquarePen`/`Sparkles` via lucide-react — no icon change needed, only container styling changes).
 - Subtle inset top-edge highlight (`inset 0 1px 0 rgba(255,255,255,.15)` equivalent per style) so the capsule reads as reflective/glass rather than flat.
 - Soft ambient glow shadow beneath the capsule, colored per the active `flowBarPillStyle` accent (e.g. Glass: purple-tinted `0 8px 24px`).
-- No structural/layout change from today's dock — this is a visual-polish pass on the existing `.flow-dock-panel` container and its icon children, applied consistently across all 4 pill styles (not just Glass, which the mockup used for clarity).
+- **One real structural change required by Part A's horizontal orientation:** `.flow-dock-panel` is currently `flex-direction: column` (icons stacked vertically — a leftover of the app's current vertical dock). It becomes `flex-direction: row` so the mic/scratchpad/transform-sparkle icons sit side-by-side inside the now-horizontal capsule. This is a mechanical consequence of Part A, not a new design decision — the icon row's own visual polish (highlight, shadow) is the actual Part D decision.
 
 ## Part E: Transform menu card — refined list
 
@@ -79,4 +91,5 @@ Parts D and E's polish (shine, shadow, gradient accents) must be expressed per t
 - No change to the recording-pill's own capsule footprint/colors beyond what Part A's motion describes — the 4-style color system from the prior plan is unchanged.
 - No change to command-mode-specific color behavior (already covered by the prior plan).
 - No app-wide theme/color consistency work (separate spec, tracked as a follow-up).
-- No change to window sizing/positioning logic (`WINDOW_SIZES`/`resizeMainWindow`) — orb/capsule sizes stay within today's window footprint.
+- No change to the *positioning algorithm* (`resizeMainWindow`'s workArea math, default-anchor logic, or drag behavior in `dragManager.js`) — only the numeric `WINDOW_SIZES` width/height values change, as described in Part A. The dock still defaults near the right edge and remains user-draggable.
+- No change to `WIDE`, `WITH_TOAST`, or `EXPANDED` window sizes — those serve other surfaces (status pill, toast list), not the mic pill.
