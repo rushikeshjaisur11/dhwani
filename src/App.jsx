@@ -38,7 +38,29 @@ import {
 // "Dictate **Ctrl + Win**", "Scratchpad", "Polish **Win Alt 1**".
 const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true, direction = "up" }) => {
   const [isVisible, setIsVisible] = useState(false);
+  // Extra horizontal nudge (px) on top of the base -50% centering, applied
+  // after measuring the actual rendered rect. The dock's window is only
+  // ~240px wide and icons near its edges (the sparkle in particular) sit
+  // close to the window's own boundary -- Electron hard-clips anything
+  // that renders past that boundary (no ellipsis, just a raw cut mid-
+  // character), so pure CSS centering isn't enough near the edges.
+  const [edgeNudge, setEdgeNudge] = useState(0);
+  const tooltipRef = useRef(null);
   const isDown = direction === "down";
+
+  useLayoutEffect(() => {
+    if (!isVisible || !tooltipRef.current) return;
+    setEdgeNudge(0);
+    const rect = tooltipRef.current.getBoundingClientRect();
+    const margin = 4;
+    let nudge = 0;
+    if (rect.right > window.innerWidth - margin) {
+      nudge = window.innerWidth - margin - rect.right;
+    } else if (rect.left < margin) {
+      nudge = margin - rect.left;
+    }
+    if (nudge !== 0) setEdgeNudge(nudge);
+  }, [isVisible, label, hotkey]);
 
   return (
     <div className="relative">
@@ -50,10 +72,14 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true, directi
       </div>
       {isVisible && (
         <div
-          className={`flow-tooltip-pill absolute left-1/2 -translate-x-1/2 z-10 max-w-[190px] truncate ${
+          ref={tooltipRef}
+          className={`flow-tooltip-pill absolute left-1/2 z-10 max-w-[190px] truncate ${
             isDown ? "top-full" : "bottom-full"
           }`}
-          style={isDown ? { marginTop: offset } : { marginBottom: offset }}
+          style={{
+            transform: `translateX(calc(-50% + ${edgeNudge}px))`,
+            ...(isDown ? { marginTop: offset } : { marginBottom: offset }),
+          }}
         >
           {label}
           {hotkey ? <span className="font-semibold"> {hotkey}</span> : null}
