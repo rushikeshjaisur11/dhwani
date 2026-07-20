@@ -156,3 +156,48 @@ export const LiquidPlasmaVisualizer = ({ levels, isCommandMode }) => {
     </div>
   );
 };
+
+export const WavelineVisualizer = ({ levels, isCommandMode }) => {
+  const strokeColor = isCommandMode ? "#f59e0b" : "#a78bfa";
+  const width = 110;
+  const height = 32;
+  const mid = height / 2;
+  const samples = [levels[1], levels[4], levels[7], levels[10], levels[13]];
+  const points = samples.map((level, i) => {
+    const x = (width / (samples.length - 1)) * i;
+    const y = mid - (level - 0.15) * (mid - 4);
+    return [x, y];
+  });
+  let d = `M0,${mid}`;
+  points.forEach(([x, y], i) => {
+    const prevX = i === 0 ? 0 : points[i - 1][0];
+    const cx = (prevX + x) / 2;
+    d += ` Q${cx},${y} ${x},${y}`;
+  });
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+        <path d={d} stroke={strokeColor} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+};
+
+export const SpectrumVisualizer = ({ levels, isCommandMode }) => {
+  const gradient = isCommandMode
+    ? "linear-gradient(180deg, #fde68a, #f59e0b)"
+    : "linear-gradient(180deg, #f5a94a, #6d4fe0)";
+
+  return (
+    <div className="absolute inset-0 flex items-end justify-center gap-[2px] pb-1 pointer-events-none">
+      {levels.map((level, i) => (
+        <div
+          key={i}
+          className="w-[2.5px] rounded-[1px] transition-[height] duration-75"
+          style={{ height: `${4 + level * 28}px`, background: gradient }}
+        />
+      ))}
+    </div>
+  );
+};
