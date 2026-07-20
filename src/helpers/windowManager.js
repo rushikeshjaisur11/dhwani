@@ -226,7 +226,10 @@ class WindowManager {
     }
 
     const ORB_WIDTH = 40;
-    const ORB_MARGIN_RIGHT = 8;
+    // Must match .flow-dock-handle's margin-right in index.css (20px --
+    // sized for the glow-ring idle animation's clearance, not tuned for
+    // this calculation, but this shift depends on it either way).
+    const ORB_MARGIN_RIGHT = 20;
     const PEEK_VISIBLE_WIDTH = 10;
     const PEEK_SHIFT = ORB_WIDTH - PEEK_VISIBLE_WIDTH + ORB_MARGIN_RIGHT;
 

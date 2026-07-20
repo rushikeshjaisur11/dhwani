@@ -37,7 +37,10 @@ const FLOATING_OVERLAY_TYPE =
 // before the horizontal redesign).
 const WINDOW_SIZES = {
   BASE: { width: 96, height: 88 },
-  STACK: { width: 240, height: 100 },
+  // The transform-icon Tooltip uses offset={40} (a deliberate gap above
+  // the chevron toggle) plus its own ~30px height -- STACK needs to fit
+  // that 70px popup stack above the ~48px dock row, not just the row.
+  STACK: { width: 240, height: 160 },
   RECORDING: { width: 170, height: 160 },
   WIDE: { width: 250, height: 72 },
   WITH_MENU: { width: 340, height: 420 },
