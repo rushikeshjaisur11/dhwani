@@ -857,6 +857,83 @@ a:hover {
   border-color: rgba(255, 255, 255, 0.14);
 }
 
+/* Idle orb animation — user-selectable via idleOrbAnimation setting
+   (settingsStore.ts). Applies only to the idle (.flow-dock-handle) state;
+   hover/recording use their own transitions untouched by this setting. */
+@keyframes flow-orb-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+.flow-dock-handle--anim-breathe {
+  animation: flow-orb-breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes flow-orb-glow-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.flow-dock-handle--anim-glow-ring {
+  position: relative;
+}
+.flow-dock-handle--anim-glow-ring::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, 0.5);
+  animation: flow-orb-glow-ring 2.4s ease-out infinite;
+  pointer-events: none;
+}
+.dark .flow-dock-handle--anim-glow-ring::after {
+  border-color: rgba(167, 139, 250, 0.6);
+}
+
+@keyframes flow-orb-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.flow-dock-handle--anim-bob {
+  animation: flow-orb-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes flow-orb-shimmer-sweep {
+  0% {
+    left: -60%;
+  }
+  45%, 100% {
+    left: 120%;
+  }
+}
+.flow-dock-handle--anim-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.flow-dock-handle--anim-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: flow-orb-shimmer-sweep 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* Pill Style — transform menu card. The existing bg-white/dark:bg-neutral-900
    Tailwind utilities ARE the flat look already; these modifiers override
    them with !important for the other 3 styles (same technique the
