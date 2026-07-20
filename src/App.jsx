@@ -714,12 +714,12 @@ export default function App() {
                   }
                 }}
               >
-                {/* Attached tab: physically part of the menu card (absolutely
-                    positioned to overlap its own edge), sharing its exact
-                    background/border via the same flow-transform-menu--
-                    {style} class, with the card's own large shadow
-                    suppressed via flow-transform-menu-tab so it reads as a
-                    notch on the card rather than a second floating shape. */}
+                {/* Attached tab: a small fully-rounded pill welded flush to
+                    the menu card's own edge, aligned above the sparkle icon
+                    below (not the card's center). Shares the card's
+                    background/border via flow-transform-menu--{style} with
+                    a lighter shadow override (flow-transform-menu-tab) so
+                    it doesn't inherit the full card's large 40px shadow. */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -729,8 +729,8 @@ export default function App() {
                   aria-label={t("app.dock.transformMenu", {
                     defaultValue: "Transform menu",
                   })}
-                  className={`flow-transform-menu-tab flow-transform-menu--${flowBarPillStyle} absolute right-4 w-6 h-6 rounded-full border flex items-center justify-center z-[-1] ${
-                    dockDirection === "down" ? "-top-3" : "-bottom-3"
+                  className={`flow-transform-menu-tab flow-transform-menu--${flowBarPillStyle} absolute right-4 w-9 h-5 rounded-full border flex items-center justify-center ${
+                    dockDirection === "down" ? "-top-4" : "-bottom-4"
                   }`}
                 >
                   {dockDirection === "down" ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
