@@ -63,9 +63,12 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true, directi
   );
 };
 
+const IDLE_PEEK_DELAY_MS = 5000;
+
 export default function App() {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isPeeking, setIsPeeking] = useState(false);
   // The dock's native window resize (isExpanded -> resizeMainWindow IPC) is
   // async and not instant — a fast mouse can reach the sparkle/arrow's
   // screen position before the window has actually widened to STACK, and
@@ -291,6 +294,32 @@ export default function App() {
     };
     resizeWindow();
   }, [isTransformMenuOpen, toastCount, isRecording, statusPill, isExpanded]);
+
+  // Idle-peek: slide the idle orb almost entirely off the right edge of
+  // the screen after a stretch of no interaction, leaving a thin sliver
+  // visible (matches the old vertical handle's low-footprint idle look).
+  // Any real activity -- hovering, expanding, recording, a status pill,
+  // a toast -- both cancels a pending peek and restores an active one.
+  useEffect(() => {
+    const idleNow =
+      !isExpanded && !isRecording && !isHovered && !isTransformMenuOpen && !statusPill && toastCount === 0;
+
+    if (!idleNow) {
+      if (isPeeking) {
+        window.electronAPI?.setMainWindowPeek?.(false);
+        setIsPeeking(false);
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      window.electronAPI?.setMainWindowPeek?.(true);
+      setIsPeeking(true);
+    }, IDLE_PEEK_DELAY_MS);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded, isRecording, isHovered, isTransformMenuOpen, statusPill, toastCount]);
 
   usePolish(toast, t);
   useTransform(toast, t);

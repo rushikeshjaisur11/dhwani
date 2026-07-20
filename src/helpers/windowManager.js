@@ -205,6 +205,51 @@ class WindowManager {
     return { success: true, direction, bounds: { x: newX, y: newY, ...newSize } };
   }
 
+  // Idle-peek: after a stretch of no interaction in the idle (BASE) state,
+  // slide the window almost entirely off the right edge of the screen so
+  // only a thin sliver of the orb peeks in -- same footprint the old
+  // vertical handle had. Only the X position changes; width/height and the
+  // Y position stay whatever they already were, so restoring is a plain
+  // reverse of this same calculation, not a full resize.
+  //
+  // The BASE window (96px) is deliberately much wider than the 40px orb
+  // it contains (room for the glow-ring idle animation, which needs to
+  // bleed past the orb's own edges without clipping) -- the orb itself
+  // sits right-aligned with an 8px margin-right (.flow-dock-handle in
+  // index.css), so it normally rests with its right edge 8px inside the
+  // window's own right edge, not flush with it. The shift below accounts
+  // for that gap so PEEK_VISIBLE_WIDTH describes pixels of visible ORB,
+  // not pixels of visible window.
+  setMainWindowPeek(peeking) {
+    if (!this.mainWindow || this.mainWindow.isDestroyed()) {
+      return { success: false, message: "Window not available" };
+    }
+
+    const ORB_WIDTH = 40;
+    const ORB_MARGIN_RIGHT = 8;
+    const PEEK_VISIBLE_WIDTH = 10;
+    const PEEK_SHIFT = ORB_WIDTH - PEEK_VISIBLE_WIDTH + ORB_MARGIN_RIGHT;
+
+    const currentBounds = this.mainWindow.getBounds();
+    const display = screen.getDisplayNearestPoint({
+      x: currentBounds.x + currentBounds.width / 2,
+      y: currentBounds.y + currentBounds.height,
+    });
+    const workArea = display.workArea || display.bounds;
+    const restingX = workArea.x + workArea.width - currentBounds.width;
+
+    const newX = peeking ? restingX + PEEK_SHIFT : restingX;
+
+    this.mainWindow.setBounds({
+      x: newX,
+      y: currentBounds.y,
+      width: currentBounds.width,
+      height: currentBounds.height,
+    });
+
+    return { success: true };
+  }
+
   async loadWindowContent(window, isControlPanel = false, isAgent = false) {
     if (process.env.NODE_ENV === "development") {
       let appUrl = DevServerManager.getAppUrl(isControlPanel);
