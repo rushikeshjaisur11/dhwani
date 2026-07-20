@@ -291,7 +291,7 @@ export default function ScratchpadOverlay() {
     "flex h-6 w-6 items-center justify-center rounded text-neutral-500 hover:bg-black/5 hover:text-neutral-800";
 
   return (
-    <div className="relative h-screen w-screen p-2 bg-transparent">
+    <div className="scratchpad-overlay-window relative h-screen w-screen p-2 bg-transparent">
       <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#f5f3ef] shadow-2xl">
         {/* Top bar — draggable window chrome */}
         <div

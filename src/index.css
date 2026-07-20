@@ -413,14 +413,21 @@
     min-height: 100vh;
   }
 
-  /* Make dictation window (App) transparent, but keep control panel solid */
+  /* Make dictation window (App) transparent, but keep control panel solid.
+     Scratchpad was missing from this list -- its body kept the default
+     solid var(--color-background), which showed through as a visible
+     rectangular border around the rounded note card's transparent margin.
+     Same root cause the agent overlay already has its own dedicated rule
+     for further down this file (search "Agent Overlay"). */
   body:has(.dictation-window),
-  body:has(.meeting-notification-window) {
+  body:has(.meeting-notification-window),
+  body:has(.scratchpad-overlay-window) {
     background: transparent;
   }
 
   body:has(.dictation-window) #root,
-  body:has(.meeting-notification-window) #root {
+  body:has(.meeting-notification-window) #root,
+  body:has(.scratchpad-overlay-window) #root {
     background: transparent;
   }
 }
