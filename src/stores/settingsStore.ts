@@ -655,10 +655,12 @@ export interface SettingsState
   setTheme: (value: "light" | "dark" | "auto") => void;
   setPalette: (value: "default" | "nord" | "dracula" | "solarized" | "rose") => void;
   setAccentColor: (value: string | null) => void;
-  voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
-  setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles") => void;
+  voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles" | "waveline" | "spectrum";
+  setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles" | "waveline" | "spectrum") => void;
   flowBarPillStyle: "glass" | "flat" | "bold" | "minimal";
   setFlowBarPillStyle: (style: "glass" | "flat" | "bold" | "minimal") => void;
+  idleOrbAnimation: "breathe" | "glow-ring" | "bob" | "shimmer";
+  setIdleOrbAnimation: (value: "breathe" | "glow-ring" | "bob" | "shimmer") => void;
   setCloudBackupEnabled: (value: boolean) => void;
   setTelemetryEnabled: (value: boolean) => void;
   setAudioRetentionDays: (days: number) => void;
@@ -970,7 +972,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   })(),
   voiceVisualizerStyle: (() => {
     const v = readString("voiceVisualizerStyle", "plasma");
-    return (["plasma", "bars", "siri", "ripple", "neon", "particles"].includes(v) ? v : "plasma") as "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
+    return (["plasma", "bars", "siri", "ripple", "neon", "particles", "waveline", "spectrum"].includes(v) ? v : "plasma") as "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles" | "waveline" | "spectrum";
   })(),
   flowBarPillStyle: (() => {
     const v = readString("flowBarPillStyle", "glass");
@@ -979,6 +981,14 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
       | "flat"
       | "bold"
       | "minimal";
+  })(),
+  idleOrbAnimation: (() => {
+    const v = readString("idleOrbAnimation", "breathe");
+    return (["breathe", "glow-ring", "bob", "shimmer"].includes(v) ? v : "breathe") as
+      | "breathe"
+      | "glow-ring"
+      | "bob"
+      | "shimmer";
   })(),
   accentColor: (() => {
     const v = readString("accentColor", "");
@@ -1534,13 +1544,17 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     if (isBrowser) localStorage.setItem("palette", value);
     set({ palette: value });
   },
-  setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles") => {
+  setVoiceVisualizerStyle: (style: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles" | "waveline" | "spectrum") => {
     if (isBrowser) localStorage.setItem("voiceVisualizerStyle", style);
     set({ voiceVisualizerStyle: style });
   },
   setFlowBarPillStyle: (style: "glass" | "flat" | "bold" | "minimal") => {
     if (isBrowser) localStorage.setItem("flowBarPillStyle", style);
     set({ flowBarPillStyle: style });
+  },
+  setIdleOrbAnimation: (value: "breathe" | "glow-ring" | "bob" | "shimmer") => {
+    if (isBrowser) localStorage.setItem("idleOrbAnimation", value);
+    set({ idleOrbAnimation: value });
   },
 
   setAccentColor: (value: string | null) => {
