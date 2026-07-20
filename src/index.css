@@ -972,20 +972,23 @@ a:hover {
   border-color: rgba(255, 255, 255, 0.14) !important;
 }
 
-/* Rounded vertical panel holding the mic / scratchpad / transforms icons. */
+/* Rounded horizontal capsule holding the mic / scratchpad / transforms
+   icons in a row (was a vertical column before the horizontal redesign —
+   see docs/superpowers/specs/2026-07-20-flowbar-pill-visualizer-menu-redesign.md
+   Part D, mockup A2 "Polished flat row"). */
 .flow-dock-panel {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 28px;
+  gap: 10px;
+  padding: 6px 14px;
+  border-radius: 23px;
   background: var(--color-surface-2);
   color: #1a1a1a;
   border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.1),
-    0 4px 16px rgba(0, 0, 0, 0.04);
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   animation: flow-dock-in 180ms var(--flow-spring-easing);
 }
 
@@ -994,8 +997,8 @@ a:hover {
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.5),
-    0 4px 16px rgba(0, 0, 0, 0.25);
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Pill Style — 4-way user setting (Settings > Appearance > Pill Appearance,
@@ -1014,7 +1017,7 @@ a:hover {
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-top-color: rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(109, 79, 224, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .dark .flow-dock-panel.flow-dock-panel--glass {
@@ -1035,6 +1038,9 @@ a:hover {
    is the mic icon color below and the recording pill (index.css, recording
    rules), not this idle surface. */
 .flow-dock-panel.flow-dock-panel--bold {
+  box-shadow:
+    0 8px 24px rgba(245, 169, 74, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 /* minimal: transparent, hairline border, no shadow/blur. */
@@ -1134,11 +1140,12 @@ a:hover {
   color: #9b9587;
 }
 
-/* Recording: the waveform fills the whole vertical pill (gradient bg from
+/* Recording: the waveform fills the whole horizontal pill (gradient bg from
    flow-bar-pill--listening/--command, white bars). */
 .flow-dock-mic--recording {
-  width: 48px;
-  height: 128px;
+  width: 140px;
+  height: 44px;
+  border-radius: 22px;
   color: #fff;
   display: flex !important;
   align-items: center !important;
