@@ -413,7 +413,7 @@ export default function App() {
   return (
     <div className="dictation-window">
       <div
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-end"
+        className="fixed right-0 bottom-0 z-50 flex items-center justify-end"
         onMouseEnter={() => {
           setIsHovered(true);
           setWindowInteractivity(true);

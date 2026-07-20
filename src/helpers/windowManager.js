@@ -163,10 +163,13 @@ class WindowManager {
     });
     const workArea = display.workArea || display.bounds;
 
-    // Right-edge dock: stay flush to the right edge, keep the vertical
-    // center where it is (drag preserved), so expansion grows leftward.
+    // Right-edge dock: stay flush to the right edge, keep the bottom edge
+    // where it is (drag preserved), so expansion grows upward -- tooltips,
+    // the transform menu, and the streaming preview all open above the
+    // dock now that it's horizontal, so headroom needs to come from above,
+    // not be split evenly above/below a fixed center point.
     let newX = workArea.x + workArea.width - newSize.width;
-    let newY = Math.round(currentBounds.y + currentBounds.height / 2 - newSize.height / 2);
+    let newY = currentBounds.y + currentBounds.height - newSize.height;
 
     // Clamp to work area
     newX = Math.max(workArea.x, Math.min(newX, workArea.x + workArea.width - newSize.width));

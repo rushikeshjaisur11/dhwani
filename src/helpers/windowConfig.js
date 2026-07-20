@@ -37,10 +37,10 @@ const FLOATING_OVERLAY_TYPE =
 // before the horizontal redesign).
 const WINDOW_SIZES = {
   BASE: { width: 96, height: 88 },
-  STACK: { width: 240, height: 72 },
-  RECORDING: { width: 170, height: 64 },
+  STACK: { width: 240, height: 100 },
+  RECORDING: { width: 170, height: 160 },
   WIDE: { width: 250, height: 72 },
-  WITH_MENU: { width: 340, height: 280 },
+  WITH_MENU: { width: 340, height: 420 },
   WITH_TOAST: { width: 400, height: 500 },
   EXPANDED: { width: 400, height: 500 },
 };
