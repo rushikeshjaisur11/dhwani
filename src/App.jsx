@@ -670,6 +670,14 @@ export default function App() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            // This chip unmounts the instant the menu opens
+                            // (it's only rendered while !isTransformMenuOpen),
+                            // which fires a real mouseleave on its way out
+                            // and would otherwise flip isHovered to false --
+                            // tripping the effect below that auto-closes the
+                            // menu after 600ms of !isHovered. Force it true
+                            // here so that guard never fires from this click.
+                            setIsHovered(true);
                             setWindowInteractivity(true);
                             toggleTransformMenu();
                           }}
