@@ -934,6 +934,15 @@ a:hover {
   pointer-events: none;
 }
 
+@keyframes flow-viz-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.flow-viz-siri-spin {
+  animation: flow-viz-spin 3.2s linear infinite;
+}
+
 /* Pill Style — transform menu card. The existing bg-white/dark:bg-neutral-900
    Tailwind utilities ARE the flat look already; these modifiers override
    them with !important for the other 3 styles (same technique the
