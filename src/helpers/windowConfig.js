@@ -28,16 +28,18 @@ const FLOATING_OVERLAY_TYPE =
         : "toolbar"
       : "normal";
 
-// Right-edge dock sizes: BASE is the collapsed handle, STACK the hover icon
-// panel (wide enough for the white tooltip pills opening leftward), WIDE the
-// horizontal status pill (spinner / "Done. See changes"), WITH_MENU adds the
-// transform menu opening leftward.
+// Right-edge dock sizes: BASE is the collapsed idle orb, STACK the expanded
+// horizontal icon row (mic/scratchpad/transform-sparkle, wide enough for the
+// white tooltip pills opening leftward), RECORDING the horizontal capsule
+// hosting the mic + visualizer, WIDE the horizontal status pill (spinner /
+// "Done. See changes"), WITH_MENU adds the transform menu card opening
+// leftward above the dock.
 const WINDOW_SIZES = {
-  BASE: { width: 28, height: 96 },
-  STACK: { width: 300, height: 240 },
-  RECORDING: { width: 110, height: 170 },
+  BASE: { width: 64, height: 56 },
+  STACK: { width: 240, height: 72 },
+  RECORDING: { width: 170, height: 64 },
   WIDE: { width: 250, height: 72 },
-  WITH_MENU: { width: 340, height: 340 },
+  WITH_MENU: { width: 340, height: 280 },
   WITH_TOAST: { width: 400, height: 500 },
   EXPANDED: { width: 400, height: 500 },
 };
