@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import "./index.css";
 import {
   Check,
-  ChevronLeft,
-  ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Loader2,
   Mic,
   Settings,
@@ -49,8 +49,8 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
       </div>
       {isVisible && (
         <div
-          className="flow-tooltip-pill absolute right-full top-1/2 -translate-y-1/2 z-10 max-w-[190px] truncate"
-          style={{ marginRight: offset }}
+          className="flow-tooltip-pill absolute bottom-full left-1/2 -translate-x-1/2 z-10 max-w-[190px] truncate"
+          style={{ marginBottom: offset }}
         >
           {label}
           {hotkey ? <span className="font-semibold"> {hotkey}</span> : null}
@@ -473,7 +473,7 @@ export default function App() {
             }`}
           >
             {showStreamingPreview && isStreaming && (
-              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-72 rounded-2xl bg-white border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-right-4 duration-300 z-50">
+              <div className="absolute bottom-full right-0 mb-4 w-72 rounded-2xl bg-white border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-bottom-4 duration-300 z-50">
                 <div className="flex items-center gap-2 mb-2">
                   <Loader2 size={12} className="animate-spin text-neutral-500" />
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
@@ -580,11 +580,11 @@ export default function App() {
                 >
                   <div ref={sparkleRef} className="group relative flex items-center">
                     <div
-                      className={`absolute inset-y-0 right-full flex items-center pr-1 transition-all duration-200 ${
+                      className={`absolute inset-x-0 bottom-full flex justify-center pb-1 transition-all duration-200 ${
                         isTransformMenuOpen
-                          ? "opacity-100 pointer-events-auto scale-100 translate-x-0"
-                          : dockReady 
-                            ? "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 translate-x-1 group-hover:translate-x-0" 
+                          ? "opacity-100 pointer-events-auto scale-100 translate-y-0"
+                          : dockReady
+                            ? "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 translate-y-1 group-hover:translate-y-0"
                             : "opacity-0 pointer-events-none"
                       }`}
                     >
@@ -604,7 +604,7 @@ export default function App() {
                         })}
                         className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float bg-surface-2 dark:bg-surface-2 shadow-sm border border-black/5 dark:border-white/10"
                       >
-                        {isTransformMenuOpen ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+                        {isTransformMenuOpen ? <ChevronDown size={13} /> : <ChevronUp size={13} />}
                       </button>
                     </div>
                     {/* Sparkle — runs the selected transform on the current selection */}
@@ -627,7 +627,7 @@ export default function App() {
             {isTransformMenuOpen && (
               <div
                 ref={menuRef}
-                className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 animate-menu-in`}
+                className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} absolute bottom-full right-0 mb-2 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 animate-menu-in`}
                 onMouseEnter={() => {
                   setWindowInteractivity(true);
                 }}

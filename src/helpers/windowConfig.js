@@ -29,11 +29,12 @@ const FLOATING_OVERLAY_TYPE =
       : "normal";
 
 // Right-edge dock sizes: BASE is the collapsed idle orb, STACK the expanded
-// horizontal icon row (mic/scratchpad/transform-sparkle, wide enough for the
-// white tooltip pills opening leftward), RECORDING the horizontal capsule
-// hosting the mic + visualizer, WIDE the horizontal status pill (spinner /
-// "Done. See changes"), WITH_MENU adds the transform menu card opening
-// leftward above the dock.
+// horizontal icon row (mic/scratchpad/transform-sparkle; tooltips now open
+// upward above each icon, matching the horizontal layout), RECORDING the
+// horizontal capsule hosting the mic + visualizer, WIDE the horizontal
+// status pill (spinner / "Done. See changes"), WITH_MENU adds the transform
+// menu card opening upward above the dock (also upward now, was leftward
+// before the horizontal redesign).
 const WINDOW_SIZES = {
   BASE: { width: 96, height: 88 },
   STACK: { width: 240, height: 72 },
@@ -76,6 +77,13 @@ const CONTROL_PANEL_CONFIG = {
   minWidth: 1024,
   minHeight: 600,
   backgroundColor: "#faf7f1",
+  // electron-builder bakes icon.ico/.icns/.png into the packaged executable
+  // automatically, but a dev-mode `npm run dev` run isn't packaged, so
+  // without an explicit icon here the taskbar/window icon falls back to
+  // Electron's own default. This is the window users actually see in the
+  // taskbar (skipTaskbar: false below), so it gets the explicit icon; the
+  // overlay pill window stays taskbar-hidden and doesn't need one.
+  icon: path.join(__dirname, "..", "assets", "icon.png"),
   webPreferences: {
     preload: path.join(__dirname, "..", "..", "preload.js"),
     nodeIntegration: false,
