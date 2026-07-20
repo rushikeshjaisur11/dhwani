@@ -30,6 +30,8 @@ import {
   ParticleSwarmVisualizer,
   RippleWaveVisualizer,
   LiquidPlasmaVisualizer,
+  WavelineVisualizer,
+  SpectrumVisualizer,
 } from "./components/flowbar/visualizers";
 
 // White pill tooltip opening to the left of a dock icon (Wispr style):
@@ -100,6 +102,7 @@ export default function App() {
   const floatingIconAutoHide = useSettingsStore((s) => s.floatingIconAutoHide);
   const voiceVisualizerStyle = useSettingsStore((s) => s.voiceVisualizerStyle);
   const flowBarPillStyle = useSettingsStore((s) => s.flowBarPillStyle);
+  const idleOrbAnimation = useSettingsStore((s) => s.idleOrbAnimation);
   const polishKey = useSettingsStore((s) => s.polishKey);
   const prevAutoHideRef = useRef(floatingIconAutoHide);
   const showStreamingPreview = useSettingsStore((s) => s.showStreamingPreview);
@@ -456,7 +459,7 @@ export default function App() {
           </div>
         ) : !isExpanded ? (
           <div
-            className={`flow-dock-handle flow-dock-handle--${flowBarPillStyle}`}
+            className={`flow-dock-handle flow-dock-handle--${flowBarPillStyle} flow-dock-handle--anim-${idleOrbAnimation}`}
             role="button"
             aria-label={t("app.dock.expand", { defaultValue: "Expand Flow Bar" })}
             onClick={() => setIsExpanded(true)}
@@ -498,6 +501,10 @@ export default function App() {
                   <NeonPulseVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 ) : voiceVisualizerStyle === "particles" ? (
                   <ParticleSwarmVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "waveline" ? (
+                  <WavelineVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "spectrum" ? (
+                  <SpectrumVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 ) : (
                   <LiquidPlasmaVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 )}
@@ -661,7 +668,11 @@ export default function App() {
                     <button
                       key={tr.id}
                       onClick={() => selectAutoApplyTransform(tr.id)}
-                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 focus:bg-black/5 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10 transition-colors"
+                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 focus:bg-black/5 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10 transition-colors ${
+                        autoApplyTransformId === tr.id
+                          ? `flow-transform-menu-item--active-${flowBarPillStyle}`
+                          : ""
+                      }`}
                     >
                       <span className="truncate">{tr.name}</span>
                       {autoApplyTransformId === tr.id && (
