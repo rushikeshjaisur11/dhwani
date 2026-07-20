@@ -651,43 +651,37 @@ export default function App() {
                   direction={dockDirection}
                 >
                   <div ref={sparkleRef} className="group relative flex items-center">
-                    <div
-                      className={`absolute inset-x-0 flex justify-center transition-all duration-200 ${
-                        dockDirection === "down" ? "top-full pt-1" : "bottom-full pb-1"
-                      } ${
-                        isTransformMenuOpen
-                          ? "opacity-100 pointer-events-auto scale-100 translate-y-0"
-                          : dockReady
+                    {/* Discoverability-only trigger, before the menu is open.
+                        Once open, the attached tab on the menu card itself
+                        (rendered below, inside the menu's own box) takes
+                        over as the close control instead of this chip. */}
+                    {!isTransformMenuOpen && (
+                      <div
+                        className={`absolute inset-x-0 flex justify-center transition-all duration-200 ${
+                          dockDirection === "down" ? "top-full pt-1" : "bottom-full pb-1"
+                        } ${
+                          dockReady
                             ? `opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 ${
                                 dockDirection === "down" ? "-translate-y-1 group-hover:translate-y-0" : "translate-y-1 group-hover:translate-y-0"
                               }`
                             : "opacity-0 pointer-events-none"
-                      }`}
-                    >
-                      {/* Integrated tab: shares the transform menu's own
-                          material (not a standalone floating chip) so it
-                          reads as part of the menu, not a separate control. */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (isTransformMenuOpen) {
-                            setIsTransformMenuOpen(false);
-                            setWindowInteractivity(false);
-                          } else {
+                        }`}
+                      >
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setWindowInteractivity(true);
                             toggleTransformMenu();
-                          }
-                        }}
-                        aria-label={t("app.dock.transformMenu", {
-                          defaultValue: "Transform menu",
-                        })}
-                        className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} flow-dock-icon flow-dock-icon--small flex items-center justify-center`}
-                      >
-                        {isTransformMenuOpen
-                          ? (dockDirection === "down" ? <ChevronUp size={13} /> : <ChevronDown size={13} />)
-                          : (dockDirection === "down" ? <ChevronDown size={13} /> : <ChevronUp size={13} />)}
-                      </button>
-                    </div>
+                          }}
+                          aria-label={t("app.dock.transformMenu", {
+                            defaultValue: "Transform menu",
+                          })}
+                          className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} flow-dock-icon flow-dock-icon--small flex items-center justify-center`}
+                        >
+                          {dockDirection === "down" ? <ChevronDown size={13} /> : <ChevronUp size={13} />}
+                        </button>
+                      </div>
+                    )}
                     {/* Sparkle — runs the selected transform on the current selection */}
                     <button
                       onClick={() => {
@@ -720,6 +714,28 @@ export default function App() {
                   }
                 }}
               >
+                {/* Attached tab: physically part of the menu card (absolutely
+                    positioned to overlap its own edge), sharing its exact
+                    background/border via the same flow-transform-menu--
+                    {style} class, with the card's own large shadow
+                    suppressed via flow-transform-menu-tab so it reads as a
+                    notch on the card rather than a second floating shape. */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsTransformMenuOpen(false);
+                    setWindowInteractivity(false);
+                  }}
+                  aria-label={t("app.dock.transformMenu", {
+                    defaultValue: "Transform menu",
+                  })}
+                  className={`flow-transform-menu-tab flow-transform-menu--${flowBarPillStyle} absolute right-4 w-6 h-6 rounded-full border flex items-center justify-center z-[-1] ${
+                    dockDirection === "down" ? "-top-3" : "-bottom-3"
+                  }`}
+                >
+                  {dockDirection === "down" ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                </button>
+
                 {/* Header with Close Button */}
                 <div className="flex items-center justify-between px-3 pt-3 pb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 pl-1">

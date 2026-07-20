@@ -994,6 +994,21 @@ a:hover {
   border-color: rgba(255, 255, 255, 0.14) !important;
 }
 
+/* Transform menu toggle, once the menu is open: a small tab attached to
+   the menu card's own edge (not a separate floating chip) so it reads as
+   part of the same surface. Reuses the menu's own background/border via
+   flow-transform-menu--{style} but suppresses that class's large 40px
+   card shadow, which looked like an oversized isolated glow around a
+   24px button and was the main reason it read as disconnected. */
+.flow-transform-menu-tab.flow-transform-menu--glass,
+.flow-transform-menu-tab.flow-transform-menu--bold {
+  box-shadow: none !important;
+}
+.dark .flow-transform-menu-tab.flow-transform-menu--glass,
+.dark .flow-transform-menu-tab.flow-transform-menu--bold {
+  box-shadow: none !important;
+}
+
 /* Transform menu — active/selected row. Today there is no background
    highlight for the selected row at all (only a trailing checkmark icon);
    these classes add one, per pill style, applied only when the row is
