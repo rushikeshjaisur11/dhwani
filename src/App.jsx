@@ -50,16 +50,26 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true, directi
 
   useLayoutEffect(() => {
     if (!isVisible || !tooltipRef.current) return;
-    setEdgeNudge(0);
+    // getBoundingClientRect() here still reflects whatever edgeNudge was
+    // applied on the PREVIOUS time this tooltip was shown (setEdgeNudge(0)
+    // is an async state update -- it doesn't take effect on this same
+    // synchronous measurement). Back the current nudge back out of the
+    // measured rect first, so the overflow calculation is always against
+    // the neutral (un-nudged) position instead of compounding on repeat
+    // hovers, which was silently producing a wrong (too-small) correction
+    // on the 2nd+ hover and letting the text clip again.
     const rect = tooltipRef.current.getBoundingClientRect();
+    const neutralLeft = rect.left - edgeNudge;
+    const neutralRight = rect.right - edgeNudge;
     const margin = 4;
     let nudge = 0;
-    if (rect.right > window.innerWidth - margin) {
-      nudge = window.innerWidth - margin - rect.right;
-    } else if (rect.left < margin) {
-      nudge = margin - rect.left;
+    if (neutralRight > window.innerWidth - margin) {
+      nudge = window.innerWidth - margin - neutralRight;
+    } else if (neutralLeft < margin) {
+      nudge = margin - neutralLeft;
     }
-    if (nudge !== 0) setEdgeNudge(nudge);
+    setEdgeNudge(nudge);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, label, hotkey]);
 
   return (
@@ -651,45 +661,42 @@ export default function App() {
                   direction={dockDirection}
                 >
                   <div ref={sparkleRef} className="group relative flex items-center">
-                    {/* Discoverability-only trigger, before the menu is open.
-                        Once open, the attached tab on the menu card itself
-                        (rendered below, inside the menu's own box) takes
-                        over as the close control instead of this chip. */}
-                    {!isTransformMenuOpen && (
-                      <div
-                        className={`absolute inset-x-0 flex justify-center transition-all duration-200 ${
-                          dockDirection === "down" ? "top-full pt-1" : "bottom-full pb-1"
-                        } ${
-                          dockReady
+                    {/* Discoverability trigger, before the menu is open. Kept
+                        permanently mounted (hidden via opacity/pointer-events,
+                        not conditional rendering) -- unmounting it the instant
+                        the menu opened was firing a real mouseleave on the way
+                        out, which raced the 600ms auto-close-if-not-hovered
+                        effect below and closed the menu almost immediately
+                        after opening it. Once open, the attached tab on the
+                        menu card itself (rendered below) is the visible close
+                        control; this chip just sits invisible underneath it. */}
+                    <div
+                      className={`absolute inset-x-0 flex justify-center transition-all duration-200 ${
+                        dockDirection === "down" ? "top-full pt-1" : "bottom-full pb-1"
+                      } ${
+                        isTransformMenuOpen
+                          ? "opacity-0 pointer-events-none"
+                          : dockReady
                             ? `opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 ${
                                 dockDirection === "down" ? "-translate-y-1 group-hover:translate-y-0" : "translate-y-1 group-hover:translate-y-0"
                               }`
                             : "opacity-0 pointer-events-none"
-                        }`}
+                      }`}
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setWindowInteractivity(true);
+                          toggleTransformMenu();
+                        }}
+                        aria-label={t("app.dock.transformMenu", {
+                          defaultValue: "Transform menu",
+                        })}
+                        className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} flow-dock-icon flow-dock-icon--small flex items-center justify-center`}
                       >
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // This chip unmounts the instant the menu opens
-                            // (it's only rendered while !isTransformMenuOpen),
-                            // which fires a real mouseleave on its way out
-                            // and would otherwise flip isHovered to false --
-                            // tripping the effect below that auto-closes the
-                            // menu after 600ms of !isHovered. Force it true
-                            // here so that guard never fires from this click.
-                            setIsHovered(true);
-                            setWindowInteractivity(true);
-                            toggleTransformMenu();
-                          }}
-                          aria-label={t("app.dock.transformMenu", {
-                            defaultValue: "Transform menu",
-                          })}
-                          className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} flow-dock-icon flow-dock-icon--small flex items-center justify-center`}
-                        >
-                          {dockDirection === "down" ? <ChevronDown size={13} /> : <ChevronUp size={13} />}
-                        </button>
-                      </div>
-                    )}
+                        {dockDirection === "down" ? <ChevronDown size={13} /> : <ChevronUp size={13} />}
+                      </button>
+                    </div>
                     {/* Sparkle — runs the selected transform on the current selection */}
                     <button
                       onClick={() => {
