@@ -35,7 +35,7 @@ const FLOATING_OVERLAY_TYPE =
 // "Done. See changes"), WITH_MENU adds the transform menu card opening
 // leftward above the dock.
 const WINDOW_SIZES = {
-  BASE: { width: 64, height: 56 },
+  BASE: { width: 96, height: 88 },
   STACK: { width: 240, height: 72 },
   RECORDING: { width: 170, height: 64 },
   WIDE: { width: 250, height: 72 },
