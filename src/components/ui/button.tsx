@@ -47,15 +47,15 @@ const buttonVariants = cva(
           "active:bg-destructive/80 active:scale-[0.98]",
         ].join(" "),
 
-        // Outline — refined with subtle glassmorphism
+        // Outline
         outline: [
           "relative font-medium",
-          "text-foreground bg-muted/70 backdrop-blur-sm",
+          "text-foreground bg-muted",
           "border border-border/70",
           "shadow-sm",
           "hover:bg-muted hover:border-border-hover",
           "active:scale-[0.985]",
-          "dark:bg-surface-raised/90 dark:border-border-hover dark:hover:bg-surface-raised",
+          "dark:bg-surface-raised dark:border-border-hover dark:hover:bg-surface-raised",
           "transition-[background-color,border-color,color,transform] duration-200 ease-out",
         ].join(" "),
 
@@ -106,15 +106,15 @@ const buttonVariants = cva(
           "underline-offset-4",
         ].join(" "),
 
-        // Social button for auth flows - ultra-premium glassmorphism
+        // Social button for auth flows
         social: [
           "relative font-medium",
-          "text-foreground bg-surface-1/80 backdrop-blur-xl",
+          "text-foreground bg-surface-1",
           "border border-border/60",
           "shadow-sm gap-2",
-          "hover:bg-surface-2/90 hover:border-border-hover hover:shadow",
+          "hover:bg-surface-2 hover:border-border-hover hover:shadow",
           "active:scale-[0.985] active:shadow-sm",
-          "dark:bg-surface-raised/80 dark:border-border-hover dark:hover:bg-surface-raised/95",
+          "dark:bg-surface-raised dark:border-border-hover dark:hover:bg-surface-raised",
           "transition-[background-color,border-color,color,transform] duration-200 ease-out",
         ].join(" "),
       },

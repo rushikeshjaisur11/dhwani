@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
-import { LiquidPlasmaVisualizer, LiveWaveform, SiriOrbVisualizer, RippleWaveVisualizer, NeonPulseVisualizer, ParticleSwarmVisualizer } from "../App";
+import { LiquidPlasmaVisualizer, LiveWaveform, SiriOrbVisualizer, RippleWaveVisualizer, NeonPulseVisualizer, ParticleSwarmVisualizer, WavelineVisualizer, SpectrumVisualizer } from "./flowbar/visualizers";
 import {
   RefreshCw,
   Download,
@@ -101,6 +101,7 @@ import { useSettingsStore } from "../stores/settingsStore";
 import { canManageSystemAudioInApp } from "../utils/systemAudioAccess";
 import WorkspaceSection from "./settings/WorkspaceSection";
 import { WORKSPACES_ENABLED } from "../lib/features";
+import type { ControlPanelView } from "./ControlPanelSidebar";
 
 export type SettingsSectionType =
   | "workspace"
@@ -117,6 +118,9 @@ interface SettingsPageProps {
   onNavigateToSection?: (section: SettingsSectionType) => void;
   /** When a legacy section ID was used (e.g. `meetings`), land on the matching sub-tab. */
   initialSubTab?: string;
+  /** Closes Settings and switches the main sidebar to this ControlPanel view — used by
+   * link cards that point at a feature's dedicated page (Personalized Styles, Polish). */
+  onNavigateToView?: (view: ControlPanelView) => void;
 }
 
 const UI_LANGUAGE_OPTIONS: import("./ui/LanguageSelector").LanguageOption[] = [
@@ -143,7 +147,7 @@ function SettingsPanel({
 }) {
   return (
     <div
-      className={`rounded-lg border border-border/50 dark:border-border-subtle/70 bg-card/50 dark:bg-surface-2/50 backdrop-blur-sm divide-y divide-border/30 dark:divide-border-subtle/50 ${className}`}
+      className={`rounded-lg border border-border/50 dark:border-border-subtle/70 bg-surface-1 dark:bg-surface-2 divide-y divide-border/30 dark:divide-border-subtle/50 ${className}`}
     >
       {children}
     </div>
@@ -636,6 +640,7 @@ function GpuDeviceSelector({ purpose }: { purpose: "transcription" | "intelligen
 export default function SettingsPage({
   activeSection = "general",
   onNavigateToSection,
+  onNavigateToView,
   initialSubTab,
 }: SettingsPageProps) {
   const { isCompact } = useSettingsLayout();
@@ -700,28 +705,8 @@ export default function SettingsPage({
     setNotifyUpdates,
     audioCuesEnabled,
     setAudioCuesEnabled,
-    polishEnabled,
-    setPolishEnabled,
-    polishInstructionConcise,
-    setPolishInstructionConcise,
-    polishInstructionClarity,
-    setPolishInstructionClarity,
-    polishInstructionTone,
-    setPolishInstructionTone,
-    polishInstructionStructure,
-    setPolishInstructionStructure,
     polishKey,
     setPolishKey,
-    styleToneWork,
-    setStyleToneWork,
-    styleToneEmail,
-    setStyleToneEmail,
-    styleTonePersonal,
-    setStyleTonePersonal,
-    styleToneOther,
-    setStyleToneOther,
-    enableVoiceStyles,
-    setEnableVoiceStyles,
     pauseMediaOnDictation,
     setPauseMediaOnDictation,
 
@@ -773,6 +758,10 @@ export default function SettingsPage({
     setWhisperVadSamplesOverlap,
     voiceVisualizerStyle,
     setVoiceVisualizerStyle,
+    flowBarPillStyle,
+    setFlowBarPillStyle,
+    idleOrbAnimation,
+    setIdleOrbAnimation,
   } = useSettings();
 
   const chatAgentKey = useSettingsStore((s) => s.chatAgentKey);
@@ -1715,7 +1704,9 @@ export default function SettingsPage({
                           { id: "siri", name: "Orb", Component: SiriOrbVisualizer },
                           { id: "ripple", name: "Ripple Waves", Component: RippleWaveVisualizer },
                           { id: "neon", name: "Neon Pulse", Component: NeonPulseVisualizer },
-                          { id: "particles", name: "Particle Swarm", Component: ParticleSwarmVisualizer }
+                          { id: "particles", name: "Particle Swarm", Component: ParticleSwarmVisualizer },
+                          { id: "waveline", name: "Waveline", Component: WavelineVisualizer },
+                          { id: "spectrum", name: "Spectrum", Component: SpectrumVisualizer }
                         ] as const
                       ).map(style => {
                         const isSelected = voiceVisualizerStyle === style.id;
@@ -1731,7 +1722,7 @@ export default function SettingsPage({
                             }`}
                           >
                             <div className="flex items-center justify-center h-[90px] w-full mb-2 pointer-events-none">
-                               <div className="relative flex items-center justify-center overflow-hidden bg-black/80 dark:bg-black rounded-3xl border border-black/10 dark:border-white/10 shadow-sm transition-all w-[38px] h-[85px]">
+                               <div className="relative flex items-center justify-center overflow-hidden bg-black/80 dark:bg-black rounded-full border border-black/10 dark:border-white/10 shadow-sm transition-all w-[110px] h-[34px]">
                                  <style.Component levels={mockLevels} isCommandMode={false} />
                                  <svg className="w-4 h-4 text-white/90 z-10 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]" fill="currentColor" viewBox="0 0 24 24">
                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
@@ -1750,6 +1741,125 @@ export default function SettingsPage({
               </SettingsPanel>
             </div>
 
+            {/* Pill Appearance — separate section from Voice Overlay Pill above
+                (that controls the in-pill visualizer animation; this controls
+                the pill's surface treatment). Same grid-of-live-preview-buttons
+                pattern as Voice Overlay Pill. */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.pillAppearance.title", {
+                  defaultValue: "Pill Appearance",
+                })}
+                description={t("settingsPage.general.pillAppearance.description", {
+                  defaultValue: "Choose how the floating Flow Bar looks",
+                })}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                    {(
+                      [
+                        { id: "glass", labelKey: "glass", defaultLabel: "Glass" },
+                        { id: "flat", labelKey: "flat", defaultLabel: "Flat" },
+                        { id: "bold", labelKey: "bold", defaultLabel: "Bold" },
+                        { id: "minimal", labelKey: "minimal", defaultLabel: "Minimal" },
+                      ] as const
+                    ).map((style) => {
+                      const isSelected = flowBarPillStyle === style.id;
+                      return (
+                        <button
+                          key={style.id}
+                          onClick={() => setFlowBarPillStyle(style.id)}
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border-[1.5px] transition-all duration-200 shadow-sm outline-none group ${
+                            isSelected
+                              ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.02]"
+                              : "border-border hover:border-border-hover bg-card scale-100"
+                          }`}
+                        >
+                          <div className="flex items-center justify-center h-[70px] w-full mb-2 pointer-events-none">
+                            <div
+                              className={`flow-dock-panel flow-dock-panel--${style.id} flex items-center justify-center w-14 h-14`}
+                            >
+                              <div className={`flow-dock-mic flow-dock-mic--${style.id} w-8 h-8`}>
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                          <span
+                            className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}
+                          >
+                            {t(`settingsPage.general.pillAppearance.${style.labelKey}`, {
+                              defaultValue: style.defaultLabel,
+                            })}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
+
+            {/* Idle Animation — which motion the idle orb (Part A/C) plays
+                before recording starts. Same grid-picker pattern as Pill
+                Appearance, using the CSS classes from Task 4. */}
+            <div>
+              <SectionHeader
+                title={t("settingsPage.general.idleAnimation.title", {
+                  defaultValue: "Idle Animation",
+                })}
+                description={t("settingsPage.general.idleAnimation.description", {
+                  defaultValue: "Choose how the pill behaves while idle",
+                })}
+              />
+              <SettingsPanel>
+                <SettingsPanelRow>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                    {(
+                      [
+                        { id: "breathe", labelKey: "breathe", defaultLabel: "Breathe" },
+                        { id: "glow-ring", labelKey: "glowRing", defaultLabel: "Glow Ring" },
+                        { id: "bob", labelKey: "bob", defaultLabel: "Bob" },
+                        { id: "shimmer", labelKey: "shimmer", defaultLabel: "Shimmer" },
+                      ] as const
+                    ).map((anim) => {
+                      const isSelected = idleOrbAnimation === anim.id;
+                      return (
+                        <button
+                          key={anim.id}
+                          onClick={() => setIdleOrbAnimation(anim.id)}
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border-[1.5px] transition-all duration-200 shadow-sm outline-none group ${
+                            isSelected
+                              ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.02]"
+                              : "border-border hover:border-border-hover bg-card scale-100"
+                          }`}
+                        >
+                          <div className="flex items-center justify-center h-[70px] w-full mb-2 pointer-events-none">
+                            <div
+                              className={`flow-dock-handle flow-dock-handle--glass flow-dock-handle--anim-${anim.id}`}
+                              style={{ position: "relative", marginRight: 0 }}
+                            />
+                          </div>
+                          <span
+                            className={`text-[11px] font-medium transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}
+                          >
+                            {t(`settingsPage.general.idleAnimation.${anim.labelKey}`, {
+                              defaultValue: anim.defaultLabel,
+                            })}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </SettingsPanelRow>
+              </SettingsPanel>
+            </div>
 
           </div>
         );
@@ -1955,7 +2065,7 @@ export default function SettingsPage({
                           e.target.value as "bottom-right" | "center" | "bottom-left"
                         )
                       }
-                      className="h-7 rounded border border-border/70 bg-surface-1/80 px-2.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm hover:border-border-hover hover:bg-surface-2/70 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
+                      className="h-7 rounded border border-border/70 bg-surface-1 px-2.5 text-xs font-medium text-foreground shadow-sm hover:border-border-hover hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
                     >
                       <option value="bottom-right">
                         {t("settingsPage.general.floatingIcon.bottomRight")}
@@ -2697,7 +2807,9 @@ EOF`,
               </SettingsPanel>
             </div>
 
-            {/* Polish Hotkey */}
+            {/* Polish Hotkey — the on/off toggle and rule toggles moved to
+                TransformDetailView.tsx (the dedicated Polish page); only the
+                actual hotkey binding stays here. */}
             <div>
               <SectionHeader
                 title={t("settingsPage.general.polishHotkey.title")}
@@ -2719,49 +2831,14 @@ EOF`,
                     slotName="polish"
                   />
                 </SettingsPanelRow>
-                <SettingsPanelRow className="flex items-center justify-between gap-3 border-t border-border/40 dark:border-white/5">
-                  <span className="text-xs text-muted-foreground/80">
-                    {t("settingsPage.general.polishHotkey.enabledLabel")}
-                  </span>
-                  <Toggle checked={polishEnabled} onChange={setPolishEnabled} />
-                </SettingsPanelRow>
-                <SettingsPanelRow className="flex flex-col gap-2.5 border-t border-border/40 dark:border-white/5">
-                  <span className="text-xs text-muted-foreground/80">
-                    {t("settingsPage.general.polishHotkey.instructionsLabel")}
-                  </span>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionConcise")}
-                    </span>
-                    <Toggle
-                      checked={polishInstructionConcise}
-                      onChange={setPolishInstructionConcise}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionClarity")}
-                    </span>
-                    <Toggle
-                      checked={polishInstructionClarity}
-                      onChange={setPolishInstructionClarity}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionTone")}
-                    </span>
-                    <Toggle checked={polishInstructionTone} onChange={setPolishInstructionTone} />
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs">
-                      {t("settingsPage.general.polishHotkey.instructionStructure")}
-                    </span>
-                    <Toggle
-                      checked={polishInstructionStructure}
-                      onChange={setPolishInstructionStructure}
-                    />
-                  </div>
+                <SettingsPanelRow className="border-t border-border/40 dark:border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => onNavigateToView?.("transforms")}
+                    className="w-full flex items-center justify-between gap-3 text-left text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    {t("settingsPage.general.polishHotkey.configureLink")}
+                  </button>
                 </SettingsPanelRow>
               </SettingsPanel>
             </div>
@@ -2791,58 +2868,23 @@ EOF`,
               </SettingsPanel>
             </div>
 
-            {/* Personalized Styles */}
+            {/* Personalized Styles — full config lives at the dedicated `style`
+                sidebar view (StyleView.tsx); this used to be a duplicate mini-UI. */}
             <div>
               <SectionHeader
                 title={t("settingsPage.general.personalizedStyles.title")}
                 description={t("settingsPage.general.personalizedStyles.description")}
               />
               <SettingsPanel>
-                <SettingsPanelRow className="flex items-center justify-between gap-3 pb-3 mb-2 border-b border-border/40 dark:border-white/5">
-                  <span className="text-sm font-medium text-foreground">
-                    Enable Voice Styles
-                  </span>
-                  <Toggle checked={enableVoiceStyles} onChange={setEnableVoiceStyles} />
-                </SettingsPanelRow>
-
-                {(
-                  [
-                    ["work", styleToneWork, setStyleToneWork],
-                    ["email", styleToneEmail, setStyleToneEmail],
-                    ["personal", styleTonePersonal, setStyleTonePersonal],
-                    ["other", styleToneOther, setStyleToneOther],
-                  ] as const
-                ).map(([contextKey, value, setValue], index) => (
-                  <SettingsPanelRow
-                    key={contextKey}
-                    className={
-                      index > 0 ? "border-t border-border/40 dark:border-white/5" : undefined
-                    }
+                <SettingsPanelRow>
+                  <button
+                    type="button"
+                    onClick={() => onNavigateToView?.("style")}
+                    className="w-full flex items-center justify-between gap-3 text-left text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                   >
-                    <SettingsRow
-                      label={t(`settingsPage.general.personalizedStyles.contexts.${contextKey}`)}
-                    >
-                      <select
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        className="h-7 rounded border border-border/70 bg-surface-1/80 px-2.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm hover:border-border-hover hover:bg-surface-2/70 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
-                      >
-                        <option value="off">
-                          {t("settingsPage.general.personalizedStyles.off")}
-                        </option>
-                        <option value="veryCasual">
-                          {t("style.presets.veryCasual.label", "Very Casual")}
-                        </option>
-                        <option value="casual">
-                          {t("settingsPage.general.personalizedStyles.casual")}
-                        </option>
-                        <option value="formal">
-                          {t("settingsPage.general.personalizedStyles.formal")}
-                        </option>
-                      </select>
-                    </SettingsRow>
-                  </SettingsPanelRow>
-                ))}
+                    {t("settingsPage.general.personalizedStyles.configureLink")}
+                  </button>
+                </SettingsPanelRow>
               </SettingsPanel>
             </div>
 
@@ -2987,7 +3029,7 @@ EOF`,
                     <select
                       value={audioRetentionDays}
                       onChange={(e) => setAudioRetentionDays(parseInt(e.target.value, 10))}
-                      className="h-7 rounded border border-border/70 bg-surface-1/80 px-2.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm hover:border-border-hover hover:bg-surface-2/70 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
+                      className="h-7 rounded border border-border/70 bg-surface-1 px-2.5 text-xs font-medium text-foreground shadow-sm hover:border-border-hover hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 transition-colors duration-200"
                     >
                       <option value={0}>{t("settingsPage.privacy.audioRetentionDisabled")}</option>
                       <option value={7}>

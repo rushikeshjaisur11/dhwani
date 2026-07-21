@@ -69,6 +69,31 @@ export default function ScratchpadOverlay() {
     contentRef.current = content;
   }, [content]);
 
+  const resizeStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    resizeStartRef.current = { x: e.screenX, y: e.screenY };
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const start = resizeStartRef.current;
+      if (!start) return;
+      const dx = moveEvent.screenX - start.x;
+      const dy = moveEvent.screenY - start.y;
+      resizeStartRef.current = { x: moveEvent.screenX, y: moveEvent.screenY };
+      void window.electronAPI?.resizeScratchpadBy?.({ dx, dy });
+    };
+
+    const handleMouseUp = () => {
+      resizeStartRef.current = null;
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  }, []);
+
   const loadNotes = useCallback(async () => {
     const items = ((await window.electronAPI?.getNotes?.(NOTE_TYPE, 100, null)) ??
       []) as NoteItem[];
@@ -266,7 +291,7 @@ export default function ScratchpadOverlay() {
     "flex h-6 w-6 items-center justify-center rounded text-neutral-500 hover:bg-black/5 hover:text-neutral-800";
 
   return (
-    <div className="h-screen w-screen p-2 bg-transparent">
+    <div className="scratchpad-overlay-window relative h-screen w-screen p-2 bg-transparent">
       <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#f5f3ef] shadow-2xl">
         {/* Top bar — draggable window chrome */}
         <div
@@ -527,6 +552,11 @@ export default function ScratchpadOverlay() {
           </div>
         </div>
       </div>
+      <div
+        onMouseDown={handleResizeMouseDown}
+        className="absolute bottom-0.5 right-0.5 h-4 w-4 cursor-nwse-resize"
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+      />
     </div>
   );
 }

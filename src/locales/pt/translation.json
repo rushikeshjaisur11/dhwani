@@ -1372,6 +1372,22 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Aparência da pílula",
+        "description": "Escolha a aparência da barra flutuante Flow Bar",
+        "glass": "Vidro",
+        "flat": "Plano",
+        "bold": "Arrojado",
+        "minimal": "Minimalista"
+      },
+      "idleAnimation": {
+        "title": "Animação em repouso",
+        "description": "Escolha como a pílula se comporta em repouso",
+        "breathe": "Respirar",
+        "glowRing": "Anel brilhante",
+        "bob": "Balanço",
+        "shimmer": "Brilho"
+      },
       "floatingIcon": {
         "autoHide": "Ocultar automaticamente quando ocioso",
         "autoHideDescription": "Mantenha o Ã­cone oculto atÃ© iniciar o ditado",
@@ -1580,7 +1596,8 @@
         "instructionConcise": "Tornar mais conciso",
         "instructionClarity": "Melhorar clareza e fluidez",
         "instructionTone": "Preservar o tom original",
-        "instructionStructure": "Adicionar estrutura quando útil"
+        "instructionStructure": "Adicionar estrutura quando útil",
+        "configureLink": "Configurar Polish →"
       },
       "personalizedStyles": {
         "title": "Estilos personalizados",
@@ -1593,7 +1610,8 @@
           "email": "Apps de e-mail",
           "personal": "Apps pessoais/mensagens",
           "other": "Todo o resto"
-        }
+        },
+        "configureLink": "Configurar estilos personalizados →"
       }
     },
     "permissions": {

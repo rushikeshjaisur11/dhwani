@@ -792,6 +792,10 @@ class IPCHandlers {
       return this.windowManager.resizeMainWindow(sizeKey);
     });
 
+    ipcMain.handle("set-main-window-peek", (event, peeking) => {
+      return this.windowManager.setMainWindowPeek(Boolean(peeking));
+    });
+
     ipcMain.handle("get-openai-key", async (event) => {
       await this.environmentManager.init();
       return this.environmentManager.getOpenAIKey();

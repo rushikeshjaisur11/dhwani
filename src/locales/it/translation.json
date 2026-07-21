@@ -1393,6 +1393,22 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Aspetto della pillola",
+        "description": "Scegli l'aspetto della barra flottante Flow Bar",
+        "glass": "Vetro",
+        "flat": "Piatto",
+        "bold": "Deciso",
+        "minimal": "Minimal"
+      },
+      "idleAnimation": {
+        "title": "Animazione a riposo",
+        "description": "Scegli come si comporta la pillola a riposo",
+        "breathe": "Respiro",
+        "glowRing": "Anello luminoso",
+        "bob": "Ondeggio",
+        "shimmer": "Luccichio"
+      },
       "floatingIcon": {
         "autoHide": "Nascondi automaticamente quando inattivo",
         "autoHideDescription": "Mantieni l'icona nascosta finchÃ© non inizi a dettare",
@@ -1601,7 +1617,8 @@
         "instructionConcise": "Rendi più conciso",
         "instructionClarity": "Migliora chiarezza e scorrevolezza",
         "instructionTone": "Mantieni il tono originale",
-        "instructionStructure": "Aggiungi struttura quando utile"
+        "instructionStructure": "Aggiungi struttura quando utile",
+        "configureLink": "Configura Polish →"
       },
       "personalizedStyles": {
         "title": "Stili personalizzati",
@@ -1614,7 +1631,8 @@
           "email": "App e-mail",
           "personal": "App personali/messaggistica",
           "other": "Tutto il resto"
-        }
+        },
+        "configureLink": "Configura stili personalizzati →"
       }
     },
     "permissions": {

@@ -163,13 +163,36 @@ class WindowManager {
     });
     const workArea = display.workArea || display.bounds;
 
-    // Right-edge dock: stay flush to the right edge, keep the vertical
-    // center where it is (drag preserved), so expansion grows leftward.
+    // Right-edge dock: stay flush to the right edge. The dock's own
+    // on-screen anchor point (its bottom edge, where the icon row sits)
+    // must not jump when it expands -- so growth defaults to upward
+    // (keep the bottom edge fixed, extend the top), but falls back to
+    // downward (keep the top edge fixed, extend the bottom) when there
+    // isn't enough room above on the current display. The renderer needs
+    // to know which direction was actually used so tooltips/menus/preview
+    // panels open on the matching side -- see the `direction` return value.
     let newX = workArea.x + workArea.width - newSize.width;
-    let newY = Math.round(currentBounds.y + currentBounds.height / 2 - newSize.height / 2);
-
-    // Clamp to work area
     newX = Math.max(workArea.x, Math.min(newX, workArea.x + workArea.width - newSize.width));
+
+    const anchorBottom = currentBounds.y + currentBounds.height;
+    const spaceAbove = anchorBottom - workArea.y;
+    const spaceBelow = workArea.y + workArea.height - currentBounds.y;
+
+    let newY;
+    let direction;
+    if (newSize.height <= spaceAbove) {
+      newY = anchorBottom - newSize.height;
+      direction = "up";
+    } else if (newSize.height <= spaceBelow) {
+      newY = currentBounds.y;
+      direction = "down";
+    } else {
+      // Neither direction fits the full height -- prefer growing upward
+      // as far as the work area allows, then clamp.
+      newY = anchorBottom - newSize.height;
+      direction = "up";
+    }
+
     newY = Math.max(workArea.y, Math.min(newY, workArea.y + workArea.height - newSize.height));
 
     this.mainWindow.setBounds({
@@ -179,7 +202,55 @@ class WindowManager {
       height: newSize.height,
     });
 
-    return { success: true, bounds: { x: newX, y: newY, ...newSize } };
+    return { success: true, direction, bounds: { x: newX, y: newY, ...newSize } };
+  }
+
+  // Idle-peek: after a stretch of no interaction in the idle (BASE) state,
+  // slide the window almost entirely off the right edge of the screen so
+  // only a thin sliver of the orb peeks in -- same footprint the old
+  // vertical handle had. Only the X position changes; width/height and the
+  // Y position stay whatever they already were, so restoring is a plain
+  // reverse of this same calculation, not a full resize.
+  //
+  // The BASE window (96px) is deliberately much wider than the 40px orb
+  // it contains (room for the glow-ring idle animation, which needs to
+  // bleed past the orb's own edges without clipping) -- the orb itself
+  // sits right-aligned with an 8px margin-right (.flow-dock-handle in
+  // index.css), so it normally rests with its right edge 8px inside the
+  // window's own right edge, not flush with it. The shift below accounts
+  // for that gap so PEEK_VISIBLE_WIDTH describes pixels of visible ORB,
+  // not pixels of visible window.
+  setMainWindowPeek(peeking) {
+    if (!this.mainWindow || this.mainWindow.isDestroyed()) {
+      return { success: false, message: "Window not available" };
+    }
+
+    const ORB_WIDTH = 40;
+    // Must match .flow-dock-handle's margin-right in index.css (20px --
+    // sized for the glow-ring idle animation's clearance, not tuned for
+    // this calculation, but this shift depends on it either way).
+    const ORB_MARGIN_RIGHT = 20;
+    const PEEK_VISIBLE_WIDTH = 10;
+    const PEEK_SHIFT = ORB_WIDTH - PEEK_VISIBLE_WIDTH + ORB_MARGIN_RIGHT;
+
+    const currentBounds = this.mainWindow.getBounds();
+    const display = screen.getDisplayNearestPoint({
+      x: currentBounds.x + currentBounds.width / 2,
+      y: currentBounds.y + currentBounds.height,
+    });
+    const workArea = display.workArea || display.bounds;
+    const restingX = workArea.x + workArea.width - currentBounds.width;
+
+    const newX = peeking ? restingX + PEEK_SHIFT : restingX;
+
+    this.mainWindow.setBounds({
+      x: newX,
+      y: currentBounds.y,
+      width: currentBounds.width,
+      height: currentBounds.height,
+    });
+
+    return { success: true };
   }
 
   async loadWindowContent(window, isControlPanel = false, isAgent = false) {

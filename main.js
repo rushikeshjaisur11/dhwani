@@ -1319,6 +1319,20 @@ async function startApp() {
     return { success: true };
   });
 
+  ipcMain.handle("resize-scratchpad-by", async (_event, { dx, dy }) => {
+    const win = windowManager.scratchpadWindow;
+    if (!win || win.isDestroyed()) return { success: false };
+    const bounds = win.getBounds();
+    const minWidth = 420;
+    const minHeight = 320;
+    const maxWidth = 1200;
+    const maxHeight = 900;
+    const width = Math.min(maxWidth, Math.max(minWidth, bounds.width + dx));
+    const height = Math.min(maxHeight, Math.max(minHeight, bounds.height + dy));
+    win.setBounds({ x: bounds.x, y: bounds.y, width, height });
+    return { success: true };
+  });
+
   const scratchpadHotkeyCallback = () => {
     if (hotkeyManager.isInListeningMode()) return;
     void windowManager.toggleScratchpadOverlay();

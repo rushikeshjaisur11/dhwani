@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import "./index.css";
 import {
   Check,
-  ChevronLeft,
-  ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Loader2,
   Mic,
   Settings,
@@ -23,195 +23,54 @@ import { useTransform } from "./hooks/useTransform";
 import { useSettingsStore } from "./stores/settingsStore";
 import { getEffectiveTransformsSync } from "./config/transforms/loadEffectiveTransforms";
 import { Toggle } from "./components/ui/toggle";
-
-export const LiveWaveform = ({ levels, isCommandMode }) => {
-  const shadowColor = isCommandMode
-    ? "rgba(251, 191, 36, 0.65)"
-    : "rgba(139, 110, 240, 0.65)";
-
-  return (
-    <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-[3px] py-0.5">
-      {levels.map((level, i) => (
-        <div
-          key={i}
-          className="h-[2.5px] rounded-full transition-[width] duration-75 bg-gradient-to-r from-white/30 via-white to-white/30"
-          style={{
-            width: `${5 + level * 16}px`,
-            boxShadow: `0 0 6px 1px ${shadowColor}`,
-            transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-export const SiriOrbVisualizer = ({ levels, isCommandMode }) => {
-  const getBand = (start, end) => {
-    let sum = 0;
-    for (let i = start; i < end; i++) sum += levels[i] || 0;
-    return sum / (end - start);
-  };
-
-  const scale = 1 + getBand(0, 4) * 0.4;
-  const morphX = 1 + getBand(4, 8) * 0.2;
-  const morphY = 1 + getBand(8, 12) * 0.2;
-
-  const coreColor = isCommandMode ? "rgba(251, 191, 36, 1)" : "rgba(167, 139, 250, 1)";
-  const auraColor = isCommandMode ? "rgba(245, 158, 11, 0.6)" : "rgba(139, 110, 240, 0.6)";
-
-  return (
-    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full pointer-events-none">
-      <div 
-        className="absolute transition-transform duration-100 ease-out"
-        style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          background: `radial-gradient(circle at center, ${coreColor} 0%, ${auraColor} 60%, transparent 100%)`,
-          boxShadow: `0 0 20px 5px ${auraColor}, 0 0 40px 10px ${coreColor}40`,
-          transform: `scale(${scale}) scaleX(${morphX}) scaleY(${morphY})`,
-          filter: 'blur(2px)'
-        }}
-      />
-    </div>
-  );
-};
-
-export const NeonPulseVisualizer = ({ levels, isCommandMode }) => {
-  const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
-  const pulseColor = isCommandMode ? "rgba(251, 191, 36, 1)" : "rgba(139, 110, 240, 1)";
-  const shadowColor = isCommandMode ? "rgba(251, 191, 36, 0.7)" : "rgba(139, 110, 240, 0.7)";
-  
-  return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none rounded-[24px]">
-      <div 
-        className="absolute inset-0 rounded-[24px] border-[2.5px] transition-all duration-75"
-        style={{
-          borderColor: pulseColor,
-          boxShadow: `0 0 ${10 + avgLevel * 30}px ${shadowColor}, inset 0 0 ${5 + avgLevel * 15}px ${shadowColor}`,
-          opacity: 0.3 + avgLevel * 0.7,
-          transform: `scale(${1 + avgLevel * 0.05})`
-        }}
-      />
-    </div>
-  );
-};
-
-export const ParticleSwarmVisualizer = ({ levels, isCommandMode }) => {
-  const particleColor = isCommandMode ? "rgba(251, 191, 36, 0.9)" : "rgba(139, 110, 240, 0.9)";
-  
-  return (
-    <div className="absolute inset-0 overflow-hidden rounded-[24px] pointer-events-none">
-      {levels.slice(0, 12).map((level, i) => {
-        const xOffset = ((i % 4) - 1.5) * 10;
-        const yOffset = ((Math.floor(i / 4)) - 1) * 20 * (1 + level);
-        const scale = 0.5 + level * 1.5;
-        
-        return (
-          <div
-            key={i}
-            className="absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full transition-transform duration-100 ease-out"
-            style={{
-              backgroundColor: particleColor,
-              boxShadow: `0 0 6px ${particleColor}`,
-              transform: `translate(calc(-50% + ${xOffset}px), calc(-50% + ${yOffset}px)) scale(${scale})`,
-              opacity: 0.2 + level * 0.8
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-export const RippleWaveVisualizer = ({ levels, isCommandMode }) => {
-  const avgLevel = levels.reduce((a, b) => a + b, 0) / levels.length;
-  const rippleColor = isCommandMode ? "rgba(251, 191, 36, 0.4)" : "rgba(139, 110, 240, 0.4)";
-  
-  return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-full">
-      <div 
-        className="absolute rounded-full border border-white/20 transition-transform duration-200 ease-out"
-        style={{
-          width: '100%',
-          height: '100%',
-          transform: `scale(${1 + avgLevel * 0.5})`,
-          opacity: 1 - avgLevel,
-          backgroundColor: rippleColor
-        }}
-      />
-      <div 
-        className="absolute rounded-full border border-white/40 transition-transform duration-100 ease-out"
-        style={{
-          width: '60%',
-          height: '60%',
-          transform: `scale(${1 + avgLevel * 0.8})`,
-          opacity: 1 - avgLevel * 0.5,
-          backgroundColor: rippleColor
-        }}
-      />
-    </div>
-  );
-};
-
-export const LiquidPlasmaVisualizer = ({ levels, isCommandMode }) => {
-  const getBand = (start, end) => {
-    let sum = 0;
-    for (let i = start; i < end; i++) sum += levels[i] || 0.15;
-    return Math.max(0, (sum / (end - start)) - 0.15); 
-  };
-
-  const b1 = getBand(0, 3) * 1.5;
-  const b2 = getBand(3, 7) * 1.5;
-  const b3 = getBand(7, 11) * 1.5;
-  const b4 = getBand(11, 14) * 1.5;
-
-  const colors = isCommandMode
-    ? ["bg-amber-300", "bg-orange-500", "bg-rose-500", "bg-yellow-400"]
-    : ["bg-cyan-300", "bg-indigo-500", "bg-fuchsia-500", "bg-violet-400"];
-
-  const blobClass = "absolute rounded-full mix-blend-screen transition-all duration-75 ease-out opacity-90";
-
-  return (
-    <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none flex items-center justify-center">
-      <div
-        className={`${blobClass} ${colors[0]}`}
-        style={{
-          top: '-10%', left: '10%', width: '36px', height: '36px', filter: 'blur(10px)',
-          transform: `scale(${1 + b1 * 1.5}) translateY(${b1 * 10}px)`,
-        }}
-      />
-      <div
-        className={`${blobClass} ${colors[1]}`}
-        style={{
-          top: '20%', left: '-10%', width: '44px', height: '44px', filter: 'blur(12px)',
-          transform: `scale(${1 + b2 * 1.5}) translateY(${b2 * -5}px)`,
-        }}
-      />
-      <div
-        className={`${blobClass} ${colors[2]}`}
-        style={{
-          top: '45%', left: '15%', width: '44px', height: '44px', filter: 'blur(12px)',
-          transform: `scale(${1 + b3 * 1.5}) translateY(${b3 * 5}px)`,
-        }}
-      />
-      <div
-        className={`${blobClass} ${colors[3]}`}
-        style={{
-          top: '70%', left: '-5%', width: '36px', height: '36px', filter: 'blur(10px)',
-          transform: `scale(${1 + b4 * 1.5}) translateY(${b4 * -10}px)`,
-        }}
-      />
-      <div className="absolute inset-0 rounded-full border border-white/20 shadow-[inset_0_4px_16px_rgba(255,255,255,0.25)]" />
-    </div>
-  );
-};
+import {
+  LiveWaveform,
+  SiriOrbVisualizer,
+  NeonPulseVisualizer,
+  ParticleSwarmVisualizer,
+  RippleWaveVisualizer,
+  LiquidPlasmaVisualizer,
+  WavelineVisualizer,
+  SpectrumVisualizer,
+} from "./components/flowbar/visualizers";
 
 // White pill tooltip opening to the left of a dock icon (Wispr style):
 // "Dictate **Ctrl + Win**", "Scratchpad", "Polish **Win Alt 1**".
-const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
+const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true, direction = "up" }) => {
   const [isVisible, setIsVisible] = useState(false);
+  // Extra horizontal nudge (px) on top of the base -50% centering, applied
+  // after measuring the actual rendered rect. The dock's window is only
+  // ~240px wide and icons near its edges (the sparkle in particular) sit
+  // close to the window's own boundary -- Electron hard-clips anything
+  // that renders past that boundary (no ellipsis, just a raw cut mid-
+  // character), so pure CSS centering isn't enough near the edges.
+  const [edgeNudge, setEdgeNudge] = useState(0);
+  const tooltipRef = useRef(null);
+  const isDown = direction === "down";
+
+  useLayoutEffect(() => {
+    if (!isVisible || !tooltipRef.current) return;
+    // getBoundingClientRect() here still reflects whatever edgeNudge was
+    // applied on the PREVIOUS time this tooltip was shown (setEdgeNudge(0)
+    // is an async state update -- it doesn't take effect on this same
+    // synchronous measurement). Back the current nudge back out of the
+    // measured rect first, so the overflow calculation is always against
+    // the neutral (un-nudged) position instead of compounding on repeat
+    // hovers, which was silently producing a wrong (too-small) correction
+    // on the 2nd+ hover and letting the text clip again.
+    const rect = tooltipRef.current.getBoundingClientRect();
+    const neutralLeft = rect.left - edgeNudge;
+    const neutralRight = rect.right - edgeNudge;
+    const margin = 4;
+    let nudge = 0;
+    if (neutralRight > window.innerWidth - margin) {
+      nudge = window.innerWidth - margin - neutralRight;
+    } else if (neutralLeft < margin) {
+      nudge = margin - neutralLeft;
+    }
+    setEdgeNudge(nudge);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible, label, hotkey]);
 
   return (
     <div className="relative">
@@ -223,8 +82,14 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
       </div>
       {isVisible && (
         <div
-          className="flow-tooltip-pill absolute right-full top-1/2 -translate-y-1/2 z-10 max-w-[190px] truncate"
-          style={{ marginRight: offset }}
+          ref={tooltipRef}
+          className={`flow-tooltip-pill absolute left-1/2 z-10 max-w-[190px] truncate ${
+            isDown ? "top-full" : "bottom-full"
+          }`}
+          style={{
+            transform: `translateX(calc(-50% + ${edgeNudge}px))`,
+            ...(isDown ? { marginTop: offset } : { marginBottom: offset }),
+          }}
         >
           {label}
           {hotkey ? <span className="font-semibold"> {hotkey}</span> : null}
@@ -234,9 +99,12 @@ const Tooltip = ({ children, label, hotkey, offset = 10, enabled = true }) => {
   );
 };
 
+const IDLE_PEEK_DELAY_MS = 5000;
+
 export default function App() {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isPeeking, setIsPeeking] = useState(false);
   // The dock's native window resize (isExpanded -> resizeMainWindow IPC) is
   // async and not instant — a fast mouse can reach the sparkle/arrow's
   // screen position before the window has actually widened to STACK, and
@@ -246,6 +114,11 @@ export default function App() {
   // the finer hover-reveal content (tooltip, transform-menu arrow) briefly
   // after expanding so the resize has time to land first.
   const [dockReady, setDockReady] = useState(false);
+  // Which side the dock's popups (tooltips, transform menu, streaming
+  // preview) open on. Mirrors whichever direction resizeMainWindow actually
+  // used (it prefers "up" but falls back to "down" near the top of the
+  // screen) so the dock's own on-screen anchor point never jumps.
+  const [dockDirection, setDockDirection] = useState("up");
   const [isTransformMenuOpen, setIsTransformMenuOpen] = useState(false);
   // { mode: "processing", name } | { mode: "done" } | null — transform runs
   const [transformStatus, setTransformStatus] = useState(null);
@@ -275,6 +148,8 @@ export default function App() {
 
   const floatingIconAutoHide = useSettingsStore((s) => s.floatingIconAutoHide);
   const voiceVisualizerStyle = useSettingsStore((s) => s.voiceVisualizerStyle);
+  const flowBarPillStyle = useSettingsStore((s) => s.flowBarPillStyle);
+  const idleOrbAnimation = useSettingsStore((s) => s.idleOrbAnimation);
   const polishKey = useSettingsStore((s) => s.polishKey);
   const prevAutoHideRef = useRef(floatingIconAutoHide);
   const showStreamingPreview = useSettingsStore((s) => s.showStreamingPreview);
@@ -431,25 +306,56 @@ export default function App() {
   }, [isExpanded]);
 
   useEffect(() => {
-    const resizeWindow = () => {
+    const applyDirection = (result) => {
+      if (result?.direction) setDockDirection(result.direction);
+    };
+    const resizeWindow = async () => {
+      let result;
       if (isTransformMenuOpen && toastCount > 0) {
-        window.electronAPI?.resizeMainWindow?.("EXPANDED");
+        result = await window.electronAPI?.resizeMainWindow?.("EXPANDED");
       } else if (isTransformMenuOpen) {
-        window.electronAPI?.resizeMainWindow?.("WITH_MENU");
+        result = await window.electronAPI?.resizeMainWindow?.("WITH_MENU");
       } else if (toastCount > 0) {
-        window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
+        result = await window.electronAPI?.resizeMainWindow?.("WITH_TOAST");
       } else if (statusPill) {
-        window.electronAPI?.resizeMainWindow?.("WIDE");
+        result = await window.electronAPI?.resizeMainWindow?.("WIDE");
       } else if (isRecording) {
-        window.electronAPI?.resizeMainWindow?.("RECORDING");
+        result = await window.electronAPI?.resizeMainWindow?.("RECORDING");
       } else if (isExpanded) {
-        window.electronAPI?.resizeMainWindow?.("STACK");
+        result = await window.electronAPI?.resizeMainWindow?.("STACK");
       } else {
-        window.electronAPI?.resizeMainWindow?.("BASE");
+        result = await window.electronAPI?.resizeMainWindow?.("BASE");
       }
+      applyDirection(result);
     };
     resizeWindow();
   }, [isTransformMenuOpen, toastCount, isRecording, statusPill, isExpanded]);
+
+  // Idle-peek: slide the idle orb almost entirely off the right edge of
+  // the screen after a stretch of no interaction, leaving a thin sliver
+  // visible (matches the old vertical handle's low-footprint idle look).
+  // Any real activity -- hovering, expanding, recording, a status pill,
+  // a toast -- both cancels a pending peek and restores an active one.
+  useEffect(() => {
+    const idleNow =
+      !isExpanded && !isRecording && !isHovered && !isTransformMenuOpen && !statusPill && toastCount === 0;
+
+    if (!idleNow) {
+      if (isPeeking) {
+        window.electronAPI?.setMainWindowPeek?.(false);
+        setIsPeeking(false);
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      window.electronAPI?.setMainWindowPeek?.(true);
+      setIsPeeking(true);
+    }, IDLE_PEEK_DELAY_MS);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded, isRecording, isHovered, isTransformMenuOpen, statusPill, toastCount]);
 
   usePolish(toast, t);
   useTransform(toast, t);
@@ -585,7 +491,7 @@ export default function App() {
   return (
     <div className="dictation-window">
       <div
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-end"
+        className={`fixed right-0 z-50 flex items-center justify-end ${dockDirection === "down" ? "top-0" : "bottom-0"}`}
         onMouseEnter={() => {
           setIsHovered(true);
           setWindowInteractivity(true);
@@ -598,7 +504,7 @@ export default function App() {
         }}
       >
         {statusPill ? (
-          <div className="flow-pill-h mr-1.5">
+          <div className={`flow-pill-h flow-pill-h--${flowBarPillStyle} mr-1.5`}>
             {statusPill.mode === "processing" ? (
               <>
                 <Loader2 size={15} className="animate-spin opacity-80" />
@@ -631,7 +537,7 @@ export default function App() {
           </div>
         ) : !isExpanded ? (
           <div
-            className="flow-dock-handle"
+            className={`flow-dock-handle flow-dock-handle--${flowBarPillStyle} flow-dock-handle--anim-${idleOrbAnimation}`}
             role="button"
             aria-label={t("app.dock.expand", { defaultValue: "Expand Flow Bar" })}
             onClick={() => setIsExpanded(true)}
@@ -645,7 +551,9 @@ export default function App() {
             }`}
           >
             {showStreamingPreview && isStreaming && (
-              <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-72 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900/90 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in slide-in-from-right-4 duration-300 z-50">
+              <div className={`absolute right-0 w-72 rounded-2xl bg-white border border-black/10 p-3 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 pointer-events-none animate-in fade-in duration-300 z-50 ${
+                dockDirection === "down" ? "top-full mt-4 slide-in-from-top-4" : "bottom-full mb-4 slide-in-from-bottom-4"
+              }`}>
                 <div className="flex items-center gap-2 mb-2">
                   <Loader2 size={12} className="animate-spin text-neutral-500" />
                   <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
@@ -661,7 +569,7 @@ export default function App() {
               <button
                 onClick={toggleListening}
                 aria-label={t("app.mic.recording")}
-                className={`flow-dock-mic flow-dock-mic--recording ${micStateClass} relative flex items-center justify-center`}
+                className={`flow-dock-mic flow-dock-mic--recording flow-dock-mic--recording--${flowBarPillStyle} ${micStateClass} relative flex items-center justify-center`}
               >
                 {voiceVisualizerStyle === "bars" ? (
                   <LiveWaveform levels={micLevels} isCommandMode={isCommandMode} />
@@ -673,6 +581,10 @@ export default function App() {
                   <NeonPulseVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 ) : voiceVisualizerStyle === "particles" ? (
                   <ParticleSwarmVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "waveline" ? (
+                  <WavelineVisualizer levels={micLevels} isCommandMode={isCommandMode} />
+                ) : voiceVisualizerStyle === "spectrum" ? (
+                  <SpectrumVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 ) : (
                   <LiquidPlasmaVisualizer levels={micLevels} isCommandMode={isCommandMode} />
                 )}
@@ -684,11 +596,12 @@ export default function App() {
                 <span className="flow-bar-ring flow-bar-ring--listening" aria-hidden="true" />
               </button>
             ) : (
-            <div className="flow-dock-panel">
+            <div className={`flow-dock-panel flow-dock-panel--${flowBarPillStyle}`}>
 
               <Tooltip
                 label={t("app.dock.dictate", { defaultValue: "Dictate" })}
                 hotkey={formatHotkeyLabel(hotkey)}
+                direction={dockDirection}
               >
                 <button
                   ref={buttonRef}
@@ -720,7 +633,7 @@ export default function App() {
                     }
                     e.preventDefault();
                   }}
-                  className="flow-dock-mic"
+                  className={`flow-dock-mic flow-dock-mic--${flowBarPillStyle}`}
                   style={{ cursor: isDragging ? "grabbing" : "pointer" }}
                 >
                   <Mic size={16} className="opacity-90" />
@@ -728,7 +641,7 @@ export default function App() {
               </Tooltip>
 
               {scratchpadInFlowBar && (
-                <Tooltip label={t("app.dock.scratchpad", { defaultValue: "Scratchpad" })}>
+                <Tooltip label={t("app.dock.scratchpad", { defaultValue: "Scratchpad" })} direction={dockDirection}>
                   <button
                     onClick={() => {
                       void window.electronAPI?.openScratchpadOverlay?.();
@@ -745,34 +658,43 @@ export default function App() {
                   hotkey={selectedShortcut ? formatHotkeyLabel(selectedShortcut) : undefined}
                   offset={40}
                   enabled={dockReady}
+                  direction={dockDirection}
                 >
                   <div ref={sparkleRef} className="group relative flex items-center">
+                    {/* Discoverability trigger, before the menu is open. Kept
+                        permanently mounted (hidden via opacity/pointer-events,
+                        not conditional rendering) -- unmounting it the instant
+                        the menu opened was firing a real mouseleave on the way
+                        out, which raced the 600ms auto-close-if-not-hovered
+                        effect below and closed the menu almost immediately
+                        after opening it. Once open, the attached tab on the
+                        menu card itself (rendered below) is the visible close
+                        control; this chip just sits invisible underneath it. */}
                     <div
-                      className={`absolute inset-y-0 right-full flex items-center pr-1 transition-all duration-200 ${
+                      className={`absolute inset-x-0 flex justify-center transition-all duration-200 ${
+                        dockDirection === "down" ? "top-full pt-1" : "bottom-full pb-1"
+                      } ${
                         isTransformMenuOpen
-                          ? "opacity-100 pointer-events-auto scale-100 translate-x-0"
-                          : dockReady 
-                            ? "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 translate-x-1 group-hover:translate-x-0" 
+                          ? "opacity-0 pointer-events-none"
+                          : dockReady
+                            ? `opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto scale-95 group-hover:scale-100 ${
+                                dockDirection === "down" ? "-translate-y-1 group-hover:translate-y-0" : "translate-y-1 group-hover:translate-y-0"
+                              }`
                             : "opacity-0 pointer-events-none"
                       }`}
                     >
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (isTransformMenuOpen) {
-                            setIsTransformMenuOpen(false);
-                            setWindowInteractivity(false);
-                          } else {
-                            setWindowInteractivity(true);
-                            toggleTransformMenu();
-                          }
+                          setWindowInteractivity(true);
+                          toggleTransformMenu();
                         }}
                         aria-label={t("app.dock.transformMenu", {
                           defaultValue: "Transform menu",
                         })}
-                        className="flow-dock-icon flow-dock-icon--small flow-dock-icon--float bg-white/40 dark:bg-black/20 backdrop-blur-md shadow-sm border border-black/5 dark:border-white/10"
+                        className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} flow-dock-icon flow-dock-icon--small flex items-center justify-center`}
                       >
-                        {isTransformMenuOpen ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+                        {dockDirection === "down" ? <ChevronDown size={13} /> : <ChevronUp size={13} />}
                       </button>
                     </div>
                     {/* Sparkle — runs the selected transform on the current selection */}
@@ -795,7 +717,9 @@ export default function App() {
             {isTransformMenuOpen && (
               <div
                 ref={menuRef}
-                className="absolute right-full bottom-0 mr-2 w-64 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900/90 dark:border-white/10 dark:text-neutral-100 animate-menu-in"
+                className={`flow-transform-menu flow-transform-menu--${flowBarPillStyle} absolute right-0 w-64 rounded-2xl bg-white border border-black/10 py-2 text-neutral-900 shadow-2xl shadow-black/10 dark:bg-neutral-900 dark:border-white/10 dark:text-neutral-100 ${
+                  dockDirection === "down" ? "top-full mt-2 animate-menu-in-down" : "bottom-full mb-2 animate-menu-in"
+                }`}
                 onMouseEnter={() => {
                   setWindowInteractivity(true);
                 }}
@@ -805,6 +729,28 @@ export default function App() {
                   }
                 }}
               >
+                {/* Attached tab: a small fully-rounded pill welded flush to
+                    the menu card's own edge, aligned above the sparkle icon
+                    below (not the card's center). Shares the card's
+                    background/border via flow-transform-menu--{style} with
+                    a lighter shadow override (flow-transform-menu-tab) so
+                    it doesn't inherit the full card's large 40px shadow. */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsTransformMenuOpen(false);
+                    setWindowInteractivity(false);
+                  }}
+                  aria-label={t("app.dock.transformMenu", {
+                    defaultValue: "Transform menu",
+                  })}
+                  className={`flow-transform-menu-tab flow-transform-menu--${flowBarPillStyle} absolute right-4 w-9 h-5 rounded-full border flex items-center justify-center ${
+                    dockDirection === "down" ? "-top-4" : "-bottom-4"
+                  }`}
+                >
+                  {dockDirection === "down" ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                </button>
+
                 {/* Header with Close Button */}
                 <div className="flex items-center justify-between px-3 pt-3 pb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 pl-1">
@@ -836,7 +782,11 @@ export default function App() {
                     <button
                       key={tr.id}
                       onClick={() => selectAutoApplyTransform(tr.id)}
-                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 focus:bg-black/5 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10 transition-colors"
+                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-[13px] hover:bg-black/5 focus:bg-black/5 focus:outline-none dark:hover:bg-white/10 dark:focus:bg-white/10 transition-colors ${
+                        autoApplyTransformId === tr.id
+                          ? `flow-transform-menu-item--active-${flowBarPillStyle}`
+                          : ""
+                      }`}
                     >
                       <span className="truncate">{tr.name}</span>
                       {autoApplyTransformId === tr.id && (

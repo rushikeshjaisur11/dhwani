@@ -63,6 +63,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   runTransform: (payload) => ipcRenderer.invoke("run-transform", payload),
   setScratchpadPinned: (pinned) => ipcRenderer.invoke("set-scratchpad-pinned", pinned),
+  resizeScratchpadBy: (delta) => ipcRenderer.invoke("resize-scratchpad-by", delta),
   openTransformsView: () => ipcRenderer.invoke("open-transforms-view"),
   onOpenTransformsView: registerListener("open-transforms-view", (callback) => () => callback()),
   openScratchpadOverlay: (payload) => ipcRenderer.invoke("open-scratchpad-overlay", payload),
@@ -391,6 +392,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   setNotificationInteractivity: (interactive) =>
     ipcRenderer.invoke("set-notification-interactivity", interactive),
   resizeMainWindow: (sizeKey) => ipcRenderer.invoke("resize-main-window", sizeKey),
+  setMainWindowPeek: (peeking) => ipcRenderer.invoke("set-main-window-peek", peeking),
 
   // Update functions
   checkForUpdates: () => ipcRenderer.invoke("check-for-updates"),

@@ -524,7 +524,7 @@ export function SelectionBar({
   const [open, setOpen] = useState(false);
   return (
     <div
-      className="flex items-center gap-3 rounded-md border border-border/40 bg-surface-2/95 backdrop-blur px-3 py-1.5 text-xs shadow-lg"
+      className="flex items-center gap-3 rounded-md border border-border/40 bg-surface-2 px-3 py-1.5 text-xs shadow-lg"
       style={{ animation: "agent-message-in 150ms ease-out both" }}
     >
       <span className="text-foreground/70 tabular-nums">
@@ -685,7 +685,7 @@ export function MeetingTranscriptChat({
   return (
     <div className="h-full relative">
       {(isRecording || isDiarizing) && !hintDismissed && (
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-2.5 py-1 rounded-md border border-border bg-background/95 backdrop-blur shadow-sm text-xs text-foreground">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-2.5 py-1 rounded-md border border-border bg-background shadow-sm text-xs text-foreground">
           {isDiarizing ? (
             <Loader2 size={12} className="animate-spin text-muted-foreground" />
           ) : (

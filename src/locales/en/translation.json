@@ -1581,6 +1581,22 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Pill Appearance",
+        "description": "Choose how the floating Flow Bar looks",
+        "glass": "Glass",
+        "flat": "Flat",
+        "bold": "Bold",
+        "minimal": "Minimal"
+      },
+      "idleAnimation": {
+        "title": "Idle Animation",
+        "description": "Choose how the pill behaves while idle",
+        "breathe": "Breathe",
+        "glowRing": "Glow Ring",
+        "bob": "Bob",
+        "shimmer": "Shimmer"
+      },
       "floatingIcon": {
         "autoHide": "Auto-hide when idle",
         "autoHideDescription": "Keep the icon hidden until you start dictating",
@@ -1625,7 +1641,8 @@
         "instructionConcise": "Make more concise",
         "instructionClarity": "Improve clarity and flow",
         "instructionTone": "Preserve original tone",
-        "instructionStructure": "Add structure where helpful"
+        "instructionStructure": "Add structure where helpful",
+        "configureLink": "Configure Polish →"
       },
       "pasteLastTranscriptHotkey": {
         "title": "Paste Last Transcript",
@@ -1642,7 +1659,8 @@
           "email": "Email apps",
           "personal": "Personal/messaging apps",
           "other": "Everything else"
-        }
+        },
+        "configureLink": "Configure personalized styles →"
       },
       "microphone": {
         "description": "Select which input device to use for dictation",

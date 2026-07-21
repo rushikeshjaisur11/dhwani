@@ -1393,6 +1393,22 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "Оформление панели",
+        "description": "Выберите внешний вид плавающей панели Flow Bar",
+        "glass": "Стекло",
+        "flat": "Плоский",
+        "bold": "Смелый",
+        "minimal": "Минимальный"
+      },
+      "idleAnimation": {
+        "title": "Анимация покоя",
+        "description": "Выберите поведение капсулы в состоянии покоя",
+        "breathe": "Дыхание",
+        "glowRing": "Светящееся кольцо",
+        "bob": "Покачивание",
+        "shimmer": "Мерцание"
+      },
       "floatingIcon": {
         "autoHide": "Ð¡ÐºÑ€Ñ‹Ð²Ð°Ñ‚ÑŒ Ð¿Ñ€Ð¸ Ð±ÐµÐ·Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ð¸",
         "autoHideDescription": "Ð—Ð½Ð°Ñ‡Ð¾Ðº Ð±ÑƒÐ´ÐµÑ‚ ÑÐºÑ€Ñ‹Ñ‚, Ð¿Ð¾ÐºÐ° Ð²Ñ‹ Ð½Ðµ Ð½Ð°Ñ‡Ð½Ñ‘Ñ‚Ðµ Ð´Ð¸ÐºÑ‚Ð¾Ð²ÐºÑƒ",
@@ -1601,7 +1617,8 @@
         "instructionConcise": "Сделать короче",
         "instructionClarity": "Улучшить ясность и связность",
         "instructionTone": "Сохранить исходный тон",
-        "instructionStructure": "Добавить структуру, если это уместно"
+        "instructionStructure": "Добавить структуру, если это уместно",
+        "configureLink": "Настроить Polish →"
       },
       "personalizedStyles": {
         "title": "Персонализированные стили",
@@ -1614,7 +1631,8 @@
           "email": "Почтовые приложения",
           "personal": "Личные/мессенджеры",
           "other": "Всё остальное"
-        }
+        },
+        "configureLink": "Настроить персональные стили →"
       }
     },
     "permissions": {

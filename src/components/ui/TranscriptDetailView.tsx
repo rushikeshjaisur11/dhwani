@@ -115,7 +115,7 @@ export default function TranscriptDetailView({
   return (
     <div className="flex flex-col h-[500px] bg-gradient-to-br from-background/40 to-background/10">
       {/* Sleek App-bar Header */}
-      <div className="flex items-center gap-4 px-6 py-4 border-b border-white/5 bg-black/5 dark:bg-white-[0.02] backdrop-blur-md">
+      <div className="flex items-center gap-4 px-6 py-4 border-b border-white/5 bg-surface-1 dark:bg-surface-2">
         {onBack && (
           <button
             onClick={onBack}

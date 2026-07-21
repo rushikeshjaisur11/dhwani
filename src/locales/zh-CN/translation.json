@@ -1393,6 +1393,22 @@
         "accentColor": "Accent Color",
         "resetAccent": "Reset to palette default"
       },
+      "pillAppearance": {
+        "title": "胶囊外观",
+        "description": "选择悬浮 Flow Bar 的外观",
+        "glass": "玻璃",
+        "flat": "平面",
+        "bold": "醒目",
+        "minimal": "极简"
+      },
+      "idleAnimation": {
+        "title": "待机动画",
+        "description": "选择胶囊在待机状态下的表现方式",
+        "breathe": "呼吸",
+        "glowRing": "光环",
+        "bob": "浮动",
+        "shimmer": "微光"
+      },
       "floatingIcon": {
         "autoHide": "ç©ºé—²æ—¶è‡ªåŠ¨éšè—",
         "autoHideDescription": "åœ¨å¼€å§‹å¬å†™å‰ä¿æŒå›¾æ ‡éšè—",
@@ -1601,7 +1617,8 @@
         "instructionConcise": "更简洁",
         "instructionClarity": "提升清晰度和流畅度",
         "instructionTone": "保留原有语气",
-        "instructionStructure": "在有帮助时增加结构"
+        "instructionStructure": "在有帮助时增加结构",
+        "configureLink": "配置 Polish →"
       },
       "personalizedStyles": {
         "title": "个性化风格",
@@ -1614,7 +1631,8 @@
           "email": "邮件应用",
           "personal": "个人/聊天应用",
           "other": "其他所有"
-        }
+        },
+        "configureLink": "配置个性化风格 →"
       }
     },
     "permissions": {

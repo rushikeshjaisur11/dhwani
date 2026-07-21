@@ -64,7 +64,7 @@ export default function UpdateNotificationOverlay() {
       <div
         className={[
           "relative",
-          "bg-card/95 dark:bg-surface-2/95 backdrop-blur-xl",
+          "bg-card dark:bg-surface-2",
           "border border-border/40 dark:border-border-subtle/40",
           "rounded-xl shadow-lg p-2.5",
           "transition-all duration-300 ease-out",

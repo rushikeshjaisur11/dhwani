@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Sliders, Palette, Mic, Brain, Wrench, Keyboard, Shield, Users } from "lucide-react";
 import SidebarModal, { type SidebarItem } from "./ui/SidebarModal";
 import SettingsPage, { SettingsSectionType } from "./SettingsPage";
+import type { ControlPanelView } from "./ControlPanelSidebar";
 import { WORKSPACES_ENABLED } from "../lib/features";
+import { useUpdater } from "../hooks/useUpdater";
 
 export type { SettingsSectionType };
 
@@ -40,10 +42,26 @@ interface SettingsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   initialSection?: string;
+  onNavigateToView?: (view: ControlPanelView) => void;
 }
 
-export default function SettingsModal({ open, onOpenChange, initialSection }: SettingsModalProps) {
+export default function SettingsModal({
+  open,
+  onOpenChange,
+  initialSection,
+  onNavigateToView,
+}: SettingsModalProps) {
   const { t } = useTranslation();
+  const { getAppVersion } = useUpdater();
+  const [appVersion, setAppVersion] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (!open) return;
+    getAppVersion().then((version) => {
+      if (version) setAppVersion(version);
+    });
+  }, [open, getAppVersion]);
+
   const sidebarItems: SidebarItem<SettingsSectionType>[] = useMemo(
     () => [
       ...(WORKSPACES_ENABLED
@@ -147,10 +165,12 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
       sidebarItems={sidebarItems}
       activeSection={activeSection}
       onSectionChange={handleSectionChange}
+      version={appVersion}
     >
       <SettingsPage
         activeSection={activeSection}
         onNavigateToSection={handleSectionChange}
+        onNavigateToView={onNavigateToView}
         initialSubTab={initialSubTab}
       />
     </SidebarModal>

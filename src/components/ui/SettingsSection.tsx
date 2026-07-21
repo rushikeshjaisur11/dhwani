@@ -114,7 +114,7 @@ export function SettingsPanelRow({
   const { isCompact } = useSettingsLayout();
 
   return (
-    <div className={`rounded-xl border border-border/50 dark:border-border-subtle/70 bg-card/50 dark:bg-surface-2/50 backdrop-blur-sm transition-all duration-200 hover:bg-foreground/5 dark:hover:bg-white/5 hover:border-border/80 dark:hover:border-white/10 ${isCompact ? "px-3 py-2.5" : "px-4 py-3"} ${className}`}>
+    <div className={`rounded-xl border border-border/50 dark:border-border-subtle/70 bg-surface-1 dark:bg-surface-2 transition-all duration-200 hover:bg-surface-2 dark:hover:bg-surface-3 hover:border-border/80 dark:hover:border-white/10 ${isCompact ? "px-3 py-2.5" : "px-4 py-3"} ${className}`}>
       {children}
     </div>
   );

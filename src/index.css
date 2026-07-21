@@ -85,11 +85,6 @@
   --color-flow-accent-deep: #4a34a8;
   --color-flow-warm: #f5a94a;
 
-  /* Glass surface tokens (kept for compat; pill/cards use solid surfaces now) */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(28, 26, 23, 0.08);
-  --glass-blur: 0px;
-
   /* New Wispr-derived semantic tokens */
   --color-badge-purple-bg: #ede4fb;
   --color-badge-purple-text: #2b1a47;
@@ -217,10 +212,6 @@
     inset 0 0 0 1px oklch(0.68 0.18 300 / 0.2), 0 0 16px -4px oklch(0.68 0.18 300 / 0.2);
   --shadow-card-hover-subtle: 0 2px 8px -2px rgba(0, 0, 0, 0.12);
 
-  /* Glass tokens — warm charcoal surfaces for dark mode (no navy, no blur) */
-  --glass-bg: rgba(34, 30, 26, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: 0px;
 }
 
 /* --- Nord Palette --- */
@@ -422,14 +413,21 @@
     min-height: 100vh;
   }
 
-  /* Make dictation window (App) transparent, but keep control panel solid */
+  /* Make dictation window (App) transparent, but keep control panel solid.
+     Scratchpad was missing from this list -- its body kept the default
+     solid var(--color-background), which showed through as a visible
+     rectangular border around the rounded note card's transparent margin.
+     Same root cause the agent overlay already has its own dedicated rule
+     for further down this file (search "Agent Overlay"). */
   body:has(.dictation-window),
-  body:has(.meeting-notification-window) {
+  body:has(.meeting-notification-window),
+  body:has(.scratchpad-overlay-window) {
     background: transparent;
   }
 
   body:has(.dictation-window) #root,
-  body:has(.meeting-notification-window) #root {
+  body:has(.meeting-notification-window) #root,
+  body:has(.scratchpad-overlay-window) #root {
     background: transparent;
   }
 }
@@ -655,27 +653,21 @@ a:hover {
   filter: invert(1);
 }
 
-/* Toast — ultra-premium glassmorphic surface */
+/* Toast — solid surface */
 .toast-surface {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.45) 100%);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.1),
-    0 4px 12px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .dark .toast-surface {
-  background: linear-gradient(135deg, rgba(40, 40, 46, 0.75) 0%, rgba(20, 20, 24, 0.55) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.4),
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes toast-progress {
@@ -754,13 +746,6 @@ a:hover {
   }
 }
 
-/* Glass surface — warm solid panel, for overlays/cards/modals (no blur;
-   Wispr's reference UI is flat, not translucent) */
-.glass-surface {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-}
-
 /* Flow Bar mic button state backgrounds (App.jsx dock mic button) */
 .flow-bar-pill--idle {
   background: var(--color-flow-ink);
@@ -814,21 +799,31 @@ a:hover {
 /* Flow Dock — right-edge collapsed handle + vertical icon panel (App.jsx,
    Wispr reference). Theme-aware: light defaults, .dark overrides. */
 .flow-dock-handle {
-  width: 7px;
+  width: 40px;
   height: 40px;
-  border-radius: 999px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(0, 0, 0, 0.8);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  margin-right: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  /* The outer dock container sits flush against the window's edge
+     (bottom-0/top-0 right-0 in App.jsx) with no offset of its own, so
+     this element's own margin is the only clearance between the orb and
+     the window's bounds. The glow-ring idle animation (.flow-dock-handle
+     --anim-glow-ring::after) scales up to 1.5x a 48px box centered on
+     this orb -- a 72px bounding box -- so 20px margin on the trailing
+     edges is required, not decorative, to keep that ring from clipping
+     against the window edge at its peak. */
+  margin-right: 20px;
+  margin-bottom: 20px;
   cursor: pointer;
   transition:
-    height 200ms var(--flow-spring-easing),
-    border-color 200ms ease-out;
+    transform 200ms var(--flow-spring-easing),
+    border-color 200ms ease-out,
+    box-shadow 200ms ease-out;
 }
 
 .flow-dock-handle:hover {
-  height: 46px;
+  transform: scale(1.08);
   border-color: #000;
 }
 
@@ -841,36 +836,288 @@ a:hover {
   border-color: rgba(255, 255, 255, 0.75);
 }
 
-/* Rounded vertical panel holding the mic / scratchpad / transforms icons. */
+/* Pill Style — collapsed idle orb (40px circle, was a 7x40px sliver before
+   the horizontal redesign). Mockup "C1: Orb -> Capsule (grow)" from
+   docs/superpowers/specs/2026-07-20-flowbar-pill-visualizer-menu-redesign.md
+   Part A. Same per-style language as the idle dock. */
+.flow-dock-handle.flow-dock-handle--glass {
+  background: linear-gradient(135deg, rgba(109, 79, 224, 0.55), rgba(109, 79, 224, 0.25));
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(109, 79, 224, 0.35);
+}
+.dark .flow-dock-handle.flow-dock-handle--glass {
+  background: linear-gradient(135deg, rgba(109, 79, 224, 0.6), rgba(109, 79, 224, 0.3));
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* flat: matches the unmodified .flow-dock-handle rule above — no override. */
+.flow-dock-handle.flow-dock-handle--flat {
+}
+
+.flow-dock-handle.flow-dock-handle--bold {
+  background: #f5a94a;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.dark .flow-dock-handle.flow-dock-handle--bold {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.flow-dock-handle.flow-dock-handle--minimal {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+}
+.dark .flow-dock-handle.flow-dock-handle--minimal {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Idle orb animation — user-selectable via idleOrbAnimation setting
+   (settingsStore.ts). Applies only to the idle (.flow-dock-handle) state;
+   hover/recording use their own transitions untouched by this setting. */
+@keyframes flow-orb-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+.flow-dock-handle--anim-breathe {
+  animation: flow-orb-breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes flow-orb-glow-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.flow-dock-handle--anim-glow-ring {
+  position: relative;
+}
+.flow-dock-handle--anim-glow-ring::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, 0.5);
+  animation: flow-orb-glow-ring 2.4s ease-out infinite;
+  pointer-events: none;
+}
+.dark .flow-dock-handle--anim-glow-ring::after {
+  border-color: rgba(167, 139, 250, 0.6);
+}
+
+@keyframes flow-orb-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.flow-dock-handle--anim-bob {
+  animation: flow-orb-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes flow-orb-shimmer-sweep {
+  0% {
+    left: -60%;
+  }
+  45%, 100% {
+    left: 120%;
+  }
+}
+.flow-dock-handle--anim-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.flow-dock-handle--anim-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: flow-orb-shimmer-sweep 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes flow-viz-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.flow-viz-siri-spin {
+  animation: flow-viz-spin 3.2s linear infinite;
+}
+
+/* Pill Style — transform menu card. The existing bg-white/dark:bg-neutral-900
+   Tailwind utilities ARE the flat look already; these modifiers override
+   them with !important for the other 3 styles (same technique the
+   recording-pill rules above already use for state overrides). */
+.flow-transform-menu.flow-transform-menu--glass {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25) !important;
+}
+.dark .flow-transform-menu.flow-transform-menu--glass {
+  background: rgba(30, 28, 38, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* flat: matches the existing Tailwind bg-white/dark:bg-neutral-900 utility
+   classes already on this element — no override needed. */
+.flow-transform-menu.flow-transform-menu--flat {
+}
+
+.flow-transform-menu.flow-transform-menu--bold {
+  background: var(--color-surface-2) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18) !important;
+}
+.dark .flow-transform-menu.flow-transform-menu--bold {
+  background: var(--color-flow-surface-dark) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+.flow-transform-menu.flow-transform-menu--minimal {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
+}
+.dark .flow-transform-menu.flow-transform-menu--minimal {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Transform menu toggle, once the menu is open: a small rounded pill
+   welded flush to the menu card's own bottom (or top) edge, aligned above
+   the sparkle icon in the dock below rather than the card's center.
+   Reuses the menu's own background/border via flow-transform-menu--
+   {style} but overrides that class's large 40px card shadow with a
+   smaller one sized for a 36x20px pill instead of a 256px card. */
+.flow-transform-menu-tab.flow-transform-menu--glass,
+.flow-transform-menu-tab.flow-transform-menu--bold {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+.dark .flow-transform-menu-tab.flow-transform-menu--glass,
+.dark .flow-transform-menu-tab.flow-transform-menu--bold {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Transform menu — active/selected row. Today there is no background
+   highlight for the selected row at all (only a trailing checkmark icon);
+   these classes add one, per pill style, applied only when the row is
+   selected. flowBarPillStyle read at render time in App.jsx picks which of
+   these 4 classes to apply (Task 9). */
+.flow-transform-menu-item--active-glass {
+  background: linear-gradient(135deg, rgba(109, 79, 224, 0.5), rgba(109, 79, 224, 0.2)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.flow-transform-menu-item--active-flat {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+.dark .flow-transform-menu-item--active-flat {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.flow-transform-menu-item--active-bold {
+  background: rgba(245, 169, 74, 0.25) !important;
+}
+.flow-transform-menu-item--active-minimal {
+  background: transparent !important;
+  border: 1px solid rgba(109, 79, 224, 0.4);
+}
+
+/* Rounded horizontal capsule holding the mic / scratchpad / transforms
+   icons in a row (was a vertical column before the horizontal redesign —
+   see docs/superpowers/specs/2026-07-20-flowbar-pill-visualizer-menu-redesign.md
+   Part D, mockup A2 "Polished flat row"). */
 .flow-dock-panel {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 28px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.4) 100%);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  gap: 10px;
+  padding: 6px 14px;
+  border-radius: 23px;
+  background: var(--color-surface-2);
   color: #1a1a1a;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  box-shadow: 
-    0 16px 40px rgba(0, 0, 0, 0.1),
-    0 4px 16px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   animation: flow-dock-in 180ms var(--flow-spring-easing);
 }
 
 .dark .flow-dock-panel {
-  background: linear-gradient(135deg, rgba(45, 45, 52, 0.6) 0%, rgba(20, 20, 24, 0.4) 100%);
+  background: var(--color-flow-surface-dark);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 
-    0 16px 40px rgba(0, 0, 0, 0.5),
-    0 4px 16px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Pill Style — 4-way user setting (Settings > Appearance > Pill Appearance,
+   flowBarPillStyle in settingsStore.ts). "flat" is Task 8's (f344dfb1)
+   already-solid values verbatim — the unmodified rule above. "glass" is a
+   deliberate, opt-in, documented exception to the app-wide solid-surface
+   rule from that same glass-removal audit: Apple's 2026 "Liquid Glass"
+   reserves translucency for floating controls above arbitrary content,
+   which is exactly this window's situation, and it's now opt-in rather
+   than forced on every user. Do not collapse these 4 classes back to one
+   without re-reading docs/superpowers/specs/2026-07-19-settings-dedup-and-logo-design.md Part C. */
+.flow-dock-panel.flow-dock-panel--glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 8px 24px rgba(109, 79, 224, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.dark .flow-dock-panel.flow-dock-panel--glass {
+  background: rgba(30, 28, 38, 0.35);
+  border-color: rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* flat: matches the unmodified .flow-dock-panel rule above exactly — empty
+   ruleset kept as an explicit anchor for the 4-way split. */
+.flow-dock-panel.flow-dock-panel--flat {
+}
+
+/* bold: same flat neutral surface as above — bold's high-contrast signal
+   is the mic icon color below and the recording pill (index.css, recording
+   rules), not this idle surface. */
+.flow-dock-panel.flow-dock-panel--bold {
+  box-shadow:
+    0 8px 24px rgba(245, 169, 74, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* minimal: transparent, hairline border, no shadow/blur. */
+.flow-dock-panel.flow-dock-panel--minimal {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+}
+.dark .flow-dock-panel.flow-dock-panel--minimal {
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 @keyframes flow-dock-in {
@@ -922,26 +1169,57 @@ a:hover {
 
 .dark .flow-dock-mic:hover {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.05) 100%);
-  box-shadow: 
+  box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
 }
 
-/* Recording: the waveform fills the whole vertical pill (gradient bg from
+/* Pill Style — idle mic icon color per style. Background/border stay the
+   existing translucent gradient (already glass-like) for all 4 styles
+   except minimal; only the icon color (and minimal's fill) change. */
+.flow-dock-mic.flow-dock-mic--glass {
+  color: #6d4fe0;
+}
+.dark .flow-dock-mic.flow-dock-mic--glass {
+  color: #b8a8f5;
+}
+
+/* flat: matches the unmodified .flow-dock-mic rule above — no override. */
+.flow-dock-mic.flow-dock-mic--flat {
+}
+
+.flow-dock-mic.flow-dock-mic--bold {
+  color: #1c1a17;
+}
+.dark .flow-dock-mic.flow-dock-mic--bold {
+  color: #f4f1ea;
+}
+
+.flow-dock-mic.flow-dock-mic--minimal {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+  color: #6b6558;
+}
+.dark .flow-dock-mic.flow-dock-mic--minimal {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #9b9587;
+}
+
+/* Recording: the waveform fills the whole horizontal pill (gradient bg from
    flow-bar-pill--listening/--command, white bars). */
 .flow-dock-mic--recording {
-  width: 48px;
-  height: 128px;
+  width: 140px;
+  height: 44px;
+  border-radius: 22px;
   color: #fff;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 0 !important;
   border: 1px solid rgba(139, 110, 240, 0.35) !important;
-  background: rgba(18, 15, 28, 0.85) !important;
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  background: #120f1c !important;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3),
               0 0 1px 0 rgba(255, 255, 255, 0.2) inset,
               0 0 20px 2px rgba(139, 110, 240, 0.3);
@@ -1010,6 +1288,76 @@ a:hover {
 @keyframes pill-breath {
   0%, 100% { opacity: 0.35; transform: scale(0.94); }
   50% { opacity: 0.85; transform: scale(1.12); }
+}
+
+@keyframes flow-pill-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+/* Pill Style — recording pill per style. Compound selectors
+   (.flow-dock-mic--recording.flow-dock-mic--recording--X) deliberately
+   match the existing rules' specificity (two classes) so these reliably
+   win the cascade over .dark .flow-dock-mic--recording and
+   .flow-dock-mic--recording.flow-bar-pill--command above, regardless of
+   theme or command mode. */
+.flow-dock-mic--recording.flow-dock-mic--recording--glass {
+  background: rgba(109, 79, 224, 0.55) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  border-top-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow:
+    0 8px 22px rgba(109, 79, 224, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  animation:
+    flow-pill-spring 380ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    flow-pill-breathe 2.6s ease-in-out infinite;
+}
+
+/* flat: matches the unmodified .flow-dock-mic--recording rule above
+   (Task 8/f344dfb1's solidified values) — empty ruleset kept as an
+   explicit anchor. No breathing pulse — keeps only flow-pill-spring. */
+.flow-dock-mic--recording.flow-dock-mic--recording--flat {
+}
+
+.flow-dock-mic--recording.flow-dock-mic--recording--bold {
+  background: #f5a94a !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #1c1a17 !important;
+}
+.flow-dock-mic--recording.flow-dock-mic--recording--bold.flow-bar-pill--command {
+  background: #6d4fe0 !important;
+  color: #fff !important;
+}
+
+.flow-dock-mic--recording.flow-dock-mic--recording--minimal {
+  background: transparent !important;
+  border: 2px solid #6d4fe0 !important;
+  box-shadow: none !important;
+  color: #6d4fe0 !important;
+}
+.dark .flow-dock-mic--recording.flow-dock-mic--recording--minimal {
+  border-color: #8b6ef0 !important;
+  color: #8b6ef0 !important;
+}
+.flow-dock-mic--recording.flow-dock-mic--recording--minimal::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #e0524d;
+  z-index: 1;
 }
 
 /* Secondary icons (scratchpad / chevron / sparkles) — flat, no circles. */
@@ -1089,6 +1437,52 @@ a:hover {
   background: rgba(14, 14, 16, 0.94);
   color: #fff;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+/* Pill Style — processing/status pill. Neutral surface like the idle dock
+   (C1), not the active recording pill — no bold color-block, no breathing
+   pulse. */
+.flow-pill-h.flow-pill-h--glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.dark .flow-pill-h.flow-pill-h--glass {
+  background: rgba(30, 28, 38, 0.35);
+  border-color: rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* flat: matches the unmodified .flow-pill-h rule above — no override. */
+.flow-pill-h.flow-pill-h--flat {
+}
+
+.flow-pill-h.flow-pill-h--bold {
+  background: var(--color-surface-2);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+}
+.dark .flow-pill-h.flow-pill-h--bold {
+  background: var(--color-flow-surface-dark);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+.flow-pill-h.flow-pill-h--minimal {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+}
+.dark .flow-pill-h.flow-pill-h--minimal {
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 /* Label pill shown to the left of a dock icon on hover — inverted vs the
@@ -1755,15 +2149,34 @@ body:has(.agent-overlay-window) #root {
 @keyframes menu-in {
   from {
     opacity: 0;
-    transform: scale(0.95) translateX(10px);
+    transform: scale(0.95) translateY(10px);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateX(0);
+    transform: scale(1) translateY(0);
   }
 }
 
 .animate-menu-in {
   animation: menu-in 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: bottom right;
+}
+
+/* Fallback direction when there isn't enough room above the dock (near the
+   top of the screen) -- resizeMainWindow reports "down" and the menu opens
+   below the dock instead, so it slides in from above rather than below. */
+@keyframes menu-in-down {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-menu-in-down {
+  animation: menu-in-down 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right;
 }

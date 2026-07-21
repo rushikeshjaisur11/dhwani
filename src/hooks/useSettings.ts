@@ -82,8 +82,10 @@ export interface ThemeSettings {
   theme: "light" | "dark" | "auto";
   palette: "default" | "nord" | "dracula" | "solarized" | "rose";
   accentColor: string | null;
-  voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles";
+  voiceVisualizerStyle: "plasma" | "bars" | "siri" | "ripple" | "neon" | "particles" | "waveline" | "spectrum";
   enableVoiceStyles: boolean;
+  flowBarPillStyle: "glass" | "flat" | "bold" | "minimal";
+  idleOrbAnimation: "breathe" | "glow-ring" | "bob" | "shimmer";
 }
 
 export interface ChatAgentSettings {
@@ -295,6 +297,10 @@ function useSettingsInternal() {
       setVoiceVisualizerStyle: store.setVoiceVisualizerStyle,
       enableVoiceStyles: store.enableVoiceStyles,
       setEnableVoiceStyles: store.setEnableVoiceStyles,
+      flowBarPillStyle: store.flowBarPillStyle,
+      setFlowBarPillStyle: store.setFlowBarPillStyle,
+      idleOrbAnimation: store.idleOrbAnimation,
+      setIdleOrbAnimation: store.setIdleOrbAnimation,
       activationMode: store.activationMode,
       setActivationMode: store.setActivationMode,
       notificationsEnabled: store.notificationsEnabled,

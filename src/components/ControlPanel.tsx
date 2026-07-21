@@ -695,6 +695,11 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
               if (!open) setSettingsSection(undefined);
             }}
             initialSection={settingsSection}
+            onNavigateToView={(view) => {
+              setShowSettings(false);
+              setSettingsSection(undefined);
+              setActiveView(view);
+            }}
           />
         </Suspense>
       )}

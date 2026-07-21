@@ -39,7 +39,7 @@ export default function ActionProcessingOverlay({
     <div
       className={cn(
         "absolute inset-0 z-[5] flex items-center justify-center",
-        "bg-background/60 dark:bg-background/70 backdrop-blur-md",
+        "bg-background/85 dark:bg-background/90",
         "transition-opacity duration-300",
         isFadingOut && "opacity-0 pointer-events-none"
       )}
@@ -71,9 +71,9 @@ export default function ActionProcessingOverlay({
         className={cn(
           "relative flex flex-col items-center gap-2.5",
           isSuccess
-            ? "bg-success/6 dark:bg-success/8 border-success/12 dark:border-success/15"
-            : "bg-accent/6 dark:bg-accent/8 border-accent/12 dark:border-accent/15",
-          "backdrop-blur-xl border rounded-xl px-6 py-3 shadow-elevated",
+            ? "bg-surface-2 border-success/25 dark:border-success/30"
+            : "bg-surface-2 border-accent/25 dark:border-accent/30",
+          "border rounded-xl px-6 py-3 shadow-elevated",
           "transition-colors duration-300"
         )}
       >
