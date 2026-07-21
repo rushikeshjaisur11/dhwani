@@ -1,5 +1,13 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string, opts?: { count?: number }) =>
+      key === "toast.moreCount" && opts ? `+${opts.count} more` : key,
+  }),
+}));
+
+import { render, screen, fireEvent } from "@testing-library/react";
 import { ToastProvider } from "./Toast";
 import { useToast } from "./useToast";
 
@@ -84,5 +92,47 @@ describe("toast.promise", () => {
     );
     expect(await screen.findByText("Failed")).toBeInTheDocument();
     expect(screen.queryByText("Working...")).not.toBeInTheDocument();
+  });
+});
+
+describe("Toast stack cap", () => {
+  function ManyTrigger({ count }: { count: number }) {
+    const { toast } = useToast();
+    React.useEffect(() => {
+      for (let i = 0; i < count; i++) {
+        toast({ title: `Toast ${i}` });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    return null;
+  }
+
+  it("shows at most 3 toasts and a +N more pill for the rest", () => {
+    render(
+      <ToastProvider>
+        <ManyTrigger count={5} />
+      </ToastProvider>
+    );
+    expect(screen.getAllByText(/^Toast \d$/).length).toBe(3);
+    expect(screen.getByText("+2 more")).toBeInTheDocument();
+  });
+
+  it("clicking the overflow pill dismisses every toast", () => {
+    render(
+      <ToastProvider>
+        <ManyTrigger count={5} />
+      </ToastProvider>
+    );
+    fireEvent.click(screen.getByText("+2 more"));
+    expect(screen.queryAllByText(/^Toast \d$/).length).toBe(0);
+  });
+
+  it("does not render the pill when 3 or fewer toasts exist", () => {
+    render(
+      <ToastProvider>
+        <ManyTrigger count={2} />
+      </ToastProvider>
+    );
+    expect(screen.queryByText(/more$/)).not.toBeInTheDocument();
   });
 });

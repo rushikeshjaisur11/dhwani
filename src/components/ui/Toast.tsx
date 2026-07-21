@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { X, Copy, Check, Info, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ToastContext, type ToastProps } from "./useToast";
@@ -143,6 +144,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       <ToastViewport
         toasts={toasts}
         onDismiss={dismiss}
+        onDismissAll={dismissAll}
         onPauseTimer={pauseTimer}
         onResumeTimer={resumeTimer}
       />
@@ -150,12 +152,16 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+const MAX_VISIBLE_TOASTS = 3;
+
 const ToastViewport: React.FC<{
   toasts: ToastState[];
   onDismiss: (id: string) => void;
+  onDismissAll: () => void;
   onPauseTimer: (id: string) => void;
   onResumeTimer: (id: string, remainingTime: number) => void;
-}> = ({ toasts, onDismiss, onPauseTimer, onResumeTimer }) => {
+}> = ({ toasts, onDismiss, onDismissAll, onPauseTimer, onResumeTimer }) => {
+  const { t } = useTranslation();
   const isDictationPanel = React.useMemo(() => {
     return (
       window.location.pathname.indexOf("control") === -1 &&
@@ -165,6 +171,9 @@ const ToastViewport: React.FC<{
 
   if (toasts.length === 0) return null;
 
+  const visible = toasts.slice(-MAX_VISIBLE_TOASTS);
+  const overflowCount = toasts.length - visible.length;
+
   return (
     <div
       className={cn(
@@ -172,7 +181,19 @@ const ToastViewport: React.FC<{
         isDictationPanel ? "bottom-20 right-6" : "bottom-5 right-5"
       )}
     >
-      {toasts.map((toast) => (
+      {overflowCount > 0 && (
+        <button
+          onClick={onDismissAll}
+          className={cn(
+            "pointer-events-auto self-end text-xs px-2 py-1 rounded-full",
+            "bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-white/70",
+            "hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
+          )}
+        >
+          {t("toast.moreCount", { count: overflowCount })}
+        </button>
+      )}
+      {visible.map((toast) => (
         <Toast
           key={toast.id}
           {...toast}
