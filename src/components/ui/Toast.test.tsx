@@ -49,3 +49,40 @@ describe("Toast width", () => {
     expect(container?.className).toContain("max-w-[90vw]");
   });
 });
+
+describe("toast.promise", () => {
+  function PromiseTrigger({ shouldResolve }: { shouldResolve: boolean }) {
+    const { promise } = useToast();
+    React.useEffect(() => {
+      const p = shouldResolve ? Promise.resolve("done") : Promise.reject(new Error("boom"));
+      promise(p, {
+        loading: "Working...",
+        success: (v) => `Success: ${v}`,
+        error: "Failed",
+      }).catch(() => {});
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    return null;
+  }
+
+  it("shows loading then swaps to success in place on resolve", async () => {
+    render(
+      <ToastProvider>
+        <PromiseTrigger shouldResolve={true} />
+      </ToastProvider>
+    );
+    expect(await screen.findByText("Success: done")).toBeInTheDocument();
+    expect(screen.queryByText("Working...")).not.toBeInTheDocument();
+    expect(screen.getAllByText(/Success: done|Working/).length).toBe(1);
+  });
+
+  it("shows loading then swaps to error in place on reject", async () => {
+    render(
+      <ToastProvider>
+        <PromiseTrigger shouldResolve={false} />
+      </ToastProvider>
+    );
+    expect(await screen.findByText("Failed")).toBeInTheDocument();
+    expect(screen.queryByText("Working...")).not.toBeInTheDocument();
+  });
+});

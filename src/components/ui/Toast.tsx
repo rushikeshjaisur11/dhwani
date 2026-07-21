@@ -1,5 +1,5 @@
 import * as React from "react";
-import { X, Copy, Check, Info, AlertCircle, CheckCircle2 } from "lucide-react";
+import { X, Copy, Check, Info, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ToastContext, type ToastProps } from "./useToast";
 
@@ -31,11 +31,17 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const toast = React.useCallback(
     (props: Omit<ToastProps, "id">): string => {
       const id = Math.random().toString(36).substring(2, 11);
-      const newToast: ToastState = { ...props, id, createdAt: Date.now() };
+      const newToast: ToastState = {
+        ...props,
+        id,
+        createdAt: Date.now(),
+        duration: props.variant === "loading" ? 0 : props.duration,
+      };
 
       setToasts((prev) => [...prev, newToast]);
 
-      const duration = props.duration ?? (props.variant === "destructive" ? 6000 : 3500);
+      const isLoading = props.variant === "loading";
+      const duration = isLoading ? 0 : (props.duration ?? (props.variant === "destructive" ? 6000 : 3500));
       if (duration > 0) {
         const timer = setTimeout(() => {
           startExitAnimation(id);
@@ -62,6 +68,45 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     },
     [toasts, clearTimer, startExitAnimation]
+  );
+
+  const updateToast = React.useCallback(
+    (id: string, patch: Partial<Omit<ToastProps, "id">>) => {
+      clearTimer(id);
+      setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch, createdAt: Date.now() } : t)));
+      const duration = patch.duration ?? (patch.variant === "destructive" ? 6000 : 3500);
+      if (patch.variant !== "loading" && duration > 0) {
+        const timer = setTimeout(() => {
+          startExitAnimation(id);
+        }, duration);
+        timersRef.current[id] = timer;
+      }
+    },
+    [clearTimer, startExitAnimation]
+  );
+
+  const dismissAll = React.useCallback(() => {
+    toasts.forEach((t) => clearTimer(t.id));
+    setToasts([]);
+  }, [toasts, clearTimer]);
+
+  const promise = React.useCallback(
+    <T,>(p: Promise<T>, opts: { loading: string; success: string | ((v: T) => string); error: string | ((e: unknown) => string) }): Promise<T> => {
+      const id = toast({ title: opts.loading, variant: "loading" });
+      return p.then(
+        (value) => {
+          const message = typeof opts.success === "function" ? opts.success(value) : opts.success;
+          updateToast(id, { title: message, variant: "success" });
+          return value;
+        },
+        (err) => {
+          const message = typeof opts.error === "function" ? opts.error(err) : opts.error;
+          updateToast(id, { title: message, variant: "destructive" });
+          throw err;
+        }
+      );
+    },
+    [toast, updateToast]
   );
 
   const pauseTimer = React.useCallback(
@@ -93,7 +138,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   return (
-    <ToastContext.Provider value={{ toast, dismiss, toastCount: toasts.length }}>
+    <ToastContext.Provider value={{ toast, dismiss, dismissAll, promise, toastCount: toasts.length }}>
       {children}
       <ToastViewport
         toasts={toasts}
@@ -155,6 +200,11 @@ const variantConfig = {
     icon: CheckCircle2,
     tintVar: "var(--color-success)",
     progressClass: "bg-(--color-success)/30",
+  },
+  loading: {
+    icon: Loader2,
+    tintVar: "var(--color-flow-accent)",
+    progressClass: "bg-(--color-flow-accent)/40",
   },
 };
 
@@ -224,7 +274,7 @@ const Toast: React.FC<
       <div className="flex items-start gap-2 flex-1 min-w-0 px-2.5 py-2">
         <div className="flex items-start pt-2 pl-2.5 shrink-0">
           <config.icon
-            className="size-4"
+            className={cn("size-4", variant === "loading" && "animate-spin")}
             style={{ color: config.tintVar }}
             aria-hidden="true"
           />
