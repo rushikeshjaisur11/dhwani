@@ -2971,5 +2971,8 @@
     "exportPlugin": "Exportar {{name}} como archivo",
     "exportedTo": "Exportado a {{path}}",
     "openPluginsFolder": "Abrir carpeta de transformaciones"
+  },
+  "toast": {
+    "moreCount": "+{{count}} más"
   }
 }

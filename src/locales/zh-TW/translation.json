@@ -2971,5 +2971,8 @@
     "exportPlugin": "將 {{name}} 匯出為檔案",
     "exportedTo": "已匯出至 {{path}}",
     "openPluginsFolder": "開啟轉換資料夾"
+  },
+  "toast": {
+    "moreCount": "還有 {{count}} 則"
   }
 }

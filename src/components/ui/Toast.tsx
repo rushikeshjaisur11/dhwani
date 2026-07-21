@@ -1,5 +1,6 @@
 import * as React from "react";
-import { X, Copy, Check, CheckCircle2, AlertTriangle, Info } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { X, Copy, Check, Info, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ToastContext, type ToastProps } from "./useToast";
 
@@ -31,11 +32,17 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const toast = React.useCallback(
     (props: Omit<ToastProps, "id">): string => {
       const id = Math.random().toString(36).substring(2, 11);
-      const newToast: ToastState = { ...props, id, createdAt: Date.now() };
+      const newToast: ToastState = {
+        ...props,
+        id,
+        createdAt: Date.now(),
+        duration: props.variant === "loading" ? 0 : props.duration,
+      };
 
       setToasts((prev) => [...prev, newToast]);
 
-      const duration = props.duration ?? (props.variant === "destructive" ? 6000 : 3500);
+      const isLoading = props.variant === "loading";
+      const duration = isLoading ? 0 : (props.duration ?? (props.variant === "destructive" ? 6000 : 3500));
       if (duration > 0) {
         const timer = setTimeout(() => {
           startExitAnimation(id);
@@ -62,6 +69,48 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     },
     [toasts, clearTimer, startExitAnimation]
+  );
+
+  const updateToast = React.useCallback(
+    (id: string, patch: Partial<Omit<ToastProps, "id">>) => {
+      clearTimer(id);
+      const duration =
+        patch.variant === "loading" ? 0 : patch.duration ?? (patch.variant === "destructive" ? 6000 : 3500);
+      setToasts((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, ...patch, duration, createdAt: Date.now() } : t))
+      );
+      if (patch.variant !== "loading" && duration > 0) {
+        const timer = setTimeout(() => {
+          startExitAnimation(id);
+        }, duration);
+        timersRef.current[id] = timer;
+      }
+    },
+    [clearTimer, startExitAnimation]
+  );
+
+  const dismissAll = React.useCallback(() => {
+    toasts.forEach((t) => clearTimer(t.id));
+    setToasts([]);
+  }, [toasts, clearTimer]);
+
+  const promise = React.useCallback(
+    <T,>(p: Promise<T>, opts: { loading: string; success: string | ((v: T) => string); error: string | ((e: unknown) => string) }): Promise<T> => {
+      const id = toast({ title: opts.loading, variant: "loading" });
+      return p.then(
+        (value) => {
+          const message = typeof opts.success === "function" ? opts.success(value) : opts.success;
+          updateToast(id, { title: message, variant: "success" });
+          return value;
+        },
+        (err) => {
+          const message = typeof opts.error === "function" ? opts.error(err) : opts.error;
+          updateToast(id, { title: message, variant: "destructive" });
+          throw err;
+        }
+      );
+    },
+    [toast, updateToast]
   );
 
   const pauseTimer = React.useCallback(
@@ -93,11 +142,12 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   return (
-    <ToastContext.Provider value={{ toast, dismiss, toastCount: toasts.length }}>
+    <ToastContext.Provider value={{ toast, dismiss, dismissAll, promise, toastCount: toasts.length }}>
       {children}
       <ToastViewport
         toasts={toasts}
         onDismiss={dismiss}
+        onDismissAll={dismissAll}
         onPauseTimer={pauseTimer}
         onResumeTimer={resumeTimer}
       />
@@ -105,12 +155,16 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+const MAX_VISIBLE_TOASTS = 3;
+
 const ToastViewport: React.FC<{
   toasts: ToastState[];
   onDismiss: (id: string) => void;
+  onDismissAll: () => void;
   onPauseTimer: (id: string) => void;
   onResumeTimer: (id: string, remainingTime: number) => void;
-}> = ({ toasts, onDismiss, onPauseTimer, onResumeTimer }) => {
+}> = ({ toasts, onDismiss, onDismissAll, onPauseTimer, onResumeTimer }) => {
+  const { t } = useTranslation();
   const isDictationPanel = React.useMemo(() => {
     return (
       window.location.pathname.indexOf("control") === -1 &&
@@ -120,6 +174,9 @@ const ToastViewport: React.FC<{
 
   if (toasts.length === 0) return null;
 
+  const visible = toasts.slice(-MAX_VISIBLE_TOASTS);
+  const overflowCount = toasts.length - visible.length;
+
   return (
     <div
       className={cn(
@@ -127,7 +184,19 @@ const ToastViewport: React.FC<{
         isDictationPanel ? "bottom-20 right-6" : "bottom-5 right-5"
       )}
     >
-      {toasts.map((toast) => (
+      {overflowCount > 0 && (
+        <button
+          onClick={onDismissAll}
+          className={cn(
+            "pointer-events-auto self-end text-xs px-2 py-1 rounded-full",
+            "bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-white/70",
+            "hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
+          )}
+        >
+          {t("toast.moreCount", { count: overflowCount })}
+        </button>
+      )}
+      {visible.map((toast) => (
         <Toast
           key={toast.id}
           {...toast}
@@ -143,18 +212,23 @@ const ToastViewport: React.FC<{
 const variantConfig = {
   default: {
     icon: Info,
-    iconClass: "text-primary",
-    progressClass: "bg-white/15",
+    tintVar: "var(--color-flow-accent)",
+    progressClass: "bg-(--color-flow-accent)/40",
   },
   destructive: {
-    icon: AlertTriangle,
-    iconClass: "text-red-500 dark:text-red-400",
-    progressClass: "bg-red-400/30",
+    icon: AlertCircle,
+    tintVar: "var(--color-destructive)",
+    progressClass: "bg-(--color-destructive)/30",
   },
   success: {
     icon: CheckCircle2,
-    iconClass: "text-emerald-600 dark:text-emerald-400",
-    progressClass: "bg-emerald-400/30",
+    tintVar: "var(--color-success)",
+    progressClass: "bg-(--color-success)/30",
+  },
+  loading: {
+    icon: Loader2,
+    tintVar: "var(--color-flow-accent)",
+    progressClass: "bg-(--color-flow-accent)/40",
   },
 };
 
@@ -180,6 +254,39 @@ const Toast: React.FC<
   const pausedAtRef = React.useRef<number | null>(null);
   const [copied, setCopied] = React.useState(false);
   const isDestructive = variant === "destructive";
+
+  const [dragX, setDragX] = React.useState(0);
+  const dragStartRef = React.useRef<{ x: number; startTime: number } | null>(null);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    dragStartRef.current = { x: e.clientX, startTime: Date.now() };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragStartRef.current) return;
+    setDragX(e.clientX - dragStartRef.current.x);
+  };
+
+  const handlePointerUp = () => {
+    if (!dragStartRef.current || !rootRef.current) {
+      dragStartRef.current = null;
+      return;
+    }
+    const width = rootRef.current.offsetWidth || 1;
+    const elapsed = Date.now() - dragStartRef.current.startTime;
+    const velocity = Math.abs(dragX) / Math.max(elapsed, 1);
+    const pastThreshold = Math.abs(dragX) > width * 0.4;
+    const fastFlick = velocity > 0.5 && Math.abs(dragX) > 20;
+
+    if (pastThreshold || fastFlick) {
+      onClose?.();
+    } else {
+      setDragX(0);
+    }
+    dragStartRef.current = null;
+  };
 
   const handleMouseEnter = () => {
     pausedAtRef.current = Date.now();
@@ -210,18 +317,35 @@ const Toast: React.FC<
   return (
     <div
       className={cn(
-        "group toast-surface pointer-events-auto relative flex w-75",
+        "group toast-surface pointer-events-auto relative flex w-80 max-w-[90vw]",
         "rounded-[5px]",
         "transition-[opacity,transform] duration-200 ease-out",
         isExiting
           ? "opacity-0 translate-x-2 scale-[0.98]"
           : "opacity-100 translate-x-0 scale-100 animate-in slide-in-from-right-4 fade-in-0 duration-300"
       )}
+      style={{
+        "--toast-tint": config.tintVar,
+        transform: dragX !== 0 ? `translateX(${dragX}px)` : undefined,
+        opacity: dragX !== 0 ? Math.max(1 - Math.abs(dragX) / 300, 0.2) : undefined,
+        touchAction: "pan-y",
+      } as React.CSSProperties}
+      ref={rootRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex items-start gap-2 flex-1 min-w-0 px-2.5 py-2">
-        <config.icon className={cn("size-3.5 shrink-0 mt-0.5", config.iconClass)} />
+        <div className="flex items-start shrink-0">
+          <config.icon
+            className={cn("size-4", variant === "loading" && "animate-spin")}
+            style={{ color: config.tintVar }}
+            aria-hidden="true"
+          />
+        </div>
         <div className="flex-1 min-w-0">
           {message && (
             <div className="text-xs font-medium leading-tight text-neutral-900 dark:text-white/90">{message}</div>
