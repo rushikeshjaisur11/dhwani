@@ -1,5 +1,5 @@
 import * as React from "react";
-import { X, Copy, Check, CheckCircle2, AlertTriangle, Info } from "lucide-react";
+import { X, Copy, Check, Info, AlertCircle, CheckCircle2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ToastContext, type ToastProps } from "./useToast";
 
@@ -143,18 +143,18 @@ const ToastViewport: React.FC<{
 const variantConfig = {
   default: {
     icon: Info,
-    iconClass: "text-primary",
-    progressClass: "bg-white/15",
+    tintVar: "var(--color-flow-accent)",
+    progressClass: "bg-(--color-flow-accent)/40",
   },
   destructive: {
-    icon: AlertTriangle,
-    iconClass: "text-red-500 dark:text-red-400",
-    progressClass: "bg-red-400/30",
+    icon: AlertCircle,
+    tintVar: "var(--color-destructive)",
+    progressClass: "bg-(--color-destructive)/30",
   },
   success: {
     icon: CheckCircle2,
-    iconClass: "text-emerald-600 dark:text-emerald-400",
-    progressClass: "bg-emerald-400/30",
+    tintVar: "var(--color-success)",
+    progressClass: "bg-(--color-success)/30",
   },
 };
 
@@ -217,11 +217,18 @@ const Toast: React.FC<
           ? "opacity-0 translate-x-2 scale-[0.98]"
           : "opacity-100 translate-x-0 scale-100 animate-in slide-in-from-right-4 fade-in-0 duration-300"
       )}
+      style={{ "--toast-tint": config.tintVar } as React.CSSProperties}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex items-start gap-2 flex-1 min-w-0 px-2.5 py-2">
-        <config.icon className={cn("size-3.5 shrink-0 mt-0.5", config.iconClass)} />
+        <div className="flex items-start pt-2 pl-2.5 shrink-0">
+          <config.icon
+            className="size-4"
+            style={{ color: config.tintVar }}
+            aria-hidden="true"
+          />
+        </div>
         <div className="flex-1 min-w-0">
           {message && (
             <div className="text-xs font-medium leading-tight text-neutral-900 dark:text-white/90">{message}</div>
