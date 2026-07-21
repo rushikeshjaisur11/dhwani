@@ -74,7 +74,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateToast = React.useCallback(
     (id: string, patch: Partial<Omit<ToastProps, "id">>) => {
       clearTimer(id);
-      const duration = patch.duration ?? (patch.variant === "destructive" ? 6000 : 3500);
+      const duration =
+        patch.variant === "loading" ? 0 : patch.duration ?? (patch.variant === "destructive" ? 6000 : 3500);
       setToasts((prev) =>
         prev.map((t) => (t.id === id ? { ...t, ...patch, duration, createdAt: Date.now() } : t))
       );
