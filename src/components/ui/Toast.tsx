@@ -74,8 +74,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateToast = React.useCallback(
     (id: string, patch: Partial<Omit<ToastProps, "id">>) => {
       clearTimer(id);
-      setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch, createdAt: Date.now() } : t)));
       const duration = patch.duration ?? (patch.variant === "destructive" ? 6000 : 3500);
+      setToasts((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, ...patch, duration, createdAt: Date.now() } : t))
+      );
       if (patch.variant !== "loading" && duration > 0) {
         const timer = setTimeout(() => {
           startExitAnimation(id);
@@ -336,7 +338,7 @@ const Toast: React.FC<
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex items-start gap-2 flex-1 min-w-0 px-2.5 py-2">
-        <div className="flex items-start pt-2 pl-2.5 shrink-0">
+        <div className="flex items-start shrink-0">
           <config.icon
             className={cn("size-4", variant === "loading" && "animate-spin")}
             style={{ color: config.tintVar }}

@@ -11,7 +11,7 @@ if (!Element.prototype.setPointerCapture) {
   Element.prototype.setPointerCapture = () => {};
 }
 
-import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
+import { render, screen, fireEvent, waitForElementToBeRemoved, act } from "@testing-library/react";
 import { ToastProvider } from "./Toast";
 import { useToast } from "./useToast";
 
@@ -96,6 +96,30 @@ describe("toast.promise", () => {
     );
     expect(await screen.findByText("Failed")).toBeInTheDocument();
     expect(screen.queryByText("Working...")).not.toBeInTheDocument();
+  });
+
+  it("does not become permanent after hover then unhover on a resolved success toast", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      render(
+        <ToastProvider>
+          <PromiseTrigger shouldResolve={true} />
+        </ToastProvider>
+      );
+      const successEl = await screen.findByText("Success: done");
+      const surface = successEl.closest(".toast-surface") as HTMLElement;
+
+      fireEvent.mouseEnter(surface);
+      fireEvent.mouseLeave(surface);
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(4000);
+      });
+
+      expect(screen.queryByText("Success: done")).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 
