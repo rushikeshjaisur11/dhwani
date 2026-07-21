@@ -210,7 +210,7 @@ const Toast: React.FC<
   return (
     <div
       className={cn(
-        "group toast-surface pointer-events-auto relative flex w-75",
+        "group toast-surface pointer-events-auto relative flex w-80 max-w-[90vw]",
         "rounded-[5px]",
         "transition-[opacity,transform] duration-200 ease-out",
         isExiting

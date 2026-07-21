@@ -36,3 +36,16 @@ describe("Toast variant icons", () => {
     expect(container?.querySelector("svg")).toBeTruthy();
   });
 });
+
+describe("Toast width", () => {
+  it("is not capped at the old fixed 300px width class", () => {
+    render(
+      <ToastProvider>
+        <Trigger />
+      </ToastProvider>
+    );
+    const container = screen.getByText("Hello").closest(".toast-surface");
+    expect(container?.className).not.toContain("w-75");
+    expect(container?.className).toContain("max-w-[90vw]");
+  });
+});
