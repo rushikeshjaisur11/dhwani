@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0](https://github.com/rushikeshjaisur11/dhwani/compare/v0.7.0...v0.8.0) (2026-07-21)
+
+
+### Features
+
+* **toast:** redesign toast notifications ([#42](https://github.com/rushikeshjaisur11/dhwani/issues/42)) ([1e84ef7](https://github.com/rushikeshjaisur11/dhwani/commit/1e84ef715369ae7c10cc0bf5921a7fe9172f4147))
+
 ## [0.7.0](https://github.com/rushikeshjaisur11/dhwani/compare/v0.6.2...v0.7.0) (2026-07-21)
 
 
