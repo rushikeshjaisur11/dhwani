@@ -7,7 +7,11 @@ vi.mock("react-i18next", () => ({
   }),
 }));
 
-import { render, screen, fireEvent } from "@testing-library/react";
+if (!Element.prototype.setPointerCapture) {
+  Element.prototype.setPointerCapture = () => {};
+}
+
+import { render, screen, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
 import { ToastProvider } from "./Toast";
 import { useToast } from "./useToast";
 
@@ -134,5 +138,40 @@ describe("Toast stack cap", () => {
       </ToastProvider>
     );
     expect(screen.queryByText(/more$/)).not.toBeInTheDocument();
+  });
+});
+
+describe("Toast swipe-to-dismiss", () => {
+  it("dismisses when dragged past 40% of its width", async () => {
+    render(
+      <ToastProvider>
+        <Trigger />
+      </ToastProvider>
+    );
+    const surface = screen.getByText("Hello").closest(".toast-surface") as HTMLElement;
+    Object.defineProperty(surface, "offsetWidth", { value: 320, configurable: true });
+
+    fireEvent.pointerDown(surface, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(surface, { clientX: 100 - 200, pointerId: 1 });
+    fireEvent.pointerUp(surface, { clientX: 100 - 200, pointerId: 1 });
+
+    await waitForElementToBeRemoved(() => screen.queryByText("Hello"));
+    expect(screen.queryByText("Hello")).not.toBeInTheDocument();
+  });
+
+  it("snaps back when dragged short of the threshold", () => {
+    render(
+      <ToastProvider>
+        <Trigger />
+      </ToastProvider>
+    );
+    const surface = screen.getByText("Hello").closest(".toast-surface") as HTMLElement;
+    Object.defineProperty(surface, "offsetWidth", { value: 320, configurable: true });
+
+    fireEvent.pointerDown(surface, { clientX: 100, pointerId: 1 });
+    fireEvent.pointerMove(surface, { clientX: 100 - 20, pointerId: 1 });
+    fireEvent.pointerUp(surface, { clientX: 100 - 20, pointerId: 1 });
+
+    expect(screen.getByText("Hello")).toBeInTheDocument();
   });
 });

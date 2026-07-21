@@ -252,6 +252,39 @@ const Toast: React.FC<
   const [copied, setCopied] = React.useState(false);
   const isDestructive = variant === "destructive";
 
+  const [dragX, setDragX] = React.useState(0);
+  const dragStartRef = React.useRef<{ x: number; startTime: number } | null>(null);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    dragStartRef.current = { x: e.clientX, startTime: Date.now() };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragStartRef.current) return;
+    setDragX(e.clientX - dragStartRef.current.x);
+  };
+
+  const handlePointerUp = () => {
+    if (!dragStartRef.current || !rootRef.current) {
+      dragStartRef.current = null;
+      return;
+    }
+    const width = rootRef.current.offsetWidth || 1;
+    const elapsed = Date.now() - dragStartRef.current.startTime;
+    const velocity = Math.abs(dragX) / Math.max(elapsed, 1);
+    const pastThreshold = Math.abs(dragX) > width * 0.4;
+    const fastFlick = velocity > 0.5 && Math.abs(dragX) > 20;
+
+    if (pastThreshold || fastFlick) {
+      onClose?.();
+    } else {
+      setDragX(0);
+    }
+    dragStartRef.current = null;
+  };
+
   const handleMouseEnter = () => {
     pausedAtRef.current = Date.now();
     onPauseTimer();
@@ -288,7 +321,17 @@ const Toast: React.FC<
           ? "opacity-0 translate-x-2 scale-[0.98]"
           : "opacity-100 translate-x-0 scale-100 animate-in slide-in-from-right-4 fade-in-0 duration-300"
       )}
-      style={{ "--toast-tint": config.tintVar } as React.CSSProperties}
+      style={{
+        "--toast-tint": config.tintVar,
+        transform: dragX !== 0 ? `translateX(${dragX}px)` : undefined,
+        opacity: dragX !== 0 ? Math.max(1 - Math.abs(dragX) / 300, 0.2) : undefined,
+        touchAction: "pan-y",
+      } as React.CSSProperties}
+      ref={rootRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
