@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/rushikeshjaisur11/dhwani/compare/v0.6.2...v0.7.0) (2026-07-21)
+
+
+### Features
+
+* **ui:** toast/glass/splash refresh, settings dedup, theme-aware logo, Flow Bar pill styles ([#39](https://github.com/rushikeshjaisur11/dhwani/issues/39)) ([2216ec6](https://github.com/rushikeshjaisur11/dhwani/commit/2216ec6e01de1f7f10b8212964f696191986ab95))
+
 ## [0.6.2](https://github.com/rushikeshjaisur11/dhwani/compare/v0.6.1...v0.6.2) (2026-07-19)
 
 
