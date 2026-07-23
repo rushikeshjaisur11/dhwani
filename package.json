@@ -122,7 +122,7 @@
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^5.0.24",
-    "@ai-sdk/anthropic": "^3.0.58",
+    "@ai-sdk/anthropic": "^4.0.18",
     "@ai-sdk/google": "^3.0.64",
     "@ai-sdk/azure": "^4.0.16",
     "@ai-sdk/google-vertex": "^5.0.22",
