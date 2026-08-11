@@ -37,19 +37,14 @@ sequenceDiagram
     Main->>Main: save to SQLite (unless retention disabled)
 ```
 
-## Live typing (streaming, opt-in)
+Note: `windows-fast-paste.exe` has a `--type` mode (raw `SendInput` streaming injection) in its C source,
+but nothing in this codebase currently calls it with that flag — every paste today goes through the single
+clipboard-paste path (`Ctrl+V`/`Cmd+V`) described above.
 
-Live typing types at the cursor while you're still speaking, instead of waiting for the full recording to
-stop. It reuses the same realtime-preview transcription pipeline as standard dictation, but chunks are cut
-only at detected silence pauses (`src/helpers/liveTypingCut.js`), and injection happens via
-`windows-fast-paste.exe --type` (SendInput unicode) instead of a single clipboard paste at the end.
-
-- Silence detection is RMS-based, calibrated per-mic (`silenceRms` threshold, default 0.015 — pause noise
-  floor is typically 0.0005–0.008, speech 0.02–0.09).
-- The key listener ignores `LLKHF_INJECTED` events so a physical push-to-talk key release isn't confused
-  with the app's own synthetic key injection.
-- The final high-quality pass still runs and is what gets saved to history; the live-typed text is a
-  best-effort streaming preview, not the source of truth.
+An earlier version of this pipeline pasted the raw transcript immediately, then erased it with backspaces
+and pasted the cleaned version once cleanup finished ("instant paste"). It was removed — the delete-then-
+repaste was visibly janky in some target apps — in favor of always waiting for the full pipeline (steps
+5-6 above) before the single paste in step 7.
 
 ## Meeting detection
 

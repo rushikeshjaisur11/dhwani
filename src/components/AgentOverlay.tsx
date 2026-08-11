@@ -89,7 +89,6 @@ export default function AgentOverlay() {
       onPartialTranscript: (text: string) => {
         setPartialTranscript(text);
       },
-      onRawTranscriptReady: undefined,
       onStreamingCommit: undefined,
     });
     audioManagerRef.current = am;

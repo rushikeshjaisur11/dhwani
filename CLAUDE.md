@@ -153,6 +153,22 @@ Dhwani is an Electron-based desktop dictation application that uses whisper.cpp 
   - Falls back to system installation (`brew install whisper-cpp`)
   - GGML model downloads from HuggingFace
   - Models stored in `~/.cache/dhwani/whisper-models/`
+  - Server pre-warming on startup when `LOCAL_TRANSCRIPTION_PROVIDER=whisper` is set (same T+0 timing as
+    Parakeet's, see below) — `WhisperManager.initializeAtStartup()` also re-fires from
+    `ipcHandlers.js`'s `sync-startup-preferences` handler and after a model download completes, not just
+    at app launch. VAD options passed to the prewarm call must match what the dictation path will
+    request (`ipcHandlers._resolveWhisperVadOptions("dictation")`), or `whisperServer.js`'s reuse guard
+    sees a signature mismatch on the first transcription and respawns the server, undoing the prewarm.
+  - GPU acceleration: CUDA (NVIDIA, `whisperCudaManager.js`) and Vulkan (AMD/Intel, plus any Vulkan-
+    capable GPU including NVIDIA as a fallback, `whisperVulkanManager.js`) are separate downloadable
+    `whisper-server` binary variants from the same `OpenWhispr/whisper.cpp` release, resolved in
+    `whisperServer.js`'s `getServerBinaryPath({ preferCuda | preferVulkan })`. CUDA wins if both are
+    somehow enabled. Settings UI in `TranscriptionModelPicker.tsx` gates the Vulkan banner on
+    `detectVulkanGpu()` (`src/utils/vulkanDetection.js`, already shipped for the local-LLM Vulkan path)
+    AND the absence of an NVIDIA/CUDA GPU, so the two banners never both show. Each backend falls back
+    to CPU and emits a `cuda-fallback`/`vulkan-fallback` event if the accelerated binary fails to start
+    (no compatible driver, etc.) — mirrors `whisperServer.js`'s existing CUDA-fallback handling. Vulkan
+    has no per-GPU device picker (unlike CUDA's `TRANSCRIPTION_GPU_UUID`) — single/default GPU only.
 
 ### NVIDIA Parakeet Integration (via sherpa-onnx)
 
@@ -270,7 +286,10 @@ Settings stored in localStorage with these keys:
 
 - `whisperModel`: Selected Whisper model
 - `useLocalWhisper`: Boolean for local vs cloud
-- `language`: Selected language code
+- `preferredLanguage`: Selected transcription language code, `"auto"` for auto-detect (was `language` —
+  key renamed; note this stays localStorage-only, not synced to `.env`, see "Language Support" above)
+- `translateToEnglish`: Translate transcription to English (whisper.cpp native task, local whisper only)
+- `outputLanguage`: Override language for the cleanup step's rewritten output, `""` = disabled
 - `agentName`: User's custom agent name
 - `reasoningModel`: Selected AI model for processing
 - `reasoningProvider`: AI provider (openai/anthropic/gemini/local)
@@ -287,11 +306,24 @@ Non-secret env vars persisted to `.env` (via `saveAllKeysToEnvFile()`):
 
 ### 6. Language Support
 
-58 languages supported (see src/utils/languages.ts):
+Language catalog lives in `src/config/languageRegistry.json` (not `src/utils/languages.ts` — that file
+doesn't exist in this fork). Each entry carries a code, label, flag, and per-engine capability flags
+(`whisper`, `parakeet`, `assemblyai`); `"auto"` is a catalog entry too, for automatic detection.
+`src/utils/languageSupport.ts` derives the per-engine language sets and the cleanup-LLM language
+instructions from the registry — `getBaseLanguageCode()` and `getLanguageInstruction()` are the two
+functions most call sites use.
 
-- Each language has a two-letter code and label
-- "auto" for automatic detection
-- Passed to whisper.cpp via -l parameter
+- Selected via `preferredLanguage` in `settingsStore.ts` (localStorage, not `.env` — the main process
+  doesn't see it at startup, only per-request).
+- Passed to whisper.cpp per-request as a multipart `language` field (`whisperServer.js`), not a spawn
+  flag — the server always boots with `--language auto` and the per-request value overrides it, so
+  switching language never restarts the server.
+- The Parakeet provider (`parakeet-tdt-0.6b-v3`, multilingual) does **not** receive a language parameter
+  anywhere in the pipeline — it auto-detects from its supported set; the Settings UI shows a note instead
+  of a picker when Parakeet is the active provider.
+- `translateToEnglish` (whisper.cpp's native translate task, local whisper only) and `outputLanguage`
+  (routes through the same cleanup-LLM instruction mechanism as `preferredLanguage`, any provider) are
+  separate settings for translating the *output* rather than just picking the *spoken* language.
 
 ### 7. Agent Naming System
 
@@ -335,7 +367,8 @@ All AI model definitions are centralized in `src/models/modelRegistryData.json` 
 - `src/models/modelRegistryData.json` - Single source of truth for all models
 - `src/models/ModelRegistry.ts` - TypeScript wrapper with helper methods
 - `src/config/aiProvidersConfig.ts` - Derives AI_MODES from registry
-- `src/utils/languages.ts` - Derives REASONING_PROVIDERS from registry
+- `src/models/ModelRegistry.ts` - Also derives `REASONING_PROVIDERS` (`src/utils/languages.ts` does not
+  exist in this fork; see "Language Support" above for the actual language-catalog file)
 - `src/helpers/modelManagerBridge.js` - Handles local model downloads
 
 **Local model features:**

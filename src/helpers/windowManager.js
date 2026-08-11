@@ -20,6 +20,12 @@ const {
   WindowPositionUtil,
 } = require("./windowConfig");
 
+// Debounce window for _sendDictationToggle, keyed per-channel below. Lives
+// at the single choke point that every toggle path (globalShortcut, native
+// key listener, globe key, right-modifier, mouse button) funnels through,
+// so one guard covers all of them instead of only the globalShortcut path.
+const TOGGLE_DEBOUNCE_MS = 150;
+
 class WindowManager {
   constructor() {
     this.mainWindow = null;
@@ -285,9 +291,6 @@ class WindowManager {
   }
 
   createHotkeyCallback() {
-    let lastToggleTime = 0;
-    const DEBOUNCE_MS = 150;
-
     return async () => {
       if (this.hotkeyManager.isInListeningMode()) {
         return;
@@ -314,12 +317,6 @@ class WindowManager {
       ) {
         return;
       }
-
-      const now = Date.now();
-      if (now - lastToggleTime < DEBOUNCE_MS) {
-        return;
-      }
-      lastToggleTime = now;
 
       // Capture target app PID before the window might steal focus
       if (this.textEditMonitor) this.textEditMonitor.captureTargetPid();
@@ -514,6 +511,17 @@ class WindowManager {
     if (this.hotkeyManager.isInListeningMode()) {
       return;
     }
+
+    // Debounced per-channel (not globally) so a dictation toggle and a
+    // voice-agent toggle firing close together don't suppress each other.
+    const now = Date.now();
+    this._lastToggleTimeByChannel = this._lastToggleTimeByChannel || {};
+    const lastToggleTime = this._lastToggleTimeByChannel[channel] || 0;
+    if (now - lastToggleTime < TOGGLE_DEBOUNCE_MS) {
+      return;
+    }
+    this._lastToggleTimeByChannel[channel] = now;
+
     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
       this.showDictationPanel();
       this.mainWindow.webContents.send(channel);

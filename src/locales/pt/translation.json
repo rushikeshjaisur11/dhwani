@@ -1786,6 +1786,16 @@
             "info": "Ãudio estendido de um segmento para o prÃ³ximo, evitando cortes bruscos na concatenaÃ§Ã£o."
           }
         }
+      },
+      "language": {
+        "label": "Spoken language",
+        "description": "Choose the language you speak, or Auto-detect",
+        "parakeetUnsupported": "This on-device model auto-detects the spoken language from its 25 supported languages \u2014 it doesn't take a language selection.",
+        "translateTitle": "Translate",
+        "translateToEnglish": "Translate to English",
+        "translateToEnglishDescription": "Transcribe directly in English, regardless of the language spoken",
+        "outputLanguageLabel": "Output language",
+        "outputLanguageDescription": "Have the cleanup step rewrite the transcript in this language"
       }
     },
     "intelligence": {
@@ -2176,6 +2186,18 @@
       "byokTooLargeNeedsAccount": "Crie uma conta e mude para um plano pago para transcrever arquivos maiores com o Dhwani Cloud.",
       "byokTooLargeNeedsUpgrade": "Mude para um plano pago para transcrever arquivos maiores com o Dhwani Cloud.",
       "switchToCloudForLargeFiles": "Mude para o Dhwani Cloud para transcrever este arquivo.",
+      "batch": {
+        "title": "{{count}} files queued",
+        "progress": "{{completed}} / {{total}}",
+        "transcribeAll": "Transcribe {{count}} files"
+      },
+      "urlImport": {
+        "toggle": "or import from a direct audio URL",
+        "placeholder": "https://example.com/audio.mp3",
+        "import": "Import",
+        "importing": "Importing...",
+        "failed": "Couldn't import audio from that URL."
+      },
       "createAccount": "Criar conta",
       "upgrade": "Fazer upgrade",
       "switchToCloud": "Dhwani Cloud"
@@ -2459,6 +2481,7 @@
   },
   "gpu": {
     "transcriptionBanner": "Acelere a transcriÃ§Ã£o com GPU",
+    "transcriptionBannerVulkan": "Speed up transcription with GPU acceleration (Vulkan)",
     "reasoningBanner": "Acelere o processamento de IA com GPU",
     "enableButton": "Ativar GPU",
     "active": "AceleraÃ§Ã£o GPU ativa",

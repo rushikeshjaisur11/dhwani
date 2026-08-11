@@ -1855,6 +1855,16 @@
             "info": "Audio prolongÃ© d'un segment au suivant pour Ã©viter les coupures brusques lors de la concatÃ©nation."
           }
         }
+      },
+      "language": {
+        "label": "Spoken language",
+        "description": "Choose the language you speak, or Auto-detect",
+        "parakeetUnsupported": "This on-device model auto-detects the spoken language from its 25 supported languages \u2014 it doesn't take a language selection.",
+        "translateTitle": "Translate",
+        "translateToEnglish": "Translate to English",
+        "translateToEnglishDescription": "Transcribe directly in English, regardless of the language spoken",
+        "outputLanguageLabel": "Output language",
+        "outputLanguageDescription": "Have the cleanup step rewrite the transcript in this language"
       }
     },
     "intelligence": {
@@ -2288,6 +2298,18 @@
       "byokTooLargeNeedsAccount": "CrÃ©ez un compte et passez Ã  un abonnement payant pour transcrire des fichiers plus volumineux avec Dhwani Cloud.",
       "byokTooLargeNeedsUpgrade": "Passez Ã  un abonnement payant pour transcrire des fichiers plus volumineux avec Dhwani Cloud.",
       "switchToCloudForLargeFiles": "Passez Ã  Dhwani Cloud pour transcrire ce fichier.",
+      "batch": {
+        "title": "{{count}} files queued",
+        "progress": "{{completed}} / {{total}}",
+        "transcribeAll": "Transcribe {{count}} files"
+      },
+      "urlImport": {
+        "toggle": "or import from a direct audio URL",
+        "placeholder": "https://example.com/audio.mp3",
+        "import": "Import",
+        "importing": "Importing...",
+        "failed": "Couldn't import audio from that URL."
+      },
       "createAccount": "CrÃ©er un compte",
       "upgrade": "Mettre Ã  niveau",
       "switchToCloud": "Dhwani Cloud"
@@ -2507,6 +2529,7 @@
   },
   "gpu": {
     "transcriptionBanner": "AccÃ©lÃ©rez la transcription avec le GPU",
+    "transcriptionBannerVulkan": "Speed up transcription with GPU acceleration (Vulkan)",
     "reasoningBanner": "AccÃ©lÃ©rez le traitement IA avec le GPU",
     "enableButton": "Activer le GPU",
     "active": "AccÃ©lÃ©ration GPU active",

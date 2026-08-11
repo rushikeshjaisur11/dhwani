@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Button } from "./button";
 import { RefreshCw, Mic } from "lucide-react";
 import { isBuiltInMicrophone } from "../../utils/audioDeviceUtils";
+import { pickBestMicDevice } from "../../utils/micRanking";
 
 interface AudioDevice {
   deviceId: string;
@@ -68,9 +69,16 @@ export const MicrophoneSettings: React.FC<MicrophoneSettingsProps> = ({
 
       setDevices(audioInputs);
 
-      // If no device is selected and not preferring built-in, select the first device
+      // If no device is selected and not preferring built-in, auto-select
+      // the best-ranked device (dedicated USB/headset mic > built-in >
+      // generic; virtual/loopback devices and Communications/Default
+      // aliases are never picked) instead of just the first one Windows/
+      // Chromium happens to enumerate.
       if (!preferBuiltInRef.current && !selectedDeviceRef.current && audioInputs.length > 0) {
-        onDeviceSelectRef.current(audioInputs[0].deviceId);
+        const best = pickBestMicDevice(audioInputs);
+        if (best) {
+          onDeviceSelectRef.current(best.deviceId);
+        }
       }
     } catch {
       setError(t("microphoneSettings.errors.unableToAccess"));

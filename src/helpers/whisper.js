@@ -86,7 +86,14 @@ class WhisperManager {
       await cleanupStaleDownloads(this.getModelsDir());
 
       // Pre-warm whisper-server if local mode enabled (eliminates 2-5s cold-start delay)
-      const { localTranscriptionProvider, whisperModel, useCuda } = settings;
+      const {
+        localTranscriptionProvider,
+        whisperModel,
+        useCuda,
+        useVulkan,
+        vadEnabled = true,
+        vadConfig = null,
+      } = settings;
 
       if (
         localTranscriptionProvider === "whisper" &&
@@ -96,15 +103,29 @@ class WhisperManager {
         const modelPath = this.getModelPath(whisperModel);
 
         if (fs.existsSync(modelPath)) {
+          // Must match the VAD options the dictation path will request
+          // (ipcHandlers._resolveWhisperVadOptions("dictation")), or the
+          // server's vadSignature won't match on first use and the reuse
+          // guard in whisperServer.js will stop+respawn it — reloading the
+          // model from disk and undoing this prewarm entirely.
+          const vadModelPath = vadEnabled ? this.getVadModelPath() : null;
           debugLogger.info("Pre-warming whisper-server", {
             model: whisperModel,
             modelPath,
             cuda: !!useCuda,
+            vulkan: !!useVulkan,
+            vadEnabled: !!vadModelPath,
           });
 
           try {
             const serverStartTime = Date.now();
-            await this.serverManager.start(modelPath, { useCuda: !!useCuda });
+            await this.serverManager.start(modelPath, {
+              useCuda: !!useCuda,
+              useVulkan: !!useVulkan,
+              vadEnabled: !!vadModelPath,
+              vadModelPath,
+              vadConfig,
+            });
             this.currentServerModel = whisperModel;
 
             debugLogger.info("whisper-server pre-warmed successfully", {
@@ -112,6 +133,15 @@ class WhisperManager {
               startupTimeMs: Date.now() - serverStartTime,
               port: this.serverManager.port,
             });
+            // ponytail: unlike Parakeet's _warmUp() (silent PCM straight to
+            // its WS server), a whisper.cpp warmup would need a real decodable
+            // audio file — transcribe() always shells out to FFmpeg to convert
+            // the input first (whisperServer.js's _convertToWav), and there's
+            // no cheap way to fabricate a valid webm/opus blob in Node without
+            // a real encoder. So readiness here is "model loaded", not "first
+            // inference already paid for". Upgrade path if this matters later:
+            // ship a tiny bundled silent .wav and feed it straight to the
+            // server's /inference endpoint, bypassing _convertToWav.
           } catch (err) {
             debugLogger.warn("Server pre-warm failed (will start on first use)", {
               error: err.message,
@@ -273,6 +303,7 @@ class WhisperManager {
     const initialPrompt = options.initialPrompt || null;
     const vadEnabled = options.vadEnabled === true;
     const vadConfig = options.vadConfig || null;
+    const translate = options.translate === true;
     const modelPath = this.getModelPath(model);
 
     if (!fs.existsSync(modelPath)) {
@@ -282,6 +313,7 @@ class WhisperManager {
     return await this.transcribeViaServer(audioBlob, model, language, initialPrompt, {
       vadEnabled,
       vadConfig,
+      translate,
     });
   }
 
@@ -316,6 +348,7 @@ class WhisperManager {
 
     await this.serverManager.start(modelPath, {
       useCuda: this.serverManager.useCuda || process.env.WHISPER_CUDA_ENABLED === "true",
+      useVulkan: this.serverManager.useVulkan || process.env.WHISPER_VULKAN_ENABLED === "true",
       vadEnabled,
       vadModelPath,
       vadConfig: options.vadConfig || null,
@@ -403,9 +436,11 @@ class WhisperManager {
     }
 
     await this.serverManager.start(modelPath, {
-      // Lazy start must resolve CUDA from the user's setting — a stopped
-      // server's useCuda is always false (see #cuda-fallback for the retry).
+      // Lazy start must resolve CUDA/Vulkan from the user's setting — a
+      // stopped server's useCuda/useVulkan is always false (see the
+      // cuda-fallback/vulkan-fallback events for the retry).
       useCuda: this.serverManager.useCuda || process.env.WHISPER_CUDA_ENABLED === "true",
+      useVulkan: this.serverManager.useVulkan || process.env.WHISPER_VULKAN_ENABLED === "true",
       vadEnabled,
       vadModelPath,
       vadConfig: options.vadConfig || null,
@@ -440,7 +475,11 @@ class WhisperManager {
     });
 
     const startTime = Date.now();
-    const result = await this.serverManager.transcribe(audioBuffer, { language, initialPrompt });
+    const result = await this.serverManager.transcribe(audioBuffer, {
+      language,
+      initialPrompt,
+      translate: options.translate === true,
+    });
     const elapsed = Date.now() - startTime;
 
     debugLogger.logWhisperPipeline("transcribeViaServer - completed", {
@@ -552,7 +591,7 @@ class WhisperManager {
     return normalized === "[blank_audio]" || normalized === "[ blank_audio ]";
   }
 
-  async downloadWhisperModel(modelName, progressCallback = null) {
+  async downloadWhisperModel(modelName, progressCallback = null, vadOptions = null) {
     this.validateModelName(modelName);
     const modelConfig = getWhisperModelConfig(modelName);
 
@@ -608,6 +647,25 @@ class WhisperManager {
 
       if (progressCallback) {
         progressCallback({ type: "complete", model: modelName, percentage: 100 });
+      }
+
+      // Parity with Parakeet's post-download prewarm (parakeet.js): a user
+      // who just downloaded a model and immediately dictates shouldn't pay
+      // the full server-spawn + model-load cost on that first transcription.
+      if (this.serverManager.isAvailable()) {
+        const vadModelPath = vadOptions?.vadEnabled ? this.getVadModelPath() : null;
+        this.serverManager
+          .start(modelPath, {
+            vadEnabled: !!vadModelPath,
+            vadModelPath,
+            vadConfig: vadOptions?.vadConfig || null,
+          })
+          .catch((err) => {
+            debugLogger.warn("Post-download server pre-warm failed (non-fatal)", {
+              error: err.message,
+              model: modelName,
+            });
+          });
       }
 
       return {

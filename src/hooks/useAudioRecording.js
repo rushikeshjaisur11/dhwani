@@ -13,10 +13,17 @@ import {
   getEffectiveTransformsSync,
   BUILTIN_POLISH_ID,
 } from "../config/transforms/loadEffectiveTransforms";
-import { shouldAttemptReplace } from "../helpers/instantPasteDecision";
 
 export const useAudioRecording = (toast, options = {}) => {
   const { t } = useTranslation();
+  // t's identity changes on every UI-language switch. The big setup effect
+  // below only needs the current translator inside closures that run later
+  // (toast copy), not at effect-creation time — so it reads through this ref
+  // instead of depending on t directly, which would otherwise tear down and
+  // rebuild the whole AudioManager (and any in-progress recording) on every
+  // language change.
+  const tRef = useRef(t);
+  tRef.current = t;
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -28,8 +35,6 @@ export const useAudioRecording = (toast, options = {}) => {
   const [isPipelining, setIsPipelining] = useState(false);
   const pipelinedChunksRef = useRef([]);
   const audioManagerRef = useRef(null);
-  const pendingInstantPasteRef = useRef(null);
-  const latestDictationIdRef = useRef(null);
   const startLockRef = useRef(false);
   const stopLockRef = useRef(false);
   const { onToggle } = options;
@@ -185,21 +190,6 @@ export const useAudioRecording = (toast, options = {}) => {
           }
         }
       },
-      onRawTranscriptReady: async ({ text, dictationId, foregroundApp }) => {
-        pendingInstantPasteRef.current = { rawText: text, dictationId, foregroundApp, pasted: false };
-        latestDictationIdRef.current = dictationId;
-        try {
-          await audioManagerRef.current.safePaste(text, {
-            restoreClipboard: !getSettings().keepTranscriptionInClipboard,
-            allowClipboardFallback: isAccessibilitySkipped(),
-          });
-          if (pendingInstantPasteRef.current?.dictationId === dictationId) {
-            pendingInstantPasteRef.current.pasted = true;
-          }
-        } catch (error) {
-          logger.warn("Instant raw paste failed", { error: error?.message }, "clipboard");
-        }
-      },
       onTranscriptionComplete: async (result) => {
         if (getSettings().pauseMediaOnDictation) {
           window.electronAPI?.resumeMediaPlayback?.();
@@ -211,8 +201,8 @@ export const useAudioRecording = (toast, options = {}) => {
           if (!transcribedText) {
             window.electronAPI?.hideDictationPreview?.();
             toast({
-              title: t("hooks.audioRecording.noAudio.title"),
-              description: t("hooks.audioRecording.noAudio.description"),
+              title: tRef.current("hooks.audioRecording.noAudio.title"),
+              description: tRef.current("hooks.audioRecording.noAudio.description"),
               variant: "default",
             });
             return;
@@ -233,8 +223,9 @@ export const useAudioRecording = (toast, options = {}) => {
 
           // Auto Apply After Dictation (overlay transform menu): run the
           // selected transform on the transcript before pasting. Any failure
-          // keeps the raw transcript.
-          let transformWasApplied = false;
+          // keeps the raw transcript. If a raw paste already happened for
+          // this dictation, the transformed text is picked up below by the
+          // same replace-or-leave-alone path as any other post-paste change.
           if (
             !pipelinedResult &&
             localStorage.getItem("autoApplyAfterDictation") === "true" &&
@@ -251,7 +242,6 @@ export const useAudioRecording = (toast, options = {}) => {
               }
               if (transformed) {
                 result.text = transformed;
-                transformWasApplied = true;
               }
             } catch (error) {
               logger.warn("Auto apply transform failed", { error: error?.message }, "transform");
@@ -275,52 +265,12 @@ export const useAudioRecording = (toast, options = {}) => {
             }
           };
 
-          const pending = pendingInstantPasteRef.current;
-          const pendingMatches = pending && pending.dictationId === result.dictationId;
-          const wasInstantPasted =
-            result.instantPasteEligible &&
-            pendingMatches &&
-            pending.pasted &&
-            !transformWasApplied;
-
-          if (pendingMatches) {
-            // Clear regardless of outcome so a stale record can never be
-            // reused by a later dictation.
-            pendingInstantPasteRef.current = null;
-          }
-
-          if (wasInstantPasted) {
-            const textChanged = result.text !== pending.rawText;
-            let foregroundAppMatches;
-            try {
-              const currentApp = await window.electronAPI?.getForegroundApp?.();
-              foregroundAppMatches = (currentApp?.app ?? null) === (pending.foregroundApp?.app ?? null);
-            } catch {
-              foregroundAppMatches = false;
-            }
-
-            const shouldReplace = shouldAttemptReplace({
-              autoPasteEnabled,
-              textChanged,
-              dictationIdMatches: latestDictationIdRef.current === pending.dictationId,
-              foregroundAppMatches,
-            });
-
-            if (shouldReplace) {
-              try {
-                await window.electronAPI?.sendBackspaces?.([...pending.rawText].length);
-                await audioManagerRef.current.safePaste(result.text, {
-                  ...(isStreaming ? { fromStreaming: true } : {}),
-                  restoreClipboard: !keepTranscriptionInClipboard,
-                  allowClipboardFallback: isAccessibilitySkipped(),
-                });
-              } catch (error) {
-                logger.warn("Instant-paste replace failed", { error: error?.message }, "clipboard");
-              }
-            }
-            // Guardrails failed, or cleanup made no change: the raw paste
-            // already delivered the final text — nothing further to do.
-          } else if (autoPasteEnabled) {
+          // Wait for the full pipeline (transcription + cleanup, above) to
+          // finish, then paste exactly once. Dictation used to paste the raw
+          // transcript immediately and replace it with backspaces once
+          // cleanup finished; that delete-then-repaste was visibly janky in
+          // some target apps, so it's gone — this is the only paste now.
+          if (autoPasteEnabled) {
             const pasteStart = performance.now();
             await audioManagerRef.current.safePaste(result.text, {
               ...(isStreaming ? { fromStreaming: true } : {}),
@@ -346,8 +296,8 @@ export const useAudioRecording = (toast, options = {}) => {
 
           if (result.source === "openai" && getSettings().useLocalWhisper) {
             toast({
-              title: t("hooks.audioRecording.fallback.title"),
-              description: t("hooks.audioRecording.fallback.description"),
+              title: tRef.current("hooks.audioRecording.fallback.title"),
+              description: tRef.current("hooks.audioRecording.fallback.description"),
               variant: "default",
             });
           }
@@ -416,8 +366,8 @@ export const useAudioRecording = (toast, options = {}) => {
         window.electronAPI?.resumeMediaPlayback?.();
       }
       toast({
-        title: t("hooks.audioRecording.noAudio.title"),
-        description: t("hooks.audioRecording.noAudio.description"),
+        title: tRef.current("hooks.audioRecording.noAudio.title"),
+        description: tRef.current("hooks.audioRecording.noAudio.description"),
         variant: "default",
       });
     };
@@ -435,7 +385,11 @@ export const useAudioRecording = (toast, options = {}) => {
         audioManagerRef.current.cleanup();
       }
     };
-  }, [toast, onToggle, performStartRecording, performStopRecording, t]);
+  // t is intentionally excluded below; the effect reads it through tRef (see
+  // comment near tRef's declaration) so a UI-language switch doesn't tear
+  // down and rebuild the whole AudioManager mid-session.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toast, onToggle, performStartRecording, performStopRecording]);
 
   const cancelRecording = useCallback(async () => {
     if (audioManagerRef.current) {

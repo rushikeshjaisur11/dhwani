@@ -15,6 +15,8 @@ export interface TranscriptionSettings {
   allowLocalFallback: boolean;
   fallbackWhisperModel: string;
   preferredLanguage: string;
+  translateToEnglish: boolean;
+  outputLanguage: string;
   cloudTranscriptionProvider: string;
   cloudTranscriptionModel: string;
   cloudTranscriptionBaseUrl?: string;
@@ -213,6 +215,8 @@ function useSettingsInternal() {
       allowLocalFallback: store.allowLocalFallback,
       fallbackWhisperModel: store.fallbackWhisperModel,
       preferredLanguage: store.preferredLanguage,
+      translateToEnglish: store.translateToEnglish,
+      outputLanguage: store.outputLanguage,
       cloudTranscriptionProvider: store.cloudTranscriptionProvider,
       cloudTranscriptionModel: store.cloudTranscriptionModel,
       cloudTranscriptionBaseUrl: store.cloudTranscriptionBaseUrl,
@@ -258,6 +262,8 @@ function useSettingsInternal() {
       setAllowLocalFallback: store.setAllowLocalFallback,
       setFallbackWhisperModel: store.setFallbackWhisperModel,
       setPreferredLanguage: store.setPreferredLanguage,
+      setTranslateToEnglish: store.setTranslateToEnglish,
+      setOutputLanguage: store.setOutputLanguage,
       setCloudTranscriptionProvider: store.setCloudTranscriptionProvider,
       setCloudTranscriptionModel: store.setCloudTranscriptionModel,
       setCloudTranscriptionBaseUrl: store.setCloudTranscriptionBaseUrl,

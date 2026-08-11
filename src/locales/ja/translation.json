@@ -1789,6 +1789,16 @@
             "info": "åŒºé–“ã‚’é€£çµã™ã‚‹ã¨ãã«é€”åˆ‡ã‚Œãªã„ã‚ˆã†ã€æ¬¡ã®åŒºé–“ã«å»¶é•·ã™ã‚‹éŸ³å£°ã®é•·ã•ã§ã™ã€‚"
           }
         }
+      },
+      "language": {
+        "label": "Spoken language",
+        "description": "Choose the language you speak, or Auto-detect",
+        "parakeetUnsupported": "This on-device model auto-detects the spoken language from its 25 supported languages \u2014 it doesn't take a language selection.",
+        "translateTitle": "Translate",
+        "translateToEnglish": "Translate to English",
+        "translateToEnglishDescription": "Transcribe directly in English, regardless of the language spoken",
+        "outputLanguageLabel": "Output language",
+        "outputLanguageDescription": "Have the cleanup step rewrite the transcript in this language"
       }
     },
     "intelligence": {
@@ -2141,6 +2151,18 @@
       "byokTooLargeNeedsAccount": "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½œæˆã—ã€æœ‰æ–™ãƒ—ãƒ©ãƒ³ã«ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰ã™ã‚‹ã¨ã€Dhwani Cloud ã§ã‚ˆã‚Šå¤§ããªãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ–‡å­—èµ·ã“ã—ã§ãã¾ã™ã€‚",
       "byokTooLargeNeedsUpgrade": "æœ‰æ–™ãƒ—ãƒ©ãƒ³ã«ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰ã™ã‚‹ã¨ã€Dhwani Cloud ã§ã‚ˆã‚Šå¤§ããªãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ–‡å­—èµ·ã“ã—ã§ãã¾ã™ã€‚",
       "switchToCloudForLargeFiles": "ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ–‡å­—èµ·ã“ã—ã™ã‚‹ã«ã¯ Dhwani Cloud ã«åˆ‡ã‚Šæ›¿ãˆã¦ãã ã•ã„ã€‚",
+      "batch": {
+        "title": "{{count}} files queued",
+        "progress": "{{completed}} / {{total}}",
+        "transcribeAll": "Transcribe {{count}} files"
+      },
+      "urlImport": {
+        "toggle": "or import from a direct audio URL",
+        "placeholder": "https://example.com/audio.mp3",
+        "import": "Import",
+        "importing": "Importing...",
+        "failed": "Couldn't import audio from that URL."
+      },
       "createAccount": "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä½œæˆ",
       "upgrade": "ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰",
       "switchToCloud": "Dhwani Cloud"
@@ -2441,6 +2463,7 @@
   },
   "gpu": {
     "transcriptionBanner": "GPU ã§æ–‡å­—èµ·ã“ã—ã‚’é«˜é€ŸåŒ–",
+    "transcriptionBannerVulkan": "Speed up transcription with GPU acceleration (Vulkan)",
     "reasoningBanner": "GPU ã§ AI å‡¦ç†ã‚’é«˜é€ŸåŒ–",
     "enableButton": "GPU ã‚’æœ‰åŠ¹åŒ–",
     "active": "GPU ã‚¢ã‚¯ã‚»ãƒ©ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³æœ‰åŠ¹",

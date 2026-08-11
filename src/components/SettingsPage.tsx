@@ -193,7 +193,15 @@ interface TranscriptionSectionProps {
   setCloudTranscriptionMode: (mode: string) => void;
   useLocalWhisper: boolean;
   setUseLocalWhisper: (value: boolean) => void;
-  updateTranscriptionSettings: (settings: { useLocalWhisper: boolean }) => void;
+  updateTranscriptionSettings: (settings: {
+    useLocalWhisper?: boolean;
+    preferredLanguage?: string;
+    translateToEnglish?: boolean;
+    outputLanguage?: string;
+  }) => void;
+  preferredLanguage: string;
+  translateToEnglish: boolean;
+  outputLanguage: string;
   cloudTranscriptionProvider: string;
   setCloudTranscriptionProvider: (provider: string) => void;
   cloudTranscriptionModel: string;
@@ -241,6 +249,9 @@ function TranscriptionSection({
   remoteTranscriptionUrl,
   setRemoteTranscriptionUrl,
   toast,
+  preferredLanguage,
+  translateToEnglish,
+  outputLanguage,
 }: TranscriptionSectionProps) {
   const { t } = useTranslation();
 
@@ -326,6 +337,64 @@ function TranscriptionSection({
     />
   );
 
+  // Renders next to the model picker (not tucked away under Settings ->
+  // General -> Language) so the transcribe-language control is where users
+  // are already looking when they pick a provider/model.
+  const renderLanguageRow = () => {
+    const isNvidia = transcriptionMode === "local" && localTranscriptionProvider === "nvidia";
+    const isLocalWhisper = transcriptionMode === "local" && !isNvidia;
+
+    return (
+      <SettingsPanel>
+        <SettingsPanelRow>
+          <SettingsRow
+            label={t("settingsPage.transcription.language.label")}
+            description={
+              isNvidia
+                ? t("settingsPage.transcription.language.parakeetUnsupported")
+                : t("settingsPage.transcription.language.description")
+            }
+          >
+            {!isNvidia && (
+              <LanguageSelector
+                value={preferredLanguage}
+                onChange={(value) => updateTranscriptionSettings({ preferredLanguage: value })}
+              />
+            )}
+          </SettingsRow>
+        </SettingsPanelRow>
+        {isLocalWhisper && (
+          <SettingsPanelRow>
+            <SettingsRow
+              label={t("settingsPage.transcription.language.translateToEnglish")}
+              description={t("settingsPage.transcription.language.translateToEnglishDescription")}
+            >
+              <Toggle
+                checked={translateToEnglish}
+                onChange={(checked: boolean) =>
+                  updateTranscriptionSettings({ translateToEnglish: checked })
+                }
+              />
+            </SettingsRow>
+          </SettingsPanelRow>
+        )}
+        <SettingsPanelRow>
+          <SettingsRow
+            label={t("settingsPage.transcription.language.outputLanguageLabel")}
+            description={t("settingsPage.transcription.language.outputLanguageDescription")}
+          >
+            <LanguageSelector
+              value={outputLanguage || "auto"}
+              onChange={(value) =>
+                updateTranscriptionSettings({ outputLanguage: value === "auto" ? "" : value })
+              }
+            />
+          </SettingsRow>
+        </SettingsPanelRow>
+      </SettingsPanel>
+    );
+  };
+
   return (
     <div className="space-y-4">
       <InferenceModeSelector
@@ -334,10 +403,16 @@ function TranscriptionSection({
         onSelect={handleTranscriptionModeSelect}
       />
 
-      {transcriptionMode === "providers" && renderTranscriptionPicker("cloud")}
+      {transcriptionMode === "providers" && (
+        <>
+          {renderTranscriptionPicker("cloud")}
+          {renderLanguageRow()}
+        </>
+      )}
       {transcriptionMode === "local" && (
         <>
           {renderTranscriptionPicker("local")}
+          {renderLanguageRow()}
         </>
       )}
 
@@ -660,6 +735,8 @@ export default function SettingsPage({
     parakeetModel,
     uiLanguage,
     preferredLanguage,
+    translateToEnglish,
+    outputLanguage,
     cloudTranscriptionProvider,
     cloudTranscriptionModel,
     cloudTranscriptionBaseUrl,
@@ -3524,6 +3601,9 @@ EOF`,
                   remoteTranscriptionUrl={remoteTranscriptionUrl}
                   setRemoteTranscriptionUrl={setRemoteTranscriptionUrl}
                   toast={toast}
+                  preferredLanguage={preferredLanguage}
+                  translateToEnglish={translateToEnglish}
+                  outputLanguage={outputLanguage}
                 />
                 {transcriptionMode === "local" &&
                   localTranscriptionProvider !== "nvidia" &&

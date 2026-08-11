@@ -56,4 +56,33 @@ describe('settingsStore', () => {
     setVoiceVisualizerStyle('spectrum');
     expect(useSettingsStore.getState().voiceVisualizerStyle).toBe('spectrum');
   });
+
+  it('defaults preferredLanguage to auto and the new language fields to off', () => {
+    const state = useSettingsStore.getState();
+    expect(state.preferredLanguage).toBe('auto');
+    expect(state.translateToEnglish).toBe(false);
+    expect(state.outputLanguage).toBe('');
+  });
+
+  it('updateTranscriptionSettings applies preferredLanguage, translateToEnglish, and outputLanguage', () => {
+    const { updateTranscriptionSettings } = useSettingsStore.getState();
+
+    updateTranscriptionSettings({
+      preferredLanguage: 'hi',
+      translateToEnglish: true,
+      outputLanguage: 'es',
+    });
+
+    const state = useSettingsStore.getState();
+    expect(state.preferredLanguage).toBe('hi');
+    expect(state.translateToEnglish).toBe(true);
+    expect(state.outputLanguage).toBe('es');
+
+    // Reset back to defaults so this test doesn't leak into others.
+    updateTranscriptionSettings({
+      preferredLanguage: 'auto',
+      translateToEnglish: false,
+      outputLanguage: '',
+    });
+  });
 });

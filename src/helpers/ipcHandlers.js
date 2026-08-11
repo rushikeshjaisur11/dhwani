@@ -325,6 +325,7 @@ class IPCHandlers {
     this.textEditMonitor = managers.textEditMonitor;
     this.getTrayManager = managers.getTrayManager;
     this.whisperCudaManager = managers.whisperCudaManager;
+    this.whisperVulkanManager = managers.whisperVulkanManager;
     this.googleCalendarManager = managers.googleCalendarManager;
     this.meetingDetectionEngine = managers.meetingDetectionEngine;
     this.audioTapManager = managers.audioTapManager;
@@ -367,6 +368,9 @@ class IPCHandlers {
     if (this.whisperManager?.serverManager) {
       this.whisperManager.serverManager.on("cuda-fallback", () => {
         this.broadcastToWindows("cuda-fallback-notification", {});
+      });
+      this.whisperManager.serverManager.on("vulkan-fallback", () => {
+        this.broadcastToWindows("vulkan-fallback-notification", {});
       });
     }
   }
@@ -1527,7 +1531,7 @@ class IPCHandlers {
     ipcMain.handle("select-audio-file", async () => {
       const { dialog } = require("electron");
       const result = await dialog.showOpenDialog({
-        properties: ["openFile"],
+        properties: ["openFile", "multiSelections"],
         filters: [
           {
             name: "Audio Files",
@@ -1538,7 +1542,9 @@ class IPCHandlers {
       if (result.canceled || !result.filePaths.length) {
         return { canceled: true };
       }
-      return { canceled: false, filePath: result.filePaths[0] };
+      // filePath kept for older callers; filePaths carries the full batch
+      // selection (multiSelections above).
+      return { canceled: false, filePath: result.filePaths[0], filePaths: result.filePaths };
     });
 
     ipcMain.handle("get-file-size", async (_event, filePath) => {
@@ -1548,6 +1554,23 @@ class IPCHandlers {
         return stats.size;
       } catch {
         return 0;
+      }
+    });
+
+    ipcMain.handle("download-audio-url", async (event, url) => {
+      try {
+        const { downloadAudioFromUrl } = require("./audioUrlImport");
+        const { filePath, fileName } = await downloadAudioFromUrl(url, (downloadedBytes, totalBytes) => {
+          if (!event.sender.isDestroyed()) {
+            event.sender.send("audio-url-import-progress", { downloadedBytes, totalBytes });
+          }
+        });
+        const fs = require("fs");
+        const sizeBytes = fs.statSync(filePath).size;
+        return { success: true, filePath, fileName, sizeBytes };
+      } catch (error) {
+        debugLogger.error("Audio URL import failed", { url, error: error.message });
+        return { success: false, error: error.message };
       }
     });
 
@@ -1605,7 +1628,7 @@ class IPCHandlers {
       // too slow for the paste hot path.
       const textToPaste = applySmartSpacing({ text, mode: "append" });
 
-      const result = await this.clipboardManager.pasteText(textToPaste, {
+      await this.clipboardManager.pasteText(textToPaste, {
         ...options,
         webContents: event.sender,
       });
@@ -1626,11 +1649,8 @@ class IPCHandlers {
           }
         }, 500);
       }
-      return result;
-    });
-
-    ipcMain.handle("send-backspaces", async (_event, count) => {
-      await this.clipboardManager.sendBackspaces(count);
+      // Report back the text actually injected (post smart-spacing).
+      return { pastedText: textToPaste };
     });
 
     ipcMain.handle("check-accessibility-permission", async (_event, silent = false) => {
@@ -1751,11 +1771,15 @@ class IPCHandlers {
 
     ipcMain.handle("download-whisper-model", async (event, modelName) => {
       try {
-        const result = await this.whisperManager.downloadWhisperModel(modelName, (progressData) => {
-          if (!event.sender.isDestroyed()) {
-            event.sender.send("whisper-download-progress", progressData);
-          }
-        });
+        const result = await this.whisperManager.downloadWhisperModel(
+          modelName,
+          (progressData) => {
+            if (!event.sender.isDestroyed()) {
+              event.sender.send("whisper-download-progress", progressData);
+            }
+          },
+          this._resolveWhisperVadOptions("dictation")
+        );
         return result;
       } catch (error) {
         if (!event.sender.isDestroyed()) {
@@ -1797,7 +1821,9 @@ class IPCHandlers {
     ipcMain.handle("whisper-server-start", async (event, modelName) => {
       const useCuda =
         process.env.WHISPER_CUDA_ENABLED === "true" && this.whisperCudaManager?.isDownloaded();
-      return this.whisperManager.startServer(modelName, { useCuda });
+      const useVulkan =
+        process.env.WHISPER_VULKAN_ENABLED === "true" && this.whisperVulkanManager?.isDownloaded();
+      return this.whisperManager.startServer(modelName, { useCuda, useVulkan });
     });
 
     ipcMain.handle("whisper-server-stop", async () => {
@@ -1949,6 +1975,65 @@ class IPCHandlers {
       const result = await this.whisperCudaManager.delete();
       if (result.success) {
         this._syncStartupEnv({}, ["WHISPER_CUDA_ENABLED"]);
+        // Restart whisper-server so it falls back to CPU binary
+        await this.whisperManager.stopServer().catch(() => {});
+      }
+      return result;
+    });
+
+    // Vulkan mirrors the CUDA handlers above exactly -- same shape, covers
+    // AMD/Intel GPUs where CUDA isn't an option. See whisperVulkanManager.js.
+    ipcMain.handle("get-vulkan-whisper-status", async () => {
+      const { detectVulkanGpu } = require("../utils/vulkanDetection");
+      const gpuInfo = await detectVulkanGpu();
+      if (!this.whisperVulkanManager) {
+        return { downloaded: false, downloading: false, path: null, gpuInfo };
+      }
+      return {
+        downloaded: this.whisperVulkanManager.isDownloaded(),
+        downloading: this.whisperVulkanManager.isDownloading(),
+        path: this.whisperVulkanManager.getVulkanBinaryPath(),
+        gpuInfo,
+      };
+    });
+
+    ipcMain.handle("download-vulkan-whisper-binary", async (event) => {
+      if (!this.whisperVulkanManager) {
+        return { success: false, error: "Vulkan not supported on this platform" };
+      }
+      try {
+        await this.whisperVulkanManager.download((progress) => {
+          if (progress.type === "progress" && !event.sender.isDestroyed()) {
+            event.sender.send("vulkan-whisper-download-progress", {
+              downloadedBytes: progress.downloaded_bytes,
+              totalBytes: progress.total_bytes,
+              percentage: progress.percentage,
+            });
+          }
+        });
+        this._syncStartupEnv({ WHISPER_VULKAN_ENABLED: "true" });
+        // Restart whisper-server so it picks up the Vulkan binary
+        await this.whisperManager.stopServer().catch(() => {});
+        return { success: true };
+      } catch (error) {
+        debugLogger.error("Vulkan binary download failed", {
+          error: error.message,
+          stack: error.stack,
+        });
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle("cancel-vulkan-whisper-download", async () => {
+      if (!this.whisperVulkanManager) return { success: false };
+      return this.whisperVulkanManager.cancelDownload();
+    });
+
+    ipcMain.handle("delete-vulkan-whisper-binary", async () => {
+      if (!this.whisperVulkanManager) return { success: false };
+      const result = await this.whisperVulkanManager.delete();
+      if (result.success) {
+        this._syncStartupEnv({}, ["WHISPER_VULKAN_ENABLED"]);
         // Restart whisper-server so it falls back to CPU binary
         await this.whisperManager.stopServer().catch(() => {});
       }
@@ -2127,6 +2212,34 @@ class IPCHandlers {
 
     ipcMain.handle("cancel-diarization-download", async () => {
       return this.diarizationManager.cancelDownload();
+    });
+
+    // Runs the same on-device diarization used for meeting recordings
+    // against an already-transcribed upload/file-import audio file. Unlike
+    // the meeting path (raw PCM capture), an upload is an arbitrary audio
+    // file, so it's converted to 16kHz mono WAV via the existing FFmpeg
+    // helper first. Returns [] (not an error) when diarization isn't
+    // available/downloaded -- callers treat that as "skip silently", same
+    // as the meeting path's fallback.
+    ipcMain.handle("diarize-uploaded-audio", async (_event, filePath) => {
+      if (!this.diarizationManager?.isAvailable() || !this.diarizationManager.isModelDownloaded()) {
+        return { success: true, segments: [] };
+      }
+      const path = require("path");
+      const fs = require("fs");
+      const { convertToWav } = require("./ffmpegUtils");
+      const { getSafeTempDir } = require("./safeTempDir");
+      const wavPath = path.join(getSafeTempDir(), `dhwani-diarize-${Date.now()}.wav`);
+      try {
+        await convertToWav(filePath, wavPath, { sampleRate: 16000, channels: 1 });
+        const segments = await this.diarizationManager.diarize(wavPath);
+        return { success: true, segments };
+      } catch (error) {
+        debugLogger.warn("Upload diarization failed", { error: error.message });
+        return { success: false, segments: [], error: error.message };
+      } finally {
+        fs.unlink(wavPath, () => {});
+      }
     });
 
     ipcMain.handle("cleanup-app", async (event) => {
@@ -3075,6 +3188,45 @@ class IPCHandlers {
       }
 
       this._syncStartupEnv(setVars, clearVars);
+
+      // Prewarm now instead of only on the *next* launch. Without this, a
+      // user who just picked a local model pays the full server-spawn +
+      // model-load cost on their very first dictation, because prewarm at
+      // startup only reads .env, which this handler is the one that writes.
+      if (process.env.LOCAL_TRANSCRIPTION_PROVIDER === "nvidia" && process.env.PARAKEET_MODEL) {
+        this.parakeetManager
+          ?.initializeAtStartup({
+            localTranscriptionProvider: "nvidia",
+            parakeetModel: process.env.PARAKEET_MODEL,
+          })
+          .catch((err) => {
+            debugLogger.debug("Parakeet prewarm-on-preference-sync error (non-fatal)", {
+              error: err.message,
+            });
+          });
+      } else if (
+        process.env.LOCAL_TRANSCRIPTION_PROVIDER === "whisper" &&
+        process.env.LOCAL_WHISPER_MODEL
+      ) {
+        const dictationVadOptions = this._resolveWhisperVadOptions("dictation");
+        this.whisperManager
+          ?.initializeAtStartup({
+            localTranscriptionProvider: "whisper",
+            whisperModel: process.env.LOCAL_WHISPER_MODEL,
+            useCuda:
+              process.env.WHISPER_CUDA_ENABLED === "true" && this.whisperCudaManager?.isDownloaded(),
+            useVulkan:
+              process.env.WHISPER_VULKAN_ENABLED === "true" &&
+              this.whisperVulkanManager?.isDownloaded(),
+            vadEnabled: dictationVadOptions.vadEnabled !== false,
+            vadConfig: dictationVadOptions.vadConfig || null,
+          })
+          .catch((err) => {
+            debugLogger.debug("Whisper prewarm-on-preference-sync error (non-fatal)", {
+              error: err.message,
+            });
+          });
+      }
     });
 
     ipcMain.handle("process-local-reasoning", async (event, text, modelId, _agentName, config) => {

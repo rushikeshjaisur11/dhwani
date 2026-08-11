@@ -1807,6 +1807,16 @@
             "info": "Ð—Ð²ÑƒÐº, Ð¿Ñ€Ð¾Ð´Ð»ÐµÐ²Ð°ÐµÐ¼Ñ‹Ð¹ Ð¸Ð· Ð¾Ð´Ð½Ð¾Ð³Ð¾ ÑÐµÐ³Ð¼ÐµÐ½Ñ‚Ð° Ð² ÑÐ»ÐµÐ´ÑƒÑŽÑ‰Ð¸Ð¹, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¸Ð·Ð±ÐµÐ¶Ð°Ñ‚ÑŒ Ñ€ÐµÐ·ÐºÐ¸Ñ… Ð¾Ð±Ñ€Ñ‹Ð²Ð¾Ð² Ð¿Ñ€Ð¸ ÑÐºÐ»ÐµÐ¹ÐºÐµ."
           }
         }
+      },
+      "language": {
+        "label": "Spoken language",
+        "description": "Choose the language you speak, or Auto-detect",
+        "parakeetUnsupported": "This on-device model auto-detects the spoken language from its 25 supported languages \u2014 it doesn't take a language selection.",
+        "translateTitle": "Translate",
+        "translateToEnglish": "Translate to English",
+        "translateToEnglishDescription": "Transcribe directly in English, regardless of the language spoken",
+        "outputLanguageLabel": "Output language",
+        "outputLanguageDescription": "Have the cleanup step rewrite the transcript in this language"
       }
     },
     "intelligence": {
@@ -2176,6 +2186,18 @@
       "byokTooLargeNeedsAccount": "Ð¡Ð¾Ð·Ð´Ð°Ð¹Ñ‚Ðµ Ð°ÐºÐºÐ°ÑƒÐ½Ñ‚ Ð¸ Ð¿ÐµÑ€ÐµÐ¹Ð´Ð¸Ñ‚Ðµ Ð½Ð° Ð¿Ð»Ð°Ñ‚Ð½Ñ‹Ð¹ Ð¿Ð»Ð°Ð½, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ñ‚Ñ€Ð°Ð½ÑÐºÑ€Ð¸Ð±Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð±Ð¾Ð»ÑŒÑˆÐ¸Ðµ Ñ„Ð°Ð¹Ð»Ñ‹ Ñ‡ÐµÑ€ÐµÐ· Dhwani Cloud.",
       "byokTooLargeNeedsUpgrade": "ÐŸÐµÑ€ÐµÐ¹Ð´Ð¸Ñ‚Ðµ Ð½Ð° Ð¿Ð»Ð°Ñ‚Ð½Ñ‹Ð¹ Ð¿Ð»Ð°Ð½, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ñ‚Ñ€Ð°Ð½ÑÐºÑ€Ð¸Ð±Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð±Ð¾Ð»ÑŒÑˆÐ¸Ðµ Ñ„Ð°Ð¹Ð»Ñ‹ Ñ‡ÐµÑ€ÐµÐ· Dhwani Cloud.",
       "switchToCloudForLargeFiles": "ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÐµÑÑŒ Ð½Ð° Dhwani Cloud, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ñ‚Ñ€Ð°Ð½ÑÐºÑ€Ð¸Ð±Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ ÑÑ‚Ð¾Ñ‚ Ñ„Ð°Ð¹Ð».",
+      "batch": {
+        "title": "{{count}} files queued",
+        "progress": "{{completed}} / {{total}}",
+        "transcribeAll": "Transcribe {{count}} files"
+      },
+      "urlImport": {
+        "toggle": "or import from a direct audio URL",
+        "placeholder": "https://example.com/audio.mp3",
+        "import": "Import",
+        "importing": "Importing...",
+        "failed": "Couldn't import audio from that URL."
+      },
       "createAccount": "Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÑŒ Ð°ÐºÐºÐ°ÑƒÐ½Ñ‚",
       "upgrade": "ÐžÐ±Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ",
       "switchToCloud": "Dhwani Cloud"
@@ -2463,6 +2485,7 @@
   },
   "gpu": {
     "transcriptionBanner": "Ð£ÑÐºÐ¾Ñ€ÑŒÑ‚Ðµ Ñ‚Ñ€Ð°Ð½ÑÐºÑ€Ð¸Ð¿Ñ†Ð¸ÑŽ Ñ Ð¿Ð¾Ð¼Ð¾Ñ‰ÑŒÑŽ GPU",
+    "transcriptionBannerVulkan": "Speed up transcription with GPU acceleration (Vulkan)",
     "reasoningBanner": "Ð£ÑÐºÐ¾Ñ€ÑŒÑ‚Ðµ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÑƒ Ð˜Ð˜ Ñ Ð¿Ð¾Ð¼Ð¾Ñ‰ÑŒÑŽ GPU",
     "enableButton": "Ð’ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ GPU",
     "active": "Ð£ÑÐºÐ¾Ñ€ÐµÐ½Ð¸Ðµ GPU Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾",

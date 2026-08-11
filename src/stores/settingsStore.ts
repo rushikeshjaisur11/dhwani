@@ -577,6 +577,8 @@ export interface SettingsState
   setAllowLocalFallback: (value: boolean) => void;
   setFallbackWhisperModel: (value: string) => void;
   setPreferredLanguage: (value: string) => void;
+  setTranslateToEnglish: (value: boolean) => void;
+  setOutputLanguage: (value: string) => void;
   setCloudTranscriptionProvider: (value: string) => void;
   setCloudTranscriptionModel: (value: string) => void;
   setCloudTranscriptionBaseUrl: (value: string) => void;
@@ -883,6 +885,12 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   allowLocalFallback: readBoolean("allowLocalFallback", false),
   fallbackWhisperModel: readString("fallbackWhisperModel", "base"),
   preferredLanguage: readString("preferredLanguage", "auto"),
+  // Ask whisper.cpp's native translate task for English output regardless of
+  // spoken language. Only meaningful for the local whisper provider.
+  translateToEnglish: readBoolean("translateToEnglish", false),
+  // Have the cleanup LLM rewrite the transcript into this language after
+  // transcription (any provider). "" = disabled, output stays as spoken.
+  outputLanguage: readString("outputLanguage", ""),
   cloudTranscriptionProvider: readString("cloudTranscriptionProvider", "openai"),
   cloudTranscriptionModel: readString("cloudTranscriptionModel", "gpt-4o-mini-transcribe"),
   cloudTranscriptionBaseUrl: readString(
@@ -1295,6 +1303,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setAllowLocalFallback: createBooleanSetter("allowLocalFallback"),
   setFallbackWhisperModel: createStringSetter("fallbackWhisperModel"),
   setPreferredLanguage: createStringSetter("preferredLanguage"),
+  setTranslateToEnglish: createBooleanSetter("translateToEnglish"),
+  setOutputLanguage: createStringSetter("outputLanguage"),
   setCloudTranscriptionProvider: createStringSetter("cloudTranscriptionProvider"),
   setCloudTranscriptionModel: createStringSetter("cloudTranscriptionModel"),
   setCloudTranscriptionBaseUrl: createStringSetter("cloudTranscriptionBaseUrl"),
@@ -1756,6 +1766,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
       s.setFallbackWhisperModel(settings.fallbackWhisperModel);
     if (settings.preferredLanguage !== undefined)
       s.setPreferredLanguage(settings.preferredLanguage);
+    if (settings.translateToEnglish !== undefined)
+      s.setTranslateToEnglish(settings.translateToEnglish);
+    if (settings.outputLanguage !== undefined) s.setOutputLanguage(settings.outputLanguage);
     if (settings.cloudTranscriptionProvider !== undefined)
       s.setCloudTranscriptionProvider(settings.cloudTranscriptionProvider);
     if (settings.cloudTranscriptionModel !== undefined)

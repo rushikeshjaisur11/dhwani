@@ -31,7 +31,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     }
   },
   pasteText: (text, options) => ipcRenderer.invoke("paste-text", text, options),
-  sendBackspaces: (count) => ipcRenderer.invoke("send-backspaces", count),
   hideWindow: () => ipcRenderer.invoke("hide-window"),
   showDictationPanel: () => ipcRenderer.invoke("show-dictation-panel"),
   onToggleDictation: registerListener("toggle-dictation", (callback) => () => callback()),
@@ -213,6 +212,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   transcribeAudioFile: (filePath, options) =>
     ipcRenderer.invoke("transcribe-audio-file", filePath, options),
   getPathForFile: (file) => webUtils.getPathForFile(file),
+  downloadAudioUrl: (url) => ipcRenderer.invoke("download-audio-url", url),
+  onAudioUrlImportProgress: registerListener(
+    "audio-url-import-progress",
+    (callback) => (_event, data) => callback(data)
+  ),
 
   onNoteAdded: (callback) => {
     const listener = (_event, note) => callback?.(note);
@@ -314,8 +318,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
     "cuda-download-progress",
     (callback) => (_event, data) => callback(data)
   ),
+  getVulkanWhisperStatus: () => ipcRenderer.invoke("get-vulkan-whisper-status"),
+  downloadVulkanWhisperBinary: () => ipcRenderer.invoke("download-vulkan-whisper-binary"),
+  cancelVulkanWhisperDownload: () => ipcRenderer.invoke("cancel-vulkan-whisper-download"),
+  deleteVulkanWhisperBinary: () => ipcRenderer.invoke("delete-vulkan-whisper-binary"),
+  onVulkanWhisperDownloadProgress: registerListener(
+    "vulkan-whisper-download-progress",
+    (callback) => (_event, data) => callback(data)
+  ),
   onCudaFallbackNotification: registerListener(
     "cuda-fallback-notification",
+    (callback) => () => callback()
+  ),
+  onVulkanFallbackNotification: registerListener(
+    "vulkan-fallback-notification",
     (callback) => () => callback()
   ),
 
@@ -343,6 +359,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getDiarizationModelStatus: () => ipcRenderer.invoke("get-diarization-model-status"),
   deleteDiarizationModels: () => ipcRenderer.invoke("delete-diarization-models"),
   cancelDiarizationDownload: () => ipcRenderer.invoke("cancel-diarization-download"),
+  diarizeUploadedAudio: (filePath) => ipcRenderer.invoke("diarize-uploaded-audio", filePath),
   onDiarizationDownloadProgress: registerListener(
     "diarization-download-progress",
     (callback) => (_event, data) => callback(data)

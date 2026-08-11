@@ -237,6 +237,13 @@ export interface CudaWhisperStatus {
   gpuInfo: GpuInfo;
 }
 
+export interface VulkanWhisperStatus {
+  downloaded: boolean;
+  downloading: boolean;
+  path: string | null;
+  gpuInfo: VulkanGpuResult;
+}
+
 export interface WhisperCheckResult {
   installed: boolean;
   working: boolean;
@@ -485,8 +492,7 @@ declare global {
           restoreClipboard?: boolean;
           allowClipboardFallback?: boolean;
         }
-      ) => Promise<void>;
-      sendBackspaces: (count: number) => Promise<void>;
+      ) => Promise<{ pastedText: string }>;
       hideWindow: () => Promise<void>;
       showDictationPanel: () => Promise<void>;
       onToggleDictation: (callback: () => void) => () => void;
@@ -768,7 +774,11 @@ declare global {
       onActionDeleted?: (callback: (payload: { id: number }) => void) => () => void;
 
       // Audio file operations
-      selectAudioFile: () => Promise<{ canceled: boolean; filePath?: string }>;
+      selectAudioFile: () => Promise<{
+        canceled: boolean;
+        filePath?: string;
+        filePaths?: string[];
+      }>;
       getFileSize?: (filePath: string) => Promise<number>;
       transcribeAudioFile: (
         filePath: string,
@@ -780,6 +790,16 @@ declare global {
         }
       ) => Promise<{ success: boolean; text?: string; error?: string }>;
       getPathForFile: (file: File) => string;
+      downloadAudioUrl: (url: string) => Promise<{
+        success: boolean;
+        filePath?: string;
+        fileName?: string;
+        sizeBytes?: number;
+        error?: string;
+      }>;
+      onAudioUrlImportProgress?: (
+        callback: (data: { downloadedBytes: number; totalBytes: number }) => void
+      ) => () => void;
 
       // Note event listeners
       onNoteAdded?: (callback: (note: NoteItem) => void) => () => void;
@@ -888,6 +908,18 @@ declare global {
         }) => void
       ) => () => void;
       onCudaFallbackNotification: (callback: () => void) => () => void;
+      getVulkanWhisperStatus: () => Promise<VulkanWhisperStatus>;
+      downloadVulkanWhisperBinary: () => Promise<{ success: boolean; error?: string }>;
+      cancelVulkanWhisperDownload: () => Promise<{ success: boolean }>;
+      deleteVulkanWhisperBinary: () => Promise<{ success: boolean }>;
+      onVulkanWhisperDownloadProgress: (
+        callback: (data: {
+          downloadedBytes: number;
+          totalBytes: number;
+          percentage: number;
+        }) => void
+      ) => () => void;
+      onVulkanFallbackNotification: (callback: () => void) => () => void;
 
       // Parakeet operations (NVIDIA via sherpa-onnx)
       transcribeLocalParakeet: (
@@ -1797,6 +1829,11 @@ declare global {
       cancelDiarizationDownload?: () => Promise<{
         success: boolean;
         message?: string;
+        error?: string;
+      }>;
+      diarizeUploadedAudio?: (filePath: string) => Promise<{
+        success: boolean;
+        segments: Array<{ start: number; end: number; speaker: string }>;
         error?: string;
       }>;
       onDiarizationDownloadProgress?: (callback: (data: any) => void) => () => void;

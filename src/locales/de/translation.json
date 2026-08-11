@@ -1807,6 +1807,16 @@
             "info": "Audio, das von einem Segment ins nÃ¤chste Ã¼bertragen wird, um abrupte Schnitte beim ZusammenfÃ¼gen zu vermeiden."
           }
         }
+      },
+      "language": {
+        "label": "Spoken language",
+        "description": "Choose the language you speak, or Auto-detect",
+        "parakeetUnsupported": "This on-device model auto-detects the spoken language from its 25 supported languages \u2014 it doesn't take a language selection.",
+        "translateTitle": "Translate",
+        "translateToEnglish": "Translate to English",
+        "translateToEnglishDescription": "Transcribe directly in English, regardless of the language spoken",
+        "outputLanguageLabel": "Output language",
+        "outputLanguageDescription": "Have the cleanup step rewrite the transcript in this language"
       }
     },
     "intelligence": {
@@ -2176,6 +2186,18 @@
       "byokTooLargeNeedsAccount": "Erstelle ein Konto und wechsle zu einem kostenpflichtigen Plan, um grÃ¶ÃŸere Dateien mit Dhwani Cloud zu transkribieren.",
       "byokTooLargeNeedsUpgrade": "Wechsle zu einem kostenpflichtigen Plan, um grÃ¶ÃŸere Dateien mit Dhwani Cloud zu transkribieren.",
       "switchToCloudForLargeFiles": "Wechsle zu Dhwani Cloud, um diese Datei zu transkribieren.",
+      "batch": {
+        "title": "{{count}} files queued",
+        "progress": "{{completed}} / {{total}}",
+        "transcribeAll": "Transcribe {{count}} files"
+      },
+      "urlImport": {
+        "toggle": "or import from a direct audio URL",
+        "placeholder": "https://example.com/audio.mp3",
+        "import": "Import",
+        "importing": "Importing...",
+        "failed": "Couldn't import audio from that URL."
+      },
       "createAccount": "Konto erstellen",
       "upgrade": "Upgraden",
       "switchToCloud": "Dhwani Cloud"
@@ -2459,6 +2481,7 @@
   },
   "gpu": {
     "transcriptionBanner": "Transkription mit GPU beschleunigen",
+    "transcriptionBannerVulkan": "Speed up transcription with GPU acceleration (Vulkan)",
     "reasoningBanner": "KI-Verarbeitung mit GPU beschleunigen",
     "enableButton": "GPU aktivieren",
     "active": "GPU-Beschleunigung aktiv",

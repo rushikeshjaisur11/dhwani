@@ -24,7 +24,14 @@ export abstract class BaseReasoningService {
   }
 
   protected getPreferredLanguage(): string {
-    return getSettings().preferredLanguage || "auto";
+    // outputLanguage (Settings -> Speech to Text -> Language) asks the
+    // cleanup model to rewrite the transcript into a different language than
+    // what was spoken; when set it overrides the "write output in the
+    // detected language" instruction that preferredLanguage/"auto" would
+    // otherwise produce. Reuses the same instruction mechanism as
+    // preferredLanguage (getLanguageInstruction), so no new prompt plumbing.
+    const { preferredLanguage, outputLanguage } = getSettings();
+    return outputLanguage || preferredLanguage || "auto";
   }
 
   protected getUiLanguage(): string {

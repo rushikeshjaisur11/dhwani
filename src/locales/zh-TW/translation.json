@@ -1807,6 +1807,16 @@
             "info": "å°‡æ¯å€‹ç‰‡æ®µå»¶ä¼¸åˆ°ä¸‹ä¸€å€‹ç‰‡æ®µçš„éŸ³è¨Šé‡ï¼Œé¿å…æ‹¼æŽ¥æ™‚å‡ºç¾çªå…€æˆªæ–·ã€‚"
           }
         }
+      },
+      "language": {
+        "label": "Spoken language",
+        "description": "Choose the language you speak, or Auto-detect",
+        "parakeetUnsupported": "This on-device model auto-detects the spoken language from its 25 supported languages \u2014 it doesn't take a language selection.",
+        "translateTitle": "Translate",
+        "translateToEnglish": "Translate to English",
+        "translateToEnglishDescription": "Transcribe directly in English, regardless of the language spoken",
+        "outputLanguageLabel": "Output language",
+        "outputLanguageDescription": "Have the cleanup step rewrite the transcript in this language"
       }
     },
     "intelligence": {
@@ -2176,6 +2186,18 @@
       "byokTooLargeNeedsAccount": "å»ºç«‹å¸³æˆ¶ä¸¦å‡ç´šè‡³ä»˜è²»æ–¹æ¡ˆï¼Œå³å¯ä½¿ç”¨ Dhwani Cloud è½‰éŒ„æ›´å¤§çš„æª”æ¡ˆã€‚",
       "byokTooLargeNeedsUpgrade": "å‡ç´šè‡³ä»˜è²»æ–¹æ¡ˆï¼Œå³å¯ä½¿ç”¨ Dhwani Cloud è½‰éŒ„æ›´å¤§çš„æª”æ¡ˆã€‚",
       "switchToCloudForLargeFiles": "åˆ‡æ›åˆ° Dhwani Cloud ä¾†è½‰éŒ„æ­¤æª”æ¡ˆã€‚",
+      "batch": {
+        "title": "{{count}} files queued",
+        "progress": "{{completed}} / {{total}}",
+        "transcribeAll": "Transcribe {{count}} files"
+      },
+      "urlImport": {
+        "toggle": "or import from a direct audio URL",
+        "placeholder": "https://example.com/audio.mp3",
+        "import": "Import",
+        "importing": "Importing...",
+        "failed": "Couldn't import audio from that URL."
+      },
       "createAccount": "å»ºç«‹å¸³æˆ¶",
       "upgrade": "å‡ç´š",
       "switchToCloud": "Dhwani Cloud"
@@ -2459,6 +2481,7 @@
   },
   "gpu": {
     "transcriptionBanner": "ä½¿ç”¨ GPU åŠ é€Ÿè½‰éŒ„",
+    "transcriptionBannerVulkan": "Speed up transcription with GPU acceleration (Vulkan)",
     "reasoningBanner": "ä½¿ç”¨ GPU åŠ é€Ÿ AI è™•ç†",
     "enableButton": "å•Ÿç”¨ GPU",
     "active": "GPU åŠ é€Ÿå·²å•Ÿç”¨",

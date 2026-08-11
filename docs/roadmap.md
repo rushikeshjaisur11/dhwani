@@ -154,6 +154,33 @@ the perf backlog — lives in [optimization.md](optimization.md).
 
 ---
 
+## 🔀 Upstream Feature Gap Review (Aug 2026)
+
+Dhwani forked [OpenWhispr](https://github.com/OpenWhispr/openwhispr) around v0.8.0. As of this review,
+upstream OpenWhispr is at **v1.8.1** (2026-07-30) per its
+[changelog](https://openwhispr.com/changelog), and [Wispr Flow](https://wisprflow.ai/whats-new) has
+shipped through Aug 2026 including a new Notetaker product. Each candidate below was checked against
+this fork's actual code (not assumed from the feature name) before being counted as a real gap — several
+turned out to already exist.
+
+| # | Feature | Source | Status in this fork |
+|---|---|---|---|
+| 1 | Dictation translation with its own hotkey + dedicated model | OpenWhispr 1.8.1 / 1.7.6 | **Partial.** Settings → Speech to Text → Language now has translate-to-English (whisper.cpp's native translate task, local only) and an output-language override (routes through the existing cleanup-LLM language instruction, any provider). No dedicated hotkey yet — reuses the normal dictation hotkey with settings toggled beforehand. |
+| 2 | Vulkan GPU acceleration (AMD/Intel) with CPU fallback | OpenWhispr 1.7.4 | **Done.** New `src/helpers/whisperVulkanManager.js` mirrors `whisperCudaManager.js` exactly (verified live against the actual `OpenWhispr/whisper.cpp` release — it does publish `whisper-server-{linux,win32}-x64-vulkan.zip` assets alongside cpu/cuda). Wired into `whisperServer.js`'s `getServerBinaryPath({ preferVulkan })` and start/fallback logic (CUDA wins if both are enabled; Vulkan falls back to CPU and emits `vulkan-fallback` on failure, same shape as the CUDA path), `whisper.js`'s prewarm/lazy-start, and a new download banner in `TranscriptionModelPicker.tsx` gated on the already-shipped `detectVulkanGpu()` (reused as-is from the local-LLM Vulkan feature) and the absence of an NVIDIA/CUDA GPU. No per-GPU device picker for Vulkan (CUDA's `TRANSCRIPTION_GPU_UUID` selector doesn't apply) — single/default GPU only, left as a documented scope limit. |
+| 3 | Language picker in the dictation bar / quick language switching | Wispr Flow 1.4.661 | **Partial.** A tray submenu quick-switcher already existed and works (`tray.js` ↔ `useTraySync.ts`). A flow-bar (in-window) picker, matching Wispr Flow's placement, was not added this pass — open. |
+| 4 | Audio import: YouTube/direct URL, batch upload, on-device speaker detection | OpenWhispr 1.8.1 | **Batch upload + direct-URL import done.** `select-audio-file`'s dialog now uses `multiSelections`; drag-drop accepts multiple files; `UploadAudioView.tsx` routes >1 file into a new `BatchView` (sequential queue, per-item status). New `src/helpers/audioUrlImport.js` (`download-audio-url` IPC) fetches a direct audio URL: HEAD-probes Content-Type first (rejects anything not `audio/*`, so HTML/video pages are refused with a clear message), enforces the existing 500 MB cap, reuses `downloadUtils.js`'s retryable `downloadFile`. Single-file flow is unaffected by either addition. **YouTube specifically stays out of scope** — extracting audio from a YouTube page needs a `yt-dlp`-class binary (new bundled native dependency + ToS considerations for downloading from YouTube), a materially different and riskier feature than direct-URL fetch. **On-device speaker detection for uploads done.** New `diarize-uploaded-audio` IPC converts the upload/URL-imported file to 16kHz mono WAV (`ffmpegUtils.js`'s existing `convertToWav`) and runs the same `diarizationManager.diarize()` the meeting-recording pipeline already uses. Gated on the existing `speakerDiarizationEnabled` setting and `getDiarizationModelStatus` (skips silently — never blocks a note from saving — when disabled or models aren't downloaded, same fallback behavior as meetings). `src/utils/speakerTimeline.ts` renumbers raw cluster IDs to readable "Speaker 1/2/..." labels and prepends a timeline block to the saved note content; the on-screen transcript preview stays plain (only the saved note gets the timeline prefix). Word-level speaker-attributed transcript (like meetings get) is *not* in scope here — whisper.cpp's upload response is plain text with no segment timestamps, so this is a segment-timeline addendum, not a fused transcript. |
+| 5 | Auto mic selection with ranking, clamshell switching | Wispr Flow 1.5.751 | **Ranking done.** `src/utils/micRanking.ts` (`rankMicDevices`/`pickBestMicDevice`) scores by label heuristics — excludes virtual/loopback devices and Windows Communications/Default aliases, ranks dedicated USB/headset mics above generic ones. Wired into `MicrophoneSettings.tsx`'s initial auto-select and `audioManager.js`'s no-explicit-preference fallback (previously both took the raw first/OS-default device). Clamshell-lid switching still open — no lid-state API available without native code. |
+| 6 | Retry failed transcriptions from history | Wispr Flow (Android) | **Already exists.** `retry-transcription` IPC is wired to a visible retry action in `ControlPanel.tsx` / `TranscriptionItem.tsx` (tooltip: "Retry transcription"). |
+| 7 | Auto-dictionary learning from user edits | OpenWhispr 1.5.4 | **Already exists.** `_autoLearnEnabled` / auto-learn plumbing is present in `ipcHandlers.js` and exposed in `SettingsPage.tsx`; roadmap idea #9 above ("Self-Learning Phonetic Correction") describes a deeper version of the same mechanism. |
+| 8 | Streaming ASR models (NVIDIA Nemotron) | OpenWhispr 1.8.1 | **In progress.** Tracked as optimization backlog #1 ("Speculative Streaming Transcription"), sub-project of the instant-paste-cleanup plan. |
+| 9 | Mouse-button push-to-talk | Wispr Flow 1.5.113 | **Already exists.** `main.js`'s `mouse-button-down`/`mouse-button-up` handling supports side-button push-to-talk (e.g. Logitech MX Master), with cross-slot suppression via `globeKeyManager.setSuppressedMouseButtons`. |
+| 10 | Small local model families (Liquid LFM2, Gemma 4) | OpenWhispr 1.7.6 / 1.8.1 | **Already exists.** `modelRegistryData.json` already lists Liquid AI LFM2.5 (1.2B) and multiple Gemma 4 variants (31B, 26B-A4B) as local/cloud options. |
+| 11 | Tinfoil attested-enclave provider; Azure AI Foundry / Azure OpenAI STT | OpenWhispr 1.7.4 | **Already exists.** Tinfoil models are in `modelRegistryData.json`; an `enterprise` inference provider already covers Azure (`src/services/ai/inferenceProviders/enterprise.ts`). |
+
+**Status: all genuine gaps from this review are now closed** (#2, #4, #5). The one item still open is #3's
+flow-bar (in-window) language picker specifically — a version was attempted and reverted (user feedback:
+"not working well"); the tray quick-switcher (already shipped) remains the supported quick-switch path.
+
 ## ✅ Completed Items
 
 ### UI/UX

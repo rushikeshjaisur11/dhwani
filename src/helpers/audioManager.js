@@ -2,6 +2,7 @@ import ReasoningService from "../services/ReasoningService";
 import { API_ENDPOINTS, buildApiUrl, normalizeBaseUrl } from "../config/constants";
 import logger from "../utils/logger";
 import { isBuiltInMicrophone } from "../utils/audioDeviceUtils";
+import { pickBestMicDevice } from "../utils/micRanking";
 import {
   isSecureEndpoint,
   isAzureOpenAIEndpoint,
@@ -216,7 +217,6 @@ class AudioManager {
     this.onError = null;
     this.onTranscriptionComplete = null;
     this.onPartialTranscript = null;
-    this.onRawTranscriptReady = null;
     this.cachedApiKey = null;
     this.cachedApiKeyProvider = null;
 
@@ -264,7 +264,6 @@ class AudioManager {
     this.lastAudioBlob = null;
     this.lastAudioMetadata = null;
     this._localSpeechGateState = null;
-    this._dictationSeq = 0;
   }
 
   getWorkletBlobUrl() {
@@ -320,19 +319,11 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     return matchesDictionaryPrompt(text, this.getCustomDictionaryPrompt());
   }
 
-  setCallbacks({
-    onStateChange,
-    onError,
-    onTranscriptionComplete,
-    onPartialTranscript,
-    onRawTranscriptReady,
-    onStreamingCommit,
-  }) {
+  setCallbacks({ onStateChange, onError, onTranscriptionComplete, onPartialTranscript, onStreamingCommit }) {
     this.onStateChange = onStateChange;
     this.onError = onError;
     this.onTranscriptionComplete = onTranscriptionComplete;
     this.onPartialTranscript = onPartialTranscript;
-    this.onRawTranscriptReady = onRawTranscriptReady;
     this.onStreamingCommit = onStreamingCommit;
   }
 
@@ -427,6 +418,31 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     if (!preferBuiltIn && selectedDeviceId) {
       logger.debug("Using selected microphone", { deviceId: selectedDeviceId }, "audio");
       return { audio: { deviceId: { exact: selectedDeviceId }, ...noProcessing } };
+    }
+
+    // No explicit preference set: rank available devices instead of taking
+    // whatever the OS/Chromium currently calls "default", which can be a
+    // virtual/loopback device or a redundant Communications-prefixed alias.
+    // Falls through to the raw OS default if enumeration fails or nothing
+    // ranks above the exclude threshold, preserving prior behavior.
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices.filter((d) => d.kind === "audioinput");
+      const best = pickBestMicDevice(audioInputs);
+      if (best) {
+        logger.debug(
+          "Using best-ranked microphone",
+          { deviceId: best.deviceId, label: best.label },
+          "audio"
+        );
+        return { audio: { deviceId: { exact: best.deviceId }, ...noProcessing } };
+      }
+    } catch (error) {
+      logger.debug(
+        "Failed to enumerate devices for mic ranking",
+        { error: error.message },
+        "audio"
+      );
     }
 
     logger.debug("Using default microphone", {}, "audio");
@@ -757,17 +773,15 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         "transcription"
       );
 
-      const dictationId = ++this._dictationSeq;
-
       let result;
       let activeModel;
       if (useLocalWhisper) {
         if (localProvider === "nvidia") {
           activeModel = parakeetModel;
-          result = await this.processWithLocalParakeet(audioBlob, parakeetModel, metadata, dictationId);
+          result = await this.processWithLocalParakeet(audioBlob, parakeetModel, metadata);
         } else {
           activeModel = whisperModel;
-          result = await this.processWithLocalWhisper(audioBlob, whisperModel, metadata, dictationId);
+          result = await this.processWithLocalWhisper(audioBlob, whisperModel, metadata);
         }
       } else if (isOpenWhisprCloudMode) {
         if (!isSignedIn) {
@@ -854,51 +868,24 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
   }
 
-  // Fires onRawTranscriptReady when this dictation is eligible for the
-  // instant-paste flow (auto-paste on, and — cheaply, synchronously —
-  // predicted to land on the cleanup route rather than agent/skip). Returns
-  // whether it fired, so the caller can tag its result for the renderer.
-  async _maybeFireInstantPaste(rawText, dictationId) {
-    if (dictationId == null || !this.onRawTranscriptReady) return false;
-    const settings = getSettings();
-    if (!settings.autoPasteEnabled) return false;
-
-    const agentName =
-      typeof window !== "undefined" && window.localStorage
-        ? localStorage.getItem("agentName") || null
-        : null;
-    const kind = computeSyncRouteKind(rawText, settings, agentName, this.voiceAgentRequested);
-    if (kind !== "cleanup") return false;
-
-    // Auto-Apply-Transform produces text structurally different from the raw
-    // transcript, so instant-paste must stay inert and let the normal
-    // blocking flow paste the transformed result instead.
-    const autoApplyAfterDictation =
-      typeof window !== "undefined" && window.localStorage
-        ? localStorage.getItem("autoApplyAfterDictation")
-        : null;
-    const transformsOptIn =
-      typeof window !== "undefined" && window.localStorage
-        ? localStorage.getItem("transformsOptIn")
-        : null;
-    if (autoApplyAfterDictation === "true" && transformsOptIn === "true") return false;
-
-    const foregroundApp = (await this.foregroundAppPromise) || null;
-    this.onRawTranscriptReady({ text: rawText, dictationId, foregroundApp });
-    return true;
-  }
-
-  async processWithLocalWhisper(audioBlob, model = "base", metadata = {}, dictationId = null) {
+  async processWithLocalWhisper(audioBlob, model = "base", metadata = {}) {
     const timings = {};
 
     try {
       // Send original audio to main process - FFmpeg in main process handles conversion
       // (renderer-side AudioContext conversion was unreliable with WebM/Opus format)
       const arrayBuffer = await audioBlob.arrayBuffer();
-      const language = getBaseLanguageCode(getSettings().preferredLanguage);
+      const { preferredLanguage, translateToEnglish } = getSettings();
+      const language = getBaseLanguageCode(preferredLanguage);
       const options = { model };
       if (language) {
         options.language = language;
+      }
+      // whisper.cpp's native translate task: decode straight to English
+      // regardless of the spoken language, instead of transcribing then
+      // relying on the cleanup LLM to translate.
+      if (translateToEnglish) {
+        options.translate = true;
       }
 
       // Add custom dictionary as initial prompt to help Whisper recognize specific words
@@ -936,7 +923,6 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           throw new Error("No audio detected");
         }
         const rawText = result.text;
-        const instantPasteEligible = await this._maybeFireInstantPaste(rawText, dictationId);
         const reasoningStart = performance.now();
         const text = await this.processTranscription(result.text, "local");
         timings.reasoningProcessingDurationMs = Math.round(performance.now() - reasoningStart);
@@ -948,8 +934,6 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
             rawText,
             source: "local",
             timings,
-            dictationId,
-            instantPasteEligible,
           };
         } else {
           throw new Error("No text transcribed");
@@ -981,7 +965,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     }
   }
 
-  async processWithLocalParakeet(audioBlob, model = "parakeet-tdt-0.6b-v3", metadata = {}, dictationId = null) {
+  async processWithLocalParakeet(audioBlob, model = "parakeet-tdt-0.6b-v3", metadata = {}) {
     const timings = {};
 
     try {
@@ -1014,7 +998,6 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       if (result.success && result.text) {
         const rawText = result.text;
-        const instantPasteEligible = await this._maybeFireInstantPaste(rawText, dictationId);
         const reasoningStart = performance.now();
         const text = await this.processTranscription(result.text, "local-parakeet");
         timings.reasoningProcessingDurationMs = Math.round(performance.now() - reasoningStart);
@@ -1026,8 +1009,6 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
             rawText,
             source: "local-parakeet",
             timings,
-            dictationId,
-            instantPasteEligible,
           };
         } else {
           throw new Error("No text transcribed");
@@ -2323,9 +2304,9 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
   async safePaste(text, options = {}) {
     try {
-      await window.electronAPI.pasteText(text, options);
+      const result = await window.electronAPI.pasteText(text, options);
       void playPasteCue();
-      return true;
+      return { ok: true, pastedText: result?.pastedText ?? text };
     } catch (error) {
       const message =
         error?.message ??
@@ -2334,7 +2315,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         title: "Paste Error",
         description: `Failed to paste text. Please check accessibility permissions. ${message}`,
       });
-      return false;
+      return { ok: false, pastedText: null };
     }
   }
 

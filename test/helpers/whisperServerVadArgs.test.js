@@ -162,3 +162,34 @@ test("getVadSignature changes when VAD settings or model path change", () => {
   assert.notEqual(b, c);
   assert.equal(c, d);
 });
+
+test("prewarm VAD signature matches the default dictation VAD signature", async () => {
+  // Regression test for the cold-start bug: whisper-server prewarm used to
+  // always start with VAD off, while dictation defaults to VAD on — so the
+  // reuse guard in whisperServer.js's start() saw a signature mismatch on
+  // the very first transcription and killed + respawned the server,
+  // reloading the model from disk and undoing the prewarm entirely.
+  const { DEFAULT_WHISPER_VAD_CONFIG, resolveContextSileroEnabled } = await import(
+    "../../src/helpers/whisperVadConfig.js"
+  );
+
+  const vadModelPath = "/fake/ggml-silero-v5.1.2.bin";
+
+  // Mirrors ipcHandlers._resolveWhisperVadOptions("dictation") with default
+  // (unmodified) settings.
+  const dictationVadEnabled = resolveContextSileroEnabled({}, "dictation");
+  const dictationSignature = WhisperServerManager.getVadSignature({
+    vadEnabled: dictationVadEnabled,
+    vadModelPath,
+    vadConfig: DEFAULT_WHISPER_VAD_CONFIG,
+  });
+
+  // Mirrors whisper.js's initializeAtStartup default prewarm path.
+  const prewarmSignature = WhisperServerManager.getVadSignature({
+    vadEnabled: true, // settings.vadEnabled defaults to true
+    vadModelPath,
+    vadConfig: null, // settings.vadConfig defaults to null -> DEFAULT_WHISPER_VAD_CONFIG
+  });
+
+  assert.equal(prewarmSignature, dictationSignature);
+});

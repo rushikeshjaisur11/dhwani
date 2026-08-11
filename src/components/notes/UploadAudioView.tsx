@@ -27,9 +27,22 @@ import {
   getSettings,
 } from "../../stores/settingsStore";
 import { generateNoteTitle } from "../../utils/generateTitle";
+import { prependSpeakerTimeline } from "../../utils/speakerTimeline";
+import logger from "../../utils/logger";
 import { getBaseLanguageCode } from "../../utils/languageSupport";
 
 type UploadState = "idle" | "selected" | "transcribing" | "complete" | "error";
+
+interface QueuedFile {
+  id: string;
+  name: string;
+  path: string;
+  size: string;
+  sizeBytes: number;
+  status: "queued" | "transcribing" | "complete" | "error";
+  error?: string;
+  noteId?: number;
+}
 
 const SUPPORTED_EXTENSIONS = ["mp3", "wav", "m4a", "webm", "ogg", "oga", "flac", "aac"];
 
@@ -70,12 +83,35 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
   const progressCleanupRef = useRef<(() => void) | null>(null);
   const runIdRef = useRef(0);
 
+  // null = not in batch mode (single-file flow above, unchanged). Non-null =
+  // batch mode: multiple files queued and processed one at a time.
+  const [batchFiles, setBatchFiles] = useState<QueuedFile[] | null>(null);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const batchRunIdRef = useRef(0);
+
+  // Direct-audio-URL import (not YouTube/video pages -- see audioUrlImport.js).
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlValue, setUrlValue] = useState("");
+  const [urlImporting, setUrlImporting] = useState(false);
+  const [urlError, setUrlError] = useState<string | null>(null);
+
   const [folders, setFolders] = useState<FolderItem[]>([]);
   const [selectedFolderId, setSelectedFolderId] = useState<string>("");
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
 
   const [providerReady, setProviderReady] = useState<boolean | null>(null);
+  const [diarizationAvailable, setDiarizationAvailable] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    window.electronAPI.getDiarizationModelStatus?.().then((status) => {
+      if (!cancelled) setDiarizationAvailable(!!(status?.available && status?.modelsDownloaded));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const { isSignedIn } = useAuth();
   const isProUser = false; // local-only build: no cloud subscription
@@ -99,6 +135,7 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
   const cortiEnvironment = useSettingsStore((s) => s.cortiEnvironment);
   const cortiTenant = useSettingsStore((s) => s.cortiTenant);
   const preferredLanguage = useSettingsStore((s) => s.preferredLanguage);
+  const speakerDiarizationEnabled = useSettingsStore((s) => s.speakerDiarizationEnabled);
   const isCloudCleanup = useSettingsStore(selectIsCloudCleanupMode);
   const effectiveCleanupModel = useSettingsStore((s) =>
     selectIsCloudCleanupMode(s) ? "" : s.cleanupModel
@@ -250,34 +287,99 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     return generateNoteTitle(text, model);
   };
 
+  const queueFromPaths = async (paths: string[]) => {
+    const entries = await Promise.all(
+      paths.map(async (filePath, index) => {
+        const name = filePath.split(/[/\\]/).pop() || "audio";
+        const sizeBytes = (await window.electronAPI.getFileSize?.(filePath)) ?? 0;
+        return {
+          id: `${filePath}-${index}`,
+          name,
+          path: filePath,
+          size: sizeBytes ? formatFileSize(sizeBytes) : "",
+          sizeBytes,
+          status: "queued" as const,
+        };
+      })
+    );
+    setBatchFiles(entries);
+    setError(null);
+  };
+
   const handleBrowse = async () => {
     const res = await window.electronAPI.selectAudioFile();
-    if (!res.canceled && res.filePath) {
-      const name = res.filePath.split(/[/\\]/).pop() || "audio";
-      const sizeBytes = (await window.electronAPI.getFileSize?.(res.filePath)) ?? 0;
-      setFile({
-        name,
-        path: res.filePath,
-        size: sizeBytes ? formatFileSize(sizeBytes) : "",
-        sizeBytes,
-      });
-      setState("selected");
-      setError(null);
+    if (res.canceled) return;
+
+    const paths = res.filePaths && res.filePaths.length > 0 ? res.filePaths : res.filePath ? [res.filePath] : [];
+    if (paths.length === 0) return;
+
+    if (paths.length > 1) {
+      await queueFromPaths(paths);
+      return;
     }
+
+    const filePath = paths[0];
+    const name = filePath.split(/[/\\]/).pop() || "audio";
+    const sizeBytes = (await window.electronAPI.getFileSize?.(filePath)) ?? 0;
+    setFile({
+      name,
+      path: filePath,
+      size: sizeBytes ? formatFileSize(sizeBytes) : "",
+      sizeBytes,
+    });
+    setState("selected");
+    setError(null);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    const f = e.dataTransfer.files[0];
-    if (!f) return;
-    const ext = f.name.split(".").pop()?.toLowerCase() || "";
-    if (SUPPORTED_EXTENSIONS.includes(ext)) {
-      const filePath = window.electronAPI.getPathForFile(f);
-      if (!filePath) return;
-      setFile({ name: f.name, path: filePath, size: formatFileSize(f.size), sizeBytes: f.size });
-      setState("selected");
-      setError(null);
+    const dropped = Array.from(e.dataTransfer.files).filter((f) => {
+      const ext = f.name.split(".").pop()?.toLowerCase() || "";
+      return SUPPORTED_EXTENSIONS.includes(ext);
+    });
+    if (dropped.length === 0) return;
+
+    if (dropped.length > 1) {
+      const paths = dropped
+        .map((f) => window.electronAPI.getPathForFile(f))
+        .filter((p): p is string => !!p);
+      if (paths.length > 0) void queueFromPaths(paths);
+      return;
+    }
+
+    const f = dropped[0];
+    const filePath = window.electronAPI.getPathForFile(f);
+    if (!filePath) return;
+    setFile({ name: f.name, path: filePath, size: formatFileSize(f.size), sizeBytes: f.size });
+    setState("selected");
+    setError(null);
+  };
+
+  const handleImportUrl = async () => {
+    const url = urlValue.trim();
+    if (!url) return;
+    setUrlImporting(true);
+    setUrlError(null);
+    try {
+      const res = await window.electronAPI.downloadAudioUrl(url);
+      if (res.success && res.filePath) {
+        setFile({
+          name: res.fileName || url.split("/").pop() || "audio",
+          path: res.filePath,
+          size: res.sizeBytes ? formatFileSize(res.sizeBytes) : "",
+          sizeBytes: res.sizeBytes ?? 0,
+        });
+        setState("selected");
+        setUrlValue("");
+        setShowUrlInput(false);
+      } else {
+        setUrlError(res.error || t("notes.upload.urlImport.failed"));
+      }
+    } catch (err) {
+      setUrlError(err instanceof Error ? err.message : t("notes.upload.urlImport.failed"));
+    } finally {
+      setUrlImporting(false);
     }
   };
 
@@ -292,6 +394,12 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     setError(null);
     setProgress(0);
     setChunkProgress(null);
+    batchRunIdRef.current++;
+    setBatchFiles(null);
+    setBatchRunning(false);
+    setShowUrlInput(false);
+    setUrlValue("");
+    setUrlError(null);
     const personal = findDefaultFolder(folders);
     if (personal) setSelectedFolderId(String(personal.id));
   };
@@ -299,6 +407,63 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
   const cancelTranscription = () => {
     runIdRef.current++;
     reset();
+  };
+
+  // Shared by the single-file flow (handleTranscribe) and batch upload
+  // (handleBatchTranscribe) -- picks the same provider/mode branch either
+  // way, just for one file path at a time.
+  const transcribeFilePath = async (
+    filePath: string
+  ): Promise<{ success: boolean; text?: string; error?: string; code?: string }> => {
+    if (isOpenWhisprCloud) {
+      return withSessionRefresh(async () => {
+        const r = await window.electronAPI.transcribeAudioFileCloud!(filePath);
+        if (!r.success && r.code) {
+          throw Object.assign(new Error(r.error || "Cloud transcription failed"), {
+            code: r.code,
+          });
+        }
+        return r;
+      });
+    }
+    if (useLocalWhisper) {
+      return window.electronAPI.transcribeAudioFile(filePath, {
+        provider: localTranscriptionProvider as "whisper" | "nvidia",
+        model: localTranscriptionProvider === "nvidia" ? parakeetModel : whisperModel,
+      });
+    }
+    return window.electronAPI.transcribeAudioFileByok!({
+      filePath,
+      apiKey: getActiveApiKey(),
+      baseUrl: cloudTranscriptionBaseUrl || "",
+      model: cloudTranscriptionModel,
+      provider: cloudTranscriptionProvider,
+      language: getBaseLanguageCode(preferredLanguage) || "en",
+      environment: cortiEnvironment,
+      tenant: cortiTenant,
+    });
+  };
+
+  // Same on-device diarization the meeting-recording pipeline already uses
+  // (diarizationManager in the main process), run against an upload/URL-
+  // imported file after transcription. Best-effort: any failure, or
+  // diarization being disabled/not downloaded, just returns the transcript
+  // unchanged -- this must never block a note from being saved.
+  const maybeAddSpeakerTimeline = async (text: string, filePath: string): Promise<string> => {
+    if (!speakerDiarizationEnabled || !diarizationAvailable) return text;
+    try {
+      const res = await window.electronAPI.diarizeUploadedAudio?.(filePath);
+      if (res?.success && res.segments?.length) {
+        return prependSpeakerTimeline(text, res.segments);
+      }
+    } catch (error) {
+      logger.warn(
+        "Upload diarization failed",
+        { error: error instanceof Error ? error.message : String(error) },
+        "notes"
+      );
+    }
+    return text;
   };
 
   const handleTranscribe = async () => {
@@ -352,35 +517,7 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     }
 
     try {
-      let res: { success: boolean; text?: string; error?: string; code?: string };
-
-      if (isOpenWhisprCloud) {
-        res = await withSessionRefresh(async () => {
-          const r = await window.electronAPI.transcribeAudioFileCloud!(file.path);
-          if (!r.success && r.code) {
-            throw Object.assign(new Error(r.error || "Cloud transcription failed"), {
-              code: r.code,
-            });
-          }
-          return r;
-        });
-      } else if (useLocalWhisper) {
-        res = await window.electronAPI.transcribeAudioFile(file.path, {
-          provider: localTranscriptionProvider as "whisper" | "nvidia",
-          model: localTranscriptionProvider === "nvidia" ? parakeetModel : whisperModel,
-        });
-      } else {
-        res = await window.electronAPI.transcribeAudioFileByok!({
-          filePath: file.path,
-          apiKey: getActiveApiKey(),
-          baseUrl: cloudTranscriptionBaseUrl || "",
-          model: cloudTranscriptionModel,
-          provider: cloudTranscriptionProvider,
-          language: getBaseLanguageCode(preferredLanguage) || "en",
-          environment: cortiEnvironment,
-          tenant: cortiTenant,
-        });
-      }
+      const res = await transcribeFilePath(file.path);
 
       if (runId !== runIdRef.current) return;
 
@@ -401,10 +538,13 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
         if (runId !== runIdRef.current) return;
         const title = aiTitle || fallbackTitle;
 
+        const noteContent = await maybeAddSpeakerTimeline(res.text, file.path);
+        if (runId !== runIdRef.current) return;
+
         const folderId = selectedFolderId ? Number(selectedFolderId) : null;
         const noteRes = await window.electronAPI.saveNote(
           title,
-          res.text,
+          noteContent,
           "upload",
           file.name,
           null,
@@ -430,6 +570,106 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
       setError(err instanceof Error ? err.message : t("notes.upload.errorOccurred"));
       setState("error");
     }
+  };
+
+  // Batch upload: processes queued files one at a time (not in parallel --
+  // local whisper-server/parakeet are single sidecar processes, and cloud
+  // providers have per-request rate limits). No simulated progress bar or
+  // chunk-progress subscription per item, unlike the single-file flow above
+  // -- a per-item status icon is enough for a queue.
+  const handleBatchTranscribe = async () => {
+    if (!batchFiles || batchFiles.length === 0) return;
+    const runId = ++batchRunIdRef.current;
+    setBatchRunning(true);
+
+    for (const item of batchFiles) {
+      if (runId !== batchRunIdRef.current) return;
+
+      setBatchFiles((prev) =>
+        prev
+          ? prev.map((f) => (f.id === item.id ? { ...f, status: "transcribing" } : f))
+          : prev
+      );
+
+      try {
+        const res = await transcribeFilePath(item.path);
+        if (runId !== batchRunIdRef.current) return;
+
+        if (res.success && res.text) {
+          const textFallback = res.text.trim().split(/\s+/).slice(0, 6).join(" ");
+          const fallbackTitle =
+            textFallback.length > 0
+              ? textFallback + (res.text.trim().split(/\s+/).length > 6 ? "..." : "")
+              : item.name.replace(/\.[^.]+$/, "");
+          const aiTitle = await generateTitle(res.text);
+          if (runId !== batchRunIdRef.current) return;
+          const title = aiTitle || fallbackTitle;
+
+          const noteContent = await maybeAddSpeakerTimeline(res.text, item.path);
+          if (runId !== batchRunIdRef.current) return;
+
+          const folderId = selectedFolderId ? Number(selectedFolderId) : null;
+          const noteRes = await window.electronAPI.saveNote(
+            title,
+            noteContent,
+            "upload",
+            item.name,
+            null,
+            folderId
+          );
+          setBatchFiles((prev) =>
+            prev
+              ? prev.map((f) =>
+                  f.id === item.id
+                    ? { ...f, status: "complete", noteId: noteRes.note?.id }
+                    : f
+                )
+              : prev
+          );
+        } else {
+          setBatchFiles((prev) =>
+            prev
+              ? prev.map((f) =>
+                  f.id === item.id
+                    ? {
+                        ...f,
+                        status: "error",
+                        error:
+                          res.code === "NO_SPEECH_DETECTED"
+                            ? t("notes.upload.noSpeechDetected")
+                            : res.error || t("notes.upload.transcriptionFailed"),
+                      }
+                    : f
+                )
+              : prev
+          );
+        }
+      } catch (err) {
+        if (runId !== batchRunIdRef.current) return;
+        setBatchFiles((prev) =>
+          prev
+            ? prev.map((f) =>
+                f.id === item.id
+                  ? {
+                      ...f,
+                      status: "error",
+                      error: err instanceof Error ? err.message : t("notes.upload.errorOccurred"),
+                    }
+                  : f
+              )
+            : prev
+        );
+      }
+    }
+
+    if (runId === batchRunIdRef.current) setBatchRunning(false);
+  };
+
+  const removeQueuedFile = (id: string) => {
+    setBatchFiles((prev) => {
+      const next = prev ? prev.filter((f) => f.id !== id) : prev;
+      return next && next.length > 0 ? next : null;
+    });
   };
 
   const handleCreateFolder = async () => {
@@ -472,11 +712,24 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
         style={{ animation: "float-up 0.4s ease-out" }}
       >
         <div className="max-w-[320px] mx-auto">
-          {state === "idle" && providerReady === false && (
+          {batchFiles && (
+            <BatchView
+              t={t}
+              files={batchFiles}
+              running={batchRunning}
+              onStart={handleBatchTranscribe}
+              onRemove={removeQueuedFile}
+              onCancel={reset}
+              onOpenNote={onNoteCreated}
+              selectedFolderId={selectedFolderId}
+            />
+          )}
+
+          {!batchFiles && state === "idle" && providerReady === false && (
             <NoProviderView t={t} onOpenSettings={() => onOpenSettings?.("uploadTranscription")} />
           )}
 
-          {state === "idle" && providerReady !== false && (
+          {!batchFiles && state === "idle" && providerReady !== false && (
             <IdleView
               t={t}
               getActiveModelLabel={getActiveModelLabel}
@@ -484,6 +737,13 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
               handleBrowse={handleBrowse}
               isDragOver={isDragOver}
               setIsDragOver={setIsDragOver}
+              showUrlInput={showUrlInput}
+              setShowUrlInput={setShowUrlInput}
+              urlValue={urlValue}
+              setUrlValue={setUrlValue}
+              urlImporting={urlImporting}
+              urlError={urlError}
+              handleImportUrl={handleImportUrl}
             />
           )}
 
@@ -611,6 +871,13 @@ interface IdleViewProps {
   handleBrowse: () => void;
   isDragOver: boolean;
   setIsDragOver: (v: boolean) => void;
+  showUrlInput: boolean;
+  setShowUrlInput: (v: boolean) => void;
+  urlValue: string;
+  setUrlValue: (v: string) => void;
+  urlImporting: boolean;
+  urlError: string | null;
+  handleImportUrl: () => void;
 }
 
 function IdleView({
@@ -620,6 +887,13 @@ function IdleView({
   handleBrowse,
   isDragOver,
   setIsDragOver,
+  showUrlInput,
+  setShowUrlInput,
+  urlValue,
+  setUrlValue,
+  urlImporting,
+  urlError,
+  handleImportUrl,
 }: IdleViewProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -720,7 +994,145 @@ function IdleView({
           </div>
         )}
       </div>
+
+      {!showUrlInput ? (
+        <button
+          type="button"
+          onClick={() => setShowUrlInput(true)}
+          className="mt-3 w-full text-center text-xs text-foreground/25 hover:text-foreground/45 transition-colors"
+        >
+          {t("notes.upload.urlImport.toggle")}
+        </button>
+      ) : (
+        <div className="mt-3 space-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <Input
+              value={urlValue}
+              onChange={(e) => setUrlValue(e.target.value)}
+              placeholder={t("notes.upload.urlImport.placeholder")}
+              autoFocus
+              disabled={urlImporting}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleImportUrl();
+              }}
+              className="h-8 text-xs"
+            />
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleImportUrl}
+              disabled={urlImporting || !urlValue.trim()}
+              className="h-8 text-xs px-3 shrink-0"
+            >
+              {urlImporting ? t("notes.upload.urlImport.importing") : t("notes.upload.urlImport.import")}
+            </Button>
+          </div>
+          {urlError && <p className="text-xs text-destructive/60 px-1">{urlError}</p>}
+        </div>
+      )}
     </>
+  );
+}
+
+interface BatchViewProps {
+  t: (key: string, options?: Record<string, unknown>) => string;
+  files: QueuedFile[];
+  running: boolean;
+  onStart: () => void;
+  onRemove: (id: string) => void;
+  onCancel: () => void;
+  onOpenNote?: (noteId: number, folderId: number | null) => void;
+  selectedFolderId: string;
+}
+
+function BatchView({
+  t,
+  files,
+  running,
+  onStart,
+  onRemove,
+  onCancel,
+  onOpenNote,
+  selectedFolderId,
+}: BatchViewProps) {
+  const total = files.length;
+  const completed = files.filter((f) => f.status === "complete").length;
+  const errored = files.filter((f) => f.status === "error").length;
+  const finished = !running && completed + errored === total && total > 0;
+
+  const statusIcon = (status: QueuedFile["status"]) => {
+    if (status === "complete") {
+      return <span className="text-success text-xs">✓</span>;
+    }
+    if (status === "error") {
+      return <AlertCircle size={12} className="text-destructive/60" />;
+    }
+    if (status === "transcribing") {
+      return (
+        <span className="w-2.5 h-2.5 rounded-full border-2 border-primary/30 border-t-primary/70 animate-spin inline-block" />
+      );
+    }
+    return <span className="w-1.5 h-1.5 rounded-full bg-foreground/15 inline-block" />;
+  };
+
+  return (
+    <div style={{ animation: "float-up 0.3s ease-out" }}>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xs font-semibold text-foreground">
+          {t("notes.upload.batch.title", { count: total })}
+        </h2>
+        {(running || finished) && (
+          <span className="text-xs text-foreground/30">
+            {t("notes.upload.batch.progress", { completed: completed + errored, total })}
+          </span>
+        )}
+      </div>
+
+      <div className="rounded-lg border border-foreground/8 dark:border-white/6 bg-surface-1 dark:bg-surface-2 divide-y divide-foreground/6 dark:divide-white/6 max-h-64 overflow-y-auto mb-3">
+        {files.map((f) => (
+          <div key={f.id} className="flex items-center gap-2.5 px-3 py-2">
+            <div className="w-4 flex items-center justify-center shrink-0">{statusIcon(f.status)}</div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-foreground/70 truncate font-medium">{f.name}</p>
+              {f.status === "error" && f.error ? (
+                <p className="text-xs text-destructive/60 truncate mt-0.5">{f.error}</p>
+              ) : (
+                f.size && <p className="text-xs text-foreground/25 mt-0.5">{f.size}</p>
+              )}
+            </div>
+            {f.status === "complete" && f.noteId != null && onOpenNote && (
+              <button
+                onClick={() =>
+                  onOpenNote(f.noteId!, selectedFolderId ? Number(selectedFolderId) : null)
+                }
+                className="text-xs text-primary/60 hover:text-primary/80 shrink-0"
+              >
+                {t("notes.upload.openNote")}
+              </button>
+            )}
+            {f.status === "queued" && !running && (
+              <button
+                onClick={() => onRemove(f.id)}
+                className="text-foreground/15 hover:text-foreground/40 transition-colors p-0.5 rounded shrink-0"
+              >
+                <X size={11} />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-2 justify-center">
+        {!running && !finished && (
+          <Button variant="default" size="sm" onClick={onStart} className="h-8 text-xs px-5">
+            {t("notes.upload.batch.transcribeAll", { count: total })}
+          </Button>
+        )}
+        <Button variant="ghost" size="sm" onClick={onCancel} className="h-8 text-xs text-foreground/35">
+          {finished ? t("notes.upload.uploadAnother") : t("notes.upload.cancel")}
+        </Button>
+      </div>
+    </div>
   );
 }
 
