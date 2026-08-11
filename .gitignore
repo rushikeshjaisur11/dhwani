@@ -5,6 +5,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# MSVC intermediate objects from native helper compilation (compile:native /
+# scripts/build-windows-key-listener.js and friends) -- never a build output,
+# just accidentally committed once (windows-*.obj at repo root).
+*.obj
+
 # Runtime data
 pids
 *.pid
