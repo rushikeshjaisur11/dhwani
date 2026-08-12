@@ -5,6 +5,7 @@ import { normalizeDbDate } from "../../utils/dateFormatting";
 import { cn } from "../lib/utils";
 import { categorizeApp } from "../../utils/appCategory";
 import { useSettingsStore } from "../../stores/settingsStore";
+import AudioWaveformMinimap from "./AudioWaveformMinimap";
 
 interface TranscriptDetailViewProps {
   transcript: TranscriptionItem;
@@ -20,9 +21,11 @@ export default function TranscriptDetailView({
   t,
 }: TranscriptDetailViewProps) {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [audioBuffer, setAudioBuffer] = useState<ArrayBuffer | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [currentTimeSec, setCurrentTimeSec] = useState(0);
 
   const styleToneWork = useSettingsStore((s) => s.styleToneWork);
   const styleToneEmail = useSettingsStore((s) => s.styleToneEmail);
@@ -55,9 +58,11 @@ export default function TranscriptDetailView({
 
   useEffect(() => {
     let url = "";
+    setAudioBuffer(null);
     if (transcript.has_audio) {
       window.electronAPI?.getAudioBuffer?.(transcript.id).then((buffer) => {
         if (buffer) {
+          setAudioBuffer(buffer);
           const blob = new Blob([buffer], { type: "audio/webm" });
           url = URL.createObjectURL(blob);
           setAudioUrl(url);
@@ -84,15 +89,23 @@ export default function TranscriptDetailView({
     if (audioRef.current) {
       const current = audioRef.current.currentTime;
       let duration = audioRef.current.duration;
-      
+      setCurrentTimeSec(current);
+
       // Fallback for WebM Infinity duration bug
       if (!isFinite(duration) && transcript.audio_duration_ms) {
         duration = transcript.audio_duration_ms / 1000;
       }
-      
+
       if (isFinite(duration) && duration > 0) {
         setProgress((current / duration) * 100);
       }
+    }
+  };
+
+  const handleWaveformSeek = (time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTimeSec(time);
     }
   };
 
@@ -184,11 +197,19 @@ export default function TranscriptDetailView({
                 <span>Audio Recording</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <div 
+              <AudioWaveformMinimap
+                audioBuffer={audioBuffer}
+                fallbackDurationSeconds={
+                  transcript.audio_duration_ms ? transcript.audio_duration_ms / 1000 : null
+                }
+                currentTime={currentTimeSec}
+                onSeek={handleWaveformSeek}
+              />
+              <div
                 className="h-1.5 w-full bg-black/10 dark:bg-white/10 rounded-full overflow-hidden cursor-pointer relative hover:h-2 transition-all duration-200"
                 onClick={handleSeek}
               >
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-primary/80 to-primary rounded-full transition-all duration-75 ease-linear relative shadow-[0_0_10px_rgba(var(--primary),0.5)]"
                   style={{ width: `${progress}%` }}
                 />
