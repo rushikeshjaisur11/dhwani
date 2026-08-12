@@ -2,7 +2,7 @@ import type { InferenceProvider } from "./types";
 import { API_ENDPOINTS, TOKEN_LIMITS, buildApiUrl } from "../../../config/constants";
 import { getOpenAiApiConfig } from "../../../models/ModelRegistry";
 import { getSettings } from "../../../stores/settingsStore";
-import { withRetry, createApiRetryStrategy } from "../../../utils/retry";
+import { withRetry, createApiRetryStrategy, httpError } from "../../../utils/retry";
 import logger from "../../../utils/logger";
 import { getConfiguredOpenAIBase } from "../openaiBase";
 import { applyThinkingSuppression } from "../thinkingSuppression";
@@ -230,7 +230,7 @@ export const openaiProvider: InferenceProvider = {
               continue;
             }
 
-            throw new Error(errorMessage);
+            throw httpError(res.status, errorMessage, res.headers);
           }
 
           rememberPreference(openAiBase, type);

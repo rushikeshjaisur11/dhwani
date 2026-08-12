@@ -2,21 +2,28 @@ const { net } = require("electron");
 const crypto = require("crypto");
 const debugLogger = require("./debugLogger");
 const { getCortiToken } = require("./cortiAuth");
+const { withRetry, createApiRetryStrategy, httpError } = require("./retryFetch");
 
 async function request(token, tenant, url, options = {}) {
-  const response = await net.fetch(url, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Tenant-Name": tenant,
-      ...options.headers,
-    },
-  });
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => "");
-    throw new Error(`Corti API Error: ${response.status} ${errorText}`.trim());
-  }
-  return response;
+  return withRetry(async () => {
+    const response = await net.fetch(url, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Tenant-Name": tenant,
+        ...options.headers,
+      },
+    });
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "");
+      throw httpError(
+        response.status,
+        `Corti API Error: ${response.status} ${errorText}`.trim(),
+        response.headers
+      );
+    }
+    return response;
+  }, createApiRetryStrategy());
 }
 
 async function requestJson(token, tenant, url, options) {

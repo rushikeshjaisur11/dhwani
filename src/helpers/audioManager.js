@@ -9,6 +9,7 @@ import {
   buildAzureTranscriptionUrl,
 } from "../utils/urlUtils";
 import { withSessionRefresh } from "../lib/auth";
+import { withRetry, createApiRetryStrategy, httpError } from "../utils/retry";
 import { getBaseLanguageCode } from "../utils/languageSupport";
 import {
   createLocalSpeechGateState,
@@ -1917,44 +1918,55 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
         "transcription"
       );
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers,
-        body: formData,
-      });
+      // Retry is only safe for the non-streaming request: a streaming response may
+      // already have delivered partial text to the caller by the time it fails, and
+      // retrying would risk duplicated/garbled output. `shouldStream` requests skip it.
+      const doFetch = async () => {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers,
+          body: formData,
+        });
 
-      const responseContentType = response.headers.get("content-type") || "";
-
-      logger.debug(
-        "Transcription API response received",
-        {
-          status: response.status,
-          statusText: response.statusText,
-          contentType: responseContentType,
-          ok: response.ok,
-        },
-        "transcription"
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        logger.error(
-          "Transcription API error response",
+        logger.debug(
+          "Transcription API response received",
           {
-            status: response.status,
-            errorText,
+            status: res.status,
+            statusText: res.statusText,
+            contentType: res.headers.get("content-type") || "",
+            ok: res.ok,
           },
           "transcription"
         );
-        const err = new Error(`API Error: ${response.status} ${errorText}`);
-        if (response.status === 401) err.code = "INVALID_KEY";
-        else if (response.status === 429) {
-          // The user's own provider rate-limited the request — not an OpenWhispr plan limit
-          err.code = "PROVIDER_RATE_LIMITED";
-          err.messageKey = "hooks.audioRecording.errorDescriptions.providerRateLimited";
-        } else if (response.status >= 500) err.code = "SERVER_ERROR";
-        throw err;
-      }
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          logger.error(
+            "Transcription API error response",
+            {
+              status: res.status,
+              errorText,
+            },
+            "transcription"
+          );
+          const err = httpError(res.status, `API Error: ${res.status} ${errorText}`, res.headers);
+          if (res.status === 401) err.code = "INVALID_KEY";
+          else if (res.status === 429) {
+            // The user's own provider rate-limited the request — not an OpenWhispr plan limit
+            err.code = "PROVIDER_RATE_LIMITED";
+            err.messageKey = "hooks.audioRecording.errorDescriptions.providerRateLimited";
+          } else if (res.status >= 500) err.code = "SERVER_ERROR";
+          throw err;
+        }
+
+        return res;
+      };
+
+      const response = shouldStream
+        ? await doFetch()
+        : await withRetry(doFetch, createApiRetryStrategy());
+
+      const responseContentType = response.headers.get("content-type") || "";
 
       let result;
       const contentType = responseContentType;
