@@ -25,6 +25,12 @@ const DEFAULT_WHISPER_THREADS = 4;
 const MAX_AUTO_WHISPER_THREADS = 12;
 const MAX_MANUAL_WHISPER_THREADS = 64;
 const AUTO_THREAD_RATIO = 0.75;
+// After a CUDA/Vulkan start attempt fails and falls back to CPU, don't retry
+// GPU on every single request (that would restart the server, and re-fail,
+// on every dictation for a genuinely GPU-less machine) -- wait this long
+// before trying GPU again in case the earlier failure was transient (e.g. a
+// port race during app startup).
+const GPU_RETRY_COOLDOWN_MS = 5 * 60 * 1000;
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -386,12 +392,17 @@ class WhisperServerManager extends EventEmitter {
     const threadResolution = resolveWhisperThreads(options);
     const nextThreadSignature = getThreadSignature(threadResolution);
     const nextVadSignature = getVadSignature(options);
+    const gpuMismatch =
+      this.useCuda !== (options.useCuda || false) || this.useVulkan !== (options.useVulkan || false);
+    const gpuRetryOnCooldown =
+      this._lastGpuFallbackAt && Date.now() - this._lastGpuFallbackAt < GPU_RETRY_COOLDOWN_MS;
     if (
       this.ready &&
       this.modelPath === modelPath &&
       !this.isRemote &&
       this.vadSignature === nextVadSignature &&
-      this.threadSignature === nextThreadSignature
+      this.threadSignature === nextThreadSignature &&
+      (!gpuMismatch || gpuRetryOnCooldown)
     ) {
       return;
     }
@@ -528,6 +539,7 @@ class WhisperServerManager extends EventEmitter {
           exitCode,
           stderr: stderrBuffer.slice(0, 200),
         });
+        this._lastGpuFallbackAt = Date.now();
         this.emit("cuda-fallback");
         return this._doStart(modelPath, { ...options, useCuda: false });
       }
@@ -536,6 +548,7 @@ class WhisperServerManager extends EventEmitter {
           exitCode,
           stderr: stderrBuffer.slice(0, 200),
         });
+        this._lastGpuFallbackAt = Date.now();
         this.emit("vulkan-fallback");
         return this._doStart(modelPath, { ...options, useVulkan: false });
       }
