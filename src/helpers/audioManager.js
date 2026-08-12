@@ -30,7 +30,7 @@ import { resolveDictationRouteKind, resolveDictationAgentReachability } from "./
 import { resolvePrompt } from "../config/prompts";
 import { syncService } from "../services/SyncService.js";
 import { evaluateFinishedRecording } from "./recordingValidation";
-import { matchesDictionaryPrompt } from "../utils/dictionaryEchoFilter.js";
+import { matchesDictionaryPrompt, stripDictionaryBoundaryEcho } from "../utils/dictionaryEchoFilter.js";
 import { getDictionaryHintWords } from "../utils/snippets";
 import { resolveStyleInstruction } from "../utils/appCategory";
 import { playPasteCue } from "../utils/dictationCues";
@@ -317,6 +317,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
   isDictionaryEcho(text) {
     return matchesDictionaryPrompt(text, this.getCustomDictionaryPrompt());
+  }
+
+  stripDictionaryEcho(text) {
+    return stripDictionaryBoundaryEcho(text, this.getCustomDictionaryPrompt());
   }
 
   setCallbacks({ onStateChange, onError, onTranscriptionComplete, onPartialTranscript, onStreamingCommit }) {
@@ -919,7 +923,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       );
 
       if (result.success && result.text) {
-        if (this.isDictionaryEcho(result.text)) {
+        result.text = this.stripDictionaryEcho(result.text);
+        if (!result.text || this.isDictionaryEcho(result.text)) {
           throw new Error("No audio detected");
         }
         const rawText = result.text;
@@ -1569,11 +1574,11 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     });
     timings.transcriptionProcessingDurationMs = Math.round(performance.now() - transcriptionStart);
 
-    const rawText = result.text;
-    if (this.isDictionaryEcho(rawText)) {
+    const rawText = this.stripDictionaryEcho(result.text);
+    if (!rawText || this.isDictionaryEcho(rawText)) {
       throw new Error("No audio detected");
     }
-    let processedText = result.text;
+    let processedText = rawText;
     if (processedText && !this.skipReasoning) {
       const reasoningStart = performance.now();
       const agentName = localStorage.getItem("agentName") || null;
@@ -2005,7 +2010,8 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       // Check for text - handle both empty string and missing field
       if (result.text && result.text.trim().length > 0) {
-        if (this.isDictionaryEcho(result.text)) {
+        result.text = this.stripDictionaryEcho(result.text);
+        if (!result.text || this.isDictionaryEcho(result.text)) {
           throw new Error("No audio detected");
         }
         timings.transcriptionProcessingDurationMs = Math.round(performance.now() - apiCallStart);
