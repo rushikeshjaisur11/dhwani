@@ -9,6 +9,7 @@ import { ProviderTabs } from "./ui/ProviderTabs";
 import ModelCardList from "./ui/ModelCardList";
 import { DownloadProgressBar } from "./ui/DownloadProgressBar";
 import ApiKeyInput from "./ui/ApiKeyInput";
+import OpenAICompatiblePanel from "./OpenAICompatiblePanel";
 import { ConfirmDialog } from "./ui/dialog";
 import { useDialogs } from "../hooks/useDialogs";
 import { useModelDownload, type DownloadProgress } from "../hooks/useModelDownload";
@@ -723,35 +724,22 @@ export default function TranscriptionModelPicker({
     [onLocalModelSelect, onLocalProviderSelect]
   );
 
-  const handleBaseUrlBlur = useCallback(() => {
-    if (!setCloudTranscriptionBaseUrl || selectedCloudProvider !== "custom") return;
+  const handleCustomBaseUrlChange = useCallback(
+    (url: string) => {
+      setCloudTranscriptionBaseUrl?.(url);
 
-    const trimmed = (cloudTranscriptionBaseUrl || "").trim();
-    if (!trimmed) return;
-
-    const normalized = normalizeBaseUrl(trimmed);
-
-    if (normalized && normalized !== cloudTranscriptionBaseUrl) {
-      setCloudTranscriptionBaseUrl(normalized);
-    }
-    if (normalized) {
+      const normalized = normalizeBaseUrl(url);
+      if (!normalized) return;
       for (const provider of cloudProviders) {
-        const providerNormalized = normalizeBaseUrl(provider.baseUrl);
-        if (normalized === providerNormalized) {
+        if (normalizeBaseUrl(provider.baseUrl) === normalized) {
           onCloudProviderSelect(provider.id);
           onCloudModelSelect("whisper-1");
           break;
         }
       }
-    }
-  }, [
-    cloudTranscriptionBaseUrl,
-    selectedCloudProvider,
-    setCloudTranscriptionBaseUrl,
-    onCloudProviderSelect,
-    onCloudModelSelect,
-    cloudProviders,
-  ]);
+    },
+    [setCloudTranscriptionBaseUrl, onCloudProviderSelect, onCloudModelSelect, cloudProviders]
+  );
 
   const handleDelete = useCallback(
     (modelId: string) => {
@@ -997,37 +985,15 @@ export default function TranscriptionModelPicker({
           <div>
             {selectedCloudProvider === "custom" ? (
               <div className="space-y-2">
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-foreground">
-                    {t("transcription.endpointUrl")}
-                  </label>
-                  <Input
-                    value={cloudTranscriptionBaseUrl}
-                    onChange={(e) => setCloudTranscriptionBaseUrl?.(e.target.value)}
-                    onBlur={handleBaseUrlBlur}
-                    placeholder="https://your-api.example.com/v1"
-                    className="h-8 text-sm"
-                  />
-                </div>
-
-                <ApiKeyInput
+                <OpenAICompatiblePanel
+                  baseUrl={cloudTranscriptionBaseUrl}
+                  setBaseUrl={handleCustomBaseUrlChange}
                   apiKey={customTranscriptionApiKey}
                   setApiKey={setCustomTranscriptionApiKey}
-                  label={t("transcription.apiKeyOptional")}
-                  helpText=""
+                  model={selectedCloudModel}
+                  setModel={onCloudModelSelect}
+                  baseUrlPlaceholder="https://your-api.example.com/v1"
                 />
-
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-foreground">
-                    {t("common.model")}
-                  </label>
-                  <Input
-                    value={selectedCloudModel}
-                    onChange={(e) => onCloudModelSelect(e.target.value)}
-                    placeholder="whisper-1"
-                    className="h-8 text-sm"
-                  />
-                </div>
 
                 {/azure\.com/i.test(cloudTranscriptionBaseUrl || "") && (
                   <p className="text-xs text-muted-foreground">{t("transcription.azureHint")}</p>
