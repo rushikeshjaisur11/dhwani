@@ -1,4 +1,4 @@
-const normalize = (s) =>
+export const normalize = (s) =>
   s
     .toLowerCase()
     .replace(/[^\p{L}\p{N}\s]/gu, "")
