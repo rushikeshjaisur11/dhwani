@@ -181,6 +181,20 @@ turned out to already exist.
 flow-bar (in-window) language picker specifically — a version was attempted and reverted (user feedback:
 "not working well"); the tray quick-switcher (already shipped) remains the supported quick-switch path.
 
+### Calendar-sourced speaker names
+
+Requested separately from the upstream review above. Turned out to be **partially already built**:
+`_tryAutoLabelOneOnOne` (`ipcHandlers.js`) already auto-confirmed the other speaker's name from Google
+Calendar attendee data (`note.participants`) for strict 1-on-1 meetings. **Generalized to group meetings**
+by elimination: `_resolveRemainingUnmappedParticipant` now resolves the last unnamed attendee once every
+*other* attendee on the note already has a confirmed speaker mapping, re-checked after diarization saves
+embeddings, after the note's calendar participants change, and after every manual speaker naming
+(`set-speaker-mapping`). Guarded against ambiguity — if more than one distinct speaker_id is still
+unmapped while only one attendee remains, it skips rather than guessing (only the strict 1-on-1 case,
+where any leftover speaker_ids are known duplicates of the same person, auto-labels multiple ids at once).
+Meetings with 2+ attendees still unresolved fall back to the existing manual `SpeakerPicker` (which
+already lists calendar attendees) and the voice-embedding suggestion chips — unchanged.
+
 ## ✅ Completed Items
 
 ### UI/UX

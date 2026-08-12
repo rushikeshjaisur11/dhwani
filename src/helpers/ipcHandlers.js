@@ -506,6 +506,31 @@ class IPCHandlers {
     return { displayName, email };
   }
 
+  // Generalizes _resolveOneOnOneOtherParticipant to group meetings: once every
+  // calendar attendee but one already has a confirmed speaker mapping on this
+  // note, the last unmapped attendee is unambiguous even though the meeting
+  // itself has more than two participants.
+  _resolveRemainingUnmappedParticipant(noteId) {
+    const others = this._getNoteNonSelfParticipants(noteId);
+    if (others.length === 0) return null;
+
+    const mappedNames = new Set(
+      this.databaseManager
+        .getSpeakerMappings(noteId)
+        .map((m) => (m.display_name || "").toLowerCase().trim())
+        .filter(Boolean)
+    );
+    const remaining = others.filter(
+      (p) => !mappedNames.has((p.displayName || p.email || "").toLowerCase().trim())
+    );
+    if (remaining.length !== 1) return null;
+
+    const displayName = remaining[0].displayName || remaining[0].email;
+    if (!displayName) return null;
+    const email = (remaining[0].email || "").toLowerCase().trim() || null;
+    return { displayName, email };
+  }
+
   _rebuildMirror(basePath) {
     const markdownMirror = require("./markdownMirror");
     if (basePath) markdownMirror.init(basePath);
@@ -7907,6 +7932,7 @@ class IPCHandlers {
 
         this.databaseManager.setSpeakerMapping(noteId, speakerId, resolvedProfileId, displayName);
         liveSpeakerIdentifier.mapSpeaker(speakerId, resolvedProfileId, displayName, noteId);
+        this._tryAutoLabelOneOnOne(noteId);
         return { success: true, profileId: resolvedProfileId };
       }
     );
@@ -8027,7 +8053,7 @@ class IPCHandlers {
     setImmediate(async () => {
       try {
         const note = this.databaseManager.getNote(noteId);
-        const other = this._resolveOneOnOneOtherParticipant(note?.participants);
+        const other = this._resolveRemainingUnmappedParticipant(noteId);
         if (!other) return;
         const { displayName, email } = other;
 
@@ -8046,6 +8072,13 @@ class IPCHandlers {
           (e) => !mappedSpeakers.has(e.speaker_id) && systemSpeakers.has(e.speaker_id)
         );
         if (!unmapped.length) return;
+        // Multiple distinct unmapped speaker_ids with only one remaining
+        // attendee is ambiguous (could be 2+ different people) unless this is
+        // the strict 1-on-1 case, where every unmapped id is known to be the
+        // same other person by elimination.
+        const unmappedSpeakerIds = new Set(unmapped.map((e) => e.speaker_id));
+        const isStrictOneOnOne = this._parseNonSelfParticipants(note?.participants).length === 1;
+        if (unmappedSpeakerIds.size !== 1 && !isStrictOneOnOne) return;
 
         let profile = null;
         for (const emb of unmapped) {
