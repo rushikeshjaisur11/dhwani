@@ -104,6 +104,46 @@ class MeetingDetectionEngine {
     this._showPrompt(detectionId, source, key, data, imminentEvent);
   }
 
+  // Same shape/filter as ipcHandlers.js's _parseNonSelfParticipants — duplicated
+  // rather than imported since the two modules aren't otherwise coupled.
+  _nonSelfAttendees(attendeesJson) {
+    if (!attendeesJson) return [];
+    let attendees;
+    try {
+      attendees = JSON.parse(attendeesJson);
+    } catch (_) {
+      return [];
+    }
+    if (!Array.isArray(attendees) || attendees.length === 0) return [];
+    const googleEmails = new Set(
+      this.databaseManager.getGoogleAccounts().map((a) => a.email.toLowerCase())
+    );
+    return attendees.filter(
+      (a) => a && a.self !== true && !googleEmails.has((a.email || "").toLowerCase())
+    );
+  }
+
+  // Compact "have I met with these people before?" context for the
+  // pre-meeting notification: non-self attendees plus their most recent
+  // shared notes.
+  _buildMeetingBrief(imminentEvent) {
+    const attendees = this._nonSelfAttendees(imminentEvent?.attendees);
+    if (attendees.length === 0) return null;
+
+    const emails = attendees.map((a) => (a.email || "").toLowerCase().trim()).filter(Boolean);
+    const pastNotes = emails.length
+      ? this.databaseManager.getRecentNotesForParticipants(emails, 3)
+      : [];
+
+    return {
+      attendees: attendees.map((a) => ({
+        email: a.email || null,
+        displayName: a.displayName || a.email || "",
+      })),
+      pastNotes: pastNotes.map((n) => ({ id: n.id, title: n.title, updatedAt: n.updated_at })),
+    };
+  }
+
   _showPrompt(detectionId, source, key, data, imminentEvent) {
     let title, body;
 
@@ -114,6 +154,8 @@ class MeetingDetectionEngine {
       title = "Meeting Detected";
       body = "It sounds like you're in a meeting. Want to take notes?";
     }
+
+    const brief = imminentEvent ? this._buildMeetingBrief(imminentEvent) : null;
 
     debugLogger.info("Showing notification", { detectionId, title }, "meeting");
 
@@ -150,6 +192,7 @@ class MeetingDetectionEngine {
         title,
         body,
         event,
+        brief,
       });
     } else {
       debugLogger.info("Meeting notification suppressed by user preference", {}, "meeting");
@@ -160,6 +203,7 @@ class MeetingDetectionEngine {
       source,
       data,
       imminentEvent,
+      brief,
     });
   }
 

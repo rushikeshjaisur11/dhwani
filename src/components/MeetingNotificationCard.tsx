@@ -1,4 +1,22 @@
-import { X } from "lucide-react";
+import { useState } from "react";
+import { X, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+export interface MeetingBriefAttendee {
+  email: string | null;
+  displayName: string;
+}
+
+export interface MeetingBriefNote {
+  id: number;
+  title: string;
+  updatedAt: string;
+}
+
+export interface MeetingBrief {
+  attendees: MeetingBriefAttendee[];
+  pastNotes: MeetingBriefNote[];
+}
 
 interface MeetingNotificationCardProps {
   title: string;
@@ -11,6 +29,10 @@ interface MeetingNotificationCardProps {
   className?: string;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  /** Attendee + past-notes context. Renders nothing when absent/empty. */
+  brief?: MeetingBrief | null;
+  /** Called with a note id when a past-note item is clicked. */
+  onOpenNote?: (noteId: number) => void;
 }
 
 /**
@@ -29,7 +51,14 @@ export function MeetingNotificationCard({
   className = "",
   onMouseEnter,
   onMouseLeave,
+  brief,
+  onOpenNote,
 }: MeetingNotificationCardProps) {
+  const { t } = useTranslation();
+  const [showPastNotes, setShowPastNotes] = useState(false);
+  const attendeeNames = brief?.attendees.map((a) => a.displayName).filter(Boolean) ?? [];
+  const pastNotes = brief?.pastNotes ?? [];
+
   return (
     <div
       className={[
@@ -90,6 +119,51 @@ export function MeetingNotificationCard({
           {startLabel}
         </button>
       </div>
+
+      {attendeeNames.length > 0 && (
+        <div className="mt-1.5 pl-[30px]">
+          <p className="text-[10.5px] text-muted-foreground/80 truncate">
+            {t("meetings.brief.with", { names: attendeeNames.join(", ") })}
+          </p>
+
+          {pastNotes.length > 0 && (
+            <>
+              <button
+                onClick={() => setShowPastNotes((v) => !v)}
+                className="mt-1 flex items-center gap-0.5 text-[10.5px] font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                {t("meetings.brief.pastNotesToggle", { count: pastNotes.length })}
+                <ChevronDown
+                  className={[
+                    "size-3 transition-transform duration-150",
+                    showPastNotes ? "rotate-180" : "",
+                  ].join(" ")}
+                />
+              </button>
+
+              {showPastNotes && (
+                <ul className="mt-1 space-y-0.5">
+                  {pastNotes.map((note) => (
+                    <li key={note.id}>
+                      <button
+                        onClick={() => onOpenNote?.(note.id)}
+                        className="w-full text-left text-[10.5px] text-foreground/80 hover:text-primary hover:underline truncate transition-colors"
+                        title={note.title}
+                      >
+                        {note.title || t("meetings.brief.untitledNote")}
+                        <span className="text-muted-foreground/60">
+                          {" · "}
+                          {new Date(note.updatedAt).toLocaleDateString()}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

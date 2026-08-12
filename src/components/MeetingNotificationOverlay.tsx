@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { MeetingNotificationCard } from "./MeetingNotificationCard";
+import { MeetingNotificationCard, type MeetingBrief } from "./MeetingNotificationCard";
 
 interface NotificationData {
   detectionId: string;
@@ -8,6 +8,7 @@ interface NotificationData {
   title: string;
   body: string;
   event: any;
+  brief?: MeetingBrief | null;
 }
 
 export default function MeetingNotificationOverlay() {
@@ -68,6 +69,8 @@ export default function MeetingNotificationOverlay() {
         onStart={() => respond("start")}
         onDismiss={() => respond("dismiss")}
         closeVisible={isHovered}
+        brief={data?.brief}
+        onOpenNote={(noteId) => window.electronAPI?.agentOpenNote?.(noteId)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         className={[
