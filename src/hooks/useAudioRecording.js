@@ -272,7 +272,7 @@ export const useAudioRecording = (toast, options = {}) => {
           // some target apps, so it's gone — this is the only paste now.
           if (autoPasteEnabled) {
             const pasteStart = performance.now();
-            await audioManagerRef.current.safePaste(result.text, {
+            const pasteResult = await audioManagerRef.current.safePaste(result.text, {
               ...(isStreaming ? { fromStreaming: true } : {}),
               restoreClipboard: !keepTranscriptionInClipboard,
               allowClipboardFallback: isAccessibilitySkipped(),
@@ -286,6 +286,13 @@ export const useAudioRecording = (toast, options = {}) => {
               },
               "streaming"
             );
+            // Paste failed (e.g. accessibility permission missing, target app
+            // rejected the keystrokes) — the transcript is already done, don't
+            // let it vanish. Copy it to the clipboard so the user can paste it
+            // manually instead of having to redictate.
+            if (!pasteResult?.ok) {
+              await writeClipboard(result.text);
+            }
           } else if (keepTranscriptionInClipboard) {
             await writeClipboard(result.text);
           }
