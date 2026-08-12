@@ -2092,6 +2092,9 @@
       "searchNotes": "æœå°‹ç­†è¨˜",
       "actions": "å‹•ä½œ"
     },
+      "waveform": {
+      "loading": "正在載入波形…"
+    },
     "folders": {
       "title": "è³‡æ–™å¤¾",
       "soon": "å³å°‡æŽ¨å‡º",
@@ -2113,6 +2116,16 @@
       "minutesAgo": "{{count}} åˆ†é˜å‰",
       "hoursAgo": "{{count}} å°æ™‚å‰",
       "daysAgo": "{{count}} å¤©å‰"
+    },
+    "meetingSearch": {
+      "buttonLabel": "詢問你的會議",
+      "title": "詢問你的會議",
+      "description": "使用語意搜尋針對你的會議筆記提問",
+      "placeholder": "就你的會議提出問題…",
+      "emptyState": "輸入問題以搜尋你的會議筆記",
+      "searching": "搜尋中…",
+      "noResults": "找不到符合的會議",
+      "footer": "對會議筆記進行語意搜尋"
     },
     "editor": {
       "untitled": "æœªå‘½å",
@@ -2385,7 +2398,13 @@
         "signoffTrigger": "ç°½å",
         "signoffText": "ç¥å¥½ï¼ŒAlex Â· alex@example.com"
       },
-      "addPlaceholder": "æ–°å¢žè§¸ç™¼è©ž——ã€Œæˆ‘çš„è¡Œäº‹æ›†é€£çµã€ã€Œç°½åã€"
+      "addPlaceholder": "æ–°å¢žè§¸ç™¼è©ž——ã€Œæˆ‘çš„è¡Œäº‹æ›†é€£çµã€ã€Œç°½åã€",
+        "autoSuggest": {
+        "title": "你已經說過這句話好幾次了",
+        "description": "「{{phrase}}」——儲存為片段？",
+        "accept": "儲存為片段",
+        "dismiss": "略過"
+      }
     },
     "emptyTitle": "ä½ çš„å­—å…¸æ˜¯ç©ºçš„",
     "emptyDescription": "æ–°å¢žå¸Œæœ›{{agentName}}å§‹çµ‚è¾¨è­˜æ­£ç¢ºçš„è©žï¼šåå­—ã€å·¥å…·ã€ç¸®å¯«ã€‚",
@@ -2724,6 +2743,14 @@
     "today": "ä»Šå¤©",
     "tomorrow": "æ˜Žå¤©"
   },
+  "meetings": {
+    "brief": {
+      "with": "與 {{names}}",
+      "pastNotesToggle_one": "{{count}} 則過往共同筆記",
+      "pastNotesToggle_other": "{{count}} 則過往共同筆記",
+      "untitledNote": "無標題筆記"
+    }
+  },
   "upcoming": {
     "title": "å³å°‡é–‹å§‹çš„æœƒè­°",
     "transcriptions": "è½‰éŒ„",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "桌面使用情況",
       "totalApps": "使用了 {{count}} 個應用"
+    },
+      "timeSaved": {
+      "title": "節省的時間",
+      "subtitle": "相比以約 {{wpm}} WPM 的速度打字",
+      "hoursMinutes": "{{hours}}小時{{minutes}}分鐘",
+      "minutesOnly": "{{minutes}}分鐘"
+    },
+    "weeklyTrend": {
+      "title": "本週字數",
+      "vsLastWeek": "較上週{{sign}}{{pct}}%",
+      "noBaseline": "暫無上週資料"
+    },
+    "rangeFilter": {
+      "7days": "7 天",
+      "30days": "30 天",
+      "allTime": "所有時間"
+    },
+    "charts": {
+      "sectionTitle": "趨勢",
+      "frequency": {
+        "title": "口述頻率"
+      },
+      "avgWords": {
+        "title": "平均字數"
+      },
+      "timeSaved": {
+        "title": "每日節省時間"
+      },
+      "emptyState": "歷史記錄尚不足以繪製此時間範圍的圖表。"
     }
   },
   "modelRecommendation": {

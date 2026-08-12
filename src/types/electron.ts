@@ -618,12 +618,27 @@ declare global {
         averageWPM: number;
         wordsToday: number;
         wordsThisWeek: number;
+        wordsLastWeek: number;
         dayStreak: number;
         longestStreak: number;
         fixesMade: number;
         personalBestWPM: number;
+        totalTimeSavedMinutes: number;
         dailyActivity: Array<{ date: string; words: number; count: number }>;
         appUsage: Array<{ app: string; count: number; words: number; pct: number }>;
+      }>;
+      getInsightsActivity: (rangeDays?: number | null) => Promise<{
+        totalWords: number;
+        totalDictations: number;
+        averageWPM: number;
+        timeSavedMinutes: number;
+        dailyActivity: Array<{
+          date: string;
+          words: number;
+          count: number;
+          avgWords: number;
+          timeSavedMinutes: number;
+        }>;
       }>;
       getTranscriptionById: (id: number) => Promise<TranscriptionItem | null>;
 
@@ -717,7 +732,11 @@ declare global {
       ) => Promise<{ success: boolean; error?: string }>;
       exportDictionary: (words: string[]) => Promise<{ success: boolean; error?: string }>;
       searchNotes: (query: string, limit?: number) => Promise<NoteItem[]>;
-      semanticSearchNotes: (query: string, limit?: number) => Promise<NoteItem[]>;
+      semanticSearchNotes: (
+        query: string,
+        limit?: number,
+        noteType?: string
+      ) => Promise<NoteItem[]>;
       semanticReindexAll: () => Promise<{ success: boolean; indexed?: number; error?: string }>;
       onSemanticReindexProgress: (
         callback: (data: { done: number; total: number }) => void

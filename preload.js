@@ -117,6 +117,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   clearTranscriptions: () => ipcRenderer.invoke("db-clear-transcriptions"),
   deleteTranscription: (id) => ipcRenderer.invoke("db-delete-transcription", id),
   getInsightsStats: () => ipcRenderer.invoke("db-get-insights-stats"),
+  getInsightsActivity: (rangeDays) => ipcRenderer.invoke("db-get-insights-activity", rangeDays),
 
   // Audio storage functions
   saveTranscriptionAudio: (id, audioBuffer, metadata) =>
@@ -168,8 +169,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   exportTranscript: (noteId, format) => ipcRenderer.invoke("export-transcript", noteId, format),
   exportDictionary: (words) => ipcRenderer.invoke("export-dictionary", words),
   searchNotes: (query, limit) => ipcRenderer.invoke("db-search-notes", query, limit),
-  semanticSearchNotes: (query, limit) =>
-    ipcRenderer.invoke("db-semantic-search-notes", query, limit),
+  semanticSearchNotes: (query, limit, noteType) =>
+    ipcRenderer.invoke("db-semantic-search-notes", query, limit, noteType),
   semanticReindexAll: () => ipcRenderer.invoke("db-semantic-reindex-all"),
   onSemanticReindexProgress: (callback) => {
     const listener = (_event, data) => callback?.(data);

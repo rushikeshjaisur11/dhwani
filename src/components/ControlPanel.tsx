@@ -55,6 +55,7 @@ import { fetchProviders as fetchStreamingProviders } from "../stores/streamingPr
 import HistoryView from "./HistoryView";
 import ContextPanel from "./ContextPanel";
 import BackgroundActionToastListener from "./notes/BackgroundActionToastListener";
+import AutoSnippetSuggestionListener from "./AutoSnippetSuggestionListener";
 import { syncService } from "../services/SyncService.js";
 import AcceptInvitationModal from "./AcceptInvitationModal";
 import {
@@ -77,6 +78,7 @@ const TransformsView = React.lazy(() => import("./TransformsView"));
 const ScratchpadView = React.lazy(() => import("./ScratchpadView"));
 const ChatView = React.lazy(() => import("./chat/ChatView"));
 const CommandSearch = React.lazy(() => import("./CommandSearch"));
+const MeetingSearchDialog = React.lazy(() => import("./MeetingSearchDialog"));
 
 interface ControlPanelProps {
   /** Open the settings modal at this section on mount (e.g. after onboarding). */
@@ -108,9 +110,14 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   };
   const [invitationToken, setInvitationToken] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
+  const [showMeetingSearch, setShowMeetingSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const showDiscarded = useShowDiscarded();
   const [activeView, setActiveView] = useState<ControlPanelView>("home");
+  const [snippetDraft, setSnippetDraft] = useState<{
+    trigger: string;
+    replacement: string;
+  } | null>(null);
   const isMeetingMode = useIsMeetingMode();
   const isNarrowWindow = useIsNarrowWindow();
   const activeNoteId = useActiveNoteId();
@@ -737,6 +744,20 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
         </Suspense>
       )}
 
+      {showMeetingSearch && (
+        <Suspense fallback={null}>
+          <MeetingSearchDialog
+            open={showMeetingSearch}
+            onOpenChange={setShowMeetingSearch}
+            onNoteSelect={(id, folderId) => {
+              if (folderId) setActiveFolderId(folderId);
+              setActiveNoteId(id);
+              setActiveView("personal-notes");
+            }}
+          />
+        </Suspense>
+      )}
+
       {/* Top Window Bar (spans full width) */}
       <div
         className="flex items-center justify-between w-full h-11 shrink-0 px-4 mt-1.5 select-none"
@@ -852,6 +873,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             activeView={activeView}
             onViewChange={setActiveView}
             onOpenSearch={() => setShowSearch(true)}
+            onOpenMeetingSearch={() => setShowMeetingSearch(true)}
             onOpenSettings={() => {
               setSettingsSection(undefined);
               setShowSettings(true);
@@ -1014,7 +1036,10 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             )}
             {activeView === "snippets" && (
               <Suspense fallback={null}>
-                <SnippetsView />
+                <SnippetsView
+                  initialDraft={snippetDraft}
+                  onDraftConsumed={() => setSnippetDraft(null)}
+                />
               </Suspense>
             )}
             {activeView === "style" && (
@@ -1037,6 +1062,12 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
         <ContextPanel activeView={activeView} />
       </div>
       <BackgroundActionToastListener />
+      <AutoSnippetSuggestionListener
+        onAcceptSuggestion={(replacement) => {
+          setSnippetDraft({ trigger: "", replacement });
+          setActiveView("snippets");
+        }}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   Settings,
   UserPlus,
   Search,
+  MessageCircleQuestion,
   Scissors,
   Palette,
   Wand2,
@@ -46,6 +47,7 @@ interface ControlPanelSidebarProps {
   onViewChange: (view: ControlPanelView) => void;
   onOpenSettings: () => void;
   onOpenSearch?: () => void;
+  onOpenMeetingSearch?: () => void;
   updateAction?: React.ReactNode;
   isCollapsed?: boolean;
 }
@@ -55,6 +57,7 @@ export default function ControlPanelSidebar({
   onViewChange,
   onOpenSettings,
   onOpenSearch,
+  onOpenMeetingSearch,
   updateAction,
   isCollapsed = false,
 }: ControlPanelSidebarProps) {
@@ -149,6 +152,29 @@ export default function ControlPanelSidebar({
                 K
               </kbd>
             </div>
+          </button>
+        </div>
+      )}
+
+      {onOpenMeetingSearch && (
+        <div className="px-2.5 pb-2">
+          <button
+            onClick={onOpenMeetingSearch}
+            title={t("notes.meetingSearch.buttonLabel")}
+            className={cn(
+              "group flex items-center w-full h-9 rounded-lg border border-border/50 dark:border-white/15 bg-white/40 dark:bg-white/5 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all outline-none focus-visible:ring-1 focus-visible:ring-primary/30",
+              isCollapsed ? "px-0 justify-center" : "px-3 justify-start gap-2"
+            )}
+          >
+            <MessageCircleQuestion size={14} className="text-muted-foreground/50 shrink-0" />
+            <span
+              className={cn(
+                "text-[13px] text-left text-muted-foreground/50 transition-all duration-300 whitespace-nowrap overflow-hidden",
+                isCollapsed ? "opacity-0 w-0 flex-none" : "flex-1 opacity-100 w-auto"
+              )}
+            >
+              {t("notes.meetingSearch.buttonLabel")}
+            </span>
           </button>
         </div>
       )}

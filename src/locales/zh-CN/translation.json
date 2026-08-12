@@ -2092,6 +2092,9 @@
       "searchNotes": "æœç´¢ç¬”è®°",
       "actions": "æ“ä½œ"
     },
+      "waveform": {
+      "loading": "正在加载波形…"
+    },
     "folders": {
       "title": "æ–‡ä»¶å¤¹",
       "soon": "å³å°†æŽ¨å‡º",
@@ -2113,6 +2116,16 @@
       "minutesAgo": "{{count}} åˆ†é’Ÿå‰",
       "hoursAgo": "{{count}} å°æ—¶å‰",
       "daysAgo": "{{count}} å¤©å‰"
+    },
+    "meetingSearch": {
+      "buttonLabel": "询问你的会议",
+      "title": "询问你的会议",
+      "description": "使用语义搜索针对你的会议笔记提问",
+      "placeholder": "就你的会议提出问题…",
+      "emptyState": "输入问题以搜索你的会议笔记",
+      "searching": "搜索中…",
+      "noResults": "未找到匹配的会议",
+      "footer": "对会议笔记进行语义搜索"
     },
     "editor": {
       "untitled": "æ— æ ‡é¢˜",
@@ -2385,7 +2398,13 @@
         "signoffTrigger": "ç­¾å",
         "signoffText": "ç¥å¥½ï¼ŒAlex Â· alex@example.com"
       },
-      "addPlaceholder": "æ·»åŠ è§¦å‘è¯——“æˆ‘çš„æ—¥ç¨‹é“¾æŽ¥”“ç­¾å”"
+      "addPlaceholder": "æ·»åŠ è§¦å‘è¯——“æˆ‘çš„æ—¥ç¨‹é“¾æŽ¥”“ç­¾å”",
+        "autoSuggest": {
+        "title": "你已经说过这句话好几次了",
+        "description": "“{{phrase}}”——保存为片段？",
+        "accept": "保存为片段",
+        "dismiss": "忽略"
+      }
     },
     "emptyTitle": "ä½ çš„è¯å…¸æ˜¯ç©ºçš„",
     "emptyDescription": "æ·»åŠ å¸Œæœ›{{agentName}}å§‹ç»ˆè¯†åˆ«æ­£ç¡®çš„è¯ï¼šåå­—ã€å·¥å…·ã€ç¼©å†™ã€‚",
@@ -2724,6 +2743,14 @@
     "today": "ä»Šå¤©",
     "tomorrow": "æ˜Žå¤©"
   },
+  "meetings": {
+    "brief": {
+      "with": "与 {{names}}",
+      "pastNotesToggle_one": "{{count}} 条过往共同笔记",
+      "pastNotesToggle_other": "{{count}} 条过往共同笔记",
+      "untitledNote": "无标题笔记"
+    }
+  },
   "upcoming": {
     "title": "å³å°†å¼€å§‹çš„ä¼šè®®",
     "transcriptions": "è½¬å½•",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "桌面使用情况",
       "totalApps": "使用了 {{count}} 个应用"
+    },
+      "timeSaved": {
+      "title": "节省的时间",
+      "subtitle": "相比以约 {{wpm}} WPM 的速度打字",
+      "hoursMinutes": "{{hours}}小时{{minutes}}分钟",
+      "minutesOnly": "{{minutes}}分钟"
+    },
+    "weeklyTrend": {
+      "title": "本周字数",
+      "vsLastWeek": "较上周{{sign}}{{pct}}%",
+      "noBaseline": "暂无上周数据"
+    },
+    "rangeFilter": {
+      "7days": "7 天",
+      "30days": "30 天",
+      "allTime": "全部时间"
+    },
+    "charts": {
+      "sectionTitle": "趋势",
+      "frequency": {
+        "title": "听写频率"
+      },
+      "avgWords": {
+        "title": "平均字数"
+      },
+      "timeSaved": {
+        "title": "每日节省时间"
+      },
+      "emptyState": "历史记录尚不足以绘制此时间范围的图表。"
     }
   },
   "modelRecommendation": {

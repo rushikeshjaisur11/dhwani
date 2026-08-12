@@ -118,7 +118,12 @@ const renderSnippetReplacement = (text: string) => {
   });
 };
 
-export default function SnippetsView() {
+interface SnippetsViewProps {
+  initialDraft?: { trigger: string; replacement: string } | null;
+  onDraftConsumed?: () => void;
+}
+
+export default function SnippetsView({ initialDraft, onDraftConsumed }: SnippetsViewProps = {}) {
   const { t } = useTranslation();
   const { snippets, setSnippets } = useSettings();
   const [trigger, setTrigger] = useState("");
@@ -129,6 +134,15 @@ export default function SnippetsView() {
     () => localStorage.getItem("snippetsBannerDismissed") === "true"
   );
   const triggerInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!initialDraft) return;
+    setTrigger(initialDraft.trigger);
+    setExpansion(initialDraft.replacement);
+    setPanelOpen(true);
+    onDraftConsumed?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialDraft]);
 
   const dismissBanner = () => {
     localStorage.setItem("snippetsBannerDismissed", "true");
@@ -334,34 +348,35 @@ export default function SnippetsView() {
             {t("dictionary.noMatches", { word: trimmedTrigger })}
           </p>
         ) : (
-          <div className="flex flex-col gap-2 mt-2">
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-3 mt-2 [&>*]:mb-3">
             {visibleSnippets.map((snippet) => (
               <div
                 key={snippet.trigger}
-                className="group flex items-center gap-3 p-2.5 rounded-lg border border-border/40 bg-surface-1 shadow-sm hover:bg-surface-2 hover:border-primary/20 transition-all"
+                className="group break-inside-avoid rounded-xl border border-border/40 bg-surface-1 shadow-sm p-3 flex flex-col gap-2 hover:bg-surface-2 hover:border-primary/20 transition-all"
               >
-                <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-foreground/5 dark:bg-white/10 text-foreground/80 border border-border/50">
-                  {snippet.trigger}
-                </span>
-                <span className="shrink-0 text-[10px] text-foreground/20 font-mono">→</span>
-                <div className="flex-1 min-w-0 text-[13px] text-foreground/70 truncate">
-                  {renderSnippetReplacement(snippet.replacement)}
+                <div className="flex items-start justify-between gap-2">
+                  <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-foreground/5 dark:bg-white/10 text-foreground/80 border border-border/50 font-mono">
+                    {snippet.trigger}
+                  </span>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 shrink-0">
+                    <button
+                      onClick={() => setEditing(snippet)}
+                      aria-label={t("dictionary.snippets.edit", { trigger: snippet.trigger })}
+                      className="p-1.5 rounded-md text-foreground/40 hover:bg-foreground/5 hover:text-foreground transition-colors"
+                    >
+                      <Pencil size={12} />
+                    </button>
+                    <button
+                      onClick={() => handleRemove(snippet.trigger)}
+                      aria-label={t("dictionary.snippets.remove", { trigger: snippet.trigger })}
+                      className="p-1.5 rounded-md text-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                    >
+                      <X size={12} strokeWidth={2} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 shrink-0">
-                  <button
-                    onClick={() => setEditing(snippet)}
-                    aria-label={t("dictionary.snippets.edit", { trigger: snippet.trigger })}
-                    className="p-1.5 rounded-md text-foreground/40 hover:bg-foreground/5 hover:text-foreground transition-colors"
-                  >
-                    <Pencil size={12} />
-                  </button>
-                  <button
-                    onClick={() => handleRemove(snippet.trigger)}
-                    aria-label={t("dictionary.snippets.remove", { trigger: snippet.trigger })}
-                    className="p-1.5 rounded-md text-foreground/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                  >
-                    <X size={12} strokeWidth={2} />
-                  </button>
+                <div className="text-[13px] text-foreground/70 leading-relaxed">
+                  {renderSnippetReplacement(snippet.replacement)}
                 </div>
               </div>
             ))}

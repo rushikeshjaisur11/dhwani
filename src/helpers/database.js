@@ -5,6 +5,61 @@ const { randomUUID } = require("crypto");
 const debugLogger = require("./debugLogger");
 const { app } = require("electron");
 
+// ponytail: no existing typing-speed constant anywhere in the app (checked
+// audioManager/whisper.js/insights code) — 40 WPM is the commonly-cited
+// average adult typing speed, used as the "time saved vs typing" heuristic
+// below (words / TYPING_WPM = minutes it would've taken to type, minus the
+// minutes actually spent dictating).
+const TYPING_WPM = 40;
+
+// Pure, DB-free aggregation so it's unit-testable without spinning up
+// better-sqlite3/electron. Buckets rows (already range-filtered by the
+// caller's SQL WHERE) into per-day activity for the insights charts.
+function aggregateInsightsActivity(rows) {
+  const countWords = (text) => (text?.trim() ? text.trim().split(/\s+/).length : 0);
+  const dailyMap = new Map(); // dateKey -> { date, words, count, durationMs }
+
+  let totalWords = 0;
+  let totalDurationMs = 0;
+
+  for (const row of rows) {
+    const words = countWords(row.text);
+    totalWords += words;
+    const durationMs = row.audio_duration_ms || 0;
+    totalDurationMs += durationMs;
+
+    const isoDate = new Date(row.timestamp).toISOString().slice(0, 10);
+    const entry = dailyMap.get(isoDate) ?? { date: isoDate, words: 0, count: 0, durationMs: 0 };
+    entry.words += words;
+    entry.count += 1;
+    entry.durationMs += durationMs;
+    dailyMap.set(isoDate, entry);
+  }
+
+  const timeSavedMinutes = (words, durationMs) =>
+    Math.max(0, Math.round(words / TYPING_WPM - durationMs / 60000));
+
+  const dailyActivity = [...dailyMap.values()]
+    .map((entry) => ({
+      date: entry.date,
+      words: entry.words,
+      count: entry.count,
+      avgWords: entry.count > 0 ? Math.round(entry.words / entry.count) : 0,
+      timeSavedMinutes: timeSavedMinutes(entry.words, entry.durationMs),
+    }))
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+
+  const totalMinutes = totalDurationMs / 60000;
+
+  return {
+    totalWords,
+    totalDictations: rows.length,
+    averageWPM: totalMinutes > 0 ? Math.round(totalWords / totalMinutes) : 0,
+    timeSavedMinutes: timeSavedMinutes(totalWords, totalDurationMs),
+    dailyActivity,
+  };
+}
+
 class DatabaseManager {
   constructor() {
     this.db = null;
@@ -686,11 +741,14 @@ class DatabaseManager {
       const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const startOfWeek = new Date(startOfToday);
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+      const startOfLastWeek = new Date(startOfWeek);
+      startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
 
       let totalWords = 0;
       let totalDurationMs = 0;
       let wordsToday = 0;
       let wordsThisWeek = 0;
+      let wordsLastWeek = 0;
       let fixesMade = 0;
       let personalBestWPM = 0;
       const activeDayKeys = new Set();
@@ -716,6 +774,7 @@ class DatabaseManager {
         activeDayKeys.add(dayKey);
         if (ts >= startOfToday) wordsToday += words;
         if (ts >= startOfWeek) wordsThisWeek += words;
+        else if (ts >= startOfLastWeek) wordsLastWeek += words;
 
         const isoDate = ts.toISOString().slice(0, 10);
         const dayEntry = dailyActivityMap.get(isoDate) ?? { date: isoDate, words: 0, count: 0 };
@@ -756,6 +815,7 @@ class DatabaseManager {
 
       const totalMinutes = totalDurationMs / 60000;
       const averageWPM = totalMinutes > 0 ? Math.round(totalWords / totalMinutes) : 0;
+      const totalTimeSavedMinutes = Math.max(0, Math.round(totalWords / TYPING_WPM - totalMinutes));
 
       const totalAppWords = [...appUsageMap.values()].reduce((sum, entry) => sum + entry.words, 0);
       const appUsage = [...appUsageMap.values()]
@@ -771,15 +831,44 @@ class DatabaseManager {
         averageWPM,
         wordsToday,
         wordsThisWeek,
+        wordsLastWeek,
         dayStreak,
         longestStreak,
         fixesMade,
         personalBestWPM,
+        totalTimeSavedMinutes,
         dailyActivity: [...dailyActivityMap.values()].sort((a, b) => (a.date < b.date ? -1 : 1)),
         appUsage,
       };
     } catch (error) {
       debugLogger.error("Error computing insights stats", { error: error.message }, "database");
+      throw error;
+    }
+  }
+
+  // Range-scoped activity for the Insights charts (dictation frequency, avg
+  // word count, time saved). Filters in SQL first — unlike getInsightsStats
+  // above (lifetime streak/totals, needs the full table) — so picking "Last
+  // 7 days" doesn't pull the whole history into the renderer.
+  getInsightsActivity(rangeDays = null) {
+    try {
+      if (!this.db) {
+        throw new Error("Database not initialized");
+      }
+
+      let sql = `SELECT text, timestamp, audio_duration_ms FROM transcriptions
+                 WHERE deleted_at IS NULL AND status = 'completed' AND text != ''`;
+      const params = [];
+      if (rangeDays) {
+        const cutoff = new Date(Date.now() - rangeDays * 86400000);
+        sql += " AND timestamp >= ?";
+        params.push(cutoff.toISOString().slice(0, 19).replace("T", " "));
+      }
+
+      const rows = this.db.prepare(sql).all(...params);
+      return aggregateInsightsActivity(rows);
+    } catch (error) {
+      debugLogger.error("Error computing insights activity", { error: error.message }, "database");
       throw error;
     }
   }
@@ -1899,7 +1988,7 @@ class DatabaseManager {
     }
   }
 
-  searchNotes(query, limit = 50) {
+  searchNotes(query, limit = 50, noteType = null) {
     try {
       if (!this.db) throw new Error("Database not initialized");
       const term = query
@@ -1907,18 +1996,20 @@ class DatabaseManager {
         .replace(/[^\w\s]/g, " ")
         .trim();
       if (!term) return [];
+      const typeFilter = noteType ? "AND n.note_type = ?" : "";
+      const params = noteType ? [term + "*", noteType, limit] : [term + "*", limit];
       return this.db
         .prepare(
           `
         SELECT n.*
         FROM notes n
         JOIN notes_fts ON notes_fts.rowid = n.id
-        WHERE notes_fts MATCH ? AND n.deleted_at IS NULL
+        WHERE notes_fts MATCH ? AND n.deleted_at IS NULL ${typeFilter}
         ORDER BY notes_fts.rank
         LIMIT ?
       `
         )
-        .all(term + "*", limit);
+        .all(...params);
     } catch (error) {
       debugLogger.error("Error searching notes", { error: error.message }, "database");
       throw error;
@@ -1964,6 +2055,32 @@ class DatabaseManager {
         "notes"
       );
       return null;
+    }
+  }
+
+  // Finds recent notes whose participants JSON mentions any of the given emails —
+  // used for the pre-meeting brief ("have I met with these people before?").
+  // LIKE substring match on the stored JSON, same idiom as searchNotes/getContacts
+  // in this file; a real join would need a normalized participants table.
+  getRecentNotesForParticipants(emails, limit = 5) {
+    try {
+      if (!this.db) throw new Error("Database not initialized");
+      const list = (emails || []).map((e) => (e || "").toLowerCase().trim()).filter(Boolean);
+      if (list.length === 0) return [];
+      const conditions = list.map(() => "participants LIKE ?").join(" OR ");
+      const params = list.map((e) => `%"${e}"%`);
+      return this.db
+        .prepare(
+          `SELECT * FROM notes WHERE deleted_at IS NULL AND participants IS NOT NULL AND (${conditions}) ORDER BY updated_at DESC LIMIT ?`
+        )
+        .all(...params, limit);
+    } catch (error) {
+      debugLogger.error(
+        "Error getting recent notes for participants",
+        { error: error.message },
+        "notes"
+      );
+      throw error;
     }
   }
 
@@ -2964,3 +3081,5 @@ class DatabaseManager {
 }
 
 module.exports = DatabaseManager;
+module.exports.aggregateInsightsActivity = aggregateInsightsActivity;
+module.exports.TYPING_WPM = TYPING_WPM;

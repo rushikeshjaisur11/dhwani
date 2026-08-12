@@ -2140,6 +2140,9 @@
       "searchNotes": "Buscar notas",
       "actions": "Acciones"
     },
+      "waveform": {
+      "loading": "Cargando forma de onda…"
+    },
     "folders": {
       "title": "Carpetas",
       "soon": "PrÃ³ximamente",
@@ -2161,6 +2164,16 @@
       "minutesAgo": "hace {{count}}m",
       "hoursAgo": "hace {{count}}h",
       "daysAgo": "hace {{count}}d"
+    },
+    "meetingSearch": {
+      "buttonLabel": "Pregunta a tus reuniones",
+      "title": "Pregunta a tus reuniones",
+      "description": "Haz una pregunta sobre tus notas de reuniones usando busqueda semantica",
+      "placeholder": "Haz una pregunta sobre tus reuniones…",
+      "emptyState": "Escribe una pregunta para buscar en tus notas de reuniones",
+      "searching": "Buscando…",
+      "noResults": "No se encontraron reuniones coincidentes",
+      "footer": "Busqueda semantica en notas de reuniones"
     },
     "editor": {
       "untitled": "Sin tÃ­tulo",
@@ -2433,7 +2446,13 @@
         "signoffTrigger": "Despedida",
         "signoffText": "Saludos, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "AÃ±ade una frase disparadora: \"mi agenda\", \"mi LinkedIn\""
+      "addPlaceholder": "AÃ±ade una frase disparadora: \"mi agenda\", \"mi LinkedIn\"",
+        "autoSuggest": {
+        "title": "Has dicho esto varias veces",
+        "description": "\"{{phrase}}\" — ¿guardarlo como snippet?",
+        "accept": "Guardar como snippet",
+        "dismiss": "Descartar"
+      }
     },
     "emptyTitle": "Tu diccionario estÃ¡ vacÃ­o",
     "emptyDescription": "AÃ±ade palabras que {{agentName}} siempre debe reconocer: nombres, herramientas, siglas.",
@@ -2772,6 +2791,14 @@
     "today": "Hoy",
     "tomorrow": "MaÃ±ana"
   },
+  "meetings": {
+    "brief": {
+      "with": "Con {{names}}",
+      "pastNotesToggle_one": "{{count}} nota anterior juntos",
+      "pastNotesToggle_other": "{{count}} notas anteriores juntos",
+      "untitledNote": "Nota sin título"
+    }
+  },
   "upcoming": {
     "title": "PrÃ³ximas reuniones",
     "transcriptions": "Transcripciones",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "Uso de escritorio",
       "totalApps": "{{count}} apps usadas"
+    },
+      "timeSaved": {
+      "title": "Tiempo ahorrado",
+      "subtitle": "Comparado con escribir a ~{{wpm}} PPM",
+      "hoursMinutes": "{{hours}}h {{minutes}}m",
+      "minutesOnly": "{{minutes}}m"
+    },
+    "weeklyTrend": {
+      "title": "Palabras esta semana",
+      "vsLastWeek": "{{sign}}{{pct}}% vs la semana pasada",
+      "noBaseline": "Aun no hay datos de la semana pasada"
+    },
+    "rangeFilter": {
+      "7days": "7 dias",
+      "30days": "30 dias",
+      "allTime": "Todo el tiempo"
+    },
+    "charts": {
+      "sectionTitle": "Tendencias",
+      "frequency": {
+        "title": "Frecuencia de dictado"
+      },
+      "avgWords": {
+        "title": "Promedio de palabras"
+      },
+      "timeSaved": {
+        "title": "Tiempo ahorrado por dia"
+      },
+      "emptyState": "Aun no hay suficiente historial para graficar este rango."
     }
   },
   "modelRecommendation": {

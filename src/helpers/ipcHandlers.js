@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const debugLogger = require("./debugLogger");
 const tokenStore = require("./tokenStore");
 const { classifyAndLog } = require("./networkErrors");
+const { withRetry, createApiRetryStrategy, httpError } = require("./retryFetch");
 const GnomeShortcutManager = require("./gnomeShortcut");
 const HyprlandShortcutManager = require("./hyprlandShortcut");
 const AssemblyAiStreaming = require("./assemblyAiStreaming");
@@ -838,6 +839,10 @@ class IPCHandlers {
       return this.databaseManager.getInsightsStats();
     });
 
+    ipcMain.handle("db-get-insights-activity", async (event, rangeDays) => {
+      return this.databaseManager.getInsightsActivity(rangeDays);
+    });
+
     ipcMain.handle("db-save-transcription", async (event, text, rawText, options) => {
       const result = this.databaseManager.saveTranscription(text, rawText, options);
       if (result?.success && result?.transcription) {
@@ -1078,15 +1083,15 @@ class IPCHandlers {
       return this.databaseManager.searchNotes(query, limit);
     });
 
-    ipcMain.handle("db-semantic-search-notes", async (event, query, limit = 5) => {
+    ipcMain.handle("db-semantic-search-notes", async (event, query, limit = 5, noteType = null) => {
       const vectorIndex = require("./vectorIndex");
       if (!vectorIndex.isReady()) {
-        return this.databaseManager.searchNotes(query, limit);
+        return this.databaseManager.searchNotes(query, limit, noteType);
       }
 
       try {
         const [ftsResults, vectorResults] = await Promise.all([
-          this.databaseManager.searchNotes(query, limit * 2),
+          this.databaseManager.searchNotes(query, limit * 2, noteType),
           vectorIndex.search(query, limit * 2),
         ]);
 
@@ -1102,24 +1107,27 @@ class IPCHandlers {
           scores.set(noteId, (scores.get(noteId) || 0) + 1 / (60 + i));
         });
 
-        const rankedIds = [...scores.entries()]
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, limit)
-          .map(([id]) => id);
-
         const noteMap = new Map();
         ftsResults.forEach((n) => noteMap.set(n.id, n));
-        for (const id of rankedIds) {
+        for (const id of scores.keys()) {
           if (!noteMap.has(id)) {
             const note = this.databaseManager.getNote(id);
             if (note) noteMap.set(id, note);
           }
         }
 
+        // vec_notes has no note_type column, so vector-sourced candidates are
+        // only filterable once their full note row has been fetched above.
+        const rankedIds = [...scores.entries()]
+          .filter(([id]) => !noteType || noteMap.get(id)?.note_type === noteType)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, limit)
+          .map(([id]) => id);
+
         return rankedIds.map((id) => noteMap.get(id)).filter(Boolean);
       } catch (error) {
         debugLogger.error("Semantic search failed, falling back to FTS5", { error: error.message });
-        return this.databaseManager.searchNotes(query, limit);
+        return this.databaseManager.searchNotes(query, limit, noteType);
       }
     });
 
@@ -2789,18 +2797,24 @@ class IPCHandlers {
           }
         }
 
-        const response = await proxyFetch(XAI_STT_URL, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${apiKey}` },
-          body: formData,
-        });
+        return withRetry(async () => {
+          const response = await proxyFetch(XAI_STT_URL, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${apiKey}` },
+            body: formData,
+          });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`xAI API Error: ${response.status} ${errorText}`);
-        }
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw httpError(
+              response.status,
+              `xAI API Error: ${response.status} ${errorText}`,
+              response.headers
+            );
+          }
 
-        return await response.json();
+          return response.json();
+        }, createApiRetryStrategy());
       }
     );
 
@@ -2834,20 +2848,26 @@ class IPCHandlers {
           }
         }
 
-        const response = await proxyFetch(MISTRAL_TRANSCRIPTION_URL, {
-          method: "POST",
-          headers: {
-            "x-api-key": apiKey,
-          },
-          body: formData,
-        });
+        return withRetry(async () => {
+          const response = await proxyFetch(MISTRAL_TRANSCRIPTION_URL, {
+            method: "POST",
+            headers: {
+              "x-api-key": apiKey,
+            },
+            body: formData,
+          });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Mistral API Error: ${response.status} ${errorText}`);
-        }
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw httpError(
+              response.status,
+              `Mistral API Error: ${response.status} ${errorText}`,
+              response.headers
+            );
+          }
 
-        return await response.json();
+          return response.json();
+        }, createApiRetryStrategy());
       }
     );
 
@@ -3289,32 +3309,37 @@ class IPCHandlers {
             temperature: config?.temperature || 0.3,
           };
 
-          const response = await proxyFetch("https://api.anthropic.com/v1/messages", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-Key": apiKey,
-              "anthropic-version": "2023-06-01",
-            },
-            body: JSON.stringify(requestBody),
-          });
+          const data = await withRetry(async () => {
+            const response = await proxyFetch("https://api.anthropic.com/v1/messages", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": apiKey,
+                "anthropic-version": "2023-06-01",
+              },
+              body: JSON.stringify(requestBody),
+            });
 
-          if (!response.ok) {
-            const errorText = await response.text();
-            let errorData = { error: response.statusText };
-            try {
-              errorData = JSON.parse(errorText);
-            } catch {
-              errorData = { error: errorText || response.statusText };
+            if (!response.ok) {
+              const errorText = await response.text();
+              let errorData = { error: response.statusText };
+              try {
+                errorData = JSON.parse(errorText);
+              } catch {
+                errorData = { error: errorText || response.statusText };
+              }
+              throw httpError(
+                response.status,
+                errorData.error?.message ||
+                  errorData.error ||
+                  `Anthropic API error: ${response.status}`,
+                response.headers
+              );
             }
-            throw new Error(
-              errorData.error?.message ||
-                errorData.error ||
-                `Anthropic API error: ${response.status}`
-            );
-          }
 
-          const data = await response.json();
+            return response.json();
+          }, createApiRetryStrategy());
+
           return { success: true, text: data.content[0].text.trim() };
         } catch (error) {
           debugLogger.error("Anthropic reasoning error:", error);
@@ -5934,49 +5959,60 @@ class IPCHandlers {
           "cloud-api"
         );
 
-        const response = await proxyFetch(`${apiUrl}/api/reason`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...authHeader,
-          },
-          body: JSON.stringify({
-            text,
-            model: opts.model,
-            agentName: opts.agentName,
-            customDictionary: opts.customDictionary,
-            customPrompt: opts.customPrompt,
-            systemPrompt: opts.systemPrompt,
-            language: opts.language,
-            locale: opts.locale,
-            sessionId: this.sessionId,
-            clientType: "desktop",
-            appVersion: app.getVersion(),
-            clientVersion: app.getVersion(),
-            sttProvider: opts.sttProvider,
-            sttModel: opts.sttModel,
-            sttProcessingMs: opts.sttProcessingMs,
-            sttWordCount: opts.sttWordCount,
-            sttLanguage: opts.sttLanguage,
-            audioDurationMs: opts.audioDurationMs,
-            audioSizeBytes: opts.audioSizeBytes,
-            audioFormat: opts.audioFormat,
-            clientTotalMs: opts.clientTotalMs,
-          }),
-        });
+        const data = await withRetry(async () => {
+          const response = await proxyFetch(`${apiUrl}/api/reason`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...authHeader,
+            },
+            body: JSON.stringify({
+              text,
+              model: opts.model,
+              agentName: opts.agentName,
+              customDictionary: opts.customDictionary,
+              customPrompt: opts.customPrompt,
+              systemPrompt: opts.systemPrompt,
+              language: opts.language,
+              locale: opts.locale,
+              sessionId: this.sessionId,
+              clientType: "desktop",
+              appVersion: app.getVersion(),
+              clientVersion: app.getVersion(),
+              sttProvider: opts.sttProvider,
+              sttModel: opts.sttModel,
+              sttProcessingMs: opts.sttProcessingMs,
+              sttWordCount: opts.sttWordCount,
+              sttLanguage: opts.sttLanguage,
+              audioDurationMs: opts.audioDurationMs,
+              audioSizeBytes: opts.audioSizeBytes,
+              audioFormat: opts.audioFormat,
+              clientTotalMs: opts.clientTotalMs,
+            }),
+          });
 
-        if (!response.ok) {
-          if (response.status === 401) {
-            return { success: false, error: "Session expired", code: "AUTH_EXPIRED" };
+          if (!response.ok) {
+            if (response.status === 401) {
+              const err = httpError(401, "Session expired");
+              err.code = "AUTH_EXPIRED";
+              throw err;
+            }
+            if (response.status === 503) {
+              const err = httpError(503, "Request timed out");
+              err.code = "SERVER_ERROR";
+              throw err;
+            }
+            const errorData = await response.json().catch(() => ({}));
+            throw httpError(
+              response.status,
+              errorData.error || `API error: ${response.status}`,
+              response.headers
+            );
           }
-          if (response.status === 503) {
-            return { success: false, error: "Request timed out", code: "SERVER_ERROR" };
-          }
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || `API error: ${response.status}`);
-        }
 
-        const data = await response.json();
+          return response.json();
+        }, createApiRetryStrategy());
+
         debugLogger.debug(
           "Cloud reason response",
           {
@@ -5997,6 +6033,9 @@ class IPCHandlers {
           matchType: data.matchType,
         };
       } catch (error) {
+        if (error.code === "AUTH_EXPIRED" || error.code === "SERVER_ERROR") {
+          return { success: false, error: error.message, code: error.code };
+        }
         debugLogger.error("Cloud reasoning error:", error);
         return { success: false, error: error.message };
       }

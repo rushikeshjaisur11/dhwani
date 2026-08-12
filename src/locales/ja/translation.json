@@ -2091,6 +2091,9 @@
       "noResults": "ä¸€è‡´ã™ã‚‹ãƒŽãƒ¼ãƒˆãŒã‚ã‚Šã¾ã›ã‚“",
       "noNotesAvailable": "ä»–ã®ãƒŽãƒ¼ãƒˆã¯ã‚ã‚Šã¾ã›ã‚“"
     },
+      "waveform": {
+      "loading": "波形を読み込み中…"
+    },
     "folders": {
       "title": "ãƒ•ã‚©ãƒ«ãƒ€",
       "soon": "è¿‘æ—¥å…¬é–‹",
@@ -2112,6 +2115,16 @@
       "minutesAgo": "{{count}}åˆ†å‰",
       "hoursAgo": "{{count}}æ™‚é–“å‰",
       "daysAgo": "{{count}}æ—¥å‰"
+    },
+    "meetingSearch": {
+      "buttonLabel": "ミーティングに質問する",
+      "title": "ミーティングに質問する",
+      "description": "セマンティック検索でミーティングのメモに質問する",
+      "placeholder": "ミーティングについて質問する…",
+      "emptyState": "質問を入力してミーティングのメモを検索",
+      "searching": "検索中…",
+      "noResults": "一致するミーティングが見つかりません",
+      "footer": "ミーティングメモのセマンティック検索"
     },
     "upload": {
       "title": "éŸ³å£°ã‚’ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰",
@@ -2295,7 +2308,13 @@
         "signoffTrigger": "ç½²å",
         "signoffText": "ã‚ˆã‚ã—ããŠé¡˜ã„ã—ã¾ã™ã€‚Alex Â· alex@example.com"
       },
-      "addPlaceholder": "ãƒˆãƒªã‚¬ãƒ¼ãƒ•ãƒ¬ãƒ¼ã‚ºã‚’è¿½åŠ  — ã€Œã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒªãƒ³ã‚¯ã€ã€Œç½²åã€ãªã©"
+      "addPlaceholder": "ãƒˆãƒªã‚¬ãƒ¼ãƒ•ãƒ¬ãƒ¼ã‚ºã‚’è¿½åŠ  — ã€Œã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒªãƒ³ã‚¯ã€ã€Œç½²åã€ãªã©",
+        "autoSuggest": {
+        "title": "この言い回しを何度も話しています",
+        "description": "「{{phrase}}」をスニペットとして保存しますか？",
+        "accept": "スニペットとして保存",
+        "dismiss": "閉じる"
+      }
     },
     "emptyTitle": "è¾žæ›¸ã¯ç©ºã§ã™",
     "emptyDescription": "{{agentName}}ã«æ­£ã—ãèªè­˜ã—ã¦ã»ã—ã„è¨€è‘‰ã‚’è¿½åŠ ã—ã¾ã—ã‚‡ã†ã€‚åå‰ã€ãƒ„ãƒ¼ãƒ«ã€ç•¥èªžãªã©ã€‚",
@@ -2706,6 +2725,14 @@
     "today": "ä»Šæ—¥",
     "tomorrow": "æ˜Žæ—¥"
   },
+  "meetings": {
+    "brief": {
+      "with": "{{names}} と",
+      "pastNotesToggle_one": "過去のノート {{count}} 件",
+      "pastNotesToggle_other": "過去のノート {{count}} 件",
+      "untitledNote": "無題のノート"
+    }
+  },
   "upcoming": {
     "title": "ä»Šå¾Œã®ä¼šè­°",
     "transcriptions": "æ–‡å­—èµ·ã“ã—",
@@ -2959,6 +2986,35 @@
     "appUsage": {
       "title": "デスクトップ使用状況",
       "totalApps": "{{count}}個のアプリを使用"
+    },
+      "timeSaved": {
+      "title": "節約した時間",
+      "subtitle": "約{{wpm}}WPMで入力した場合との比較",
+      "hoursMinutes": "{{hours}}時間{{minutes}}分",
+      "minutesOnly": "{{minutes}}分"
+    },
+    "weeklyTrend": {
+      "title": "今週の単語数",
+      "vsLastWeek": "先週比{{sign}}{{pct}}%",
+      "noBaseline": "先週のデータはまだありません"
+    },
+    "rangeFilter": {
+      "7days": "7日間",
+      "30days": "30日間",
+      "allTime": "全期間"
+    },
+    "charts": {
+      "sectionTitle": "傾向",
+      "frequency": {
+        "title": "口述の頻度"
+      },
+      "avgWords": {
+        "title": "平均単語数"
+      },
+      "timeSaved": {
+        "title": "1日あたりの節約時間"
+      },
+      "emptyState": "この期間をグラフ化するにはまだ履歴が不足しています。"
     }
   },
   "modelRecommendation": {

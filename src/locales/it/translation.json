@@ -2092,6 +2092,9 @@
       "searchNotes": "Cerca note",
       "actions": "Azioni"
     },
+      "waveform": {
+      "loading": "Caricamento della forma d'onda…"
+    },
     "folders": {
       "title": "Cartelle",
       "soon": "Presto",
@@ -2113,6 +2116,16 @@
       "minutesAgo": "{{count}}m",
       "hoursAgo": "{{count}}h",
       "daysAgo": "{{count}}g"
+    },
+    "meetingSearch": {
+      "buttonLabel": "Interroga le tue riunioni",
+      "title": "Interroga le tue riunioni",
+      "description": "Fai una domanda sulle tue note delle riunioni tramite ricerca semantica",
+      "placeholder": "Fai una domanda sulle tue riunioni…",
+      "emptyState": "Digita una domanda per cercare nelle tue note delle riunioni",
+      "searching": "Ricerca in corso…",
+      "noResults": "Nessuna riunione corrispondente trovata",
+      "footer": "Ricerca semantica nelle note delle riunioni"
     },
     "editor": {
       "untitled": "Senza titolo",
@@ -2385,7 +2398,13 @@
         "signoffTrigger": "Firma",
         "signoffText": "Saluti, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "Aggiungi una frase trigger: \"mio calendario\", \"il mio LinkedIn\""
+      "addPlaceholder": "Aggiungi una frase trigger: \"mio calendario\", \"il mio LinkedIn\"",
+        "autoSuggest": {
+        "title": "Lo hai detto già un paio di volte",
+        "description": "\"{{phrase}}\" — salvarlo come snippet?",
+        "accept": "Salva come snippet",
+        "dismiss": "Ignora"
+      }
     },
     "emptyTitle": "Il tuo dizionario Ã¨ vuoto",
     "emptyDescription": "Aggiungi le parole che {{agentName}} deve sempre riconoscere: nomi, strumenti, acronimi.",
@@ -2724,6 +2743,14 @@
     "today": "Oggi",
     "tomorrow": "Domani"
   },
+  "meetings": {
+    "brief": {
+      "with": "Con {{names}}",
+      "pastNotesToggle_one": "{{count}} nota precedente insieme",
+      "pastNotesToggle_other": "{{count}} note precedenti insieme",
+      "untitledNote": "Nota senza titolo"
+    }
+  },
   "upcoming": {
     "title": "Riunioni in programma",
     "transcriptions": "Trascrizioni",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "Utilizzo del desktop",
       "totalApps": "{{count}} app utilizzate"
+    },
+      "timeSaved": {
+      "title": "Tempo risparmiato",
+      "subtitle": "Rispetto a digitare a ~{{wpm}} PPM",
+      "hoursMinutes": "{{hours}}h {{minutes}}m",
+      "minutesOnly": "{{minutes}}m"
+    },
+    "weeklyTrend": {
+      "title": "Parole questa settimana",
+      "vsLastWeek": "{{sign}}{{pct}}% rispetto alla scorsa settimana",
+      "noBaseline": "Nessun dato per la scorsa settimana"
+    },
+    "rangeFilter": {
+      "7days": "7 giorni",
+      "30days": "30 giorni",
+      "allTime": "Sempre"
+    },
+    "charts": {
+      "sectionTitle": "Tendenze",
+      "frequency": {
+        "title": "Frequenza di dettatura"
+      },
+      "avgWords": {
+        "title": "Numero medio di parole"
+      },
+      "timeSaved": {
+        "title": "Tempo risparmiato al giorno"
+      },
+      "emptyState": "Non c'e ancora abbastanza cronologia per questo intervallo."
     }
   },
   "modelRecommendation": {

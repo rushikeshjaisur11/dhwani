@@ -2204,6 +2204,9 @@
       "searchNotes": "Rechercher des notes",
       "actions": "Actions"
     },
+      "waveform": {
+      "loading": "Chargement de la forme d'onde…"
+    },
     "folders": {
       "title": "Dossiers",
       "soon": "BientÃ´t",
@@ -2225,6 +2228,16 @@
       "minutesAgo": "il y a {{count}}m",
       "hoursAgo": "il y a {{count}}h",
       "daysAgo": "il y a {{count}}j"
+    },
+    "meetingSearch": {
+      "buttonLabel": "Interroger vos reunions",
+      "title": "Interroger vos reunions",
+      "description": "Posez une question sur vos notes de reunion via la recherche semantique",
+      "placeholder": "Posez une question sur vos reunions…",
+      "emptyState": "Tapez une question pour chercher dans vos notes de reunion",
+      "searching": "Recherche…",
+      "noResults": "Aucune reunion correspondante trouvee",
+      "footer": "Recherche semantique dans les notes de reunion"
     },
     "editor": {
       "untitled": "Sans titre",
@@ -2497,7 +2510,13 @@
         "signoffTrigger": "Signature",
         "signoffText": "Cordialement, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "Ajoutez une phrase dÃ©clencheur — Â« mon agenda Â», Â« mon LinkedIn Â»"
+      "addPlaceholder": "Ajoutez une phrase dÃ©clencheur — Â« mon agenda Â», Â« mon LinkedIn Â»",
+        "autoSuggest": {
+        "title": "Vous avez dit ça plusieurs fois",
+        "description": "« {{phrase}} » — l’enregistrer comme extrait ?",
+        "accept": "Enregistrer comme extrait",
+        "dismiss": "Ignorer"
+      }
     },
     "emptyTitle": "Votre dictionnaire est vide",
     "emptyDescription": "Ajoutez les mots que {{agentName}} doit toujours reconnaÃ®tre : noms, outils, acronymes.",
@@ -2772,6 +2791,14 @@
     "today": "Aujourd'hui",
     "tomorrow": "Demain"
   },
+  "meetings": {
+    "brief": {
+      "with": "Avec {{names}}",
+      "pastNotesToggle_one": "{{count}} note précédente ensemble",
+      "pastNotesToggle_other": "{{count}} notes précédentes ensemble",
+      "untitledNote": "Note sans titre"
+    }
+  },
   "upcoming": {
     "title": "RÃ©unions Ã  venir",
     "transcriptions": "Transcriptions",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "Utilisation du bureau",
       "totalApps": "{{count}} applications utilisées"
+    },
+      "timeSaved": {
+      "title": "Temps gagne",
+      "subtitle": "Par rapport a la saisie a ~{{wpm}} MPM",
+      "hoursMinutes": "{{hours}}h {{minutes}}m",
+      "minutesOnly": "{{minutes}}m"
+    },
+    "weeklyTrend": {
+      "title": "Mots cette semaine",
+      "vsLastWeek": "{{sign}}{{pct}}% vs la semaine derniere",
+      "noBaseline": "Pas encore de donnees pour la semaine derniere"
+    },
+    "rangeFilter": {
+      "7days": "7 jours",
+      "30days": "30 jours",
+      "allTime": "Tout le temps"
+    },
+    "charts": {
+      "sectionTitle": "Tendances",
+      "frequency": {
+        "title": "Frequence de dictee"
+      },
+      "avgWords": {
+        "title": "Nombre moyen de mots"
+      },
+      "timeSaved": {
+        "title": "Temps gagne par jour"
+      },
+      "emptyState": "Pas assez d'historique pour tracer cette periode."
     }
   },
   "modelRecommendation": {

@@ -2092,6 +2092,9 @@
       "searchNotes": "Pesquisar notas",
       "actions": "AÃ§Ãµes"
     },
+      "waveform": {
+      "loading": "Carregando forma de onda…"
+    },
     "folders": {
       "title": "Pastas",
       "soon": "Em breve",
@@ -2113,6 +2116,16 @@
       "minutesAgo": "{{count}}m",
       "hoursAgo": "{{count}}h",
       "daysAgo": "{{count}}d"
+    },
+    "meetingSearch": {
+      "buttonLabel": "Pergunte as suas reunioes",
+      "title": "Pergunte as suas reunioes",
+      "description": "Faca uma pergunta sobre suas notas de reuniao usando busca semantica",
+      "placeholder": "Faca uma pergunta sobre suas reunioes…",
+      "emptyState": "Digite uma pergunta para buscar em suas notas de reuniao",
+      "searching": "Buscando…",
+      "noResults": "Nenhuma reuniao correspondente encontrada",
+      "footer": "Busca semantica em notas de reuniao"
     },
     "editor": {
       "untitled": "Sem tÃ­tulo",
@@ -2385,7 +2398,13 @@
         "signoffTrigger": "Assinatura",
         "signoffText": "AbraÃ§os, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "Adicione uma frase-gatilho — \"minha agenda\", \"meu LinkedIn\""
+      "addPlaceholder": "Adicione uma frase-gatilho — \"minha agenda\", \"meu LinkedIn\"",
+        "autoSuggest": {
+        "title": "Você já disse isso algumas vezes",
+        "description": "\"{{phrase}}\" — salvar como snippet?",
+        "accept": "Salvar como snippet",
+        "dismiss": "Dispensar"
+      }
     },
     "emptyTitle": "Seu dicionÃ¡rio estÃ¡ vazio",
     "emptyDescription": "Adicione palavras que {{agentName}} deve sempre acertar: nomes, ferramentas, siglas.",
@@ -2724,6 +2743,14 @@
     "today": "Hoje",
     "tomorrow": "AmanhÃ£"
   },
+  "meetings": {
+    "brief": {
+      "with": "Com {{names}}",
+      "pastNotesToggle_one": "{{count}} nota anterior juntos",
+      "pastNotesToggle_other": "{{count}} notas anteriores juntos",
+      "untitledNote": "Nota sem título"
+    }
+  },
   "upcoming": {
     "title": "PrÃ³ximas reuniÃµes",
     "transcriptions": "TranscriÃ§Ãµes",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "Uso do desktop",
       "totalApps": "{{count}} apps usados"
+    },
+      "timeSaved": {
+      "title": "Tempo economizado",
+      "subtitle": "Comparado a digitar a ~{{wpm}} PPM",
+      "hoursMinutes": "{{hours}}h {{minutes}}m",
+      "minutesOnly": "{{minutes}}m"
+    },
+    "weeklyTrend": {
+      "title": "Palavras esta semana",
+      "vsLastWeek": "{{sign}}{{pct}}% vs semana passada",
+      "noBaseline": "Ainda sem dados da semana passada"
+    },
+    "rangeFilter": {
+      "7days": "7 dias",
+      "30days": "30 dias",
+      "allTime": "Todo o periodo"
+    },
+    "charts": {
+      "sectionTitle": "Tendencias",
+      "frequency": {
+        "title": "Frequencia de ditado"
+      },
+      "avgWords": {
+        "title": "Media de palavras"
+      },
+      "timeSaved": {
+        "title": "Tempo economizado por dia"
+      },
+      "emptyState": "Ainda nao ha historico suficiente para este periodo."
     }
   },
   "modelRecommendation": {

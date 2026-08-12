@@ -2092,6 +2092,9 @@
       "searchNotes": "Notizen suchen",
       "actions": "Aktionen"
     },
+      "waveform": {
+      "loading": "Wellenform wird geladen…"
+    },
     "folders": {
       "title": "Ordner",
       "soon": "DemnÃ¤chst",
@@ -2113,6 +2116,16 @@
       "minutesAgo": "vor {{count}}m",
       "hoursAgo": "vor {{count}}h",
       "daysAgo": "vor {{count}}T"
+    },
+    "meetingSearch": {
+      "buttonLabel": "Meetings befragen",
+      "title": "Meetings befragen",
+      "description": "Stelle eine Frage zu deinen Meeting-Notizen mittels semantischer Suche",
+      "placeholder": "Stelle eine Frage zu deinen Meetings…",
+      "emptyState": "Tippe eine Frage, um deine Meeting-Notizen zu durchsuchen",
+      "searching": "Suche laeuft…",
+      "noResults": "Keine passenden Meetings gefunden",
+      "footer": "Semantische Suche in Meeting-Notizen"
     },
     "editor": {
       "untitled": "Unbenannt",
@@ -2385,7 +2398,13 @@
         "signoffTrigger": "GruÃŸformel",
         "signoffText": "Viele GrÃ¼ÃŸe, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "AuslÃ¶ser-Phrase hinzufÃ¼gen â€“ â€žmein Kalender“, â€žmein LinkedIn“"
+      "addPlaceholder": "AuslÃ¶ser-Phrase hinzufÃ¼gen â€“ â€žmein Kalender“, â€žmein LinkedIn“",
+        "autoSuggest": {
+        "title": "Das hast du schon ein paar Mal gesagt",
+        "description": "„{{phrase}}“ – als Snippet speichern?",
+        "accept": "Als Snippet speichern",
+        "dismiss": "Verwerfen"
+      }
     },
     "emptyTitle": "Dein WÃ¶rterbuch ist leer",
     "emptyDescription": "FÃ¼ge WÃ¶rter hinzu, die {{agentName}} immer richtig erkennen soll: Namen, Tools, AbkÃ¼rzungen.",
@@ -2724,6 +2743,14 @@
     "today": "Heute",
     "tomorrow": "Morgen"
   },
+  "meetings": {
+    "brief": {
+      "with": "Mit {{names}}",
+      "pastNotesToggle_one": "{{count}} frühere Notiz gemeinsam",
+      "pastNotesToggle_other": "{{count}} frühere Notizen gemeinsam",
+      "untitledNote": "Unbenannte Notiz"
+    }
+  },
   "upcoming": {
     "title": "Anstehende Meetings",
     "transcriptions": "Transkriptionen",
@@ -2977,6 +3004,35 @@
     "appUsage": {
       "title": "Desktop-Nutzung",
       "totalApps": "{{count}} Apps genutzt"
+    },
+      "timeSaved": {
+      "title": "Gesparte Zeit",
+      "subtitle": "Im Vergleich zum Tippen bei ~{{wpm}} WPM",
+      "hoursMinutes": "{{hours}}Std {{minutes}}Min",
+      "minutesOnly": "{{minutes}}Min"
+    },
+    "weeklyTrend": {
+      "title": "Woerter diese Woche",
+      "vsLastWeek": "{{sign}}{{pct}}% ggue. letzter Woche",
+      "noBaseline": "Noch keine Daten fuer letzte Woche"
+    },
+    "rangeFilter": {
+      "7days": "7 Tage",
+      "30days": "30 Tage",
+      "allTime": "Gesamte Zeit"
+    },
+    "charts": {
+      "sectionTitle": "Trends",
+      "frequency": {
+        "title": "Diktierhaeufigkeit"
+      },
+      "avgWords": {
+        "title": "Durchschnittliche Wortzahl"
+      },
+      "timeSaved": {
+        "title": "Gesparte Zeit pro Tag"
+      },
+      "emptyState": "Noch nicht genug Verlauf, um diesen Zeitraum darzustellen."
     }
   },
   "modelRecommendation": {

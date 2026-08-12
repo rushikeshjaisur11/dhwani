@@ -799,6 +799,14 @@
     "today": "Today",
     "tomorrow": "Tomorrow"
   },
+  "meetings": {
+    "brief": {
+      "with": "With {{names}}",
+      "pastNotesToggle_one": "{{count}} past note together",
+      "pastNotesToggle_other": "{{count}} past notes together",
+      "untitledNote": "Untitled note"
+    }
+  },
   "upcoming": {
     "title": "Upcoming Meetings",
     "transcriptions": "Transcriptions",
@@ -2315,6 +2323,9 @@
       "searchNotes": "Search notes",
       "actions": "Actions"
     },
+      "waveform": {
+      "loading": "Loading waveform…"
+    },
     "folders": {
       "title": "Folders",
       "soon": "Soon",
@@ -2336,6 +2347,16 @@
       "minutesAgo": "{{count}}m",
       "hoursAgo": "{{count}}h",
       "daysAgo": "{{count}}d"
+    },
+    "meetingSearch": {
+      "buttonLabel": "Ask your meetings",
+      "title": "Ask your meetings",
+      "description": "Ask a question across your meeting notes using semantic search",
+      "placeholder": "Ask a question about your meetings…",
+      "emptyState": "Type a question to search across your meeting notes",
+      "searching": "Searching…",
+      "noResults": "No matching meetings found",
+      "footer": "Semantic search across meeting notes"
     },
     "editor": {
       "untitled": "Untitled",
@@ -2595,6 +2616,35 @@
     "appUsage": {
       "title": "Desktop usage",
       "totalApps": "{{count}} apps used"
+    },
+      "timeSaved": {
+      "title": "Time saved",
+      "subtitle": "Vs. typing it out at ~{{wpm}} WPM",
+      "hoursMinutes": "{{hours}}h {{minutes}}m",
+      "minutesOnly": "{{minutes}}m"
+    },
+    "weeklyTrend": {
+      "title": "Words this week",
+      "vsLastWeek": "{{sign}}{{pct}}% vs last week",
+      "noBaseline": "No data for last week yet"
+    },
+    "rangeFilter": {
+      "7days": "7 days",
+      "30days": "30 days",
+      "allTime": "All time"
+    },
+    "charts": {
+      "sectionTitle": "Trends",
+      "frequency": {
+        "title": "Dictation frequency"
+      },
+      "avgWords": {
+        "title": "Average word count"
+      },
+      "timeSaved": {
+        "title": "Time saved per day"
+      },
+      "emptyState": "Not enough dictation history yet to chart this range."
     }
   },
   "modelRecommendation": {
@@ -2783,7 +2833,13 @@
         "signoffTrigger": "Sign off",
         "signoffText": "Best, Alex Â· alex@example.com"
       },
-      "addPlaceholder": "Add a trigger phrase — \"investor ask\", \"cal link\""
+      "addPlaceholder": "Add a trigger phrase — \"investor ask\", \"cal link\"",
+        "autoSuggest": {
+        "title": "You've said this a few times",
+        "description": "\"{{phrase}}\" — save it as a snippet?",
+        "accept": "Save as snippet",
+        "dismiss": "Dismiss"
+      }
     },
     "emptyTitle": "Your dictionary is empty",
     "emptyDescription": "Add words {{agentName}} should always get right: names, tools, acronyms.",
