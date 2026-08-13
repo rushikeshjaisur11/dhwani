@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0](https://github.com/rushikeshjaisur11/dhwani/compare/v0.9.0...v0.10.0) (2026-08-12)
+
+
+### Features
+
+* add cross-meeting Q&A search; wire shared plumbing for this batch ([48d710c](https://github.com/rushikeshjaisur11/dhwani/commit/48d710cf19616e14bcd7e4baa88880e0d3879504))
+* click-to-seek waveform minimap for recordings with saved audio ([132951f](https://github.com/rushikeshjaisur11/dhwani/commit/132951f5cc23d4a172d18b9b5482c53ebf1f8aed))
+* extend calendar-sourced speaker names to group meetings ([973ee71](https://github.com/rushikeshjaisur11/dhwani/commit/973ee71df5a986addf14b2f6b7062ff58b66ee0b))
+* real charts, time-saved metric, and date-range filter in Insights ([5c7d43d](https://github.com/rushikeshjaisur11/dhwani/commit/5c7d43d61259945435c385dae4ad0524bc5175f1))
+* show attendee names and past notes in pre-meeting notification ([25bc180](https://github.com/rushikeshjaisur11/dhwani/commit/25bc1805aab91b2159b82c06608464bf6c3e8d78))
+* suggest saving repeated dictated phrases as snippets ([2876810](https://github.com/rushikeshjaisur11/dhwani/commit/2876810d967aec9d5031c8a85c23536a36aa6b2a))
+
+
+### Bug Fixes
+
+* add retry/backoff for cloud STT and LLM calls, fix retry predicate bug ([b7f5af1](https://github.com/rushikeshjaisur11/dhwani/commit/b7f5af1220e8ec112dccef7465a6a3af09fa3817))
+* copy transcript to clipboard when auto-paste fails ([4c22371](https://github.com/rushikeshjaisur11/dhwani/commit/4c22371b588ea0c64542aafc24515b8c2e103dbe))
+* fetch available models for custom transcription endpoint ([3aa0a07](https://github.com/rushikeshjaisur11/dhwani/commit/3aa0a078bad1fa8ae891caba8aa051247e1a2153))
+* recover from a stuck CUDA/Vulkan-to-CPU whisper fallback ([2970f6a](https://github.com/rushikeshjaisur11/dhwani/commit/2970f6a2c5379a5624057b1eb548df222b4d79e7))
+* strip custom dictionary words bleeding into transcripts ([5167a0d](https://github.com/rushikeshjaisur11/dhwani/commit/5167a0dde0ccd134247cdb623ab8f60897628011))
+
 ## [0.9.0](https://github.com/rushikeshjaisur11/dhwani/compare/v0.8.0...v0.9.0) (2026-08-11)
 
 
