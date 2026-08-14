@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.1](https://github.com/rushikeshjaisur11/dhwani/compare/v0.10.0...v0.10.1) (2026-08-14)
+
+
+### Bug Fixes
+
+* create deleted_at index after column exists on fresh install ([487137e](https://github.com/rushikeshjaisur11/dhwani/commit/487137e6470ee7332516f159d8e3c311aaeec3b6))
+
 ## [0.10.0](https://github.com/rushikeshjaisur11/dhwani/compare/v0.9.0...v0.10.0) (2026-08-12)
 
 
