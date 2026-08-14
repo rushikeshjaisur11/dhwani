@@ -328,11 +328,6 @@ class DatabaseManager {
         "CREATE INDEX IF NOT EXISTS idx_agent_conversations_note ON agent_conversations(note_id)"
       );
 
-      // History list reads: WHERE deleted_at IS NULL ORDER BY timestamp DESC.
-      this.db.exec(
-        "CREATE INDEX IF NOT EXISTS idx_transcriptions_deleted_at_timestamp ON transcriptions(deleted_at, timestamp DESC)"
-      );
-
       const actionCount = this.db.prepare("SELECT COUNT(*) as count FROM actions").get();
       if (actionCount.count === 0) {
         this.db
@@ -599,6 +594,12 @@ class DatabaseManager {
       } catch (err) {
         if (!err.message.includes("duplicate column")) throw err;
       }
+
+      // History list reads: WHERE deleted_at IS NULL ORDER BY timestamp DESC.
+      this.db.exec(
+        "CREATE INDEX IF NOT EXISTS idx_transcriptions_deleted_at_timestamp ON transcriptions(deleted_at, timestamp DESC)"
+      );
+
       try {
         this.db.exec("ALTER TABLE transcriptions ADD COLUMN target_app TEXT");
       } catch (err) {
