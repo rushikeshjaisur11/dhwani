@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.2](https://github.com/rushikeshjaisur11/dhwani/compare/v0.10.1...v0.10.2) (2026-08-14)
+
+
+### Bug Fixes
+
+* greet users by their OS login name, not a hardcoded default ([693be2b](https://github.com/rushikeshjaisur11/dhwani/commit/693be2b15cdb1fea5ede294197507cd80e78882d))
+* resolve npm ERESOLVE conflicts and adm-zip vulnerability ([281e890](https://github.com/rushikeshjaisur11/dhwani/commit/281e890ded5c98822d1b9f4eaa1090e25c055830))
+
 ## [0.10.1](https://github.com/rushikeshjaisur11/dhwani/compare/v0.10.0...v0.10.1) (2026-08-14)
 
 
