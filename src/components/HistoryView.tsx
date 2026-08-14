@@ -188,10 +188,11 @@ export default function HistoryView({
     .map((part) => part.trim())
     .filter(Boolean);
 
-  // ponytail: no user-profile/name setting exists yet — persisted locally,
-  // seeded with the real name, editable by changing localStorage.userName
-  // until a proper Settings field exists.
-  const userName = localStorage.getItem("userName") ?? "Rushikesh";
+  // ponytail: no user-profile/name setting exists yet — defaults to the OS
+  // login username, editable by changing localStorage.userName until a
+  // proper Settings field exists.
+  const userName =
+    localStorage.getItem("userName") ?? window.electronAPI?.getUserName?.() ?? "there";
 
   return (
     <div className="px-3 pb-6 flex flex-col relative min-h-full">
